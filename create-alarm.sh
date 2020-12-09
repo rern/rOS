@@ -66,14 +66,13 @@ $warnings
 fi
 
 # version - branch
-addons=( $( wget -qO - https://github.com/rern/rOS-Addons/raw/master/addons-list.json \
-			| grep -A2 '"rre' \
-			| sed 2d \
-			| sed 's/.*rre\(.\).*/\1/; s/.*": *"\(.*\)"/\1/' ) )
+addons=( $( wget -qO - https://github.com/rern/rAudio-addons/raw/main/addons-list.json \
+			| grep -A2 '"r.":' \
+			| sed -e 2d -e 's/[^0-9]*//g' ) )
 version=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Version:
 
-" 0 0 e${addons[0]} )
+" 0 0 ${addons[0]} )
 revision=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Revision:
 
@@ -81,7 +80,7 @@ revision=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 branch=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Branch:
 
-" 0 0 master )
+" 0 0 main )
 echo "\
 $version
 $revision
@@ -224,7 +223,7 @@ else
 fi
 
 # package mirror server
-wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
+wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/main/core/pacman-mirrorlist/mirrorlist \
 	| dialog "${opt[@]}" --gauge "
 Get package mirror list ...
 " 9 50
@@ -409,7 +408,7 @@ SystemCallErrorNumber=EPERM
 fi
 
 # get create-ros.sh
-wget -qN https://github.com/rern/rOS/raw/master/create-ros.sh -P $ROOT/root
+wget -qN https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
 
 # packages mirror
