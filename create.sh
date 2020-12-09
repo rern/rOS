@@ -69,7 +69,7 @@ clear -x
 # setup partitions
 umount -l ${dev}1 ${dev}2
 wipefs -a $dev
-wget -qO - https://github.com/rern/rOS/raw/master/alarm.sfdisk | sfdisk $dev
+wget -qO - https://github.com/rern/rOS/raw/main/alarm.sfdisk | sfdisk $dev
 
 devboot=${dev}1
 devroot=${dev}2
@@ -83,4 +83,4 @@ mkdir -p /mnt/{BOOT,ROOT}
 mount $devboot /mnt/BOOT
 mount $devroot /mnt/ROOT
 
-bash <( wget -qO - https://github.com/rern/rOS/raw/master/create-ros.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/main/create-ros.sh )

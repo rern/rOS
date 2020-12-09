@@ -19,13 +19,13 @@ cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 case $cmd in
 
 1 )
-	bash <( wget -qO - https://github.com/rern/rOS/raw/master/create.sh )
+	bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
 	;;
 2 )
-	bash <( wget -qO - https://github.com/rern/rOS/raw/master/reset.sh )
+	bash <( wget -qO - https://github.com/rern/rOS/raw/main/reset.sh )
 	;;
 3 )
-	bash <( wget -qO - https://github.com/rern/rOS/raw/master/imagecreate.sh )
+	bash <( wget -qO - https://github.com/rern/rOS/raw/main/imagecreate.sh )
 	;;
 
 esac
