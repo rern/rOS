@@ -1,0 +1,8 @@
+[Unit]
+Description=Bluetooth Dbus
+After=bluetooth.service
+Requires=bluetooth.service
+
+[Service]
+Type=Idle
+ExecStart=/srv/http/bash/bluezdbus.py

@@ -1,0 +1,3 @@
+# udevadm control --reload-rules && udevadm trigger
+ACTION=="add", KERNEL=="card*", SUBSYSTEM=="sound", RUN+="/srv/http/bash/mpd-conf.sh add"
+ACTION=="remove", KERNEL=="card*", SUBSYSTEM=="sound", RUN+="/srv/http/bash/mpd-conf.sh remove"

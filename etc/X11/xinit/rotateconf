@@ -1,0 +1,28 @@
+Section "Device"
+    Identifier "RpiFB"
+    Driver "fbdev"
+    Option "rotate" "ROTATION_SETTING"
+EndSection
+
+Section "InputClass"
+    Identifier "Touchscreen"
+    Driver "libinput"
+    MatchIsTouchscreen "on"
+    MatchDevicePath "/dev/input/event*"
+    Option "calibrationmatrix" "MATRIX_SETTING"
+EndSection
+
+Section "Monitor"
+    Identifier "generic"
+EndSection
+
+Section "Screen"
+    Identifier "screen1"
+    Device "RpiFB"
+    Monitor "generic"
+EndSection
+
+Section "ServerLayout"
+    Identifier "slayo1"
+    Screen "screen1"
+EndSection

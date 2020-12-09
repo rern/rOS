@@ -1,0 +1,10 @@
+[Unit]
+Description=rAudio Startup
+After=nginx.service
+
+[Service]
+Type=oneshot
+ExecStart=/srv/http/bash/startup.sh
+
+[Install]
+WantedBy=multi-user.target

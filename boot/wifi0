@@ -1,0 +1,9 @@
+# Replace NAME and PASSWORD
+# Save this file as 'wifi'
+
+Interface=wlan0
+Connection=wireless
+IP=dhcp
+Security=wpa
+ESSID="NAME"
+Key="PASSWORD"
