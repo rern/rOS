@@ -2,8 +2,6 @@ RuneAudio+R - DIY RuneOS
 ---
 Audio player and renderer for Raspberry Pi
 
-![guide](https://github.com/rern/_assets/raw/master/guide/guide.gif)
-
 - For all **Raspberry Pi**s: Zero, 1, 2, 3 and 4
 - Create **RuneAudio+R** from latest releases of [**Arch Linux Arm**](https://archlinuxarm.org/about/downloads)
 - Interactive interface
