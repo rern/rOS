@@ -305,12 +305,12 @@ fi
 ( pv -n $file \
 	| bsdtar -C $BOOT --strip-components=2 --no-same-permissions --no-same-owner -xf - boot ) 2>&1 \
 	| dialog "${opt[@]}" --gauge "
-  Expand \Z1BOOT\Z0 ...
+  Decompress \Z1BOOT\Z0 ...
 " 9 50
 ( pv -n $file \
 	| bsdtar -C $ROOT --exclude='boot' -xpf - ) 2>&1 \
 	| dialog "${opt[@]}" --gauge "
-  Expand \Z1ROOT\Z0 ...
+  Decompress \Z1ROOT\Z0 ...
 " 9 50
 
 sync &
