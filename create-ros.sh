@@ -1,10 +1,10 @@
 #!/bin/bash
 
 versions=( $( cat /boot/versions ) )
-version=$versions[0]}
-revision=$versions[1]}
-uibranch=$versions[2]}
-addonalias=rr$version
+version=${versions[0]}
+revision=${versions[1]}
+uibranch=${versions[2]}
+addonalias=r$version
 
 trap 'rm -f /var/lib/pacman/db.lck; exit' INT
 
