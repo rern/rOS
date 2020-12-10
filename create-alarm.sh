@@ -149,10 +149,13 @@ Connect \Z1Wi-Fi\Z0 on boot?
 	dialog "${opt[@]}" --yesno "
 \Z1Confirm data:\Z0
 
+rAudio    : $version
+Revision  : $revision
+Branch    : $branch
+Target    : \Z1Raspberry Pi $rpiname\Z0
+
 BOOT path : \Z1$BOOT\Z0
 ROOT path : \Z1$ROOT\Z0
-
-Target    : \Z1Raspberry Pi $rpiname\Z0
 
 $wifi
 
