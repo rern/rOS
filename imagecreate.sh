@@ -76,7 +76,7 @@ else
 	model=0-1
 fi
 version=$( cat $dirroot/srv/http/data/system/version )
-imagefile=rOS$version_RPi$model.img.xz
+imagefile=rAudio-$version_RPi$model.img.xz
 
 # auto expand root partition
 touch $dirboot/expand
