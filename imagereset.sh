@@ -99,7 +99,8 @@ if [[ $? == 0 ]]; then
 	shutdown -h now
 	dialog "${optbox[@]}" --msgbox "
        Before power off, Make sure shutdown \Z1LED\Z0:
-               - Blink
-               - Reach complete stop
+          - Blip (may take 1-2 min.)
+          - Blink rapidly until stop
 " 9 58
+	exit
 fi
