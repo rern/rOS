@@ -194,7 +194,7 @@ systemctl enable $startup
 /srv/http/bash/datareset.sh $version $revision
 
 # remove files and package cache
-rm /boot/features /etc/motd /root/create-s.sh /var/cache/pacman/pkg/*
+rm /boot/features /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk0 && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
