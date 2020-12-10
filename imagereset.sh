@@ -14,7 +14,7 @@ banner() {
 
 select=$( dialog "${optbox[@]}" \
 	   --output-fd 1 \
-	   --checklist '\n\Z1Select features:\n
+	   --checklist '\n\Z1Select tasks:\n
 \Z4[space] = Select / Deselect\Z0' 9 50 0 \
 			1 "Reset MPD database" on \
 			2 "Reset user data directory" on \
