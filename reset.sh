@@ -4,7 +4,7 @@ optbox=( --colors --no-shadow --no-collapse )
 
 dialog "${optbox[@]}" --infobox "
 
-                      \Z1Reset rOS\Z0
+                     Reset \Z1r\Z0Audio
                          for
                       Image File
 " 9 58
