@@ -107,13 +107,12 @@ shrink() {
 	sectorsperblock=$(( blocksize / sectorsize  ))
 	endsector=$(( startsector + newsize * sectorsperblock ))
 
-	if (( $(( newsize - target )) > 10 )); then
+	if (( $(( newsize - target )) < 10 )); then
+		echo Already reached minimum size.
+	else
 		# shrink filesystem to minimum
 		resize2fs -fp $part $(( newsize * Kblock ))K
 		parted $dev ---pretend-input-tty <<EOF
-	else
-		echo Already reached minimum size.
-	fi
 unit
 s
 resizepart
@@ -122,6 +121,7 @@ $endsector
 Yes
 quit
 EOF
+	fi
 }
 banner 'Shrink #1 ...'
 shrink
