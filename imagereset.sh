@@ -90,9 +90,9 @@ fsck.fat -traw /dev/mmcblk0p1
 rm -f /boot/FSCK*
 
 dialog "${optbox[@]}" --yesno "
-\Z1Finish\Z0
+               \Z1r\Z0Audio reset finished.
 
-               Shutdown Raspberry Pi?
+               \Z1Shutdown\Z0 Raspberry Pi?
 " 9 58
 
 if [[ $? == 0 ]]; then
