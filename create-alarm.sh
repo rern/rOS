@@ -70,7 +70,7 @@ addons=( $( wget -qO - https://github.com/rern/rAudio-addons/raw/main/addons-lis
 			| grep -A2 '"r.":' \
 			| sed -e 2d -e 's/[^0-9]*//g' ) )
 version=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
- Version:
+ rAudio version:
 
 " 0 0 ${addons[0]} )
 revision=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
