@@ -97,5 +97,9 @@ dialog "${optbox[@]}" --yesno "
 
 if [[ $? == 0 ]]; then
 	shutdown -h now
-	exit
+	dialog "${optbox[@]}" --msgbox "
+
+       Make sure shutdown \Z1blinking LED\Z0 occurred
+                 before power off.
+" 9 58
 fi
