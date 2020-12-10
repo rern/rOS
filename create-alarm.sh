@@ -226,7 +226,7 @@ else
 fi
 
 # package mirror server
-wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/main/core/pacman-mirrorlist/mirrorlist \
+wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
 	| dialog "${opt[@]}" --gauge "
 Get package mirror list ...
 " 9 50
