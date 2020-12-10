@@ -47,7 +47,7 @@ opt=( --backtitle "$title" ${optbox[@]} )
 dialog "${optbox[@]}" --infobox "
 
 
-                        \Z1r\Z0Audio $version
+                       \Z1r\Z0Audio $version
 " 9 58
 sleep 3
 
