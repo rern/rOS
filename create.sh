@@ -83,4 +83,4 @@ mkdir -p /mnt/{BOOT,ROOT}
 mount $devboot /mnt/BOOT
 mount $devroot /mnt/ROOT
 
-bash <( wget -qO - https://github.com/rern/rOS/raw/main/create-ros.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/main/create-alarm.sh )
