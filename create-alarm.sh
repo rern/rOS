@@ -70,7 +70,7 @@ addons=( $( wget -qO - https://github.com/rern/rAudio-addons/raw/main/addons-lis
 			| grep -A2 '"r.":' \
 			| sed -e 2d -e 's/[^0-9]*//g' ) )
 version=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
- rAudio version:
+ \Z1r\Z0Audio version:
 
 " 0 0 ${addons[0]} )
 revision=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
@@ -149,7 +149,7 @@ Connect \Z1Wi-Fi\Z0 on boot?
 	dialog "${opt[@]}" --yesno "
 \Z1Confirm data:\Z0
 
-rAudio    : $version
+\Z1r\Z0Audio    : $version
 Revision  : $revision
 Branch    : $branch
 Target    : \Z1Raspberry Pi $rpiname\Z0
