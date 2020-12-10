@@ -96,11 +96,12 @@ dialog "${optbox[@]}" --yesno "
 " 9 58
 
 if [[ $? == 0 ]]; then
-	shutdown -h now
-	dialog "${optbox[@]}" --msgbox "
-       Before power off, Make sure shutdown \Z1LED\Z0:
+	dialog "${optbox[@]}" --infobox "
+
+       Before power off, Make sure green \Z1LED\Z0:
           - Blip (may take 1-2 min.)
           - Blink rapidly until stop
 " 9 58
+	shutdown -h now
 	exit
 fi
