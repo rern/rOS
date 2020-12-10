@@ -4,9 +4,9 @@ optbox=( --colors --no-shadow --no-collapse )
 
 dialog "${optbox[@]}" --infobox "
 
-                     Reset \Z1r\Z0Audio
-                         for
-                      Image File
+                       \Z1r\Z0Audio
+
+                 \Z1Reset\Z0 for Image File
 " 9 58
 sleep 3
 
