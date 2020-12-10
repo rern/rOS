@@ -4,9 +4,9 @@ optbox=( --colors --no-shadow --no-collapse )
 
 dialog "${optbox[@]}" --infobox "
 
-                  \Z1Create Image File\Z0
+                       \Z1r\Z0Audio
 
-                         rOS
+                  \Z1Create\Z0 Image File
 " 9 58
 sleep 3
 
