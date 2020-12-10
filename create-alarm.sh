@@ -525,4 +525,4 @@ sed -i "/$rpiip/ d" ~/.ssh/known_hosts
 
 clear
 
-ssh -t -o StrictHostKeyChecking=no root@$rpiip /root/create-rune.sh
+ssh -t -o StrictHostKeyChecking=no root@$rpiip /root/create-ros.sh
