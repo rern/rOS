@@ -47,7 +47,7 @@ opt=( --backtitle "$title" ${optbox[@]} )
 dialog "${optbox[@]}" --infobox "
 
 
-                        \Z1rOS $version\Z0
+                        \Z1r\Z0Audio $version
 " 9 58
 sleep 3
 
@@ -209,7 +209,7 @@ fi
 
 dialog "${optbox[@]}" --msgbox "
 
-             \Z1rOS $version\Z0 created successfully.
+            \Z1r\Z0Audio $version created successfully.
 
                 Press \Z1Enter\Z0 to reboot
 " 10 58
