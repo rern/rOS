@@ -1,9 +1,9 @@
-RuneAudio+R - DIY RuneOS
+rOS - DIY rAudio
 ---
-Audio player and renderer for Raspberry Pi
+Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer for Raspberry Pi
 
 - For all **Raspberry Pi**s: Zero, 1, 2, 3 and 4
-- Create **RuneAudio+R** from latest releases of [**Arch Linux Arm**](https://archlinuxarm.org/about/downloads)
+- Create **rAudio** from latest releases of [**Arch Linux Arm**](https://archlinuxarm.org/about/downloads)
 - Interactive interface
 - Options:
 	- Run `ROOT` partition on USB drive
@@ -11,12 +11,11 @@ Audio player and renderer for Raspberry Pi
 	- Pre-configure Wi-Fi connection (headless mode)
 	- Exclude features (can be as light as possible in terms of build time and disk space)
 - Take less than 15 minutes for the whole process with a decent download speed.
-- More details: [Forum](https://www.runeaudio.com/forum/runeaudio-r-e5-t7105.html)
 
 **Procedure**
 - [Prepare partitions](#prepare-partitions)
 	- Create `BOOT` and `ROOT` partitions
-- [Create Arch Linux Arm + RuneAudio+R](#create-arch-linux-arm--runeaudior)
+- [Create Arch Linux Arm + rAudio](#create-arch-linux-arm--raudio)
 	- Optional - Pre-configure Wi-Fi (For reliable connection, use wired LAN if possible)
 	- Select features
 	- Download Arch Linux Arm
@@ -32,11 +31,11 @@ Audio player and renderer for Raspberry Pi
 	- Create image file
 - Expert mode (1 command line - micro SD card only)
 ```sh
-bash <( wget -qO - https://github.com/rern/RuneOS/raw/master/create.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/master/create.sh )
 ```
 
-![dialog1](https://github.com/rern/_assets/raw/master/RuneOS/select-hw.jpg)
-![dialog2](https://github.com/rern/_assets/raw/master/RuneOS/select-features.jpg)  
+![dialog1](https://github.com/rern/_assets/raw/master/rOS/select-hw.jpg)
+![dialog2](https://github.com/rern/_assets/raw/master/rOS/select-features.jpg)  
 
 **Need**
 - PC - Linux - any distro
@@ -122,7 +121,7 @@ bash <( wget -qO - https://github.com/rern/RuneOS/raw/master/create.sh )
 
 ---
 	
-### Create Arch Linux Arm + RuneAudio+R
+### Create Arch Linux Arm + rAudio
 - Open **Files** app (**File Manager** on Manjaro)
 - Click `BOOT` and `ROOT` to mount
 - Note each path in location bar or hover mouse over `BOOT` and `ROOT` for confirmation
@@ -137,7 +136,7 @@ pacman-mirrors -c COUNRTY
 - Create script
 ```sh
 # ssh - no stdout | sh
-bash <( wget -qO - https://github.com/rern/RuneOS/raw/master/create-alarm.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/master/create-alarm.sh )
 ```
 - Errors or too slow download: press `Ctrl+C` and run `./create-alarm.sh` again (while in `Create Arch Linux Arm` mode only)
 
@@ -163,17 +162,17 @@ bash <( wget -qO - https://github.com/rern/RuneOS/raw/master/create-alarm.sh )
 	
 **Create image file** (Micro SD card mode only)
 
-- Once started RuneAudio+R successfully
+- Once started rAudio successfully
 - SSH to RPi
 - Reset for image
 ```sh
 ssh root@<RPI IP>
-bash <( wget -qO - https://github.com/rern/RuneOS/raw/master/reset.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/master/reset.sh )
 ```
 - Shutdown
 - Move micro SD card to Lunux
 - Click `BOOT` and `ROOT` to mount
 - Create compressed image file
 ```sh
-bash <( wget -qO - https://github.com/rern/RuneOS/raw/master/imagecreate.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/master/imagecreate.sh )
 ```
