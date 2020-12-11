@@ -15,7 +15,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 **Procedure**
 - [Prepare partitions](#prepare-partitions)
 	- Create `BOOT` and `ROOT` partitions
-- [Create Arch Linux Arm + RuneAudio+R](#create-arch-linux-arm--runeaudior)
+- [Create Arch Linux Arm + rAudio](#create-arch-linux-arm--raudio)
 	- Optional - Pre-configure Wi-Fi (For reliable connection, use wired LAN if possible)
 	- Select features
 	- Download Arch Linux Arm
@@ -31,7 +31,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- Create image file
 - Expert mode (1 command line - micro SD card only)
 ```sh
-bash <( wget -qO - https://github.com/rern/RuneOS/raw/master/create.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/master/create.sh )
 ```
 
 ![dialog1](https://github.com/rern/_assets/raw/master/rOS/select-hw.jpg)
@@ -162,17 +162,17 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/master/create-alarm.sh )
 	
 **Create image file** (Micro SD card mode only)
 
-- Once started RuneAudio+R successfully
+- Once started rAudio successfully
 - SSH to RPi
 - Reset for image
 ```sh
 ssh root@<RPI IP>
-bash <( wget -qO - https://github.com/rern/RuneOS/raw/master/reset.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/master/reset.sh )
 ```
 - Shutdown
 - Move micro SD card to Lunux
 - Click `BOOT` and `ROOT` to mount
 - Create compressed image file
 ```sh
-bash <( wget -qO - https://github.com/rern/RuneOS/raw/master/imagecreate.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/master/imagecreate.sh )
 ```
