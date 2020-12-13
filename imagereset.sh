@@ -79,9 +79,11 @@ if [[ $select == *' 4 '* ]]; then
 	journalctl --vacuum-time=1s
 fi
 if [[ $select == *' 5 '* ]]; then
-	banner 'Clear Wi-Fi connection ...'
-	systemctl disable netctl-auto@wlan0
-	rm /etc/netctl/* /srv/http/data/system/netctl-* 2> /dev/null
+	if [[ -n $( ls -p /etc/netctl | grep -v / ) ]]; then
+		banner 'Clear Wi-Fi connection ...'
+		systemctl disable netctl-auto@wlan0
+		rm /etc/netctl/* /srv/http/data/system/netctl-* 2> /dev/null
+	fi
 fi
 
 wget -q --show-progress https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -O /etc/pacman.d/mirrorlist
