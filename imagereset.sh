@@ -40,34 +40,6 @@ if [[ $select == *' 2 '* ]]; then
 	rm -rf /root/.cache/* /srv/http/data/tmp/*
 	rm -f /srv/http/data/{bookmarks,coverarts,lyrics,mpd,playlists,webradios}/* /srv/http/data/system/gpio
 	wget -qO - https://github.com/rern/rOS/raw/main/radioparadise.tar.xz | bsdtar xvf - -C /
-	echo '{
-  "name": {
-    "11": "DAC",
-    "13": "PreAmp",
-    "15": "Amp",
-    "16": "Subwoofer"
-  },
-  "on": {
-    "on1": 11,
-    "ond1": 2,
-    "on2": 13,
-    "ond2": 2,
-    "on3": 15,
-    "ond3": 2,
-    "on4": 16
-  },
-  "off": {
-    "off1": 16,
-    "offd1": 2,
-    "off2": 15,
-    "offd2": 2,
-    "off3": 13,
-    "offd3": 2,
-    "off4": 11
-  },
-  "timer": 5
-}' > /srv/http/data/system/gpio.json
-	chown http:http /srv/http/data/system/gpio.json
 fi
 if [[ $select == *' 3 '* ]]; then
 	banner 'Clear package cache ...'
@@ -86,6 +58,7 @@ fi
 
 wget -q --show-progress https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -O /etc/pacman.d/mirrorlist
 
+banner 'Check disk ...'
 fsck.fat -traw /dev/mmcblk0p1
 rm -f /boot/FSCK*
 
