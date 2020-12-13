@@ -98,7 +98,7 @@ dialog "${optbox[@]}" --yesno "
 if [[ $? == 0 ]]; then
 	dialog "${optbox[@]}" --infobox "
 
-       Before power off, Make sure \Z2green LED\Z0:
+       Before power off, Make sure \Z2green\Z0 LED:
            - Blip (may take 1-2 min.)
            - Blink rapidly until stop
 " 9 58
