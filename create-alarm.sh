@@ -417,9 +417,6 @@ chmod 755 $ROOT/root/create-ros.sh
 # packages mirror
 [[ -n $ccode ]] && sed -i '/^Server/ s|//.*mirror|//'$ccode'.mirror|' $ROOT/etc/pacman.d/mirrorlist
 
-# temp: python 3.9
-sed -i '/#IgnorePkg/ a\IgnorePkg   = python' /etc/pacman.conf
-
 dialog "${optbox[@]}" --msgbox "
 
                    Arch Linux Arm
