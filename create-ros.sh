@@ -58,7 +58,7 @@ pacman -Sy --noconfirm --needed dialog
 banner 'Upgrade kernel and default packages ...'
 
 # temp raspberrypi-firmware-20201214-1
-sed -i '/^#IgnorePkg/ a\IgnorePkg   = raspberrypi-firmware' /etc/pacman.conf
+sed -i '/^#IgnorePkg/ a\IgnorePkg   = raspberrypi-firmware raspberrypi-bootloader raspberrypi-bootloader-x' /etc/pacman.conf
 
 pacman -Syu --noconfirm --needed
 [[ $? != 0 ]] && pacman -Syu --noconfirm --needed
