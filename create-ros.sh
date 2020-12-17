@@ -91,13 +91,11 @@ banner 'Configure ...'
 chown http:http /etc/fstab
 chown -R http:http /etc/netctl /etc/systemd/network /srv/http
 chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
-
 # alsa
 alsactl store
 # fix 'alsactl restore' errors
 cp /{usr/lib,etc}/udev/rules.d/90-alsa-restore.rules
 sed -i '/^TEST/ s/^/#/' /etc/udev/rules.d/90-alsa-restore.rules
-
 # bluetooth
 if [[ -e /usr/bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
@@ -107,68 +105,52 @@ else
 fi
 # chromium
 if [[ -e /usr/bin/chromium ]]; then
-	# boot splash
-	sed -i 's/\(console=\).*/\1tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt
-	# login prompt
-	systemctl disable getty@tty1
-	# fix permission for rotate file
-	chmod 775 /etc/X11/xorg.conf.d
-	# xorg
-	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit
-	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf
-	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit
+	sed -i 's/\(console=\).*/\1tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt # boot splash
+	systemctl disable getty@tty1                     # login prompt
+	chmod 775 /etc/X11/xorg.conf.d                   # fix permission for rotate file
+	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # startx
+	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
+	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # script
+# temp: chromium 85.0.4183.121 still needs libre2.so.8.0.0
+	ln -s /usr/lib/libre2.so.8{.0.0,}
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /usr/local/bin/ply-image 2> /dev/null
 fi
-
 # cron - for addons updates
 ( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/addons-update.sh &' ) | crontab -
-
-# no hostapd
+# hostapd
 [[ ! -e /usr/bin/hostapd ]] && rm -rf /etc/{hostapd,dnsmasq.conf}
-
 # mpd
 cp /usr/share/mpdscribble/mpdscribble.conf.example /etc/mpdscribble.conf
-
 # motd
 ln -sf /srv/http/bash/motd.sh /etc/profile.d/
-
 # disable again after upgrade
 systemctl disable systemd-networkd-wait-online
-
 # fix: pam ssh login halt
 sed -i '/^-.*pam_systemd/ s/^/#/' /etc/pam.d/system-login
-
 # password
 echo root:ros | chpasswd
 [[ -e /usr/bin/smbd ]] && ( echo ros; echo ros ) | smbpasswd -s -a root
 sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 ' -e 's/.*\(PrintLastLog \).*/\1no/
 ' /etc/ssh/sshd_config
-
 # no samba
 [[ ! -e /usr/bin/samba ]] && rm -rf /etc/samba /etc/systemd/system/wsdd.service /usr/local/bin/wsdd.py
-
 # no shairport-sync
 [[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
-
 # no snapcast
 [[ ! -e /usr/bin/snapclient ]] && rm /etc/default/snapclient
-
 # spotifyd
 [[ ! -e /usr/lib/systemd/system/spotifyd.service ]] && ln -s /usr/lib/systemd/{user,system}/spotifyd.service
-
 # udevil
 cat << EOF > /etc/conf.d/devmon
 ARGS='--exec-on-drive "/srv/http/bash/sources-update.sh \"%d\""'
 EOF
-
 # user - set expire to none
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
 	chage -E -1 $user
 done
-
 # upmpdcli - fix: missing symlink and init RSA key
 if [[ -e /usr/bin/upmpdcli ]]; then
 	# fix - missing symlink
@@ -178,10 +160,8 @@ if [[ -e /usr/bin/upmpdcli ]]; then
 else
 	rm -rf /etc/systemd/system/upmpdcli.service.d /etc/upmpdcli.conf
 fi
-
 # wireless-regdom
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
-
 # startup services
 systemctl daemon-reload
 startup='avahi-daemon cronie devmon@http nginx php-fpm startup wlan0-powersaveoff'
@@ -192,13 +172,10 @@ systemctl enable $startup
 #---------------------------------------------------------------------------------
 # data - settings directories
 /srv/http/bash/datareset.sh $version $revision
-
 # remove files and package cache
 rm /boot/features /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
-
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk0 && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
-
 # expand partition
 (( $( sfdisk -F /dev/mmcblk0 | head -n1 | awk '{print $6}' ) )) && touch /boot/expand
 
