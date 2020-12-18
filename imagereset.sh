@@ -70,7 +70,6 @@ dialog "${optbox[@]}" --yesno "
 
 if [[ $? == 0 ]]; then
 	dialog "${optbox[@]}" --infobox "
-
        Before power off, observe \Z2green\Z0 LED:
            - Wait for all services to stop
            - May blip or stay off up to 1 minute
