@@ -46,8 +46,7 @@ fi
 # setup fancy prompt
 #motdexport PS1='\[\033[01;32m\]\u@\h${fs_mode:+($fs_mode)}\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
-name=$( cat /srv/http/data/system/hostname )
-PS1='\[\e[38;5;242m\]'$name'\[\e[0m\]\
+PS1='\[\e[38;5;242m\]'$HOSTNAME'\[\e[0m\]\
 :\
 \[\e[36m\]\w\[\e[0m\]\
  \[\e[30m\e[46m\] \$ \[\e[0m\] '
