@@ -62,19 +62,13 @@ banner 'Check disk ...'
 fsck.fat -traw /dev/mmcblk0p1
 rm -f /boot/FSCK*
 
-dialog "${optbox[@]}" --yesno "
+dialog "${optbox[@]}" --infobox "
                \Z1r\Z0Audio reset finished.
-
-               \Z1Shutdown\Z0 Raspberry Pi?
-" 9 58
-
-if [[ $? == 0 ]]; then
-	dialog "${optbox[@]}" --infobox "
+			   
        Before power off, observe \Z2green\Z0 LED:
-         - Wait for all services to stop
+         - Wait for all services to stop - Blip
          - May blip or stay off up to 1 minute
          - Shutdown - Blink rapidly until off
-" 9 58
-	shutdown -h now
-	exit
-fi
+" 10 58
+shutdown -h now
+exit
