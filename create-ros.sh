@@ -2,7 +2,7 @@
 
 features=$( cat /boot/features )
 versions=( $( cat /boot/versions ) )
-rm /boot/{features,version}
+rm /boot/{features,versions}
 
 version=${versions[0]}
 revision=${versions[1]}
@@ -186,11 +186,20 @@ if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
 	sleep 30
 fi
 
-dialog "${optbox[@]}" --msgbox "
+if [[ -z $reboot ]]; then
+	dialog "${optbox[@]}" --msgbox "
 
             \Z1r\Z0Audio $version created successfully.
 
                 Press \Z1Enter\Z0 to reboot
-" 10 58
+" 9 58
+else
+	dialog "${optbox[@]}" --infobox "
+
+            \Z1r\Z0Audio $version created successfully.
+
+                       Reboot ...
+" 9 58
+fi
 
 shutdown -r now
