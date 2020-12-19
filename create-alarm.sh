@@ -479,6 +479,7 @@ $nmap
 
 	dialog "${opt[@]}" --ok-label Yes --extra-button --extra-label Rescan --cancel-label No --yesno "\n
 \Z1Found IP address of Raspberry Pi?\Z0
+(Also try ping if router assigned a fixed IP.)
 " 7 38
 	ans=$?
 	if [[ $ans == 3 ]]; then
