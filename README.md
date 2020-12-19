@@ -136,7 +136,7 @@ pacman-mirrors -c COUNRTY
 - Create script
 ```sh
 # ssh - no stdout | sh
-bash <( wget -qO - https://github.com/rern/rOS/raw/master/create-alarm.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/main/create-alarm.sh )
 ```
 - Errors or too slow download: press `Ctrl+C` and run `./create-alarm.sh` again (while in `Create Arch Linux Arm` mode only)
 
@@ -167,12 +167,12 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/master/create-alarm.sh )
 - Reset for image
 ```sh
 ssh root@<RPI IP>
-bash <( wget -qO - https://github.com/rern/rOS/raw/master/reset.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/main/reset.sh )
 ```
 - Shutdown
 - Move micro SD card to Lunux
 - Click `BOOT` and `ROOT` to mount
 - Create compressed image file
 ```sh
-bash <( wget -qO - https://github.com/rern/rOS/raw/master/imagecreate.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/main/imagecreate.sh )
 ```
