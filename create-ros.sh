@@ -1,6 +1,9 @@
 #!/bin/bash
 
+features=$( cat /boot/features )
 versions=( $( cat /boot/versions ) )
+rm /boot/{features,version}
+
 version=${versions[0]}
 revision=${versions[1]}
 uibranch=${versions[2]}
@@ -11,7 +14,6 @@ trap 'rm -f /var/lib/pacman/db.lck; exit' INT
 hardwarecode=$( grep Revision /proc/cpuinfo )
 hwcode=${hardwarecode: -3:2}
 [[ ${hardwarecode: -4:1} == 0 ]] && rpi01=1
-features=$( cat /boot/features )
 
 col=$( tput cols )
 banner() {
@@ -173,7 +175,7 @@ systemctl enable $startup
 # data - settings directories
 /srv/http/bash/datareset.sh $version $revision
 # remove files and package cache
-rm /boot/{features,version} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
+rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk0 && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
