@@ -31,7 +31,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- Create image file
 - Expert mode (1 command line - micro SD card only)
 ```sh
-bash <( wget -qO - https://github.com/rern/rOS/raw/master/create.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
 ```
 
 ![dialog1](https://github.com/rern/_assets/raw/master/rOS/select-hw.jpg)
