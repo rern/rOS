@@ -64,11 +64,13 @@ rm -f /boot/FSCK*
 
 dialog "${optbox[@]}" --infobox "
                \Z1r\Z0Audio reset finished.
-			   
+
+			        Shutdown ...
+					
        Before power off, observe \Z2green\Z0 LED:
          - Wait for all services to stop - Blip
          - May blip or stay off up to 1 minute
          - Shutdown - Blink rapidly until off
-" 10 58
+" 12 58
 shutdown -h now
 exit
