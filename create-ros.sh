@@ -142,8 +142,8 @@ sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 [[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
 # no snapcast
 [[ ! -e /usr/bin/snapclient ]] && rm /etc/default/snapclient
-# spotifyd
-[[ ! -e /usr/lib/systemd/system/spotifyd.service ]] && ln -s /usr/lib/systemd/{user,system}/spotifyd.service
+# spotifyd - rpi0
+ln -sf /usr/lib/systemd/{system,user}/spotifyd.service
 # udevil
 cat << EOF > /etc/conf.d/devmon
 ARGS='--exec-on-drive "/srv/http/bash/sources-update.sh \"%d\""'
