@@ -143,5 +143,5 @@ Image file created:
 \Z1$imagefile\Z0
 $mb MiB
 
-BOOT and ROOT unmounted.
+\Z1BOOT\Z0 and \Z1ROOT\Z0 unmounted.
 " 12 58
