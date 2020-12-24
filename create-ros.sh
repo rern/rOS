@@ -190,7 +190,7 @@ if [[ -e /boot/reboot ]]; then
 
             \Z1r\Z0Audio $version created successfully.
 
-                       Reboot ...
+                       \Z1Reboot\Z0 ...
 " 9 58
 else
 	dialog "${optbox[@]}" --msgbox "
