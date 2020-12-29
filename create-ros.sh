@@ -78,6 +78,10 @@ mkdir -p /tmp/config
 bsdtar --strip 1 -C /tmp/config -xvf config.zip
 bsdtar --strip 1 -C /tmp/config -xvf ui.zip
 rm *.zip /tmp/config/*.* /tmp/config/.* 2> /dev/null
+
+# temp: chromium 85.0.4183.121 still needs older libicu*, libxml2
+[[ -n $rpi01 ]] && rm -f /tmp/config/usr/lib/*
+
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
 cp -r /tmp/config/* /
