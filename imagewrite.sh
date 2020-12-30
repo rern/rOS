@@ -68,7 +68,9 @@ echo File   : $file
 
 xz -dc $file | dd of=$dev bs=4M status=progress conv=fsync
 
-dialog "${optbox[@]}" --msgbox "
+dialog "${optbox[@]}" --infobox "
 
- \Z1SD card\Z0 was written and unmounted.
+                       \Z1r\Z0Audio
+
+                  Written to \Z1SD card\Z0.
 " 9 58
