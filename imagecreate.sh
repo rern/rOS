@@ -137,7 +137,7 @@ dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose 
 byte=$( stat --printf="%s" $imagefile )
 mb=$( awk "BEGIN { printf \"%.1f\n\", $byte / 1024 / 1024 }" )
 
-dialog "${optbox[@]}" --msgbox "
+dialog "${optbox[@]}" --infobox "
 Image file created:
 
 \Z1$imagefile\Z0
