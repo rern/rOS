@@ -69,8 +69,8 @@ echo File   : $file
 xz -dc $file | dd of=$dev bs=4M status=progress conv=fsync
 
 dialog "${optbox[@]}" --infobox "
+Image file written:
+\Z1$file\Z0
 
-                       \Z1r\Z0Audio
-
-                  Written to \Z1SD card\Z0.
+\Z1Micro SD card\Z0 unmounted.
 " 9 58
