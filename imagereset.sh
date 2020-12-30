@@ -63,9 +63,9 @@ fsck.fat -traw /dev/mmcblk0p1
 rm -f /boot/FSCK*
 
 dialog "${optbox[@]}" --infobox "
-               \Z1r\Z0Audio reset finished.
+                \Z1r\Z0Audio reset finished.
 
-                    \Z1Shutdown\Z0 ...
+                     \Z1Shutdown\Z0 ...
 					
        Before power off, observe \Z2green\Z0 LED:
          - Wait for all services to stop - Blip
