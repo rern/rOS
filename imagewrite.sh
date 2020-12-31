@@ -24,6 +24,7 @@ dialog "${optbox[@]}" --msgbox "
 \Z1Insert micro SD card\Z0
 If already inserted:
 For proper detection, remove and reinsert again.
+
 " 0 0
 
 sd=$( dmesg -T | tail | grep ' sd .*GB' )
@@ -43,6 +44,7 @@ dialog "${optbox[@]}" --yesno "
 Confirm micro SD card: \Z1$dev\Z0
 Detail:
 $detail
+
 " 0 0
 
 [[ $? != 0 ]] && exit
