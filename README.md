@@ -176,3 +176,9 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/reset.sh )
 ```sh
 bash <( wget -qO - https://github.com/rern/rOS/raw/main/imagecreate.sh )
 ```
+
+**Write image file**
+- Run in image file directory
+```sh
+bash <( wget -qO - https://github.com/rern/rOS/raw/main/imagewrite.sh )
+```
