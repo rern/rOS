@@ -64,6 +64,8 @@ esac
 
 [[ ! -e $file ]] && echo Image file not found. && exit
 
+clear -x
+
 banner 'Write ...'
 echo SD card: $dev
 echo File   : $file
