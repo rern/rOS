@@ -1,5 +1,0 @@
-[Unit]
-Description=MPD webradio watchdog
-
-[Service]
-ExecStart=/srv/http/bash/radiowatchdog.sh
