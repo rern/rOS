@@ -61,7 +61,7 @@ banner 'Upgrade kernel and default packages ...'
 # temp: rpi4 - alsa xrun - raspberrypi-bootloader, raspberrypi-bootloader-x
 if [[ ${hawrevision: -3:2} == 11 ]]; then
 	curl -O https://github.com/rern/rern.github.io/raw/master/archives/raspberrypi-bootloader-20201129-1-any.pkg.tar.xz
-	wget -O https://github.com/rern/rern.github.io/raw/master/archives/raspberrypi-bootloader-x-20201129-1-any.pkg.tar.xz
+	curl -O https://github.com/rern/rern.github.io/raw/master/archives/raspberrypi-bootloader-x-20201129-1-any.pkg.tar.xz
 	pacman -U --noconfirm raspberrypi-bootloader*
 	rm raspberrypi-bootloader*
 	sed -i '/^#IgnorePkg/ a\IgnorePkg   = raspberrypi-bootloader raspberrypi-bootloader-x' /etc/pacman.conf
