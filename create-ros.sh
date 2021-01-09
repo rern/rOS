@@ -59,6 +59,9 @@ pacman -Sy --noconfirm --needed dialog
 #----------------------------------------------------------------------------
 banner 'Upgrade kernel and default packages ...'
 
+# temp: alsa xrun - raspberrypi-bootloader, raspberrypi-bootloader-x
+sed -i '/^#IgnorePkg/ a\IgnorePkg   = raspberrypi-bootloader raspberrypi-bootloader-x' /etc/pacman.conf
+
 pacman -Syu --noconfirm --needed
 [[ $? != 0 ]] && pacman -Syu --noconfirm --needed
 
@@ -79,7 +82,7 @@ bsdtar --strip 1 -C /tmp/config -xvf config.zip
 bsdtar --strip 1 -C /tmp/config -xvf ui.zip
 rm *.zip /tmp/config/*.* /tmp/config/.* 2> /dev/null
 
-# temp: chromium 85.0.4183.121 still needs older libicu*, libxml2
+# temp: chromium 85.0.4183.121 still needs older libicu*, libre2, libxml2
 [[ -n $rpi01 ]] && rm -f /tmp/config/usr/lib/*
 
 chmod -R go-wx /tmp/config
