@@ -1,0 +1,1 @@
+ARGS='--exec-on-drive "/srv/http/bash/sources-update.sh \"%d\"" --exec-on-remove "/srv/http/bash/sources-update.sh \"%d\"'

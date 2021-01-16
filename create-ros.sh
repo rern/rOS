@@ -154,10 +154,6 @@ sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 [[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
 # no snapcast
 [[ ! -e /usr/bin/snapclient ]] && rm /etc/default/snapclient
-# udevil
-cat << EOF > /etc/conf.d/devmon
-ARGS='--exec-on-drive "/srv/http/bash/sources-update.sh \"%d\""'
-EOF
 # user - set expire to none
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
