@@ -170,7 +170,7 @@ ssh root@<RPI IP>
 bash <( wget -qO - https://github.com/rern/rOS/raw/main/reset.sh )
 ```
 - Shutdown
-- Move micro SD card to Lunux
+- Move micro SD card to Linux
 - Click `BOOT` and `ROOT` to mount
 - Create compressed image file
 ```sh
