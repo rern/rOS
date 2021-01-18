@@ -87,6 +87,9 @@ bsdtar --strip 1 -C /tmp/config -xvf config.zip
 bsdtar --strip 1 -C /tmp/config -xvf ui.zip
 rm *.zip /tmp/config/*.* /tmp/config/.* 2> /dev/null
 
+# temp: chromium 85.0.4183.121 still needs older libicu*, libre2, libxml2
+[[ -n $rpi01 ]] && rm -f /tmp/config/usr/lib/*
+
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
 cp -r /tmp/config/* /
@@ -122,6 +125,8 @@ if [[ -e /usr/bin/chromium ]]; then
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # startx
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # script
+# temp: chromium 85.0.4183.121 still needs libre2.so.8.0.0
+	ln -s /usr/lib/libre2.so.8{.0.0,}
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /usr/local/bin/ply-image 2> /dev/null
 fi
