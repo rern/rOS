@@ -1,1 +1,1 @@
-ARGS='--exec-on-drive "/srv/http/bash/sources.sh update" --exec-on-remove "/srv/http/bash/sources.sh update"'
+ARGS='--exec-on-drive "/srv/http/bash/sources.sh usbconnect" --exec-on-remove "/srv/http/bash/sources.sh usbremove"'
