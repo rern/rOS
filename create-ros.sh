@@ -165,7 +165,7 @@ fi
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
 # startup services
 systemctl daemon-reload
-startup='avahi-daemon cronie devmon@http nginx php-fpm startup wlan0-powersaveoff'
+startup='avahi-daemon cronie devmon@http nginx php-fpm startup'
 [[ -e /usr/bin/chromium ]] && startup+=' bootsplash localbrowser'
 
 systemctl enable $startup
