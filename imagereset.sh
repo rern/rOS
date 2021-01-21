@@ -68,9 +68,9 @@ dialog "${optbox[@]}" --infobox "
                      \Z1Shutdown\Z0 ...
 					
        Before power off, observe \Z2green\Z0 LED:
-         - Wait for all services to stop - Blip
-         - May blip or stay off up to 1 minute
-         - Shutdown - Blink rapidly until off
+         - Stop all services - Blip
+         - On Wi-Fi - May blip or stay on/off ~1 minute
+         - Shutdown - Blink rapidly to completely off
 " 12 58
 shutdown -h now
 exit
