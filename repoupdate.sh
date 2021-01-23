@@ -5,8 +5,13 @@ rm $0
 updateRepo() {
 	# recreate database
 	cd /mnt/Git/rern.github.io/$1
-	rm RR*
-	repo-add -R RR.db.tar.xz *.xz
+	rm -f +R*
+	repo-add -R +R.db.tar.xz *.xz
+	rm -f RR*
+	cp {+R,RR}.db
+	cp {+R,RR}.db.tar.xz
+	cp {+R,RR}.files
+	cp {+R,RR}.files.tar.xz
 	
 	# index.html
 	html='<!DOCTYPE html>
