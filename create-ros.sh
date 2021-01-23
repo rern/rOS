@@ -33,9 +33,9 @@ pacman-key --populate archlinuxarm
 systemctl start systemd-random-seed
 
 # add private repo
-if ! grep -q '^\[RR\]' /etc/pacman.conf; then
+if ! grep -q '^\[+R\]' /etc/pacman.conf; then
 	sed -i '/\[core\]/ i\
-[RR]\
+[+R]\
 SigLevel = Optional TrustAll\
 Server = https://rern.github.io/$arch\
 ' /etc/pacman.conf
