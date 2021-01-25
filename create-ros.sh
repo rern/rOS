@@ -150,7 +150,7 @@ sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 # no snapcast
 [[ ! -e /usr/bin/snapclient ]] && rm /etc/default/snapclient
 # spotifyd
-ln -sf /usr/lib/systemd/{user,system}/spotifyd.service
+#ln -sf /usr/lib/systemd/{user,system}/spotifyd.service
 # user - set expire to none
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
