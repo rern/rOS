@@ -149,6 +149,8 @@ sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 [[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
 # no snapcast
 [[ ! -e /usr/bin/snapclient ]] && rm /etc/default/snapclient
+# spotifyd
+ln -sf /usr/lib/systemd/{user,system}/spotifyd.service
 # user - set expire to none
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do

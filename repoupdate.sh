@@ -6,7 +6,7 @@ updateRepo() {
 	# recreate database
 	cd /mnt/Git/rern.github.io/$1
 	rm -f +R* RR*
-	repo-add -R +R.db.tar.xz *.xz
+	repo-add -R +R.db.tar.xz *.pkg.tar.xz
 	cp {+R,RR}.db
 	cp {+R,RR}.db.tar.xz
 	cp {+R,RR}.files
