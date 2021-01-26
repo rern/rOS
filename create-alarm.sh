@@ -310,14 +310,9 @@ fi
 
 # expand
 ( pv -n $file \
-	| bsdtar -C $BOOT --strip-components=2 --no-same-permissions --no-same-owner -xf - boot ) 2>&1 \
+	| bsdtar -C $ROOT -xpf - ) 2>&1 \
 	| dialog "${opt[@]}" --gauge "
-  Decompress partition: \Z1BOOT\Z0 ...
-" 9 50
-( pv -n $file \
-	| bsdtar -C $ROOT --exclude='boot' -xpf - ) 2>&1 \
-	| dialog "${opt[@]}" --gauge "
-  Decompress partition: \Z1ROOT\Z0 ...
+  Decompress \Z1$file\Z0 ...
 " 9 50
 
 sync &
@@ -338,6 +333,8 @@ done ) \
 | dialog "${opt[@]}" --gauge "
   Write to SD card ...
 " 9 50
+
+mv $ROOT/boot/* $BOOT
 
 #----------------------------------------------------------------------------
 # fstab and cmdline.txt
