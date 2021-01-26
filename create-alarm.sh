@@ -104,12 +104,14 @@ ROOT: \Z1$ROOT\Z0
 1 'Raspberry Pi 1' \
 2 'Raspberry Pi 2' \
 3 'Raspberry Pi 3' \
-4 'Raspberry Pi 4' )
+4 'Raspberry Pi 4' \
+5 'ARMv8 RPi 3/4' )
 	
 	case $rpi in
 		0 | 1 ) file=ArchLinuxARM-rpi-latest.tar.gz ;;
 		2 | 3 ) file=ArchLinuxARM-rpi-2-latest.tar.gz ;;
 		4 )     file=ArchLinuxARM-rpi-4-latest.tar.gz ;;
+		5 )     file=ArchLinuxARM-rpi-aarch64-latest.tar.gz ;;
 	esac
 	
 	[[ $rpi != 0 ]] && rpiname=$rpi || rpiname=Zero
