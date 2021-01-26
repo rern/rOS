@@ -69,7 +69,7 @@ clear -x
 # setup partitions
 umount -l ${dev}1 ${dev}2
 wipefs -a $dev
-wget -qO - https://github.com/rern/rOS/raw/main/alarm.sfdisk | sfdisk $dev
+wget -qO - https://github.com/rern/rOS/raw/main/aarch64.sfdisk | sfdisk $dev
 
 devboot=${dev}1
 devroot=${dev}2
