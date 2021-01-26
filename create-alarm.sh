@@ -370,7 +370,7 @@ dtparam=krnbt=on"
 [[ $rpi == 4 ]] && config=$( sed '/force_turbo/ d' <<<"$config" )
 [[ $rpi != 0 ]] && config=$( sed '/over_voltage\|hdmi_drive/ d' <<<"$config" )
 
-echo "$config" > $BOOT/config.txt
+[[ $rpi != 5 ]] && echo "$config" > $BOOT/config.txt
 
 # wifi
 if [[ $ssid ]]; then
