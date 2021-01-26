@@ -106,15 +106,20 @@ ROOT: \Z1$ROOT\Z0
 3 'Raspberry Pi 3' \
 4 'Raspberry Pi 4' \
 5 'ARMv8 RPi 3/4' )
-	
+	file=ArchLinuxARM-rpi-
 	case $rpi in
-		0 | 1 ) file=ArchLinuxARM-rpi-latest.tar.gz ;;
-		2 | 3 ) file=ArchLinuxARM-rpi-2-latest.tar.gz ;;
-		4 )     file=ArchLinuxARM-rpi-4-latest.tar.gz ;;
-		5 )     file=ArchLinuxARM-rpi-aarch64-latest.tar.gz ;;
+		2 | 3 ) file=2-;;
+		4 )     file=4-;;
+		5 )     file=aarch64-;;
 	esac
-	
-	[[ $rpi != 0 ]] && rpiname=$rpi || rpiname=Zero
+	file+=latest.tar.gz
+	if [[ $rpi == 0 ]]; then
+		rpiname=Zero
+	elif [[ $rpi == 5 ]]; then
+		rpiname='3/4 ARMv8'
+	else
+		rpiname=$rpi
+	fi
 	
 	dialog "${opt[@]}" --yesno "
 Connect \Z1Wi-Fi\Z0 on boot?
