@@ -319,7 +319,8 @@ fi
 ( pv -n $file \
 	| bsdtar -C $ROOT -xpf - ) 2>&1 \
 	| dialog "${opt[@]}" --gauge "
-  Decompress \Z1$file\Z0 ...
+  Decompress
+  \Z1$file\Z0 ...
 " 9 50
 
 sync &
