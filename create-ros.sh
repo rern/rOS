@@ -112,7 +112,7 @@ if [[ -e /usr/bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
 else
 	rm -rf /etc/systemd/system/{bluealsa,bluetooth}.service.d
-	rm f /etc/systemd/system/{bluealsa-aplay,bluezdbus}.service
+	rm -f /etc/systemd/system/{bluealsa-aplay,bluezdbus}.service
 fi
 # chromium
 if [[ -e /usr/bin/chromium ]]; then

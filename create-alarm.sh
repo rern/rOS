@@ -345,17 +345,17 @@ done ) \
 mv $ROOT/boot/* $BOOT
 
 #----------------------------------------------------------------------------
-# fstab and cmdline.txt
+# fstab
 PATH=$PATH:/sbin  # Debian not include /sbin in PATH
 partuuidBOOT=$( blkid | grep $( df $BOOT | tail -1 | awk '{print $1}' ) | awk '{print $NF}' | tr -d '"' )
 partuuidROOT=$( blkid | grep $( df $ROOT | tail -1 | awk '{print $1}' ) | awk '{print $NF}' | tr -d '"' )
 echo "$partuuidBOOT  /boot  vfat  defaults  0  0
 $partuuidROOT  /      ext4  defaults  0  0" > $ROOT/etc/fstab
-[[ $rpi > 1 ]] && isolcpus=' isolcpus=3'
-cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 elevator=noop ipv6.disable=1 fsck.repair=yes$isolcpus console=tty1"
-echo $cmdline > $BOOT/cmdline.txt
-
 if [[ $rpi != 5 ]]; then
+	# cmdline.txt
+	[[ $rpi > 1 ]] && isolcpus=' isolcpus=3'
+	cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 elevator=noop ipv6.disable=1 fsck.repair=yes$isolcpus console=tty1"
+	echo $cmdline > $BOOT/cmdline.txt
 	# config.txt
 	config="\
 	over_voltage=2
@@ -370,8 +370,17 @@ if [[ $rpi != 5 ]]; then
 	dtparam=krnbt=on"
 	[[ $rpi == 4 ]] && config=$( sed '/force_turbo/ d' <<<"$config" )
 	[[ $rpi != 0 ]] && config=$( sed '/over_voltage\|hdmi_drive/ d' <<<"$config" )
-
 	echo "$config" > $BOOT/config.txt
+	# temp: fix haveged coredump error
+	file=$ROOT/usr/lib/systemd/system/haveged.service
+	if ! grep -q SystemCallErrorNumber=EPERM $file; then
+		sed -i -e '/^SystemCallFilter/ d
+	' -e '/SystemCallArchitectures/ a\
+	SystemCallFilter=@system-service\
+	SystemCallFilter=~@mount\
+	SystemCallErrorNumber=EPERM
+	' $file
+	fi
 fi
 
 # wifi
@@ -413,17 +422,6 @@ sed -i -e 's/#\(PermitRootLogin \).*/\1yes/
 # set root password
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
-
-# fix - haveged coredump error
-file=$ROOT/usr/lib/systemd/system/haveged.service
-if ! grep -q SystemCallErrorNumber=EPERM $file; then
-	sed -i -e '/^SystemCallFilter/ d
-' -e '/SystemCallArchitectures/ a\
-SystemCallFilter=@system-service\
-SystemCallFilter=~@mount\
-SystemCallErrorNumber=EPERM
-' $file
-fi
 
 # get create-ros.sh
 wget -qN https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
