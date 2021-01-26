@@ -116,7 +116,7 @@ ROOT: \Z1$ROOT\Z0
 	if [[ $rpi == 0 ]]; then
 		rpiname=Zero
 	elif [[ $rpi == 5 ]]; then
-		rpiname='3/4 ARMv8'
+		rpiname=ARMv8
 	else
 		rpiname=$rpi
 	fi
