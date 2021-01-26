@@ -108,9 +108,9 @@ ROOT: \Z1$ROOT\Z0
 5 'ARMv8 RPi 3/4' )
 	file=ArchLinuxARM-rpi-
 	case $rpi in
-		2 | 3 ) file=2-;;
-		4 )     file=4-;;
-		5 )     file=aarch64-;;
+		2 | 3 ) file+=2-;;
+		4 )     file+=4-;;
+		5 )     file+=aarch64-;;
 	esac
 	file+=latest.tar.gz
 	if [[ $rpi == 0 ]]; then
@@ -319,7 +319,8 @@ fi
 ( pv -n $file \
 	| bsdtar -C $ROOT -xpf - ) 2>&1 \
 	| dialog "${opt[@]}" --gauge "
-  Decompress \Z1$file\Z0 ...
+  Decompress
+  \Z1$file\Z0 ...
 " 9 50
 
 sync &
