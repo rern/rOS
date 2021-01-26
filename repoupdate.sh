@@ -17,7 +17,7 @@ updateRepo() {
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>R+R Packages</title>
+	<title>+R Packages</title>
 	<style>
 		table { font-family: monospace; white-space: pre; border: none }
 		td:last-child { padding-left: 10px; text-align: right }
@@ -42,13 +42,15 @@ updateRepo() {
 	echo -e "$html" > ../$1.html
 }
 
-arch=$( dialog --colors --output-fd 1 --checklist '\n\Z1Arch:\Z0' 8 30 0 \
+arch=$( dialog --colors --output-fd 1 --checklist '\n\Z1Arch:\Z0' 9 30 0 \
 	1 armv6h on \
-	2 armv7h on )
+	2 armv7h on \
+	3 aarch64 on )
 arch=" $arch "
-[[ $arch == *' 1 '* ]] && armv6h='armv6h '
-[[ $arch == *' 2 '* ]] && armv7h='armv7h '
-if [[ -z $armv6h && -z $armv7h ]]; then
+[[ $arch == *' 1 '* ]] && armv6h=1
+[[ $arch == *' 2 '* ]] && armv7h=1
+[[ $arch == *' 3 '* ]] && aarch64=1
+if [[ -z $armv6h && -z $armv7h && -z $aarch64 ]]; then
 	dialog --colors --msgbox '\nNo \Z1Arch\Z0 selected.' 8 30
 	exit
 fi
@@ -66,11 +68,12 @@ fi
 
 currentdir=$( pwd )
 
-[[ $armv6h ]] && updateRepo armv6h
-[[ $armv7h ]] && updateRepo armv7h
+[[ -n $armv6h ]] && updateRepo armv6h
+[[ -n $armv7h ]] && updateRepo armv7h
+[[ -n $aarch64 ]] && updateRepo aarch64
 
 cd "$currentdir"
 umount -l /mnt/Git
 rmdir /mnt/Git
 
-dialog --colors --msgbox "\n\Z1$armv6h$armv7h\Z0repo\nupdated succesfully." 8 30
+dialog --colors --msgbox "\nRepositories updated succesfully." 8 30
