@@ -355,22 +355,24 @@ $partuuidROOT  /      ext4  defaults  0  0" > $ROOT/etc/fstab
 cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 elevator=noop ipv6.disable=1 fsck.repair=yes$isolcpus console=tty1"
 echo $cmdline > $BOOT/cmdline.txt
 
-# config.txt
-config="\
-over_voltage=2
-hdmi_drive=2
-force_turbo=1
-gpu_mem=32
-initramfs initramfs-linux.img followkernel
-max_usb_current=1
-disable_splash=1
-disable_overscan=1
-dtparam=audio=on
-dtparam=krnbt=on"
-[[ $rpi == 4 ]] && config=$( sed '/force_turbo/ d' <<<"$config" )
-[[ $rpi != 0 ]] && config=$( sed '/over_voltage\|hdmi_drive/ d' <<<"$config" )
+if [[ $rpi != 5 ]]; then
+	# config.txt
+	config="\
+	over_voltage=2
+	hdmi_drive=2
+	force_turbo=1
+	gpu_mem=32
+	initramfs initramfs-linux.img followkernel
+	max_usb_current=1
+	disable_splash=1
+	disable_overscan=1
+	dtparam=audio=on
+	dtparam=krnbt=on"
+	[[ $rpi == 4 ]] && config=$( sed '/force_turbo/ d' <<<"$config" )
+	[[ $rpi != 0 ]] && config=$( sed '/over_voltage\|hdmi_drive/ d' <<<"$config" )
 
-[[ $rpi != 5 ]] && echo "$config" > $BOOT/config.txt
+	echo "$config" > $BOOT/config.txt
+fi
 
 # wifi
 if [[ $ssid ]]; then
