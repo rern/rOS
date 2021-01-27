@@ -72,7 +72,7 @@ pacman -Syu --noconfirm --needed
 
 packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
 packages+='nfs-utils nginx-mainline nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget '
-if uname -a | grep -q aarch64; then
+if [[ -e /boot/boot.txt ]]; then # aarch64
 	packages+='raspberrypi-firmware uboot-tools'
 	aarch64=1
 fi
@@ -186,8 +186,7 @@ rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # expand partition
 (( $( sfdisk -F /dev/mmcblk0 | head -n1 | awk '{print $6}' ) )) && touch /boot/expand
 # aarch64
-if [[ -n $aarch64 ]]; then
-	rm /boot/cmdline.txt
+if [[ -e /boot/boot.txt ]]; then
 	sed -i '/^setenv/ s/"$/ plymouth.enable=0 quiet loglevel=0 logo.nologo vt.global_cursor_default=0 isolcpus=3"/' /boot/boot.txt
 	mkimage -A arm -O linux -T script -C none -n "U-Boot boot script" -d /boot/boot.txt /boot/boot.scr
 fi
