@@ -72,10 +72,7 @@ pacman -Syu --noconfirm --needed
 
 packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
 packages+='nfs-utils nginx-mainline nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget '
-if [[ -e /boot/boot.txt ]]; then # aarch64
-	packages+='raspberrypi-firmware uboot-tools'
-	aarch64=1
-fi
+[[ -e /boot/boot.txt ]] && aarch64=1 && packages+='linux-raspberrypi4 raspberrypi-firmware uboot-tools'
 
 banner 'Install packages ...'
 
@@ -184,11 +181,20 @@ rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk0 && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
-(( $( sfdisk -F /dev/mmcblk0 | head -n1 | awk '{print $6}' ) )) && touch /boot/expand
+(( $( sfdisk -F /dev/mmcblk0 | head -1 | awk '{print $6}' ) )) && touch /boot/expand
 # aarch64
-if [[ -e /boot/boot.txt ]]; then
-	sed -i '/^setenv/ s/"$/ plymouth.enable=0 quiet loglevel=0 logo.nologo vt.global_cursor_default=0 isolcpus=3"/' /boot/boot.txt
-	mkimage -A arm -O linux -T script -C none -n "U-Boot boot script" -d /boot/boot.txt /boot/boot.scr
+if [[ -n $aarch64 ]]; then
+	sed -i 's/mmcblk1/mmcblk0/' /etc/fstab
+	config="\
+over_voltage=2
+hdmi_drive=2
+gpu_mem=32
+initramfs initramfs-linux.img followkernel
+max_usb_current=1
+disable_splash=1
+disable_overscan=1
+dtparam=audio=on
+dtparam=krnbt=on" > $BOOT/config.txt
 fi
 
 if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
