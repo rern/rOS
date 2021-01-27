@@ -7,7 +7,7 @@ Before=sysinit.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/srv/http/bash/ply-image /srv/http/assets/img/splash.png
+ExecStart=/usr/bin/ply-image /srv/http/assets/img/splash.png
 
 [Install]
 WantedBy=getty.target
