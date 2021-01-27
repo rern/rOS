@@ -71,7 +71,11 @@ pacman -Syu --noconfirm --needed
 [[ $? != 0 ]] && pacman -Syu --noconfirm --needed
 
 packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
-packages+='nfs-utils nginx-mainline nss-mdns ntfs-3g parted php-fpm raspberrypi-firmware sshpass sudo udevil wget '
+packages+='nfs-utils nginx-mainline nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget '
+if uname -a | grep -q aarch64; then
+	packages+='raspberrypi-firmware uboot-tools'
+	aarch64=1
+fi
 
 banner 'Install packages ...'
 
@@ -181,6 +185,12 @@ rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 ! df | grep -q /dev/mmcblk0 && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
 (( $( sfdisk -F /dev/mmcblk0 | head -n1 | awk '{print $6}' ) )) && touch /boot/expand
+# aarch64
+if [[ -n $aarch64 ]]; then
+	rm /boot/cmdline.txt
+	sed -i '/^setenv/ s/"$/ plymouth.enable=0 quiet loglevel=0 logo.nologo vt.global_cursor_default=0 isolcpus=3"/' /boot/boot.txt
+	mkimage -A arm -O linux -T script -C none -n "U-Boot boot script" -d /boot/boot.txt /boot/boot.scr
+fi
 
 if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
 	echo Wait for upmpdcli to finish RSA key ...
