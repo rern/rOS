@@ -358,28 +358,19 @@ if [[ $rpi != 5 ]]; then
 	echo $cmdline > $BOOT/cmdline.txt
 	# config.txt
 	config="\
-over_voltage=2
+force_turbo=1
 hdmi_drive=2
+over_voltage=2
 gpu_mem=32
 initramfs initramfs-linux.img followkernel
 max_usb_current=1
 disable_splash=1
 disable_overscan=1
 dtparam=audio=on
-dtparam=krnbt=on"
-	[[ $rpi == 4 ]] && config=$( sed '/force_turbo/ d' <<<"$config" )
-	[[ $rpi != 0 ]] && config=$( sed '/over_voltage\|hdmi_drive/ d' <<<"$config" )
+dtparam=krnbt=on
+"
+	[[ $rpi != 0 ]] && config=$( sed '/force_turbo\|hdmi_drive\|over_voltage/ d' <<<"$config" )
 	echo "$config" > $BOOT/config.txt
-	# temp: fix haveged coredump error
-	file=$ROOT/usr/lib/systemd/system/haveged.service
-	if ! grep -q SystemCallErrorNumber=EPERM $file; then
-		sed -i -e '/^SystemCallFilter/ d
-	' -e '/SystemCallArchitectures/ a\
-	SystemCallFilter=@system-service\
-	SystemCallFilter=~@mount\
-	SystemCallErrorNumber=EPERM
-	' $file
-	fi
 fi
 
 # wifi
