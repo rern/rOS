@@ -197,7 +197,7 @@ rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk0 && -z $aarch64 && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
-touch /boot/expand
+[[ $( mount | grep ' on / ' | cut -d' ' -f1 | head -c 8 ) == /dev/mmc ]] && touch /boot/expand
 
 if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
 	echo Wait for upmpdcli to finish RSA key ...
