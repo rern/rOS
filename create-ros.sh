@@ -191,7 +191,7 @@ if [[ -n $aarch64 ]]; then
 	partuuidROOT=$( blkid | awk '/LABEL="ROOT"/ {print $NF}' | tr -d '"' )
 	echo "\
 root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 \
-elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1" > /boot/cmdline.txt
+elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty3" > /boot/cmdline.txt
 	echo "\
 gpu_mem=32
 initramfs initramfs-linux.img followkernel
