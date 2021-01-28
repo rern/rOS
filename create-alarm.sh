@@ -333,13 +333,15 @@ dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
 	cat <<EOF
 XXX
 $percent
-\n  Write to \Z1SD card\Z0 ...
+\n  Write to SD card
+\n  \Z1$file\Z0 ...
 XXX
 EOF
 	sleep 2
 done ) \
 | dialog "${opt[@]}" --gauge "
-  Write to SD card ...
+  Write to SD card
+  \Z1$file\Z0 ...
 " 9 50
 
 mv $ROOT/boot/* $BOOT
