@@ -59,7 +59,7 @@ mount ${dev}1 $dirboot
 mount $part $dirroot
 
 bootmb=$( fdisk -l $dev | grep ${dev}1 | awk '{print $5$6}' )
-if [[ $bootmb != 100Mb || $bootmb != 200Mb ]]; then
+if [[ $bootmb != 100Mb && $bootmb != 200Mb ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1$dev\Z0 is not rOS
 
