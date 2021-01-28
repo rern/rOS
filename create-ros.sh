@@ -184,7 +184,6 @@ rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 (( $( sfdisk -F /dev/mmcblk0 | head -1 | awk '{print $6}' ) )) && touch /boot/expand
 # aarch64
 if [[ -n $aarch64 ]]; then
-	sed -i 's/mmcblk1/mmcblk0/' /etc/fstab
 	config="\
 over_voltage=2
 hdmi_drive=2
