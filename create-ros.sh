@@ -67,12 +67,16 @@ if [[ ${hawrevision: -3:2} == 11 ]]; then
 	sed -i '/^#IgnorePkg/ a\IgnorePkg   = raspberrypi-bootloader raspberrypi-bootloader-x' /etc/pacman.conf
 fi
 
-pacman -Syu --noconfirm --needed
-[[ $? != 0 ]] && pacman -Syu --noconfirm --needed
-
 packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
 packages+='nfs-utils nginx-mainline nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget '
-[[ -e /boot/boot.txt ]] && aarch64=1 && packages+='linux-raspberrypi4 raspberrypi-firmware uboot-tools'
+if [[ -e /boot/boot.txt ]]; then
+	packages+='linux-raspberrypi4 raspberrypi-firmware'
+	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
+	aarch64=1
+fi
+
+pacman -Syu --noconfirm --needed
+[[ $? != 0 ]] && pacman -Syu --noconfirm --needed
 
 banner 'Install packages ...'
 
