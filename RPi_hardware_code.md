@@ -29,6 +29,7 @@
 - `A` - PCB revision
 - `BB` - Name
 - `C` - SoC
+	- `2` and up - ARMv8 (64/32-bit)
 - `D` - Manufacturer:
 	- `0` - Sony UK
 	- `2` - Embest
