@@ -105,7 +105,7 @@ ROOT: \Z1$ROOT\Z0
 2 'Raspberry Pi 2' \
 3 'Raspberry Pi 3' \
 4 'Raspberry Pi 4' \
-5 'Raspberry Pi ARMv8' )
+5 'Raspberry Pi 64bit' )
 	file=ArchLinuxARM-rpi-
 	case $rpi in
 		2 | 3 ) file+=2-;;
