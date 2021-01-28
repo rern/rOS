@@ -349,15 +349,15 @@ mv $ROOT/boot/* $BOOT
 #----------------------------------------------------------------------------
 # fstab
 PATH=$PATH:/sbin  # Debian not include /sbin in PATH
-partuuidBOOT=$( blkid | grep $( df $BOOT | tail -1 | awk '{print $1}' ) | awk '{print $NF}' | tr -d '"' )
-partuuidROOT=$( blkid | grep $( df $ROOT | tail -1 | awk '{print $1}' ) | awk '{print $NF}' | tr -d '"' )
-echo "$partuuidBOOT  /boot  vfat  defaults  0  0
+partuuidBOOT=$( blkid | awk '/LABEL="BOOT"/ {print $NF}' | tr -d '"' )
+partuuidROOT=${partuuidBOOT:0:-1}2
+echo "\
+$partuuidBOOT  /boot  vfat  defaults  0  0
 $partuuidROOT  /      ext4  defaults  0  0" > $ROOT/etc/fstab
 if [[ $rpi != 5 ]]; then
 	# cmdline.txt
-	[[ $rpi > 1 ]] && isolcpus=' isolcpus=3'
-	cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 elevator=noop ipv6.disable=1 fsck.repair=yes$isolcpus console=tty1"
-	echo $cmdline > $BOOT/cmdline.txt
+	cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N \
+dwc_otg.lpm_enable=0 elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1"
 	# config.txt
 	config="\
 force_turbo=1
@@ -369,9 +369,13 @@ max_usb_current=1
 disable_splash=1
 disable_overscan=1
 dtparam=audio=on
-dtparam=krnbt=on
-"
-	[[ $rpi != 0 ]] && config=$( sed '/force_turbo\|hdmi_drive\|over_voltage/ d' <<<"$config" )
+dtparam=krnbt=on"
+	if [[ $rpi == 0 ]]; then
+		cmdline=${cmdline/ isolcpus=3}
+	else
+		config=$( sed '/force_turbo\|hdmi_drive\|over_voltage/ d' <<<"$config" )
+	fi
+	echo $cmdline > $BOOT/cmdline.txt
 	echo "$config" > $BOOT/config.txt
 fi
 

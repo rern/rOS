@@ -188,9 +188,11 @@ rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 (( $( sfdisk -F /dev/mmcblk0 | head -1 | awk '{print $6}' ) )) && touch /boot/expand
 # aarch64
 if [[ -n $aarch64 ]]; then
+	partuuidROOT=$( blkid | awk '/LABEL="ROOT"/ {print $NF}' | tr -d '"' )
 	echo "\
-over_voltage=2
-hdmi_drive=2
+root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 \
+elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1" > /boot/cmdline.txt
+	echo "\
 gpu_mem=32
 initramfs initramfs-linux.img followkernel
 max_usb_current=1
@@ -198,10 +200,6 @@ disable_splash=1
 disable_overscan=1
 dtparam=audio=on
 dtparam=krnbt=on" > /boot/config.txt
-	partuuidROOT=$( blkid | awk '/LABEL="ROOT"/ {print $NF}' | tr -d '"' )
-	echo "\
-root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 \
-elevator=noop ipv6.disable=1 fsck.repair=yes$isolcpus console=tty1" > /boot/cmdline.txt
 fi
 
 if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
