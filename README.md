@@ -77,7 +77,7 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
 
 | No. | Size        | Type    | Format | Label |
 |-----|-------------|---------|--------|-------|
-| #1  | 100MiB      | primary | fat32  | BOOT  |
+| #1  | 200MiB      | primary | fat32  | BOOT  |
 | #2  | (the rest)  | primary | ext4   | ROOT  |
 	
 **Alternative 2: Micro SD card + USB drive**
@@ -87,7 +87,7 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
 
 | No. | Size        | Type    | Format | Label |
 |-----|-------------|---------|--------|-------|
-| #1  | 100MiB      | primary | fat32  | BOOT  |
+| #1  | 200MiB      | primary | fat32  | BOOT  |
 
 - USB drive - Blank:
 	- `Unmount` > `Delete` all partitions (Caution: make sure it's the USB drive)
@@ -95,18 +95,18 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
 	
 | No. | Size        | Type    | Format | Label |
 |-----|-------------|---------|--------|-------|
-| #1  | 3500MiB     | primary | ext4   | ROOT  |
+| #1  | 5000MiB     | primary | ext4   | ROOT  |
 | #2  | (the rest)  | primary | ext4   | (any) |
 	
 - or USB drive - with existing data:
 	- No need to reformat or change format of existing partition
-	- Resize the existing to get 3500MiB unallocated space (anywhere - at the end, middle or start of the disk)
+	- Resize the existing to get 5000MiB unallocated space (anywhere - at the end, middle or start of the disk)
 	- Create a partition in the space:
 		
 | No.   | Size        | Type    | Format | Label |
 |-------|-------------|---------|--------|-------|
 | (any) | (existing)  | primary | (any)  | (any) |
-| (any) | 3500MiB     | primary | ext4   | ROOT  |
+| (any) | 5000MiB     | primary | ext4   | ROOT  |
 			
 **Alternative 3: USB drive only**
 
@@ -115,8 +115,8 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
 
 | No. | Size        | Type    | Format | Label |
 |-----|-------------|---------|--------|-------|
-| #1  | 100MiB      | primary | fat32  | BOOT  |
-| #2  | 3500MiB     | primary | ext4   | ROOT  |
+| #1  | 200MiB      | primary | fat32  | BOOT  |
+| #2  | 5000MiB     | primary | ext4   | ROOT  |
 | #3  | (the rest)  | primary | ext4   | (any) |
 
 ---
