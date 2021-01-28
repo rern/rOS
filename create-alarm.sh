@@ -116,7 +116,7 @@ ROOT: \Z1$ROOT\Z0
 	if [[ $rpi == 0 ]]; then
 		rpiname=Zero
 	elif [[ $rpi == 5 ]]; then
-		rpiname=ARMv8
+		rpiname=64bit
 	else
 		rpiname=$rpi
 	fi
