@@ -67,10 +67,11 @@ if [[ ! -e $dirboot/config.txt ]]; then
 	exit
 fi
 
-configfile=$dirboot/config.txt
-if ! grep -q force_turbo $configfile; then
+if [[ -e $dirboot/kernel8.img ]]; then
+	model=64
+elif [[ -e $dirboot/kernel7l.img ]]; then
 	model=4
-elif ! grep -q hdmi_drive $configfile; then
+elif [[ -e $dirboot/kernel7.img ]]; then
 	model=2-3
 else
 	model=0-1
