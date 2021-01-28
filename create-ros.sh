@@ -70,7 +70,7 @@ fi
 packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
 packages+='nfs-utils nginx-mainline nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget '
 if [[ -e /boot/boot.txt ]]; then
-	packages+='linux-raspberrypi4 raspberrypi-firmware'
+	packages+='linux-raspberrypi4 raspberrypi-bootloader-x raspberrypi-firmware'
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
 	aarch64=1
 fi
