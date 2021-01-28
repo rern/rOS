@@ -50,7 +50,7 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
 	- Micro SD card shoule be at least class 10 or U1.
 	- Option 1: Micro SD card: 8GB+ for `BOOT` + `ROOT` partitions
 	- Option 2: Micro SD card + USB drive (`ROOT` partition on USB drive)
-		- Micro SD card: 100MB+ for `BOOT` partition only
+		- Micro SD card: 200MB+ for `BOOT` partition only
 		- USB drive: 8GB+ for `ROOT` partition (or USB hard drive with existing data)
 	- Option 3: USB drive only - no SD card (Boot from USB drive)
 		- Raspberry Pi 3 and 2 v1.2 only (4 not yet supported)
