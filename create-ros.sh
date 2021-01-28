@@ -119,6 +119,21 @@ else
 	rm -rf /etc/systemd/system/{bluealsa,bluetooth}.service.d
 	rm -f /etc/systemd/system/{bluealsa-aplay,bluezdbus}.service
 fi
+# aarch64
+if [[ -n $aarch64 ]]; then
+	partuuidROOT=$( blkid | awk '/LABEL="ROOT"/ {print $NF}' | tr -d '"' )
+	echo "\
+root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 \
+elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1" > /boot/cmdline.txt
+	echo "\
+gpu_mem=32
+initramfs initramfs-linux.img followkernel
+max_usb_current=1
+disable_splash=1
+disable_overscan=1
+dtparam=audio=on
+dtparam=krnbt=on" > /boot/config.txt
+fi
 # chromium
 if [[ -e /usr/bin/chromium ]]; then
 	sed -i 's/\(console=\).*/\1tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt # boot splash
@@ -186,21 +201,6 @@ rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 ! df | grep -q /dev/mmcblk0 && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
 (( $( sfdisk -F /dev/mmcblk0 | head -1 | awk '{print $6}' ) )) && touch /boot/expand
-# aarch64
-if [[ -n $aarch64 ]]; then
-	partuuidROOT=$( blkid | awk '/LABEL="ROOT"/ {print $NF}' | tr -d '"' )
-	echo "\
-root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 \
-elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty3" > /boot/cmdline.txt
-	echo "\
-gpu_mem=32
-initramfs initramfs-linux.img followkernel
-max_usb_current=1
-disable_splash=1
-disable_overscan=1
-dtparam=audio=on
-dtparam=krnbt=on" > /boot/config.txt
-fi
 
 if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
 	echo Wait for upmpdcli to finish RSA key ...
