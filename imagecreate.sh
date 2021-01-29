@@ -58,10 +58,9 @@ dirroot=/mnt/ROOT
 mount ${dev}1 $dirboot
 mount $part $dirroot
 
-bootmb=$( fdisk -l $dev | grep ${dev}1 | awk '{print $5$6}' )
-if [[ $bootmb != 100Mb && $bootmb != 200Mb ]]; then
+if [[ ! -e $dirboot/config.txt ]]; then
 	dialog "${optbox[@]}" --infobox "
-\Z1$dev\Z0 is not rOS
+\Z1$dev\Z0 is not \Z1r\Z0Audio.
 
 " 0 0
 	umount -l ${dev}1 ${dev}2
