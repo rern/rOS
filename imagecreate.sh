@@ -76,14 +76,9 @@ fi
 version=$( cat $ROOT/srv/http/data/system/version )
 imagefile=rAudio-$version-RPi$model.img.xz
 
-dialog "${optbox[@]}" --yesno "
+imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 Image file:
-\Z1$imagefile\Z0
-
-" 0 0
-[[ $? != 0 ]] && exit
-
-rm -f $BOOT/model
+" 0 0 rAudio-$version-RPi$model.img.xz )
 
 # auto expand root partition
 touch $BOOT/expand
