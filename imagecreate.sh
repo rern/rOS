@@ -66,16 +66,7 @@ if [[ ! -e $dirboot/config.txt ]]; then
 	exit
 fi
 
-if [[ -e $dirboot/kernel8.img ]]; then
-	model=64
-elif [[ -e $dirboot/rpi4 ]]; then
-	model=4
-	rm $dirboot/rpi4
-elif [[ -e $dirboot/kernel7.img ]]; then
-	model=2-3
-else
-	model=0-1
-fi
+model=$( cat $dirboot/model )
 version=$( cat $dirroot/srv/http/data/system/version )
 imagefile=rAudio-$version-RPi$model.img.xz
 
@@ -86,6 +77,7 @@ Image file:
 " 0 0
 [[ $? != 0 ]] && exit
 
+rm -f $dirboot/model
 
 # auto expand root partition
 touch $dirboot/expand
