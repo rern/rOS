@@ -48,7 +48,6 @@ Detail:
 $detail
 
 " 0 0
-
 [[ $? != 0 ]] && exit
 
 part=${dev}2
@@ -79,6 +78,14 @@ else
 fi
 version=$( cat $dirroot/srv/http/data/system/version )
 imagefile=rAudio-$version-RPi$model.img.xz
+
+dialog "${optbox[@]}" --yesno "
+Image file:
+\Z1$imagefile\Z0
+
+" 0 0
+[[ $? != 0 ]] && exit
+
 
 # auto expand root partition
 touch $dirboot/expand
