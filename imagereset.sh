@@ -56,17 +56,6 @@ if [[ $select == *' 5 '* ]] && systemctl -q is-enabled netctl-auto@wlan0; then
 	rm /etc/netctl/* 2> /dev/null
 fi
 
-if [[ -e /boot/kernel8.img ]]; then
-	model=64
-elif [[ $( /srv/http/bash/system.sh hwrpi ) == 4 ]]; then # also kernel7.img
-	model=4
-elif [[ -e /boot/kernel7.img ]]; then
-	model=2-3
-else
-	model=0-1
-fi
-echo $model > /boot/model
-
 wget -q --show-progress https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -O /etc/pacman.d/mirrorlist
 
 banner 'Check disk ...'

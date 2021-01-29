@@ -51,13 +51,13 @@ $detail
 [[ $? != 0 ]] && exit
 
 part=${dev}2
-dirboot=/mnt/BOOT
-dirroot=/mnt/ROOT
+BOOT=/mnt/BOOT
+ROOT=/mnt/ROOT
 
-mount ${dev}1 $dirboot
-mount $part $dirroot
+mount ${dev}1 $BOOT
+mount $part $ROOT
 
-if [[ ! -e $dirboot/config.txt ]]; then
+if [[ ! -e $BOOT/config.txt ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1$dev\Z0 is not \Z1r\Z0Audio.
 
@@ -66,8 +66,14 @@ if [[ ! -e $dirboot/config.txt ]]; then
 	exit
 fi
 
-model=$( cat $dirboot/model )
-version=$( cat $dirroot/srv/http/data/system/version )
+if [[ -e $BOOT/kernel8.img ]]; then
+	model=64
+elif [[ -e $BOOT/kernel7.img ]]; then
+	[[ -e $BOOT/rpi4 ]] && model=4 || model=2-3
+else
+	model=0-1
+fi
+version=$( cat $ROOT/srv/http/data/system/version )
 imagefile=rAudio-$version-RPi$model.img.xz
 
 dialog "${optbox[@]}" --yesno "
@@ -77,10 +83,10 @@ Image file:
 " 0 0
 [[ $? != 0 ]] && exit
 
-rm -f $dirboot/model
+rm -f $BOOT/model
 
 # auto expand root partition
-touch $dirboot/expand
+touch $BOOT/expand
 
 clear
 
