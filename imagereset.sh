@@ -56,6 +56,8 @@ if [[ $select == *' 5 '* ]] && systemctl -q is-enabled netctl-auto@wlan0; then
 	rm /etc/netctl/* 2> /dev/null
 fi
 
+/srv/http/bash/system.sh hwrpi > /boot/rpi
+
 wget -q --show-progress https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -O /etc/pacman.d/mirrorlist
 
 banner 'Check disk ...'
