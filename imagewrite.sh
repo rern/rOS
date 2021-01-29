@@ -57,13 +57,15 @@ rpi=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 2 'Raspberry Pi 2' \
 3 'Raspberry Pi 3' \
 4 'Raspberry Pi 4' \
-5 'Select image file' )
+5 'Raspberry Pi 64bit' \
+6 'Select image file' )
 
 case $rpi in
 	0 | 1 ) file=rAudio-1-RPi0-1.img.xz ;;
 	2 | 3 ) file=rAudio-1-RPi2-3.img.xz ;;
 	4 )     file=rAudio-1-RPi4.img.xz ;;
-	5 )		file=$( basename $( dialog "${optbox[@]}" --title 'Image file' --stdout --fselect $PWD/ 30 70 ) );;
+	5 )     file=rAudio-1-RPi64.img.xz ;;
+	6 )		file=$( basename $( dialog "${optbox[@]}" --title 'Image file' --stdout --fselect $PWD/ 30 70 ) );;
 esac
 
 [[ ! -e $file ]] && echo Image file not found. && exit
