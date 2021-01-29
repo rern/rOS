@@ -65,7 +65,7 @@ elif [[ -e /boot/kernel7.img ]]; then
 else
 	model=0-1
 fi
-echo $model > /boot/rpi
+echo $model > /boot/model
 
 wget -q --show-progress https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -O /etc/pacman.d/mirrorlist
 
