@@ -137,11 +137,12 @@ fi
 # chromium
 if [[ -e /usr/bin/chromium ]]; then
 	sed -i 's/\(console=\).*/\1tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt # boot splash
-	systemctl disable getty@tty1                     # login prompt
 	chmod 775 /etc/X11/xorg.conf.d                   # fix permission for rotate file
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # startx
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # script
+	systemctl disable getty@tty1                     # login prompt
+	systemctl enable bootsplash localbrowser
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /usr/local/bin/ply-image 2> /dev/null
 fi
@@ -185,12 +186,8 @@ else
 fi
 # wireless-regdom
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
-# startup services
-systemctl daemon-reload
-startup='avahi-daemon cronie devmon@http nginx php-fpm startup'
-[[ -e /usr/bin/chromium ]] && startup+=' bootsplash localbrowser'
-
-systemctl enable $startup
+# default startup services
+systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 
 #---------------------------------------------------------------------------------
 # data - settings directories
@@ -198,9 +195,9 @@ systemctl enable $startup
 # remove files and package cache
 rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
-! df | grep -q /dev/mmcblk0 && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
+! df | grep -q /dev/mmcblk0 && -z $aarch64 && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
-(( $( sfdisk -F /dev/mmcblk0 | head -1 | awk '{print $6}' ) )) && touch /boot/expand
+touch /boot/expand
 
 if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
 	echo Wait for upmpdcli to finish RSA key ...
