@@ -69,8 +69,9 @@ fi
 
 if [[ -e $dirboot/kernel8.img ]]; then
 	model=64
-elif [[ -e $dirboot/kernel7l.img ]]; then
+elif [[ -e $dirboot/rpi4 ]]; then
 	model=4
+	rm $dirboot/rpi4
 elif [[ -e $dirboot/kernel7.img ]]; then
 	model=2-3
 else
