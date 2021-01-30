@@ -138,6 +138,7 @@ shrink
 banner 'Create compressed image file ...'
 
 echo $imagefile
+echo
 dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagefile"
 
 byte=$( stat --printf="%s" "$imagefile" )
