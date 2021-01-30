@@ -68,8 +68,10 @@ fi
 
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64
+elif [[ -e $BOOT/bcm2711-rpi-4-b.dtb ]]; then
+	model=4
 elif [[ -e $BOOT/kernel7.img ]]; then
-	[[ -e $BOOT/rpi4 ]] && model=4 || model=2-3
+	model=2-3
 else
 	model=0-1
 fi
