@@ -69,10 +69,9 @@ fi
 
 packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
 packages+='nfs-utils nginx-mainline nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget '
-if [[ -e /boot/boot.txt ]]; then
+if [[ -e /boot/kernel8.img ]]; then
 	packages+='linux-raspberrypi4 raspberrypi-bootloader-x raspberrypi-firmware'
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
-	aarch64=1
 fi
 
 pacman -Syu --noconfirm --needed
@@ -120,7 +119,7 @@ else
 	rm -f /etc/systemd/system/{bluealsa-aplay,bluezdbus}.service
 fi
 # aarch64
-if [[ -n $aarch64 ]]; then
+if [[ -e /boot/kernel8.img ]]; then
 	partuuidROOT=$( blkid | awk '/LABEL="ROOT"/ {print $NF}' | tr -d '"' )
 	echo "\
 root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 \
@@ -134,6 +133,7 @@ disable_overscan=1
 dtparam=audio=on
 dtparam=krnbt=on" > /boot/config.txt
 fi
+
 # chromium
 if [[ -e /usr/bin/chromium ]]; then
 	sed -i 's/\(console=\).*/\1tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt # boot splash
@@ -141,6 +141,7 @@ if [[ -e /usr/bin/chromium ]]; then
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # startx
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # script
+	systemctl daemon-reload
 	systemctl disable getty@tty1                     # login prompt
 	systemctl enable bootsplash localbrowser
 else
@@ -155,6 +156,7 @@ cp /usr/share/mpdscribble/mpdscribble.conf.example /etc/mpdscribble.conf
 # motd
 ln -sf /srv/http/bash/motd.sh /etc/profile.d/
 # disable again after upgrade
+systemctl daemon-reload
 systemctl disable systemd-networkd-wait-online
 # fix: pam ssh login halt
 sed -i '/^-.*pam_systemd/ s/^/#/' /etc/pam.d/system-login
@@ -187,6 +189,7 @@ fi
 # wireless-regdom
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
 # default startup services
+systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 
 #---------------------------------------------------------------------------------
@@ -195,7 +198,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 # remove files and package cache
 rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
-! df | grep -q /dev/mmcblk0 && -z $aarch64 && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
+! df | grep -q /dev/mmcblk0 && ! -e /boot/kernel8.img && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
 [[ $( mount | grep ' on / ' | cut -d' ' -f1 | head -c 8 ) == /dev/mmc ]] && touch /boot/expand
 
