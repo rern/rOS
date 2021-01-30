@@ -16,7 +16,10 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 - [Prepare partitions](#prepare-partitions)
 	- Create `BOOT` and `ROOT` partitions
 - [Create Arch Linux Arm + rAudio](#create-arch-linux-arm--raudio)
-	- Optional - Pre-configure Wi-Fi (For reliable connection, use wired LAN if possible)
+	- Use wired LAN connection if possible
+		- Use router assigned IP address if possible
+			- Router may take some time to broadcast hostname of DHCP Raspberry Pi
+		- Optional - Pre-configure Wi-Fi connection
 	- Select features
 	- Download Arch Linux Arm
 	- Write `BOOT` and `ROOT`
