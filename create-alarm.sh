@@ -121,7 +121,7 @@ ROOT: \Z1$ROOT\Z0
 		rpiname=$rpi
 	fi
 	
-	dialog "${opt[@]}" --yesno "
+	dialog --defaultno "${opt[@]}" --yesno "
 Connect \Z1Wi-Fi\Z0 on boot?
 
 " 0 0
