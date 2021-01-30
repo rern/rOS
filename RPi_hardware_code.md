@@ -2,8 +2,8 @@
 
 - Code:
 	- `EDCBBA=$( awk '/Revision/ {print $NF}' /proc/cpuinfo )`
-	- `BB=${EDCBBA: -3:2}`
-	- `C=${EDCBBA: -4:1}`
+	- `BB=$( awk '/Revision/ {print substr($NF,5,2)}' /proc/cpuinfo )`
+	- `C=$( awk '/Revision/ {print substr($NF,4,1)}' /proc/cpuinfo )`
 	- RPi Zero W on Kernel 5: `19000c1` - 7 characters
 
 
