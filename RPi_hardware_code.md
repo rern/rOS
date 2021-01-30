@@ -2,9 +2,8 @@
 
 - Code:
 	- `EDCBBA=$( awk '/Revision/ {print $NF}' /proc/cpuinfo )`
-	- `BB=$( awk '/Revision/ {print substr($NF,5,2)}' /proc/cpuinfo )`
-	- `C=$( awk '/Revision/ {print substr($NF,4,1)}' /proc/cpuinfo )`
-	- RPi Zero W on Kernel 5: `19000c1` - 7 characters
+	- `BB=${EDCBBA: -3:2}` (RPi Zero W: `19000c1` - 7 characters)
+	- `C=${EDCBBA: -4:1}`
 
 
 | Name       | code `BB` | no wl | no eth | SoC       | code `C` | 4 cores | 64-bit |
@@ -24,7 +23,7 @@
 | RPi 3A+    | `0e`      |       | x      | BCM2837B0 | `2`      | /       | /      |
 | RPi 3B+    | `0d`      |       |        | BCM2837B0 | `2`      | /       | /      |
 |            |           |       |        |           |          |         |        |
-| RPi 4B     | `11`      |       |        | BCM2711   | `3`      | /       | /      |
+| RPi 4B     | `11`      |       |        | BCM2711   | `3`      | /       | [x]    |
 
 - `A` - PCB revision
 - `BB` - Name
