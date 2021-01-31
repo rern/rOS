@@ -143,10 +143,9 @@ if [[ -e /usr/bin/chromium ]]; then
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # script
 	systemctl daemon-reload
 	systemctl disable getty@tty1                     # login prompt
-	systemctl enable bootsplash
-	touch /srv/http/data/system/localbrowser
+	systemctl enable bootsplash localbrowser
 else
-	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /usr/local/bin/ply-image 2> /dev/null
+	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
 fi
 # cron - for addons updates
 ( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/bash/cmd.sh addonsupdates &' ) | crontab -
