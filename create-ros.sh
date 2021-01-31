@@ -143,7 +143,8 @@ if [[ -e /usr/bin/chromium ]]; then
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # script
 	systemctl daemon-reload
 	systemctl disable getty@tty1                     # login prompt
-	systemctl enable bootsplash localbrowser
+	systemctl enable bootsplash
+	touch /srv/http/data/system/localbrowser
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /usr/local/bin/ply-image 2> /dev/null
 fi
