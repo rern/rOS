@@ -6,7 +6,7 @@
 	- `C=${EDCBBA: -4:1}`
 
 
-| Name       | code `BB` | no wl | no eth | SoC - corexbit | code `C` |
+| Name       | code `BB` | no wl | no eth | SoC - core x bit | code `C` |
 |------------|-----------|-------|--------|----------------|----------|
 | RPi Zero   | `09`      | X     | X      | BCM2835 1x32   | `0`      |
 | RPi Zero W | `0c`      |       | X      | BCM2835 1x32   | `0`      |
@@ -28,9 +28,6 @@
 - `A` - PCB revision
 - `BB` - Name
 - `C` - SoC
-	- `0` - ARMv6 (32-bit) RPi Zero, 1
-	- `1` - ARMv7 (32-bit) RPi 2
-	- `2`, `3` - ARMv8 (64/32-bit) RPi 2 v 1.2, 3, 4
 - `D` - Manufacturer:
 	- `0` - Sony UK
 	- `2` - Embest
