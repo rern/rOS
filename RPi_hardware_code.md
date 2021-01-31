@@ -1,4 +1,4 @@
-**Raspberry Pi Hardware**
+**Raspberry Pi Hardware Code**
 
 - Code: `EDCBBA=$( awk '/Revision/ {print $NF}' /proc/cpuinfo )`
 
