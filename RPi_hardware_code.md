@@ -1,9 +1,6 @@
 **Raspberry Pi Hardware**
 
-- Code:
-	- `EDCBBA=$( awk '/Revision/ {print $NF}' /proc/cpuinfo )`
-	- `BB=${EDCBBA: -3:2}` (RPi Zero W: `19000c1` - 7 characters)
-	- `C=${EDCBBA: -4:1}`
+- Code: `EDCBBA=$( awk '/Revision/ {print $NF}' /proc/cpuinfo )`
 
 
 | Name       | code `BB` | no wl | no eth | SoC - core x bit | code `C` |
@@ -26,8 +23,8 @@
 | RPi 4B     | `11`      |       |        | BCM2711 - 4x64   | `3`      |
 
 - `A` - PCB revision
-- `BB` - Name
-- `C` - SoC
+- `BB` - Name - `BB=${EDCBBA: -3:2}` (RPi Zero W: `19000c1` - 7 characters)
+- `C` - SoC - `C=${EDCBBA: -4:1}`
 - `D` - Manufacturer:
 	- `0` - Sony - UK
 	- `2` - Embest - China
