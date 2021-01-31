@@ -29,10 +29,10 @@
 - `BB` - Name
 - `C` - SoC
 - `D` - Manufacturer:
-	- `0` - Sony UK
-	- `2` - Embest
-	- `3` - Stadium
-	- `5` - Sony Japan
+	- `0` - Sony - UK
+	- `2` - Embest - China
+	- `3` - Stadium - China
+	- `5` - Sony - Japan
 - `E` - RAM:
 	- `9` - 512KB
 	- `a` - 1GB
