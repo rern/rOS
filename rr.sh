@@ -10,7 +10,7 @@ dialog "${optbox[@]}" --infobox "
 sleep 1
 
 cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
-\Z1r\Z0Audio:
+ \Z1r\Z0Audio image:
 " 8 0 0 \
 1 'Create' \
 2 'Reset' \
