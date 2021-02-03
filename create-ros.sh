@@ -68,7 +68,7 @@ if [[ ${hawrevision: -3:2} == 11 ]]; then
 fi
 
 packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
-packages+='nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget '
+packages+='nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget wiringpi'
 if [[ -e /boot/kernel8.img ]]; then
 	packages+='linux-raspberrypi4 raspberrypi-bootloader-x raspberrypi-firmware'
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
