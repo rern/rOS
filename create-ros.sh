@@ -130,6 +130,7 @@ initramfs initramfs-linux.img followkernel
 max_usb_current=1
 disable_splash=1
 disable_overscan=1
+dtparam=audio=on
 dtparam=krnbt=on" > /boot/config.txt
 fi
 
