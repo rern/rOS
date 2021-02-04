@@ -58,15 +58,6 @@ pacman -Sy --noconfirm --needed dialog
 #----------------------------------------------------------------------------
 banner 'Upgrade kernel and default packages ...'
 
-# temp: rpi4 - alsa xrun - raspberrypi-bootloader, raspberrypi-bootloader-x
-if [[ ${hwrevision: -3:2} == 11 && ! -e /boot/kernel8.img ]]; then
-	curl -LO https://github.com/rern/rern.github.io/raw/master/archives/raspberrypi-bootloader-20201208-1-any.pkg.tar.xz
-	curl -LO https://github.com/rern/rern.github.io/raw/master/archives/raspberrypi-bootloader-x-20201208-1-any.pkg.tar.xz
-	pacman -U --noconfirm raspberrypi-bootloader*
-	rm raspberrypi-bootloader*
-	sed -i '/^#IgnorePkg/ a\IgnorePkg   = raspberrypi-bootloader raspberrypi-bootloader-x' /etc/pacman.conf
-fi
-
 packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
 packages+='nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget wiringpi '
 if [[ -e /boot/kernel8.img ]]; then
