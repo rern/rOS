@@ -43,3 +43,12 @@
 	-  Model A - without ethernet
 	-  Model B - on-board ethernet
 - 3.5mm headphone output: None in Zero and Zero W
+- By `/boot/bcm*` file:
+```sh
+if [[ -e /boot/bcm2711-rpi-4-b.dtb ]]; then
+	rpi=4
+else
+	[[ -e /boot/bcm2837-rpi-3-b.dtb ]] && rpi=23 || rpi=01
+fi
+```
+
