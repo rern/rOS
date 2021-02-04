@@ -11,8 +11,8 @@ addonalias=r$version
 
 trap 'rm -f /var/lib/pacman/db.lck; exit' INT
 
-hawrevision=$( grep Revision /proc/cpuinfo )
-[[ ${hawrevision: -4:1} == 0 ]] && rpi01=1
+hwrevision=$( grep Revision /proc/cpuinfo )
+[[ ${hwrevision: -4:1} == 0 ]] && rpi01=1
 
 col=$( tput cols )
 banner() {
@@ -59,7 +59,7 @@ pacman -Sy --noconfirm --needed dialog
 banner 'Upgrade kernel and default packages ...'
 
 # temp: rpi4 - alsa xrun - raspberrypi-bootloader, raspberrypi-bootloader-x
-if [[ ${hawrevision: -3:2} == 11 ]]; then
+if [[ ${hwrevision: -3:2} == 11 ]]; then
 	curl -LO https://github.com/rern/rern.github.io/raw/master/archives/raspberrypi-bootloader-20201208-1-any.pkg.tar.xz
 	curl -LO https://github.com/rern/rern.github.io/raw/master/archives/raspberrypi-bootloader-x-20201208-1-any.pkg.tar.xz
 	pacman -U --noconfirm raspberrypi-bootloader*
