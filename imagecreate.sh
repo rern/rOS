@@ -2,6 +2,16 @@
 
 optbox=( --colors --no-shadow --no-collapse )
 
+[[ $( ls -A BOOT ) ]] && notempty+='BOOT '
+[[ $( ls -A ROOT ) ]] && notempty+='ROOT'
+if [[ -n $notempty ]]; then
+		dialog "${optbox[@]}" --infobox "
+\Z1$notempty\Z0 directory not empty.
+
+" 0 0
+	exit	
+fi
+
 dialog "${optbox[@]}" --infobox "
 
                        \Z1r\Z0Audio
@@ -51,39 +61,46 @@ $detail
 [[ $? != 0 ]] && exit
 
 part=${dev}2
-BOOT=/mnt/BOOT
-ROOT=/mnt/ROOT
 
-mount ${dev}1 $BOOT
-mount $part $ROOT
+mkdir -p BOOT ROOT
 
-if [[ ! -e $BOOT/config.txt ]]; then
+mount ${dev}1 BOOT
+mount $part ROOT
+
+if [[ ! -e BOOT/config.txt ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1$dev\Z0 is not \Z1r\Z0Audio.
 
 " 0 0
-	umount -l ${dev}1 ${dev}2
+	umount -l BOOT ROOT
+	rmdir BOOT ROOT
 	exit
 fi
 
-if [[ -e $BOOT/kernel8.img ]]; then
+if [[ -e BOOT/kernel8.img ]]; then
 	model=64
-elif [[ -e $BOOT/bcm2711-rpi-4-b.dtb ]]; then
+elif [[ -e BOOT/bcm2711-rpi-4-b.dtb ]]; then
 	model=4
-elif [[ -e $BOOT/kernel7.img ]]; then
+elif [[ -e BOOT/kernel7.img ]]; then
 	model=2-3
 else
 	model=0-1
 fi
-version=$( cat $ROOT/srv/http/data/system/version )
+version=$( cat ROOT/srv/http/data/system/version )
 imagefile=rAudio-$version-RPi$model.img.xz
 
 imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 Image file:
 " 0 0 rAudio-$version-RPi$model.img.xz )
 
+if [[ $? != 0 ]]; then
+	umount -l BOOT ROOT
+	rmdir BOOT ROOT
+	exit
+fi
+
 # auto expand root partition
-touch $BOOT/expand
+touch BOOT/expand
 
 clear
 
@@ -92,7 +109,8 @@ banner 'Shrink ROOT partition ...'
 partsize=$( fdisk -l $part | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $part | awk '{print $3}' )
 
-umount -l -v ${dev}1 ${dev}2
+umount -l -v BOOT ROOT
+rmdir BOOT ROOT
 e2fsck -fy $part
 
 shrink() {
