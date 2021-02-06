@@ -1,0 +1,9 @@
+[Unit]
+Description=Shutdown button
+After=startup.service
+
+[Service]
+ExecStart=/srv/http/bash/powerbutton.sh
+
+[Install]
+WantedBy=multi-user.target
