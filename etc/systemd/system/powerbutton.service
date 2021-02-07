@@ -6,4 +6,4 @@ After=startup.service
 ExecStart=/srv/http/bash/powerbutton.sh
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=getty.target
