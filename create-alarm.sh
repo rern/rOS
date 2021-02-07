@@ -8,7 +8,7 @@ if [[ -e /usr/bin/pacman ]]; then
 	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
 	[[ ! -e /usr/bin/nmap ]] && packages+='nmap '
 	[[ ! -e /usr/bin/pv ]] && packages+='pv '
-	[[ -n $packages ]] && pacman -Sy --noconfirm --needed $packages
+	[[ -n $packages ]] && pacman -Sy --noconfirm $packages
 else
 	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar libarchive-tools '
 	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
