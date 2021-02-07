@@ -70,7 +70,7 @@ dialog "${optbox[@]}" --infobox "
        Before power off, observe \Z2green\Z0 LED:
          - Stop all services - Blip
          - On Wi-Fi - May blip or stay on/off ~1 minute
-         - Shutdown - Blink rapidly to completely off
+         - Shutdown - 10 steady flashes to completely off
 " 12 65
 shutdown -h now
 exit
