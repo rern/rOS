@@ -4,7 +4,7 @@
 if [[ -e /usr/bin/pacman ]]; then
 	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar '
 	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
-	[[ -n $packages ]] && pacman -Sy --noconfirm --needed $packages
+	[[ -n $packages ]] && pacman -Sy --noconfirm $packages
 else
 	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar libarchive-tools '
 	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
