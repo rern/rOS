@@ -352,8 +352,8 @@ PATH=$PATH:/sbin  # Debian not include /sbin in PATH
 partuuidBOOT=$( blkid | awk '/LABEL="BOOT"/ {print $NF}' | tr -d '"' )
 partuuidROOT=${partuuidBOOT:0:-1}2
 echo "\
-$partuuidBOOT  /boot  vfat  defaults  0  0
-$partuuidROOT  /      ext4  defaults  0  0" > $ROOT/etc/fstab
+$partuuidBOOT  /boot  vfat  defaults,noatime  0  0
+$partuuidROOT  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
 if [[ $rpi != 5 ]]; then
 	# cmdline.txt
 	cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N \
