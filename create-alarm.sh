@@ -219,6 +219,8 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 }
 selectFeatures
 
+[[ -z $list ]] && list=(none)
+
 dialog "${opt[@]}" --yesno "
 Confirm features to install:
 
