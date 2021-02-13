@@ -77,7 +77,7 @@ revision=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Revision:
 
 " 0 0 ${addons[1]} )
-branch=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+uibranch=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Branch:
 
 " 0 0 main )
@@ -229,7 +229,7 @@ $list
 echo "\
 version=$version
 revision=$revision
-branch=$branch
+uibranch=$uibranch
 features="'"$features"'"
 rpi01=$( (( $rpi < 2 )) && echo 1 )
 col=$( tput cols )
