@@ -7,9 +7,7 @@ versions=( $( cat /boot/versions ) )
 version=${versions[0]}
 revision=${versions[1]}
 uibranch=${versions[2]}
-
-hwrevision=$( grep Revision /proc/cpuinfo )
-[[ ${hwrevision: -4:1} == 0 ]] && rpi01=1
+[[ -e /boot/rpi01 ]] && rpi01=1
 
 col=$( tput cols )
 banner() {
@@ -183,7 +181,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 # data - settings directories
 /srv/http/bash/datareset.sh $version $revision
 # remove files and package cache
-rm rm /boot/{features,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
+rm rm /boot/{features,rpi01,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
