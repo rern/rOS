@@ -56,6 +56,7 @@ sleep 3
 # dialog package
 pacman -Sy --noconfirm --needed dialog
 
+echo
 #----------------------------------------------------------------------------
 banner 'Upgrade kernel and default packages ...'
 
