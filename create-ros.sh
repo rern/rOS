@@ -43,9 +43,6 @@ sleep 3
 
 clear -x
 
-# dialog package
-pacman -Sy --noconfirm --needed dialog
-
 #----------------------------------------------------------------------------
 banner 'Upgrade kernel and default packages ...'
 
@@ -56,8 +53,8 @@ if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
 fi
 
-pacman -Syu --noconfirm --needed
-[[ $? != 0 ]] && pacman -Syu --noconfirm --needed
+pacman -Syu --noconfirm
+[[ $? != 0 ]] && pacman -Syu --noconfirm
 
 banner 'Install packages ...'
 
