@@ -88,7 +88,7 @@ banner 'Configure ...'
 chown http:http /etc/fstab
 chown -R http:http /etc/netctl /etc/systemd/network /srv/http
 chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
-# alsa
+# alsa init state
 alsactl store
 # fix 'alsactl restore' errors
 #sed '/^TEST/ s/^/#/' /usr/lib/udev/rules.d/90-alsa-restore.rules > /etc/udev/rules.d/90-alsa-restore.rules
