@@ -149,8 +149,6 @@ ln -sf /srv/http/bash/motd.sh /etc/profile.d/
 # disable again after upgrade
 systemctl daemon-reload
 systemctl disable systemd-networkd-wait-online
-# fix: pam ssh login halt
-sed -i '/^-.*pam_systemd/ s/^/#/' /etc/pam.d/system-login
 # password
 echo root:ros | chpasswd
 [[ -e /usr/bin/smbd ]] && ( echo ros; echo ros ) | smbpasswd -s -a root
