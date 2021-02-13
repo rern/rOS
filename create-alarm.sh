@@ -226,15 +226,6 @@ $list
 
 [[ $? != 0 ]] && selectFeatures
 
-cat << EOF > $BOOT/var
-version=$version
-revision=$revision
-uibranch=$uibranch
-features='$features'
-rpi01=$( (( $rpi < 2 )) && echo 1 )
-col=$( tput cols )
-EOF
-
 # package mirror server
 wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
 	| dialog "${opt[@]}" --gauge "
@@ -273,7 +264,17 @@ dialog "${opt[@]}" --yesno "
 Reboot when finished?
 
 " 0 0
-[[ $? == 0 ]] && touch $BOOT/reboot
+[[ $? == 0 ]] && touch reboot=1
+
+cat << EOF > $BOOT/var
+version=$version
+revision=$revision
+uibranch=$uibranch
+features='$features'
+reboot=$reboot
+rpi01=$( (( $rpi < 2 )) && echo 1 )
+col=$( tput cols )
+EOF
 
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
