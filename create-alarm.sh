@@ -396,9 +396,14 @@ Key=\"$password\"
 	echo "$profile" > "$ROOT/etc/netctl/$ssid"
 
 	# enable on startup
-	dir=$ROOT/etc/systemd/system/sys-subsystem-net-devices-wlan0.device.wants
+	dir="$ROOT/etc/systemd/system/netctl@$ssid.service.d"
 	mkdir -p $dir
-	ln -sr $ROOT/usr/lib/systemd/system/netctl-auto@.service $dir
+	echo "\
+[Unit]
+BindsTo=sys-subsystem-net-devices-wlan0.device
+After=sys-subsystem-net-devices-wlan0.device
+" > "$dir/profile.conf"
+	ln -sr $ROOT/usr/lib/systemd/system/netctl@.service "$ROOT/etc/systemd/system/multi-user.target.wants/netctl@ssid.service"
 fi
 
 # dhcpd - disable arp
