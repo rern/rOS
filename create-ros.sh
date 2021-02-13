@@ -1,9 +1,10 @@
 #!/bin/bash
 
-. /boot/var
+trap 'rm -f /var/lib/pacman/db.lck; exit' INT
+
 col=$( tput cols )
 
-trap 'rm -f /var/lib/pacman/db.lck; exit' INT
+. /boot/var
 
 banner() {
 	echo
