@@ -226,14 +226,14 @@ $list
 
 [[ $? != 0 ]] && selectFeatures
 
-echo "\
+cat << EOF > $BOOT/var
 version=$version
 revision=$revision
 uibranch=$uibranch
-features="'"$features"'"
+features='$features'
 rpi01=$( (( $rpi < 2 )) && echo 1 )
 col=$( tput cols )
-" > $BOOT/var
+EOF
 
 # package mirror server
 wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
