@@ -108,8 +108,9 @@ ROOT: \Z1$ROOT\Z0
 5 'Raspberry Pi 64bit' )
 	file=ArchLinuxARM-rpi-
 	case $rpi in
+		0 | 1 ) touch $BOOT/rpi01;; 
 		2 | 3 ) file+=2-;;
-		4 )     file+=4-; touch $BOOT/rpi4;; # for image name (rpi3/4 - /boot/kernel7.img)
+		4 )     file+=4-;;
 		5 )     file+=aarch64-;;
 	esac
 	file+=latest.tar.gz
