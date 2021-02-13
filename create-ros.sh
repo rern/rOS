@@ -45,6 +45,8 @@ dialog "${optbox[@]}" --infobox "
 sleep 3
 
 #----------------------------------------------------------------------------
+echo
+
 banner 'Upgrade kernel and default packages ...'
 
 packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
