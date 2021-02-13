@@ -23,7 +23,7 @@ systemctl start systemd-random-seed
 
 # add private repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
-	sed -i -e '/#TotalDownload/ s/^#//'
+	sed -i -e '/#TotalDownload/ s/^#//
 ' -e '/\[core\]/ i\
 [+R]\
 SigLevel = Optional TrustAll\
