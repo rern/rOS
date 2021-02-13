@@ -395,8 +395,7 @@ Key=\"$password\"
 "
 	echo "$profile" > "$ROOT/etc/netctl/$ssid"
 
-	# enable startup
-	pwd=$PWD
+	# enable on startup
 	dir=$ROOT/etc/systemd/system/sys-subsystem-net-devices-wlan0.device.wants
 	mkdir -p $dir
 	ln -sr $ROOT/usr/lib/systemd/system/netctl-auto@.service $dir
