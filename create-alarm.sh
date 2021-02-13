@@ -399,9 +399,7 @@ Key=\"$password\"
 	pwd=$PWD
 	dir=$ROOT/etc/systemd/system/sys-subsystem-net-devices-wlan0.device.wants
 	mkdir -p $dir
-	cd $dir
-	ln -s ../../../../lib/systemd/system/netctl-auto@.service netctl-auto@wlan0.service
-	cd "$pwd"
+	ln -sr $ROOT/usr/lib/systemd/system/netctl-auto@.service $dir
 fi
 
 # dhcpd - disable arp
