@@ -226,13 +226,13 @@ $list
 
 [[ $? != 0 ]] && selectFeatures
 
-(( $rpi < 2 )) && rpi01=1
 echo "\
 version=$version
 revision=$revision
 branch=$branch
 features=$features
-rpi01=$rpi01
+rpi01=$( (( $rpi < 2 )) && echo 1 )
+col=$( tput cols )
 " > $BOOT/boot/var
 
 # package mirror server
