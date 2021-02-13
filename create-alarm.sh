@@ -233,7 +233,7 @@ branch=$branch
 features=$features
 rpi01=$( (( $rpi < 2 )) && echo 1 )
 col=$( tput cols )
-" > $BOOT/boot/var
+" > $BOOT/var
 
 # package mirror server
 wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
