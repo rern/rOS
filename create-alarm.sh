@@ -230,7 +230,7 @@ echo "\
 version=$version
 revision=$revision
 branch=$branch
-features=$features
+features="'"$features"'"
 rpi01=$( (( $rpi < 2 )) && echo 1 )
 col=$( tput cols )
 " > $BOOT/var
