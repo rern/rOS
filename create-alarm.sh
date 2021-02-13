@@ -273,6 +273,7 @@ uibranch=$uibranch
 features='$features'
 reboot=$reboot
 rpi01=$( (( $rpi < 2 )) && echo 1 )
+col=$( tput cols )
 EOF
 
 # if already downloaded, verify latest
