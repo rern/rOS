@@ -2,6 +2,8 @@
 
 trap 'rm -f /var/lib/pacman/db.lck; exit' INT
 
+sleep 1
+
 col=$( tput cols )
 
 . /boot/var
