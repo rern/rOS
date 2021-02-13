@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# with variables assigned by create-alarm.sh
+
 trap 'rm -f /var/lib/pacman/db.lck; exit' INT
 
 col=$( tput cols )
