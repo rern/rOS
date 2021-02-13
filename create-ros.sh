@@ -42,6 +42,8 @@ dialog "${optbox[@]}" --infobox "
 " 9 58
 sleep 3
 
+clear -x
+
 # dialog package
 pacman -Sy --noconfirm --needed dialog
 
