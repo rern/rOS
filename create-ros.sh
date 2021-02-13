@@ -1,13 +1,12 @@
 #!/bin/bash
 
+trap 'rm -f /var/lib/pacman/db.lck; exit' INT
+
 features=$( cat /boot/features )
 versions=( $( cat /boot/versions ) )
 version=${versions[0]}
 revision=${versions[1]}
 uibranch=${versions[2]}
-addonalias=r$version
-
-trap 'rm -f /var/lib/pacman/db.lck; exit' INT
 
 hwrevision=$( grep Revision /proc/cpuinfo )
 [[ ${hwrevision: -4:1} == 0 ]] && rpi01=1
