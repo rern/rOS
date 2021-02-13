@@ -230,13 +230,13 @@ $list
 wget -qN https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
 (( $rpi < 2 )) && rpi01=1
-sed -i "1 a\
+echo "\
 version=$version
 revision=$revision
 branch=$branch
 features=$features
 rpi01=$rpi01
-" $ROOT/root/create-ros.sh
+" > $BOOT/boot/var
 
 # package mirror server
 wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
