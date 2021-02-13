@@ -42,8 +42,6 @@ dialog "${optbox[@]}" --infobox "
 " 9 58
 sleep 3
 
-clear -x
-
 #----------------------------------------------------------------------------
 banner 'Upgrade kernel and default packages ...'
 
