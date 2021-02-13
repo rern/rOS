@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# with variables assigned by create-alarm.sh
+. /boot/var
 
 trap 'rm -f /var/lib/pacman/db.lck; exit' INT
 
@@ -176,7 +176,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 # data - settings directories
 /srv/http/bash/datareset.sh $version $revision
 # remove files and package cache
-rm -f /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
+rm -f /boot/var /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
