@@ -81,10 +81,6 @@ branch=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Branch:
 
 " 0 0 main )
-echo "\
-$version
-$revision
-$branch" > $BOOT/versions
 
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
@@ -228,11 +224,17 @@ $list
 
 " 0 0
 
-if [[ $? == 0 ]]; then
-	echo $features > $BOOT/features
-else
-	selectFeatures
-fi
+[[ $? != 0 ]] && selectFeatures
+
+# get create-ros.sh
+wget -qN https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
+chmod 755 $ROOT/root/create-ros.sh
+sed -i "1 a\
+version=$version
+revision=$revision
+branch=$branch
+features=$features
+" $ROOT/root/create-ros.sh
 
 # package mirror server
 wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
@@ -422,10 +424,6 @@ sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
 # set root password
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
-
-# get create-ros.sh
-wget -qN https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
-chmod 755 $ROOT/root/create-ros.sh
 
 # packages mirror
 [[ -n $ccode ]] && sed -i '/^Server/ s|//.*mirror|//'$ccode'.mirror|' $ROOT/etc/pacman.d/mirrorlist
