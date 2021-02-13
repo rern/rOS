@@ -229,11 +229,13 @@ $list
 # get create-ros.sh
 wget -qN https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
+(( $rpi < 2 )) && rpi01=1
 sed -i "1 a\
 version=$version
 revision=$revision
 branch=$branch
 features=$features
+rpi01=$rpi01
 " $ROOT/root/create-ros.sh
 
 # package mirror server
