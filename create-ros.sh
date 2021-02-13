@@ -100,7 +100,7 @@ chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
 # alsa
 alsactl store
 # fix 'alsactl restore' errors
-sed '/^TEST/ s/^/#/' /usr/lib/udev/rules.d/90-alsa-restore.rules > /etc/udev/rules.d/90-alsa-restore.rules
+#sed '/^TEST/ s/^/#/' /usr/lib/udev/rules.d/90-alsa-restore.rules > /etc/udev/rules.d/90-alsa-restore.rules
 # bluetooth
 if [[ -e /usr/bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
