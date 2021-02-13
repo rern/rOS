@@ -226,9 +226,6 @@ $list
 
 [[ $? != 0 ]] && selectFeatures
 
-# get create-ros.sh
-wget -qN https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
-chmod 755 $ROOT/root/create-ros.sh
 (( $rpi < 2 )) && rpi01=1
 echo "\
 version=$version
@@ -429,6 +426,10 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 
 # packages mirror
 [[ -n $ccode ]] && sed -i '/^Server/ s|//.*mirror|//'$ccode'.mirror|' $ROOT/etc/pacman.d/mirrorlist
+
+# get create-ros.sh
+wget -q https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
+chmod 755 $ROOT/root/create-ros.sh
 
 dialog "${optbox[@]}" --msgbox "
 
