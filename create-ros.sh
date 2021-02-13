@@ -2,7 +2,6 @@
 
 features=$( cat /boot/features )
 versions=( $( cat /boot/versions ) )
-rm /boot/{features,versions}
 
 version=${versions[0]}
 revision=${versions[1]}
@@ -186,7 +185,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 # data - settings directories
 /srv/http/bash/datareset.sh $version $revision
 # remove files and package cache
-rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
+rm -f /boot/{features,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
