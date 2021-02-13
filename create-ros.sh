@@ -8,8 +8,8 @@ version=${versions[0]}
 revision=${versions[1]}
 uibranch=${versions[2]}
 [[ -e /boot/rpi01 ]] && rpi01=1
-
 col=$( tput cols )
+
 banner() {
 	echo
 	def='\e[0m'
