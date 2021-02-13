@@ -34,7 +34,8 @@ systemctl start systemd-random-seed
 
 # add private repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
-	sed -i '/\[core\]/ i\
+	sed -i -e '/#TotalDownload/ s/^#//
+' -e '/\[core\]/ i\
 [+R]\
 SigLevel = Optional TrustAll\
 Server = https://rern.github.io/$arch\
