@@ -184,7 +184,7 @@ if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
 	sleep 30
 fi
 
-if [[ -e /boot/reboot ]]; then
+if [[ -n $reboot ]]; then
 	rm /boot/reboot
 	dialog "${optbox[@]}" --infobox "
 
