@@ -417,7 +417,7 @@ sed -i -e 's/#\(PermitRootLogin \).*/\1yes/
 ' -e 's/#\(PermitEmptyPasswords \).*/\1yes/
 ' $ROOT/etc/ssh/sshd_config
 # ssh - fix: long wait login
-sed -i '/^-.*pam_systemd/ s/^/#/' /etc/pam.d/system-login
+sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
 
 # set root password
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
