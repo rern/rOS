@@ -543,4 +543,4 @@ sed -i "/$rpiip/ d" ~/.ssh/known_hosts
 
 clear -x
 
-ssh -t -o StrictHostKeyChecking=no root@$rpiip /root/create-ros.sh
+ssh -T -o StrictHostKeyChecking=no root@$rpiip /root/create-ros.sh
