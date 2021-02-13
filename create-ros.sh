@@ -4,7 +4,6 @@
 
 trap 'rm -f /var/lib/pacman/db.lck; exit' INT
 
-col=$( tput cols )
 banner() {
 	echo
 	def='\e[0m'
