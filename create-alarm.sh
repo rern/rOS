@@ -77,10 +77,14 @@ revision=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Revision:
 
 " 0 0 ${addons[1]} )
-uibranch=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+branch=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Branch:
 
 " 0 0 main )
+echo "\
+$version
+$revision
+$branch" > $BOOT/versions
 
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
@@ -105,7 +109,7 @@ ROOT: \Z1$ROOT\Z0
 	file=ArchLinuxARM-rpi-
 	case $rpi in
 		2 | 3 ) file+=2-;;
-		4 )     file+=4-;;
+		4 )     file+=4-; touch $BOOT/rpi4;; # for image name (rpi3/4 - /boot/kernel7.img)
 		5 )     file+=aarch64-;;
 	esac
 	file+=latest.tar.gz
@@ -224,7 +228,11 @@ $list
 
 " 0 0
 
-[[ $? != 0 ]] && selectFeatures
+if [[ $? == 0 ]]; then
+	echo $features > $BOOT/features
+else
+	selectFeatures
+fi
 
 # package mirror server
 wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
@@ -264,17 +272,7 @@ dialog "${opt[@]}" --yesno "
 Reboot when finished?
 
 " 0 0
-[[ $? == 0 ]] && touch reboot=1
-
-cat << EOF > $BOOT/var
-version=$version
-revision=$revision
-uibranch=$uibranch
-features='$features'
-reboot=$reboot
-rpi01=$( (( $rpi < 2 )) && echo 1 )
-col=$( tput cols )
-EOF
+[[ $? == 0 ]] && touch $BOOT/reboot
 
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
@@ -396,15 +394,13 @@ Key=\"$password\"
 "
 	echo "$profile" > "$ROOT/etc/netctl/$ssid"
 
-	# enable on startup
-	dir="$ROOT/etc/systemd/system/netctl@$ssid.service.d"
+	# enable startup
+	pwd=$PWD
+	dir=$ROOT/etc/systemd/system/sys-subsystem-net-devices-wlan0.device.wants
 	mkdir -p $dir
-	echo "\
-[Unit]
-BindsTo=sys-subsystem-net-devices-wlan0.device
-After=sys-subsystem-net-devices-wlan0.device
-" > "$dir/profile.conf"
-	ln -sr $ROOT/usr/lib/systemd/system/netctl@.service "$ROOT/etc/systemd/system/multi-user.target.wants/netctl@$ssid.service"
+	cd $dir
+	ln -s ../../../../lib/systemd/system/netctl-auto@.service netctl-auto@wlan0.service
+	cd "$pwd"
 fi
 
 # dhcpd - disable arp
@@ -421,18 +417,18 @@ sed -i -e 's/#\(PermitRootLogin \).*/\1yes/
 ' -e 's/#\(PermitEmptyPasswords \).*/\1yes/
 ' $ROOT/etc/ssh/sshd_config
 # ssh - fix: long wait login
-sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
+sed -i '/^-.*pam_systemd/ s/^/#/' /etc/pam.d/system-login
 
 # set root password
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 
+# get create-ros.sh
+wget -qN https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
+chmod 755 $ROOT/root/create-ros.sh
+
 # packages mirror
 [[ -n $ccode ]] && sed -i '/^Server/ s|//.*mirror|//'$ccode'.mirror|' $ROOT/etc/pacman.d/mirrorlist
-
-# get create-ros.sh
-wget -q https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
-chmod 755 $ROOT/root/create-ros.sh
 
 dialog "${optbox[@]}" --msgbox "
 
@@ -528,7 +524,7 @@ if [[ $ans == 1 ]]; then
 - Try starting over again
 
 " 0 0
-		clear -x && exit
+		clear && exit
 	fi
 fi
 
@@ -541,6 +537,6 @@ rpiip=$( dialog "${opt[@]}" --output-fd 1 --cancel-label Rescan --inputbox "
 
 sed -i "/$rpiip/ d" ~/.ssh/known_hosts
 
-clear -x
+clear
 
-ssh -tt -o StrictHostKeyChecking=no root@$rpiip /root/create-ros.sh
+ssh -t -o StrictHostKeyChecking=no root@$rpiip /root/create-ros.sh
