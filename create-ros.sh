@@ -1,11 +1,20 @@
 #!/bin/bash
 
+features=$( cat /boot/features )
+versions=( $( cat /boot/versions ) )
+rm /boot/{features,versions}
+
+version=${versions[0]}
+revision=${versions[1]}
+uibranch=${versions[2]}
+addonalias=r$version
+
 trap 'rm -f /var/lib/pacman/db.lck; exit' INT
 
-sleep 1
+hwrevision=$( grep Revision /proc/cpuinfo )
+[[ ${hwrevision: -4:1} == 0 ]] && rpi01=1
 
-. /boot/var
-
+col=$( tput cols )
 banner() {
 	echo
 	def='\e[0m'
@@ -25,8 +34,7 @@ systemctl start systemd-random-seed
 
 # add private repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
-	sed -i -e '/#TotalDownload/ s/^#//
-' -e '/\[core\]/ i\
+	sed -i '/\[core\]/ i\
 [+R]\
 SigLevel = Optional TrustAll\
 Server = https://rern.github.io/$arch\
@@ -44,9 +52,10 @@ dialog "${optbox[@]}" --infobox "
 " 9 58
 sleep 3
 
-#----------------------------------------------------------------------------
-echo
+# dialog package
+pacman -Sy --noconfirm --needed dialog
 
+#----------------------------------------------------------------------------
 banner 'Upgrade kernel and default packages ...'
 
 packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
@@ -56,8 +65,8 @@ if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
 fi
 
-pacman -Syu --noconfirm
-[[ $? != 0 ]] && pacman -Syu --noconfirm
+pacman -Syu --noconfirm --needed
+[[ $? != 0 ]] && pacman -Syu --noconfirm --needed
 
 banner 'Install packages ...'
 
@@ -88,10 +97,10 @@ banner 'Configure ...'
 chown http:http /etc/fstab
 chown -R http:http /etc/netctl /etc/systemd/network /srv/http
 chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
-# alsa init state
+# alsa
 alsactl store
 # fix 'alsactl restore' errors
-#sed '/^TEST/ s/^/#/' /usr/lib/udev/rules.d/90-alsa-restore.rules > /etc/udev/rules.d/90-alsa-restore.rules
+sed '/^TEST/ s/^/#/' /usr/lib/udev/rules.d/90-alsa-restore.rules > /etc/udev/rules.d/90-alsa-restore.rules
 # bluetooth
 if [[ -e /usr/bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
@@ -177,7 +186,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 # data - settings directories
 /srv/http/bash/datareset.sh $version $revision
 # remove files and package cache
-rm -f /boot/var /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
+rm /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
@@ -188,7 +197,7 @@ if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
 	sleep 30
 fi
 
-if [[ -n $reboot ]]; then
+if [[ -e /boot/reboot ]]; then
 	rm /boot/reboot
 	dialog "${optbox[@]}" --infobox "
 
