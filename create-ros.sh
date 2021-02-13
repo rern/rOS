@@ -2,10 +2,6 @@
 
 trap 'rm -f /var/lib/pacman/db.lck; exit' INT
 
-addonalias=r$version
-hwrevision=$( grep Revision /proc/cpuinfo )
-[[ ${hwrevision: -4:1} == 0 ]] && rpi01=1
-
 col=$( tput cols )
 banner() {
 	echo
