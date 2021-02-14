@@ -1,5 +1,7 @@
 #!/bin/bash
 
+trap exit INT
+
 features=$( cat /boot/features )
 versions=( $( cat /boot/versions ) )
 version=${versions[0]}
