@@ -172,8 +172,8 @@ echo -n "\
 $version
 $revision
 $branch
-$rpi01
 $COLUMNS
+$rpi01
 " > $BOOT/versions
 
 # features
