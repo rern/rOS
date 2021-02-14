@@ -138,24 +138,28 @@ cp /usr/share/mpdscribble/mpdscribble.conf.example /etc/mpdscribble.conf
 ln -sf /srv/http/bash/motd.sh /etc/profile.d/
 # password
 echo root:ros | chpasswd
-[[ -e /usr/bin/smbd ]] && ( echo ros; echo ros ) | smbpasswd -s -a root
-sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
-' -e 's/.*\(PrintLastLog \).*/\1no/
-' /etc/ssh/sshd_config
-# no samba
-[[ ! -e /usr/bin/samba ]] && rm -rf /etc/samba /etc/systemd/system/wsdd.service /usr/local/bin/wsdd.py
-# no shairport-sync
-[[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
-# no snapcast
-[[ ! -e /usr/bin/snapclient ]] && rm /etc/default/snapclient
-# spotifyd
-#ln -sf /usr/lib/systemd/{user,system}/spotifyd.service
 # user - set expire to none
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
 	chage -E -1 $user
 done
-# upmpdcli - fix: missing symlink and init RSA key
+# sshd
+sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
+' -e 's/.*\(PrintLastLog \).*/\1no/
+' /etc/ssh/sshd_config
+# samba
+if [[ -e /usr/bin/smbd ]]; then
+	( echo ros; echo ros ) | smbpasswd -s -a root
+else
+	rm -rf /etc/samba /etc/systemd/system/wsdd.service
+fi
+# no shairport-sync
+[[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
+# no snapcast
+[[ ! -e /usr/bin/snapclient ]] && rm /etc/default/snapclient
+# no spotifyd
+[[ ! -e /usr/bin/spotifyd ]] && rm /etc/spotifyd.conf
+# upmpdcli - init RSA key
 if [[ -e /usr/bin/upmpdcli ]]; then
 	mpd --no-config &> /dev/null
 	upmpdcli &> /dev/null &
