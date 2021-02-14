@@ -273,7 +273,7 @@ ccode=${url[$code]}
 
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
-	wget -q http://os.archlinuxarm.org/os/$file.md5 \
+	wget -qO $file.md5 http://os.archlinuxarm.org/os/$file.md5 \
 		| dialog "${opt[@]}" --gauge "
   Verify already downloaded file ...
 " 9 50
