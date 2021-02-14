@@ -279,7 +279,6 @@ if [[ -e $file ]]; then
 " 9 50
 	md5sum --quiet -c $file.md5 || rm $file
 fi
-rm $file.md5
 
 # download
 if [[ -e $file ]]; then
@@ -314,6 +313,8 @@ Run \Z1./create-alarm.sh\Z0 again.
 		exit
 	fi
 fi
+
+rm $file.md5
 
 # expand
 ( pv -n $file \
