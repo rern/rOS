@@ -68,15 +68,13 @@ if [[ -z $mount ]]; then
 fi
 
 dev=/dev/$( echo $sd | awk -F'[][]' '{print $4}' )
-detail="\
-$( echo $sd | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
-$mount"
 
 dialog "${optbox[@]}" --yesno "
 Confirm micro SD card: \Z1$dev\Z0
 
 Detail:
-$detail
+$( echo $sd | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
+$mount
 
 " 0 0
 [[ $? != 0 ]] && exit
