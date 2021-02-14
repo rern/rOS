@@ -73,18 +73,19 @@ $detail
 
 part=${dev}2
 
-mkdir -p BOOT ROOT
+if ! mount | grep -q $dev; then
+	mkdir -p BOOT ROOT
 
-mount ${dev}1 BOOT
-mount $part ROOT
+	mount ${dev}1 BOOT
+	mount $part ROOT
+fi
 
 if [[ ! -e BOOT/config.txt ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1$dev\Z0 is not \Z1r\Z0Audio.
 
 " 0 0
-	umount -l BOOT ROOT
-	rmdir BOOT ROOT
+	rmdir BOOT ROOT &> /dev/null
 	exit
 fi
 
@@ -104,24 +105,18 @@ imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 Image file:
 " 0 0 rAudio-$version-RPi$model.img.xz )
 
-if [[ $? != 0 ]]; then
-	umount -l BOOT ROOT
-	rmdir BOOT ROOT
-	exit
-fi
-
 # auto expand root partition
 touch BOOT/expand
 
-clear
+clear -x
 
 banner 'Shrink ROOT partition ...'
 
 partsize=$( fdisk -l $part | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $part | awk '{print $3}' )
 
-umount -l -v BOOT ROOT
-rmdir BOOT ROOT
+umount -l -v ${dev}1 ${dev}2
+rmdir BOOT ROOT &> /dev/null
 e2fsck -fy $part
 
 shrink() {
