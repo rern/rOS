@@ -59,7 +59,7 @@ if [[ -z $sd ]]; then
 	exit
 fi
 
-mount=$( mount | grep 'BOOT\|ROOT' | cut -d' ' -f1-3 )
+mount=$( mount | grep '/dev.*BOOT\|/dev.*ROOT' | cut -d' ' -f1-3 )
 if [[ -z $mount ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1SD card not mounted.\Z0
@@ -79,8 +79,8 @@ $mount
 " 0 0
 [[ $? != 0 ]] && exit
 
-BOOT=$( mount | grep BOOT | cut -d' ' -f3 )
-ROOT=$( mount | grep ROOT | cut -d' ' -f3 )
+BOOT=$( mount | grep /dev.*BOOT | cut -d' ' -f3 )
+ROOT=$( mount | grep /dev.*ROOT | cut -d' ' -f3 )
 
 if [[ ! -e $BOOT/config.txt ]]; then
 	dialog "${optbox[@]}" --infobox "
