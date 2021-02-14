@@ -62,7 +62,7 @@ if [[ -n $warnings ]]; then
 $warnings
 
 " 0 0
-	clear && exit
+	exit
 fi
 
 # version - branch
@@ -95,7 +95,7 @@ BOOT: \Z1$BOOT\Z0
 ROOT: \Z1$ROOT\Z0
 
 " 0 0
-	[[ $? == 1 ]] && clear && exit
+	[[ $? == 1 ]] && exit
 
 	rpi=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Target:\Z0
@@ -491,7 +491,7 @@ $nmap
 Try starting over again.
 
 " 0 0
-		clear && exit
+		exit
 	fi
 }
 scanIP
