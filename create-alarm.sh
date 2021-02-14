@@ -495,7 +495,7 @@ $nmap
 Try starting over again.
 
 " 0 0
-		exit
+		clear -x && exit
 	fi
 }
 scanIP
@@ -524,7 +524,7 @@ if [[ $ans == 1 ]]; then
 - Try starting over again
 
 " 0 0
-		exit
+		clear -x && exit
 	fi
 fi
 
@@ -538,3 +538,5 @@ rpiip=$( dialog "${opt[@]}" --output-fd 1 --cancel-label Rescan --inputbox "
 sed -i "/$rpiip/ d" ~/.ssh/known_hosts
 
 ssh -tt -o StrictHostKeyChecking=no root@$rpiip /root/create-ros.sh
+
+clear -x
