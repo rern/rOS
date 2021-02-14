@@ -60,7 +60,12 @@ if [[ -z $sd ]]; then
 fi
 
 dev=/dev/$( echo $sd | awk -F'[][]' '{print $4}' )
+BOOT=$( mount | grep BOOT | cut -d' ' -f1 )
+ROOT=$( mount | grep ROOT | cut -d' ' -f1 )
 detail=$( echo $sd | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
+detail+="
+BOOT = $BOOT
+ROOT = $ROOT"
 
 dialog "${optbox[@]}" --yesno "
 Confirm micro SD card: \Z1$dev\Z0
@@ -72,15 +77,6 @@ $detail
 [[ $? != 0 ]] && exit
 
 part=${dev}2
-
-if ! mount | grep -q $dev; then
-	$BOOT=BOOT
-	$ROOT=ROOT
-	mkdir -p BOOT ROOT
-
-	mount ${dev}1 BOOT
-	mount $part ROOT
-fi
 
 if [[ ! -e $BOOT/config.txt ]]; then
 	dialog "${optbox[@]}" --infobox "
