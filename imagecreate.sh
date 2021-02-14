@@ -62,8 +62,8 @@ fi
 dev=/dev/$( echo $sd | awk -F'[][]' '{print $4}' )
 detail=$( echo $sd | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
 detail+="
-BOOT = $( mount | grep BOOT | cut -d' ' -f1-3 )
-ROOT = $( mount | grep ROOT | cut -d' ' -f1-3 )"
+$( mount | grep BOOT | cut -d' ' -f1-3 )
+$( mount | grep ROOT | cut -d' ' -f1-3 )"
 
 dialog "${optbox[@]}" --yesno "
 Confirm micro SD card: \Z1$dev\Z0
