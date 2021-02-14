@@ -21,10 +21,10 @@ cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 url=https://github.com/rern/rOS/raw/main
 
 case $cmd in
-	1 ) bash <( curl -L $url/create.sh );;
-	2 ) bash <( curl -L $url/reset.sh );;
-	3 ) bash <( curl -L $url/imagecreate.sh );;
-	4 ) bash <( curl -L $url/imagewrite.sh );;
+	1 ) bash <( curl -sL $url/create.sh );;
+	2 ) bash <( curl -sL $url/reset.sh );;
+	3 ) bash <( curl -sL $url/imagecreate.sh );;
+	4 ) bash <( curl -sL $url/imagewrite.sh );;
 	5 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  IP:
 " 0 0 192.168.1. )
