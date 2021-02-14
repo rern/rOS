@@ -115,7 +115,6 @@ disable_overscan=1
 dtparam=audio=on
 dtparam=krnbt=on" > /boot/config.txt
 fi
-
 # chromium
 if [[ -e /usr/bin/chromium ]]; then
 	sed -i 's/\(console=\).*/\1tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt # boot splash
