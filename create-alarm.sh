@@ -292,7 +292,8 @@ else
 	( wget -O $file http://os.archlinuxarm.org/os/$file 2>&1 \
 		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
 			print "XXX\n"substr($0,63,3)
-			print "\\nDownload \\Z1Arch Linux Arm\\Z0\\n"
+			print "\\nDownload\\n"
+			print "\\Z1$file\\Z0\\n"
 			print "Time left: "substr($0,74,5)"\nXXX" }' ) \
 		| dialog "${opt[@]}" --gauge "
 Connecting ...
