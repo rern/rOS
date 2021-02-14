@@ -10,6 +10,8 @@ uibranch=${versions[2]}
 col=${versions[3]}
 rpi01=${versions[4]}
 
+col=80 # temp: drag terminal width when stdout not scroll
+
 banner() {
 	echo
 	def='\e[0m'
