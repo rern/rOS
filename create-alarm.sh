@@ -533,4 +533,4 @@ rpiip=$( dialog "${opt[@]}" --output-fd 1 --cancel-label Rescan --inputbox "
 
 sed -i "/$rpiip/ d" ~/.ssh/known_hosts
 
-ssh -tt -o StrictHostKeyChecking=no root@$rpiip /root/create-ros.sh
+ssh -tt root@$rpiip /root/create-ros.sh
