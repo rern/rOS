@@ -7,7 +7,8 @@ versions=( $( cat /boot/versions ) )
 version=${versions[0]}
 revision=${versions[1]}
 uibranch=${versions[2]}
-rpi01=${versions[3]}
+col=${versions[3]}
+rpi01=${versions[4]}
 
 banner() {
 	echo
