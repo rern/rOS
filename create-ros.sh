@@ -189,21 +189,12 @@ if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
 	sleep 30
 fi
 
-if [[ -e /boot/reboot ]]; then
-	rm /boot/reboot
-	dialog "${optbox[@]}" --infobox "
+rm /boot/reboot
+dialog "${optbox[@]}" --infobox "
 
             \Z1r\Z0Audio $version created successfully.
 
                        \Z1Reboot\Z0 ...
 " 9 58
-else
-	dialog "${optbox[@]}" --msgbox "
-
-            \Z1r\Z0Audio $version created successfully.
-
-                Press \Z1Enter\Z0 to reboot
-" 9 58
-fi
 
 shutdown -r now
