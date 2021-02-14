@@ -27,7 +27,7 @@ pacman-key --populate archlinuxarm
 # fill entropy pool (fix - Kernel entropy pool is not initialized)
 systemctl start systemd-random-seed
 
-# add private repo
+# add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
 	sed -i -e '/#TotalDownload/ s/^#//
 ' -e '/\[core\]/ i\
