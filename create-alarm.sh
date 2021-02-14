@@ -81,10 +81,12 @@ branch=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Branch:
 
 " 0 0 main )
-echo "\
+echo -n "\
 $version
 $revision
-$branch" > $BOOT/versions
+$branch
+$COLUMNS
+" > $BOOT/versions
 
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
