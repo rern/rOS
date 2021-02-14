@@ -59,11 +59,18 @@ if [[ -z $sd ]]; then
 	exit
 fi
 
+mount=$( mount | grep 'BOOT\|ROOT' | cut -d' ' -f1-3 )
+if [[ -z $mount ]]; then
+	dialog "${optbox[@]}" --infobox "
+\Z1SD card not mounted.\Z0
+" 0 0
+	exit
+fi
+
 dev=/dev/$( echo $sd | awk -F'[][]' '{print $4}' )
 detail=$( echo $sd | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
 detail+="
-$( mount | grep BOOT | cut -d' ' -f1-3 )
-$( mount | grep ROOT | cut -d' ' -f1-3 )"
+$mount"
 
 dialog "${optbox[@]}" --yesno "
 Confirm micro SD card: \Z1$dev\Z0
