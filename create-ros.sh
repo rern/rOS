@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'rm -f /var/lib/pacman/db.lck; exit' INT
+rm -f /var/lib/pacman/db.lck
 
 features=$( cat /boot/features )
 versions=( $( cat /boot/versions ) )
