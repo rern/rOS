@@ -82,7 +82,6 @@ if [[ ! -e $BOOT/config.txt ]]; then
 \Z1$dev\Z0 is not \Z1r\Z0Audio.
 
 " 0 0
-	rmdir BOOT ROOT &> /dev/null
 	exit
 fi
 
@@ -114,7 +113,6 @@ partsize=$( fdisk -l $part | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $part | awk '{print $3}' )
 
 umount -l -v ${dev}1 ${dev}2
-rmdir BOOT ROOT &> /dev/null
 e2fsck -fy $part
 
 shrink() {
