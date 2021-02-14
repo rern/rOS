@@ -295,7 +295,7 @@ else
 		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
 			print "XXX\n"substr($0,63,3)
 			print "\\nDownload\\n"
-			print "\\Z1$file\\Z0\\n"
+			print "\\Z1'$file'\\Z0\\n"
 			print "Time left: "substr($0,74,5)"\nXXX" }' ) \
 		| dialog "${opt[@]}" --gauge "
 Connecting ...
