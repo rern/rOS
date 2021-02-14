@@ -30,8 +30,8 @@ dialog "${optbox[@]}" --infobox "
 " 9 58
 sleep 3
 
-BOOT=$( mount | awk '/dev\/sd.*\/BOOT/ {print $3}' )
-ROOT=$( mount | awk '/dev\/sd.*\/ROOT/ {print $3}' )
+BOOT=$( mount | grep /dev.*BOOT | cut -d' ' -f3 )
+ROOT=$( mount | grep /dev.*ROOT | cut -d' ' -f3 )
 
 # check mounts
 [[ -z $BOOT ]] && warnings+="
