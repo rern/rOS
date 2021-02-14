@@ -1,7 +1,5 @@
 #!/bin/bash
 
-rm -f /var/lib/pacman/db.lck
-
 features=$( cat /boot/features )
 versions=( $( cat /boot/versions ) )
 version=${versions[0]}
@@ -58,6 +56,8 @@ if [[ -e /boot/kernel8.img ]]; then
 	packages+='linux-raspberrypi4 raspberrypi-bootloader raspberrypi-bootloader-x raspberrypi-firmware'
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
 fi
+
+rm -f /var/lib/pacman/db.lck
 
 pacman -Syu --noconfirm
 [[ $? != 0 ]] && pacman -Syu --noconfirm
