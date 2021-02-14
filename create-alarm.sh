@@ -173,6 +173,7 @@ $version
 $revision
 $branch
 $rpi01
+$COLUMNS
 " > $BOOT/versions
 
 # features
