@@ -48,9 +48,6 @@ dialog "${optbox[@]}" --infobox "
 " 9 58
 sleep 3
 
-# dialog package
-pacman -Sy --noconfirm --needed dialog
-
 echo
 #----------------------------------------------------------------------------
 banner 'Upgrade kernel and default packages ...'
@@ -62,8 +59,8 @@ if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
 fi
 
-pacman -Syu --noconfirm --needed
-[[ $? != 0 ]] && pacman -Syu --noconfirm --needed
+pacman -Syu --noconfirm
+[[ $? != 0 ]] && pacman -Syu --noconfirm
 
 banner 'Install packages ...'
 
@@ -96,8 +93,6 @@ chown -R http:http /etc/netctl /etc/systemd/network /srv/http
 chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
 # alsa
 alsactl store
-# fix 'alsactl restore' errors
-sed '/^TEST/ s/^/#/' /usr/lib/udev/rules.d/90-alsa-restore.rules > /etc/udev/rules.d/90-alsa-restore.rules
 # bluetooth
 if [[ -e /usr/bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
@@ -142,9 +137,6 @@ fi
 cp /usr/share/mpdscribble/mpdscribble.conf.example /etc/mpdscribble.conf
 # motd
 ln -sf /srv/http/bash/motd.sh /etc/profile.d/
-# disable again after upgrade
-systemctl daemon-reload
-systemctl disable systemd-networkd-wait-online
 # password
 echo root:ros | chpasswd
 [[ -e /usr/bin/smbd ]] && ( echo ros; echo ros ) | smbpasswd -s -a root
@@ -181,11 +173,11 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 # data - settings directories
 /srv/http/bash/datareset.sh $version $revision
 # remove files and package cache
-rm rm /boot/{features,rpi01,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
+rm /boot/{features,rpi01,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
-[[ $( mount | grep ' on / ' | cut -d' ' -f1 | head -c 8 ) == /dev/mmc ]] && touch /boot/expand
+touch /boot/expand
 
 if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
 	echo Wait for upmpdcli to finish RSA key ...
