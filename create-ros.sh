@@ -14,9 +14,9 @@ banner() {
 	echo
 	def='\e[0m'
 	bg='\e[44m'
-    printf "$bg%*s$def\n" 80
-    printf "$bg%-80s$def\n" "  $1"
-    printf "$bg%*s$def\n" 80
+    printf "$bg%*s$def\n" $col
+    printf "$bg%-${col}s$def\n" "  $1"
+    printf "$bg%*s$def\n" $col
 }
 
 banner 'Initialize Arch Linux Arm ...'
