@@ -137,7 +137,7 @@ su
 pacman-mirrors -c COUNRTY
 ```
 - Create script
-	- Set terminal width to default 80 to avoid output scrolling bug
+	- Drag terminal width if screen output not srolll.
 ```sh
 bash <( wget -qO - https://github.com/rern/rOS/raw/main/create-alarm.sh )
 ```
