@@ -76,8 +76,6 @@ $detail
 " 0 0
 [[ $? != 0 ]] && exit
 
-part=${dev}2
-
 if [[ ! -e $BOOT/config.txt ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1$dev\Z0 is not \Z1r\Z0Audio.
@@ -110,6 +108,7 @@ clear -x
 
 banner 'Shrink ROOT partition ...'
 
+part=${dev}2
 partsize=$( fdisk -l $part | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $part | awk '{print $3}' )
 
