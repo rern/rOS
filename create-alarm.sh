@@ -527,7 +527,7 @@ if [[ $ans == 1 ]]; then
 - Try starting over again
 
 " 0 0
-		clear && exit
+		clear -x && exit
 	fi
 fi
 
@@ -540,6 +540,6 @@ rpiip=$( dialog "${opt[@]}" --output-fd 1 --cancel-label Rescan --inputbox "
 
 sed -i "/$rpiip/ d" ~/.ssh/known_hosts
 
-clear
+clear -x
 
 ssh -tt -o StrictHostKeyChecking=no root@$rpiip /root/create-ros.sh
