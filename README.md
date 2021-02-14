@@ -137,8 +137,8 @@ su
 pacman-mirrors -c COUNRTY
 ```
 - Create script
+	- Set terminal width to 80 to avoid output scrolling bug
 ```sh
-# ssh - no stdout | sh
 bash <( wget -qO - https://github.com/rern/rOS/raw/main/create-alarm.sh )
 ```
 - Errors or too slow download: press `Ctrl+C` and run `./create-alarm.sh` again (while in `Create Arch Linux Arm` mode only)
