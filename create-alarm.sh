@@ -383,21 +383,19 @@ fi
 
 # wifi
 if [[ $ssid ]]; then
-	# profile
-	profile="Interface=wlan0
+	profile=$ROOT/etc/netctl/$ssid
+	echo -n "\
+Interface=wlan0
 Connection=wireless
 IP=dhcp
-ESSID=\"$ssid\""
-	[[ -n $wpa ]] && profile+="
+ESSID=\"$ssid\"
 Security=$wpa
 Key=\"$password\"
-"
-	echo "$profile" > "$ROOT/etc/netctl/$ssid"
-
-	# enable startup
+" > "$profile"
+	[[ -z $wpa ]] && sed -i '/Security=\|Key=/ d' "$profile"
 	dir="$ROOT/etc/systemd/system/netctl@$ssid.service.d"
 	mkdir -p $dir
-	echo "\
+	echo -n "\
 [Unit]
 BindsTo=sys-subsystem-net-devices-wlan0.device
 After=sys-subsystem-net-devices-wlan0.device
