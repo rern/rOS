@@ -268,13 +268,6 @@ code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 "${clist[@]}" )
 ccode=${url[$code]}
 
-# reboot
-dialog "${opt[@]}" --yesno "
-Reboot when finished?
-
-" 0 0
-[[ $? == 0 ]] && touch $BOOT/reboot
-
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
 	wget -q http://os.archlinuxarm.org/os/$file.md5 \
