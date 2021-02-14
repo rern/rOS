@@ -393,14 +393,9 @@ Security=$wpa
 Key=\"$password\"
 " > "$profile"
 	[[ -z $wpa ]] && sed -i '/Security=\|Key=/ d' "$profile"
-	dir="$ROOT/etc/systemd/system/netctl@$ssid.service.d"
+	dir=$ROOT/etc/systemd/system/sys-subsystem-net-devices-wlan0.device.wants
 	mkdir -p $dir
-	echo -n "\
-[Unit]
-BindsTo=sys-subsystem-net-devices-wlan0.device
-After=sys-subsystem-net-devices-wlan0.device
-" > "$dir/profile.conf"
-	ln -sr $ROOT/usr/lib/systemd/system/netctl@.service "$ROOT/etc/systemd/system/multi-user.target.wants/netctl@$ssid.service"
+	ln -sr $ROOT/usr/lib/systemd/system/netctl-auto@.service $dir
 fi
 
 # dhcpd - disable arp
