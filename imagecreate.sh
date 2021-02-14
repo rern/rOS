@@ -74,13 +74,15 @@ $detail
 part=${dev}2
 
 if ! mount | grep -q $dev; then
+	$BOOT=BOOT
+	$ROOT=ROOT
 	mkdir -p BOOT ROOT
 
 	mount ${dev}1 BOOT
 	mount $part ROOT
 fi
 
-if [[ ! -e BOOT/config.txt ]]; then
+if [[ ! -e $BOOT/config.txt ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1$dev\Z0 is not \Z1r\Z0Audio.
 
@@ -89,16 +91,16 @@ if [[ ! -e BOOT/config.txt ]]; then
 	exit
 fi
 
-if [[ -e BOOT/kernel8.img ]]; then
+if [[ -e $BOOT/kernel8.img ]]; then
 	model=64
-elif [[ -e BOOT/bcm2711-rpi-4-b.dtb ]]; then
+elif [[ -e $BOOT/bcm2711-rpi-4-b.dtb ]]; then
 	model=4
-elif [[ -e BOOT/kernel7.img ]]; then
+elif [[ -e $BOOT/kernel7.img ]]; then
 	model=2-3
 else
 	model=0-1
 fi
-version=$( cat ROOT/srv/http/data/system/version )
+version=$( cat $ROOT/srv/http/data/system/version )
 imagefile=rAudio-$version-RPi$model.img.xz
 
 imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
@@ -106,7 +108,7 @@ Image file:
 " 0 0 rAudio-$version-RPi$model.img.xz )
 
 # auto expand root partition
-touch BOOT/expand
+touch $BOOT/expand
 
 clear -x
 
