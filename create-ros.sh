@@ -7,17 +7,15 @@ versions=( $( cat /boot/versions ) )
 version=${versions[0]}
 revision=${versions[1]}
 uibranch=${versions[2]}
-col=${versions[3]}
 [[ -e /boot/rpi01 ]] && rpi01=1
-
 
 banner() {
 	echo
 	def='\e[0m'
 	bg='\e[44m'
-    printf "$bg%*s$def\n" $col
-    printf "$bg%-${col}s$def\n" "  $1"
-    printf "$bg%*s$def\n" $col
+    printf "$bg%*s$def\n" 80
+    printf "$bg%-80s$def\n" "  $1"
+    printf "$bg%*s$def\n" 80
 }
 
 banner 'Initialize Arch Linux Arm ...'
