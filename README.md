@@ -137,7 +137,6 @@ su
 pacman-mirrors -c COUNRTY
 ```
 - Create script
-	- Drag terminal width if screen output not srolll.
 ```sh
 bash <( wget -qO - https://github.com/rern/rOS/raw/main/create-alarm.sh )
 ```
