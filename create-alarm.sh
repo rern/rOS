@@ -82,12 +82,6 @@ branch=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 
 " 0 0 main )
 
-echo -n "\
-$version
-$revision
-$branch
-" > $BOOT/versions
-
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
 	dialog "${opt[@]}" --yesno "
@@ -110,7 +104,7 @@ ROOT: \Z1$ROOT\Z0
 5 'Raspberry Pi 64bit' )
 	file=ArchLinuxARM-rpi-
 	case $rpi in
-		0 | 1 ) touch $BOOT/rpi01;; 
+		0 | 1 ) rpi01=1;; 
 		2 | 3 ) file+=2-;;
 		4 )     file+=4-;;
 		5 )     file+=aarch64-;;
@@ -173,6 +167,13 @@ $wifi
 	[[ $? == 1 ]] && getData
 }
 getData
+
+echo -n "\
+$version
+$revision
+$branch
+$rpi01
+" > $BOOT/versions
 
 # features
     bluez='\Z1Bluez\Z0     - Bluetooth audio'
