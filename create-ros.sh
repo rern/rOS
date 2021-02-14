@@ -79,6 +79,9 @@ rm *.zip /tmp/config/*.* /tmp/config/.* 2> /dev/null
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
 cp -r /tmp/config/* /
+chown http:http /etc/fstab
+chown -R http:http /etc/netctl /etc/systemd/network /srv/http
+chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
 
 if [[ -n $rpi01 ]]; then
 	sed -i '/^.Service/,$ d' /etc/systemd/system/mpd.service.d/override.conf
@@ -88,9 +91,6 @@ fi
 #---------------------------------------------------------------------------------
 banner 'Configure ...'
 
-chown http:http /etc/fstab
-chown -R http:http /etc/netctl /etc/systemd/network /srv/http
-chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
 # alsa
 alsactl store
 # bluetooth
