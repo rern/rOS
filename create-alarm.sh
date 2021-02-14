@@ -358,40 +358,32 @@ $partuuidBOOT  /boot  vfat  defaults,noatime  0  0
 $partuuidROOT  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
 if [[ $rpi != 5 ]]; then
 	# cmdline.txt
-	cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N \
-dwc_otg.lpm_enable=0 elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1"
+	echo "root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N \
+dwc_otg.lpm_enable=0 elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1" > $BOOT/cmdline.txt
+	[[ $rpi == 0 ]] && sed -i 's/ isolcpus=3//' $BOOT/cmdline.txt
 	# config.txt
-	config="\
-force_turbo=1
-hdmi_drive=2
-over_voltage=2
+	cat << EOF > $BOOT/config.txt
 gpu_mem=32
 initramfs initramfs-linux.img followkernel
 max_usb_current=1
 disable_splash=1
 disable_overscan=1
 dtparam=audio=on
-dtparam=krnbt=on"
-	if [[ $rpi == 0 ]]; then
-		cmdline=${cmdline/ isolcpus=3}
-	else
-		config=$( sed '/force_turbo\|hdmi_drive\|over_voltage/ d' <<<"$config" )
-	fi
-	echo $cmdline > $BOOT/cmdline.txt
-	echo "$config" > $BOOT/config.txt
+dtparam=krnbt=on
+EOF
 fi
 
 # wifi
 if [[ $ssid ]]; then
 	profile=$ROOT/etc/netctl/$ssid
-	echo -n "\
+	cat << EOF > $profile
 Interface=wlan0
 Connection=wireless
 IP=dhcp
-ESSID=\"$ssid\"
+ESSID="$ssid"
 Security=$wpa
-Key=\"$password\"
-" > "$profile"
+Key="$password"
+EOF
 	[[ -z $wpa ]] && sed -i '/Security=\|Key=/ d' "$profile"
 	dir=$ROOT/etc/systemd/system/sys-subsystem-net-devices-wlan0.device.wants
 	mkdir -p $dir
