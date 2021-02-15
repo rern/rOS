@@ -105,19 +105,18 @@ fi
 # aarch64
 if [[ -e /boot/kernel8.img ]]; then
 	partuuidROOT=$( blkid | awk '/LABEL="ROOT"/ {print $NF}' | tr -d '"' )
-	echo -n "\
-root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 \
-elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
-" > /boot/cmdline.txt
-	echo -n "\
+	cat << EOF > /boot/cmdline.txt
+root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
+EOF
+	cat << EOF > /boot/config.txt
 gpu_mem=32
 initramfs initramfs-linux.img followkernel
 max_usb_current=1
 disable_splash=1
 disable_overscan=1
-dtparam=audio=on
 dtparam=krnbt=on
-" > /boot/config.txt
+dtparam=audio=on
+EOF
 fi
 # chromium
 if [[ -e /usr/bin/chromium ]]; then
