@@ -46,7 +46,7 @@ dialog "${optbox[@]}" --infobox "
 
                        \Z1r\Z0Audio $version
 " 9 58
-sleep 3
+sleep 2
 
 clear -x # needed: fix stdout not scroll
 #----------------------------------------------------------------------------
