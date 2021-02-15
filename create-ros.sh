@@ -90,6 +90,21 @@ if [[ -n $rpi01 ]]; then
 	sed -i '/ExecStart=/ d' /etc/systemd/system/spotifyd.service.d/override.conf
 	rm -rf /etc/systemd/system/{shairport-sync,upmpdcli}.service.d
 fi
+if [[ -e /boot/kernel8.img ]]; then
+	partuuidROOT=$( blkid | awk '/LABEL="ROOT"/ {print $NF}' | tr -d '"' )
+	cat << EOF > $BOOT/cmdline.txt
+root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
+EOF
+	cat << EOF > $BOOT/config.txt
+gpu_mem=32
+initramfs initramfs-linux.img followkernel
+max_usb_current=1
+disable_splash=1
+disable_overscan=1
+dtparam=krnbt=on
+dtparam=audio=on
+EOF
+fi
 #---------------------------------------------------------------------------------
 banner 'Configure ...'
 
