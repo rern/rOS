@@ -28,7 +28,7 @@ dialog "${optbox[@]}" --infobox "
                           for
                      Raspberry Pi
 " 9 58
-sleep 3
+sleep 2
 
 BOOT=$( mount | grep /dev.*BOOT | cut -d' ' -f3 )
 ROOT=$( mount | grep /dev.*ROOT | cut -d' ' -f3 )
