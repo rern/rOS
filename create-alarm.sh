@@ -353,13 +353,15 @@ mv $ROOT/boot/* $BOOT
 PATH=$PATH:/sbin  # Debian not include /sbin in PATH
 partuuidBOOT=$( blkid | awk '/LABEL="BOOT"/ {print $NF}' | tr -d '"' )
 partuuidROOT=${partuuidBOOT:0:-1}2
-echo "\
+cat << EOF > $ROOT/etc/fstab
 $partuuidBOOT  /boot  vfat  defaults,noatime  0  0
-$partuuidROOT  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
-cat << EOF > $BOOT/cmdline.txt
+$partuuidROOT  /      ext4  defaults,noatime  0  0
+EOF
+if [[ $rpi != 5 ]]; then
+	cat << EOF > $BOOT/cmdline.txt
 root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 elevator=noop ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
 EOF
-cat << EOF > $BOOT/config.txt
+	cat << EOF > $BOOT/config.txt
 over_voltage=2
 hdmi_drive=2
 force_turbo=1
@@ -371,12 +373,12 @@ disable_overscan=1
 dtparam=krnbt=on
 dtparam=audio=on
 EOF
-if [[ $rpi == 0 ]]; then
-	sed -i 's/ isolcpus=3//' $BOOT/cmdline.txt
-else
-	sed -i '/over_voltage\|hdmi_drive\|force_turbo/ d' $BOOT/config.txt
+	if [[ $rpi == 0 ]]; then
+		sed -i 's/ isolcpus=3//' $BOOT/cmdline.txt
+	else
+		sed -i '/over_voltage\|hdmi_drive\|force_turbo/ d' $BOOT/config.txt
+	fi
 fi
-
 # wifi
 if [[ $ssid ]]; then
 	profile=$ROOT/etc/netctl/$ssid
