@@ -346,7 +346,8 @@ done ) \
   \Z1$file\Z0 ...
 " 9 50
 
-mv $ROOT/boot/* $BOOT
+cp -r --no-preserve=mode,ownership $ROOT/boot $BOOT
+rm -rf cp $ROOT/boot
 
 #----------------------------------------------------------------------------
 # fstab

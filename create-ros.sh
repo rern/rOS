@@ -196,7 +196,6 @@ if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
 	sleep 30
 fi
 
-rm /boot/reboot
 dialog "${optbox[@]}" --infobox "
 
             \Z1r\Z0Audio $version created successfully.
