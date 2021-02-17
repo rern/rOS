@@ -31,6 +31,7 @@ systemctl start systemd-random-seed
 sed -i '/^#IgnorePkg/ a\
 IgnorePkg   = linux-firmware
 ' /etc/pacman.conf
+
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
 	sed -i -e '/#TotalDownload/ s/^#//

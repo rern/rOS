@@ -410,12 +410,15 @@ echo DNSSEC=no >> $ROOT/etc/systemd/resolved.conf
 # disable wait-online
 rm -r $ROOT/etc/systemd/system/network-online.target.wants
 
+# fix freedesktop.home1.service not found
+sed -i '/pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
+# fix: long wait login
+sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
+
 # ssh - root login, blank password
 sed -i -e 's/#\(PermitRootLogin \).*/\1yes/
 ' -e 's/#\(PermitEmptyPasswords \).*/\1yes/
 ' $ROOT/etc/ssh/sshd_config
-# ssh - fix: long wait login
-sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
 
 # set root password
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
