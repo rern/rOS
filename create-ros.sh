@@ -28,9 +28,11 @@ pacman-key --populate archlinuxarm
 systemctl start systemd-random-seed
 
 # temp: fix missing wlan after 20201218
-sed -i '/^#IgnorePkg/ a\
+if ! grep -q 'IgnorePkg   = linux-firmware' /etc/pacman.conf; then
+	sed -i '/^#IgnorePkg/ a\
 IgnorePkg   = linux-firmware
 ' /etc/pacman.conf
+fi
 
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
