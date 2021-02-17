@@ -346,9 +346,7 @@ done ) \
   \Z1$file\Z0 ...
 " 9 50
 
-cp -r --no-preserve=mode,ownership $ROOT/boot/* $BOOT
-rm $ROOT/boot/*
-rm -r $ROOT/boot/overlays
+mv $ROOT/boot/* $BOOT &> /dev/null
 
 #----------------------------------------------------------------------------
 # fstab
