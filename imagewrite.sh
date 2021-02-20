@@ -82,7 +82,7 @@ echo File   : $file
 	| dialog "${optbox[@]}" --gauge "
   Write to SD card
   \Z1$file\Z0 ...
-" 9 50
+" 9 58
 
 sync &
 
