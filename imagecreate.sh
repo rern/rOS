@@ -59,7 +59,7 @@ if [[ -z $sd ]]; then
 	exit
 fi
 
-mount=$( mount | grep '/dev.*BOOT\|/dev.*ROOT' | cut -d' ' -f1-3 )
+mount=$( mount | grep '/dev.*BOOT\|/dev.*ROOT' | cut -d' ' -f1-3 | sort )
 if [[ -z $mount ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1SD card not mounted.\Z0
