@@ -76,11 +76,20 @@ banner 'Write ...'
 echo SD card: $dev
 echo File   : $file
 
-xz -dc $file | dd of=$dev bs=4M status=progress conv=fsync
+( pv -n $file \
+	| xz -dc - \
+	| dd of=$dev bs=4M conv=fsync ) 2>&1 \
+	| dialog "${optbox[@]}" --gauge "
+  Write to SD card
+  \Z1$file\Z0 ...
+" 9 50
+
+sync &
 
 dialog "${optbox[@]}" --infobox "
-Image file written:
-\Z1$file\Z0
-
-\Z1Micro SD card\Z0 unmounted.
+ \Z1$file\Z0
+ 
+ Image file written successfully.
+ 
+ \Z1Micro SD card\Z0 unmounted.
 " 9 58
