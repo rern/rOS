@@ -160,13 +160,10 @@ shrink
 banner 'Shrink #2 ...'
 shrink
 
+banner 'Create compressed image file ...'
 echo $imagefile
 echo
-( pv -n $dev | dd bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagefile" ) 2>&1 \
-	| dialog "${optbox[@]}" --gauge "
-  Create compressed image file ...
-  \Z1$imagefile\Z0
-" 9 58
+dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagefile"
 
 byte=$( stat --printf="%s" "$imagefile" )
 mb=$( awk "BEGIN { printf \"%.1f\n\", $byte / 1024 / 1024 }" )
