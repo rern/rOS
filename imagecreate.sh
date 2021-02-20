@@ -165,7 +165,7 @@ echo
 ( pv -n $dev | dd bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagefile" ) 2>&1 \
 	| dialog "${optbox[@]}" --gauge "
   Create compressed image file ...
-  \Z1$file\Z0
+  \Z1$imagefile\Z0
 " 9 58
 
 byte=$( stat --printf="%s" "$imagefile" )
