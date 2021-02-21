@@ -410,8 +410,6 @@ echo DNSSEC=no >> $ROOT/etc/systemd/resolved.conf
 # disable wait-online
 rm -r $ROOT/etc/systemd/system/network-online.target.wants
 
-# fix freedesktop.home1.service not found
-sed -i '/pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
 # fix: long wait login
 sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
 

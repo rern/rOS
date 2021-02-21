@@ -138,6 +138,8 @@ fi
 cp /usr/share/mpdscribble/mpdscribble.conf.example /etc/mpdscribble.conf
 # motd
 ln -sf /srv/http/bash/motd.sh /etc/profile.d/
+# pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
+sed -i '/pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
 # password
 echo root:ros | chpasswd
 # user - set expire to none
