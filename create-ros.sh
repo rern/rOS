@@ -27,13 +27,6 @@ pacman-key --populate archlinuxarm
 # fill entropy pool (fix - Kernel entropy pool is not initialized)
 systemctl start systemd-random-seed
 
-# temp: fix missing wlan after 20201218
-if [[ -n $rpi01 ]] && ! grep -q 'IgnorePkg   = linux-firmware' /etc/pacman.conf; then
-	sed -i '/^#IgnorePkg/ a\
-IgnorePkg   = linux-firmware
-' /etc/pacman.conf
-fi
-
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
 	sed -i -e '/#TotalDownload/ s/^#//
