@@ -132,7 +132,7 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
 ```sh
 su
 ```
-- (Manjaro only) - update package mirror list
+-if Manjaro, update package mirror list
 ```sh
 pacman-mirrors -c COUNRTY
 ```
