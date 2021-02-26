@@ -65,6 +65,8 @@ $warnings
 	exit
 fi
 
+devname=$( dmesg | grep Direct-Access | tail -1 | tr -s ' ' | awk '{NF-=5;print substr($0,index($0,$6))}' )
+
 # version - branch
 addons=( $( wget -qO - https://github.com/rern/rAudio-addons/raw/main/addons-list.json \
 			| grep -A2 '"r.":' \
@@ -87,6 +89,7 @@ getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=auto
 	dialog "${opt[@]}" --yesno "
 \Z1Confirm path:\Z0
 
+Device: $devname
 BOOT: \Z1$BOOT\Z0
 ROOT: \Z1$ROOT\Z0
 
