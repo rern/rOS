@@ -68,6 +68,7 @@ if [[ -z $mount ]]; then
 fi
 
 dev=/dev/$( echo $sd | awk -F'[][]' '{print $4}' )
+#devname=$( dmesg | grep Direct-Access | tail -1 | tr -s ' ' | awk '{NF-=5;print substr($0,index($0,$6))}' )
 
 dialog "${optbox[@]}" --yesno "
 Confirm micro SD card: \Z1$dev\Z0
