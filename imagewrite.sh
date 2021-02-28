@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# required packages
+if [[ -e /usr/bin/pacman ]]; then
+	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
+	[[ ! -e /usr/bin/pv ]] && packages+='pv '
+	[[ ! -e /usr/bin/xz ]] && packages+='xz '
+	[[ -n $packages ]] && pacman -Sy --noconfirm $packages
+else
+	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
+	[[ ! -e /usr/bin/pv ]] && packages+='pv '
+	[[ ! -e /usr/bin/xz ]] && packages+='xz-utils '
+	[[ -n $packages ]] && apt install -y $packages
+fi
+
 optbox=( --colors --no-shadow --no-collapse )
 
 dialog "${optbox[@]}" --infobox "
