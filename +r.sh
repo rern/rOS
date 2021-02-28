@@ -12,11 +12,12 @@ sleep 1
 cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
  \Z1r\Z0Audio:
 " 8 0 0 \
-1 'Create' \
-2 'Reset' \
-3 'Image' \
-4 'Write' \
-5 'SSH' )
+1 Create \
+2 Reset \
+3 Image \
+4 Write \
+5 Distcc \
+6 SSH )
 
 url=https://github.com/rern/rOS/raw/main
 
@@ -25,7 +26,8 @@ case $cmd in
 	2 ) bash <( curl -sL $url/reset.sh );;
 	3 ) bash <( curl -sL $url/imagecreate.sh );;
 	4 ) bash <( curl -sL $url/imagewrite.sh );;
-	5 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+	5 ) bash <( curl -sL https://github.com/rern/distcc-alarm/raw/main/distcc.sh );;
+	6 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  IP:
 " 0 0 192.168.1. )
 		pw=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
