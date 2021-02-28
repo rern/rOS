@@ -17,7 +17,8 @@ cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 3 Image \
 4 Write \
 5 Distcc \
-6 SSH )
+6 Package \
+7 SSH )
 
 url=https://github.com/rern/rOS/raw/main
 
@@ -27,7 +28,8 @@ case $cmd in
 	3 ) bash <( curl -sL $url/imagecreate.sh );;
 	4 ) bash <( curl -sL $url/imagewrite.sh );;
 	5 ) bash <( curl -sL https://github.com/rern/distcc-alarm/raw/main/distcc.sh );;
-	6 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+	6 ) bash <( curl -L https://github.com/rern/rAudio-addons/raw/main/0Packages/repoupdate.sh );;
+	7 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  IP:
 " 0 0 192.168.1. )
 		pw=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
