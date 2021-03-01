@@ -173,14 +173,12 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/reset.sh )
 ```
 - Shutdown
 - Move micro SD card to Linux
-- Click `BOOT` and `ROOT` to mount
 - Create compressed image file
 ```sh
 bash <( wget -qO - https://github.com/rern/rOS/raw/main/imagecreate.sh )
 ```
 
-**Write image file**
-- Run in image file directory
+**Fix - Error: Known host keys on SSH**
 ```sh
-bash <( wget -qO - https://github.com/rern/rOS/raw/main/imagewrite.sh )
+sed -i "/IP_ADDRESS/ d" ~/.ssh/known_hosts
 ```
