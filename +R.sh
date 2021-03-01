@@ -32,9 +32,6 @@ case $cmd in
 	7 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  IP:
 " 0 0 192.168.1. )
-		pw=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
- Password:
-" 0 0 ros )
-		sed -i "/$rpiip/ d" ~/.ssh/known_hosts
-		sshpass -p "$pw" ssh -t -o StrictHostKeyChecking=no root@$rpiip
+	sed -i "/$rpiip/ d" ~/.ssh/known_hosts
+	sshpass -p ros ssh -t -o StrictHostKeyChecking=no root@$rpiip
 esac
