@@ -62,13 +62,23 @@ Make sure this is the target SD card.
 
 [[ $? != 0 ]] && exit
 
-aarch64=$( dialog "${optbox[@]}" --output-fd 1 --menu "
+arch=$( dialog "${optbox[@]}" --output-fd 1 --menu "
  \Z1Arch\Z0:
 " 3 0 0 \
 1 32bit \
 2 64bit )
 
-[[ $aarch64 == 2 ]] && sfdiskpart=aarch64 || sfdiskpart=alarm
+if [[ $arch == 1 ]]; then # boot - 100MB
+	part="\
+/dev/mmcblk0p1 : start=        2048, size=      204800, type=b
+/dev/mmcblk0p2 : start=      206848, size=     8192000, type=83
+"
+else # boot - 200MB
+	part="\
+/dev/mmcblk0p1 : start=        2048, size=      409600, type=b
+/dev/mmcblk0p2 : start=      411648, size=    12288000, type=83
+"
+fi
 
 clear -x
 
@@ -77,7 +87,7 @@ clear -x
 # setup partitions
 umount -l ${dev}1 ${dev}2
 wipefs -a $dev
-curl -sL https://github.com/rern/rOS/raw/main/$sfdiskpart.sfdisk | sfdisk $dev
+echo "$part" | sfdisk $dev
 
 devboot=${dev}1
 devroot=${dev}2
