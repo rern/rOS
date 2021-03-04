@@ -18,7 +18,7 @@ cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 4 'SSH to RPi' \
 5 'Write SD card' \
 6 'Distcc client' \
-7 'Update package repo' )
+7 'Package repo update' )
 
 url=https://github.com/rern/rOS/raw/main
 
