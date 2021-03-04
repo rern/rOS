@@ -64,7 +64,7 @@ Make sure this is the target SD card.
 
 arch=$( dialog "${optbox[@]}" --output-fd 1 --menu "
  \Z1Arch\Z0:
-" 3 0 0 \
+" 8 0 0 \
 1 '32bit - 100MB BOOT' \
 2 '64bit - 200MB BOOT' )
 
