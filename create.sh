@@ -62,6 +62,14 @@ Make sure this is the target SD card.
 
 [[ $? != 0 ]] && exit
 
+aarch64=$( dialog "${optbox[@]}" --output-fd 1 --menu "
+ \Z1Arch\Z0:
+" 3 0 0 \
+1 32bit \
+2 64bit )
+
+[[ $aarch64 == 2 ]] && sfdiskpart=aarch64 || sfdiskpart=alarm
+
 clear -x
 
 # 1. create default partitions: gparted
@@ -69,7 +77,7 @@ clear -x
 # setup partitions
 umount -l ${dev}1 ${dev}2
 wipefs -a $dev
-curl -sL https://github.com/rern/rOS/raw/main/aarch64.sfdisk | sfdisk $dev
+curl -sL https://github.com/rern/rOS/raw/main/$sfdiskpart.sfdisk | sfdisk $dev
 
 devboot=${dev}1
 devroot=${dev}2
