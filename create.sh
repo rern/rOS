@@ -70,13 +70,13 @@ arch=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 
 if [[ $arch == 1 ]]; then # boot - 100MB
 	part="\
-/dev/sdd1 : start=        2048, size=      204800, type=b
-/dev/sdd2 : start=      206848, size=     8192000, type=83
+${dev}1 : start=        2048, size=      204800, type=b
+${dev}2 : start=      206848, size=     8192000, type=83
 "
 else # boot - 200MB
 	part="\
-/dev/sdd1 : start=        2048, size=      409600, type=b
-/dev/sdd2 : start=      411648, size=    12288000, type=83
+${dev}1 : start=        2048, size=      409600, type=b
+${dev}2 : start=      411648, size=    12288000, type=83
 "
 fi
 
