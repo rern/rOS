@@ -14,7 +14,7 @@ cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 " 8 0 0 \
 1 'Create rAudio' \
 2 'Reset to default' \
-3 'Image file'\
+3 'Image file' \
 4 'SSH to RPi' \
 5 'Write SD card' \
 6 'Distcc client' \
