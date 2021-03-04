@@ -431,11 +431,13 @@ chmod 755 $ROOT/root/create-ros.sh
 # packages mirror
 [[ -n $ccode ]] && sed -i '/^Server/ s|//.*mirror|//'$ccode'.mirror|' $ROOT/etc/pacman.d/mirrorlist
 
+target="                 \Z1Raspberry Pi $rpiname\Z0"
+[[ $rpi != 5 ]] && target="  $target"
 dialog "${optbox[@]}" --msgbox "
 
                    Arch Linux Arm
                          for
-                   \Z1Raspberry Pi $rpiname\Z0
+$target
                 Created successfully.
 " 11 58
 
