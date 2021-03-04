@@ -329,7 +329,7 @@ sync &
 
 Sstart=$( date +%s )
 dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
-( while (( $( awk '/Dirty:/{print $2}' /proc/meminfo ) > 10 )); do
+( while (( $( awk '/Dirty:/{print $2}' /proc/meminfo ) > 1000 )); do
 	left=$( awk '/Dirty:/{print $2}' /proc/meminfo )
 	percent=$(( $(( dirty - left )) * 100 / dirty ))
 	cat <<EOF
@@ -345,6 +345,8 @@ done ) \
   Write to SD card
   \Z1$file\Z0 ...
 " 9 50
+
+sync
 
 mv $ROOT/boot/* $BOOT &> /dev/null
 
