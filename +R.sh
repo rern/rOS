@@ -12,13 +12,13 @@ sleep 1
 cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
  \Z1r\Z0Audio:
 " 8 0 0 \
-1 Create \
-2 Reset \
-3 Image \
-4 SSH \
-5 'Write Image' \
-6 'Distcc Client' \
-7 'Package Repo Update' )
+1 'Create rAudio' \
+2 'Reset to default' \
+3 'Image file'\
+4 'SSH to RPi' \
+5 'Write SD card' \
+6 'Distcc client' \
+7 'Update package repo' )
 
 url=https://github.com/rern/rOS/raw/main
 
