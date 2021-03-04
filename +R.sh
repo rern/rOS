@@ -15,10 +15,10 @@ cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 1 'Create rAudio' \
 2 'Reset to default' \
 3 'Image file' \
-4 'SSH to RPi' \
-5 'Write SD card' \
-6 'Distcc client' \
-7 'Package repo update' )
+4 'Write SD card' \
+5 'Distcc client' \
+6 'Package repo update' \
+7 'SSH to RPi' )
 
 url=https://github.com/rern/rOS/raw/main
 
@@ -26,13 +26,12 @@ case $cmd in
 	1 ) bash <( curl -sL $url/create.sh );;
 	2 ) bash <( curl -sL $url/reset.sh );;
 	3 ) bash <( curl -sL $url/imagecreate.sh );;
-	4 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+	4 ) bash <( curl -sL $url/imagewrite.sh );;
+	5 ) bash <( curl -sL https://github.com/rern/distcc-alarm/raw/main/distcc.sh );;
+	6 ) bash <( curl -L https://github.com/rern/rern.github.io/raw/master/repoupdate.sh );;
+	7 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  IP:
 " 0 0 192.168.1. )
 	sed -i "/$rpiip/ d" ~/.ssh/known_hosts
 	sshpass -p ros ssh -t -o StrictHostKeyChecking=no root@$rpiip
-	;;
-	5 ) bash <( curl -sL $url/imagewrite.sh );;
-	6 ) bash <( curl -sL https://github.com/rern/distcc-alarm/raw/main/distcc.sh );;
-	7 ) bash <( curl -L https://github.com/rern/rern.github.io/raw/master/repoupdate.sh );;
 esac
