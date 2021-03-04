@@ -97,7 +97,7 @@ echo File   : $file
   \Z1$file\Z0 ...
 " 9 58
 
-sync &
+sync
 
 dialog "${optbox[@]}" --infobox "
  \Z1$file\Z0
