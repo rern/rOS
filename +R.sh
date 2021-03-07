@@ -29,8 +29,8 @@ case $cmd in
 	3 ) bash <( curl -sL $url/imagecreate.sh );;
 	4 ) bash <( curl -sL $url/imagewrite.sh );;
 	5 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/distcc.sh );;
-	6 ) bash <( curl -L https://github.com/rern/rern.github.io/raw/master/docker.sh );;
-	7 ) bash <( curl -L https://github.com/rern/rern.github.io/raw/master/repoupdate.sh );;
+	6 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/docker.sh );;
+	7 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/repoupdate.sh );;
 	8 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  IP:
 " 0 0 192.168.1. )
