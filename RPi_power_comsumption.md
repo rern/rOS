@@ -12,5 +12,5 @@ RPi 3B
 
 RPi 4
 - Max - 40mA (peak: 43mA)
-- Idle - 24mA
+- Idle - 25mA
 - Shutdown - 19mA
