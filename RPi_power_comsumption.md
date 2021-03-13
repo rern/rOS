@@ -11,6 +11,6 @@ RPi 3B
 - Shutdown - mA
 
 RPi 4
-- Max - mA (peak: mA)
-- Idle - mA
+- Max - 36mA (peak: 40mA)
+- Idle - 24mA
 - Shutdown - mA
