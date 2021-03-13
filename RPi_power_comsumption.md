@@ -1,4 +1,5 @@
-### Raspberry Pis power consumption (220Vac side)
+### Raspberry Pis power consumption
+*(220Vac side)*
 
 RPi Zero
 - Max - 14mA
