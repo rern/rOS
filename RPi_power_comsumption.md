@@ -8,7 +8,7 @@ RPi Zero
 RPi 3B
 - Max - 35mA
 - Idle - 16mA
-- Shutdown - mA
+- Shutdown - 8mA
 
 RPi 4
 - Max - 43mA
