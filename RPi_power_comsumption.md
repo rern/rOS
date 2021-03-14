@@ -1,4 +1,5 @@
-### Raspberry Pis mA (W) on 220Vac
+### Raspberry Pi - mA (W)
+*(consumption on 220Vac power supply side)*
 
 RPi Zero
 - Max - 14mA (3W)
