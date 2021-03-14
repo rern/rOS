@@ -1,17 +1,16 @@
-### Raspberry Pis power consumption
-*(220Vac side)*
+### Raspberry Pis mA (W) on 220Vac
 
 RPi Zero
-- Max - 14mA
-- Idle - 9mA
-- Shutdown - 0mA
+- Max - 14mA (3W)
+- Idle - 9mA (2W)
+- Shutdown - 0mA (0W)
 
 RPi 3B
-- Max - 35mA
-- Idle - 16mA
-- Shutdown - 8mA
+- Max - 35mA (8W)
+- Idle - 16mA (4W)
+- Shutdown - 8mA (2W)
 
 RPi 4
-- Max - 43mA
-- Idle - 25mA
-- Shutdown - 19mA
+- Max - 43mA (10W)
+- Idle - 25mA (6W)
+- Shutdown - 19mA (4W)
