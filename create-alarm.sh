@@ -348,9 +348,6 @@ done ) \
 
 sync
 
-shopt -s extglob
-rm -rf $ROOT/boot/dtbs/!(broadcom)/ # make aarch64 BOOT smaller than 100MB
-
 mv $ROOT/boot/* $BOOT &> /dev/null
 
 #----------------------------------------------------------------------------
