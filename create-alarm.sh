@@ -348,10 +348,8 @@ done ) \
 
 sync
 
-if [[ $rpiname == 64bit ]]; then
-	shopt -s extglob
-	rm -r $ROOT/boot/dtbs/!(broadcom)/
-fi
+shopt -s extglob
+rm -rf $ROOT/boot/dtbs/!(broadcom)/
 mv $ROOT/boot/* $BOOT &> /dev/null
 
 #----------------------------------------------------------------------------
