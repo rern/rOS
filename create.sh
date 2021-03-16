@@ -71,7 +71,7 @@ umount -l ${dev}1 ${dev}2
 wipefs -a $dev
 echo "\
 ${dev}1 : start=        2048, size=      204800, type=b
-${dev}2 : start=      206848, size=     8192000, type=83
+${dev}2 : start=      206848, size=    10240000, type=83
 " | sfdisk $dev
 
 devboot=${dev}1
