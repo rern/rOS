@@ -55,8 +55,8 @@ banner 'Upgrade kernel and default packages ...'
 packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
 packages+='nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget wiringpi '
 if [[ -e /boot/kernel8.img ]]; then
-	packages+='linux-raspberrypi4 raspberrypi-bootloader raspberrypi-bootloader-x raspberrypi-firmware'
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
+	pacman -Sy --noconfirm linux-raspberrypi4 raspberrypi-bootloader raspberrypi-bootloader-x raspberrypi-firmware
 fi
 
 rm -f /var/lib/pacman/db.lck
