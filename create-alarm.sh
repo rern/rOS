@@ -348,6 +348,8 @@ done ) \
 
 sync
 
+shopt -s extglob
+rm -r $ROOT/boot/dtbs/!(broadcom)/
 mv $ROOT/boot/* $BOOT &> /dev/null
 
 #----------------------------------------------------------------------------
