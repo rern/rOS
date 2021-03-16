@@ -62,24 +62,6 @@ Make sure this is the target SD card.
 
 [[ $? != 0 ]] && exit
 
-arch=$( dialog "${optbox[@]}" --output-fd 1 --menu "
- \Z1Arch\Z0:
-" 8 0 0 \
-1 '32bit - 100MB BOOT' \
-2 '64bit - 200MB BOOT' )
-
-if [[ $arch == 1 ]]; then # boot - 100MB
-	part="\
-${dev}1 : start=        2048, size=      204800, type=b
-${dev}2 : start=      206848, size=     8192000, type=83
-"
-else # boot - 200MB
-	part="\
-${dev}1 : start=        2048, size=      409600, type=b
-${dev}2 : start=      411648, size=    12288000, type=83
-"
-fi
-
 clear -x
 
 # 1. create default partitions: gparted
@@ -87,7 +69,10 @@ clear -x
 # setup partitions
 umount -l ${dev}1 ${dev}2
 wipefs -a $dev
-echo "$part" | sfdisk $dev
+echo "\
+${dev}1 : start=        2048, size=      204800, type=b
+${dev}2 : start=      206848, size=     8192000, type=83
+" | sfdisk $dev
 
 devboot=${dev}1
 devroot=${dev}2
