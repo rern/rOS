@@ -348,6 +348,9 @@ done ) \
 
 sync
 
+shopt -s extglob
+rm -rf $ROOT/boot/dtbs/!(broadcom)/ # aarch64 - remove other drivers to save time
+
 mv $ROOT/boot/* $BOOT &> /dev/null
 
 #----------------------------------------------------------------------------
