@@ -6,5 +6,5 @@ Requires=smb.service
 
 [Service]
 ExecStart=/srv/http/bash/wsdd.py --shortlog
-User=nobody
-Group=nobody
+;User=nobody
+;Group=nobody
