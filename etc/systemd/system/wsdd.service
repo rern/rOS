@@ -1,7 +1,0 @@
-[Unit]
-Description=Web Services Dynamic Discovery host daemon
-After=network-online.target smb.service
-Wants=network-online.target
-
-[Service]
-ExecStart=/srv/http/bash/wsdd.py --shortlog
