@@ -153,11 +153,7 @@ sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 ' -e 's/.*\(PrintLastLog \).*/\1no/
 ' /etc/ssh/sshd_config
 # samba
-if [[ -e /usr/bin/smbd ]]; then
-	( echo ros; echo ros ) | smbpasswd -s -a root
-else
-	rm -rf /etc/samba /etc/systemd/system/wsdd.service
-fi
+[[ -e /usr/bin/smbd ]] && ( echo ros; echo ros ) | smbpasswd -s -a root
 # no shairport-sync
 [[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
 # no snapcast
