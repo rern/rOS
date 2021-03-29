@@ -2,6 +2,8 @@
 
 trap exit INT
 
+SECONDS=0
+
 features=$( cat /boot/features )
 versions=( $( cat /boot/versions ) )
 version=${versions[0]}
@@ -193,6 +195,8 @@ dialog "${optbox[@]}" --infobox "
             \Z1r\Z0Audio $version created successfully.
 
                        \Z1Reboot\Z0 ...
-" 9 58
+
+                      ( $( date -d@$SECONDS -u +%M:%S ) )
+" 10 58
 
 shutdown -r now
