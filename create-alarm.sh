@@ -444,7 +444,7 @@ dialog "${optbox[@]}" --msgbox "
                          for
 $target
                 Created successfully.
-                      ( $( date -d@$SECONDS -u +%M:%S ) )
+$( date -d@$SECONDS -u +%M:%S )
 " 11 58
 
 #----------------------------------------------------------------------------
@@ -453,7 +453,6 @@ umount -l $ROOT
 
 [[ ${partuuidBOOT:0:-3} != ${partuuidROOT:0:-3} ]] && usb=' and USB drive'
 [[ $rpi == 0 ]] && wait=60 || wait=30
-duration=$( date -d@$SECONDS -u +%M:%S )
 
 dialog "${optbox[@]}" --msgbox "
 \Z1Finish\Z0
