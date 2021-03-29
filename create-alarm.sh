@@ -455,7 +455,7 @@ umount -l $ROOT
 duration=$( date -d@$SECONDS -u +%M:%S )
 
 dialog "${optbox[@]}" --msgbox "
-\Z1Finished in $( date -d@$SECONDS -u +%M:%S ).\Z0
+\Z1Finish\Z0
 
 \Z1BOOT\Z0 and \Z1ROOT\Z0 were unmounted.
 
