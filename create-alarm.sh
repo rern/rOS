@@ -444,6 +444,7 @@ dialog "${optbox[@]}" --msgbox "
                          for
 $target
                 Created successfully.
+                      ( $( date -d@$SECONDS -u +%M:%S ) )
 " 11 58
 
 #----------------------------------------------------------------------------
