@@ -239,6 +239,8 @@ else
 	selectFeatures
 fi
 
+SECONDS=0
+
 # package mirror server
 wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
 	| dialog "${opt[@]}" --gauge "
@@ -450,8 +452,10 @@ umount -l $ROOT
 
 [[ ${partuuidBOOT:0:-3} != ${partuuidROOT:0:-3} ]] && usb=' and USB drive'
 [[ $rpi == 0 ]] && wait=60 || wait=30
+duration=$( date -d@$SECONDS -u +%M:%S )
+
 dialog "${optbox[@]}" --msgbox "
-\Z1Finish.\Z0
+\Z1Finished in $( date -d@$SECONDS -u +%M:%S ).\Z0
 
 \Z1BOOT\Z0 and \Z1ROOT\Z0 were unmounted.
 
