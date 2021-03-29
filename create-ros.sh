@@ -197,6 +197,6 @@ dialog "${optbox[@]}" --infobox "
                        \Z1Reboot\Z0 ...
 
 $( date -d@$SECONDS -u +%M:%S )
-" 10 58
+" 9 58
 
 shutdown -r now
