@@ -26,18 +26,10 @@ banner 'Initialize Arch Linux Arm ...'
 pacman-key --init
 pacman-key --populate archlinuxarm
 
+rm -f /var/lib/pacman/db.lck  # in case of rerun
+
 # fill entropy pool (fix - Kernel entropy pool is not initialized)
 systemctl start systemd-random-seed
-
-# add +R repo
-if ! grep -q '^\[+R\]' /etc/pacman.conf; then
-	sed -i -e '/#TotalDownload/ s/^#//
-' -e '/\[core\]/ i\
-[+R]\
-SigLevel = Optional TrustAll\
-Server = https://rern.github.io/$arch\
-' /etc/pacman.conf
-fi
 
 title="Create rOS $version"
 optbox=( --colors --no-shadow --no-collapse )
@@ -62,7 +54,15 @@ if [[ -e /boot/kernel8.img ]]; then
 	packages+='linux-raspberrypi4 raspberrypi-bootloader raspberrypi-bootloader-x raspberrypi-firmware '
 fi
 
-rm -f /var/lib/pacman/db.lck  # in case of rerun
+# add +R repo
+if ! grep -q '^\[+R\]' /etc/pacman.conf; then
+	sed -i -e '/#TotalDownload/ s/^#//
+' -e '/\[core\]/ i\
+[+R]\
+SigLevel = Optional TrustAll\
+Server = https://rern.github.io/$arch\
+' /etc/pacman.conf
+fi
 
 pacman -Syu --noconfirm
 [[ $? != 0 ]] && pacman -Syu --noconfirm
