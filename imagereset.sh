@@ -52,8 +52,13 @@ if [[ $select == *' 4 '* ]]; then
 fi
 if [[ $select == *' 5 '* ]] && systemctl -q is-enabled netctl-auto@wlan0; then
 	banner 'Clear Wi-Fi connection ...'
-	systemctl disable netctl-auto@wlan0
-	rm /etc/netctl/* 2> /dev/null
+	readarray -t profiles <<< $( ls -p /etc/netctl | grep -v / )
+	if [[ -n $profiles ]]; then
+		for profile in "${profiles[@]}"; do
+			netctl disable "$profile"
+		done
+		rm /etc/netctl/* 2> /dev/null
+	fi
 fi
 
 wget -q --show-progress https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -O /etc/pacman.d/mirrorlist
