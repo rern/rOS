@@ -141,6 +141,8 @@ fi
 cp /usr/share/mpdscribble/mpdscribble.conf.example /etc/mpdscribble.conf
 # motd
 ln -sf /srv/http/bash/motd.sh /etc/profile.d/
+#mpdscribble
+sed -i 's/User=.*/User=mpd/' /usr/lib/systemd/system/mpdscribble@.service
 # pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
 # password
