@@ -2,17 +2,12 @@
 
 **Flags:**
 - Use only `updating` flag from start to finish.
-- `cue`, `wav` flag - optional:
-	- Take times
-	- Even more on NAS
 - Resume on boot:
 	- `updating` flag for resume `mpc update`
 	- `listing` flag for resume without `mpc update`
 	
 **Pre:**
 - Flag `updating`
-- Flag `cue` if included
-- Flag `wav` if included
 - Pushstream broadcast `updating_db`
 - `passive.js` show updating status
 
@@ -27,13 +22,11 @@
 - Get all list modes into files:
 	- Album mode: `album^^artist^^file`
 		- Normal `mpc listall`
-		- `*.wav` (MPD not read) if flagged.
+		- `*.wav` - MPD not read albumartist
 	- Others: `name`
-- Get all list modes from `*.cue` if flagged.
-	- `cmd-listcue.sh`
 	
 **Files:**
-- Combine each mode, `list` + `cue` to files
+- Save each mode to files
 - Count
 	
 **Finish:**
@@ -41,5 +34,5 @@
 - `passive.js`
 	- Hide updating status
 	- Update Library counts
-- Remove all flags
+- Remove flags
 	
