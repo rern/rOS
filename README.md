@@ -132,10 +132,6 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
 ```sh
 su
 ```
--if Manjaro, update package mirror list
-```sh
-pacman-mirrors -c COUNRTY
-```
 - Create script
 ```sh
 bash <( wget -qO - https://github.com/rern/rOS/raw/main/create-alarm.sh )
