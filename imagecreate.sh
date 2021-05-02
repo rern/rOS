@@ -103,7 +103,6 @@ else
 	model=0-1
 fi
 version=$( cat $ROOT/srv/http/data/system/version )
-imagefile=rAudio-$version-RPi$model.img.xz
 
 imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 Image file:
