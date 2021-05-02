@@ -379,11 +379,10 @@ dtparam=audio=on
 EOF
 	if [[ $rpi == 0 ]]; then
 		sed -i 's/ isolcpus=3//' $BOOT/cmdline.txt
-		cat << EOF >> $BOOT/config.txt
-over_voltage=2
-hdmi_drive=2
-force_turbo=1
-EOF
+		sed -i '1 i\
+over_voltage=2\
+force_turbo=1\
+hdmi_drive=2' $BOOT/config.txt
 	fi
 fi
 # wifi
