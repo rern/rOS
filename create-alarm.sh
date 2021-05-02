@@ -369,9 +369,6 @@ if [[ $rpi != 5 ]]; then
 root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
 EOF
 	cat << EOF > $BOOT/config.txt
-over_voltage=2
-hdmi_drive=2
-force_turbo=1
 gpu_mem=32
 initramfs initramfs-linux.img followkernel
 max_usb_current=1
@@ -382,8 +379,11 @@ dtparam=audio=on
 EOF
 	if [[ $rpi == 0 ]]; then
 		sed -i 's/ isolcpus=3//' $BOOT/cmdline.txt
-	else
-		sed -i '/over_voltage\|hdmi_drive\|force_turbo/ d' $BOOT/config.txt
+		cat << EOF >> $BOOT/config.txt
+over_voltage=2
+hdmi_drive=2
+force_turbo=1
+EOF
 	fi
 fi
 # wifi
