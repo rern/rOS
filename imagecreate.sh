@@ -1,7 +1,5 @@
 #!/bin/bash
 
-[[ -n $1 ]] && path="$1/"
-
 # required packages
 if [[ -e /usr/bin/pacman ]]; then
 	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar '
@@ -106,7 +104,7 @@ version=$( cat $ROOT/srv/http/data/system/version )
 
 imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 Image file:
-" 0 0 ${path}rAudio-$version-RPi$model.img.xz )
+" 0 0 rAudio-$version-RPi$model.img.xz )
 
 # auto expand root partition
 touch $BOOT/expand
