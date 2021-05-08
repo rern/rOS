@@ -37,7 +37,7 @@ elif (( $code == 200 )); then
 fi
 data=$( cddb-tool read $server $genre_album | grep '^.TITLE' )
 artist_album=$( echo "$data" | grep ^DTITLE | cut -d= -f2- )
-tracks=$( echo "$data" | grep ^TITLE | cut -d= -f2- )
+tracks=$( echo "$data" | grep ^TTITLE | cut -d= -f2- )
 
 # add tracks to playlist - audiocd.sh
 tracks=$( cdparanoia -sQ |& grep -P '^\s+\d+\.' | wc -l )
