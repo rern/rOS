@@ -27,7 +27,7 @@ systemctl restart mpd
 
 # get metadata
 discid=$( cd-discid )
-server=http://gnudb.gnudb.org/~cddb/cddb.cgi 6 owner rAudio
+server='http://gnudb.gnudb.org/~cddb/cddb.cgi 6 owner rAudio'
 data=$( cddb-tool query $server $discid )
 code=$( echo "$data" | head -1 | cut -d' ' -f1 )
 if (( $code == 210 )); then
