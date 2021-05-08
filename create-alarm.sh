@@ -177,6 +177,7 @@ $rpi01
 " > $BOOT/versions
 
 # features
+  audiocd='\Z1Audio CD\Z0  - Play audio CD'
     bluez='\Z1Bluez\Z0     - Bluetooth audio'
  chromium='\Z1Chromium\Z0  - Browser on RPi screen'
   hostapd='\Z1hostapd\Z0   - RPi access point'
@@ -199,28 +200,30 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 \Z1Select features to install:
 \Z4[space] = Select / Deselect\Z0
 " 9 0 0 \
-1 "$bluez" on \
-2 "$chromium" $onoffchromium \
-3 "$hostapd" on \
-4 "$kid" on \
-5 "$samba" on \
-6 "$shairport" on \
-7 "$snapcast" on \
-8 "$spotify" on \
-9 "$upmpdcli" on )
+1 "$audiocd" on \
+2 "$bluez" on \
+3 "$chromium" $onoffchromium \
+4 "$hostapd" on \
+5 "$kid" on \
+6 "$samba" on \
+7 "$shairport" on \
+8 "$snapcast" on \
+9 "$spotify" on \
+10 "$upmpdcli" on )
 	
 	select=" $select "
 	features=
 	list=
-	[[ $select == *' 1 '* ]] && features+='bluez bluez-alsa bluez-utils python-dbus python-gobject python-requests ' && list+="$bluez"$'\n'
-	[[ $select == *' 2 '* ]] && features+='chromium matchbox-window-manager plymouth-lite-rbp upower xf86-input-evdev xf86-video-fbdev xf86-video-fbturbo xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$chromium"$'\n'
-	[[ $select == *' 3 '* ]] && features+='dnsmasq hostapd ' && list+="$hostapd"$'\n'
-	[[ $select == *' 4 '* ]] && features+='kid3-common ' && list+="$kid"$'\n'
-	[[ $select == *' 5 '* ]] && features+='samba ' && list+="$samba"$'\n'
-	[[ $select == *' 6 '* ]] && features+='shairport-sync ' && list+="$shairport"$'\n'
-	[[ $select == *' 7 '* ]] && features+='snapcast ' && list+="$snapcast"$'\n'
-	[[ $select == *' 8 '* ]] && features+='spotifyd ' && list+="$spotify"$'\n'
-	[[ $select == *' 9 '* ]] && features+='upmpdcli ' && list+="$upmpdcli"$'\n'
+	[[ $select == *' 1 '* ]] && features+='cd-discid cdparanoia ' && list+="$audiocd"$'\n'
+	[[ $select == *' 2 '* ]] && features+='bluez bluez-alsa bluez-utils python-dbus python-gobject python-requests ' && list+="$bluez"$'\n'
+	[[ $select == *' 3 '* ]] && features+='chromium matchbox-window-manager plymouth-lite-rbp upower xf86-input-evdev xf86-video-fbdev xf86-video-fbturbo xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$chromium"$'\n'
+	[[ $select == *' 4 '* ]] && features+='dnsmasq hostapd ' && list+="$hostapd"$'\n'
+	[[ $select == *' 5 '* ]] && features+='kid3-common ' && list+="$kid"$'\n'
+	[[ $select == *' 6 '* ]] && features+='samba ' && list+="$samba"$'\n'
+	[[ $select == *' 7 '* ]] && features+='shairport-sync ' && list+="$shairport"$'\n'
+	[[ $select == *' 8 '* ]] && features+='snapcast ' && list+="$snapcast"$'\n'
+	[[ $select == *' 9 '* ]] && features+='spotifyd ' && list+="$spotify"$'\n'
+	[[ $select == *' 10 '* ]] && features+='upmpdcli ' && list+="$upmpdcli"$'\n'
 }
 selectFeatures
 
