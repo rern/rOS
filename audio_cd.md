@@ -36,11 +36,10 @@ if (( $code == 210 )); then  # exact match
 elif (( $code == 200 )); then
   genre_id=$( echo "$query" | tail -1 | cut -d' ' -f2,3 | tr ' ' + )
 fi
-read=$( curl -s "$server+read+$genre_id&$options" )
 if [[ -n $genre_id ]]; then
-	data=$( curl -s "$server+read+$genre_id&$options )
-	artist_album=$( echo "$data" | grep ^DTITLE | cut -d= -f2- )
-	tracks=$( echo "$data" | grep ^TTITLE | cut -d= -f2- )
+	read=$( curl -s "$server+read+$genre_id&$options" )
+	artist_album=$( echo "$read" | grep ^DTITLE | cut -d= -f2- )
+	tracks=$( echo "$read" | grep ^TTITLE | cut -d= -f2- )
 fi
 
 # add tracks to playlist - audiocd.sh
