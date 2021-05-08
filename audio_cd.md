@@ -14,8 +14,8 @@ udevadm control --reload-rules && udevadm trigger
 # allow read for all
 chmod +r /dev/sr0
 
-# for metadata, id, tracks
-pacman -Sy abcde cd-discid cdparanoia
+# for discid, tracks count
+pacman -Sy cd-discid cdparanoia
 
 # mpd.conf
 sed -i '/plugin.*"curl"/ {n;a\
@@ -26,15 +26,17 @@ input {\
 systemctl restart mpd
 
 # get metadata
-discid=$( cd-discid )
-server='http://gnudb.gnudb.org/~cddb/cddb.cgi 6 owner rAudio'
-data=$( cddb-tool query $server $discid )
-code=$( echo "$data" | head -1 | cut -d' ' -f1 )
+server='http://gnudb.gnudb.org/~cddb/cddb.cgi?cmd=cddb'
+options='hello=owner+rAudio+rAudio+1&proto=6'
+discid=$( cd-discid | tr ' ' + )
+query=$( curl -s "$server+query+$discid&$options" | head -2 )
+code=$( echo "$query" | head -1 | cut -d' ' -f1 )
 if (( $code == 210 )); then  # exact match
-  genre_album=$( echo "$data" | sed -n 2p | cut -d' ' -f1,2 )
+  genre_id=$( echo "$query" | tail -1 | cut -d' ' -f1,2 | tr ' ' + )
 elif (( $code == 200 )); then
-  genre_album=$( echo "$data" | sed -n 2p | cut -d' ' -f2,3 )
+  genre_id=$( echo "$query" | tail -1 | cut -d' ' -f2,3 | tr ' ' + )
 fi
+read=$( curl -s "$server+read+$genre_id&$options" )
 if [[ -n $genre_album ]]; then
 	data=$( cddb-tool read $server $genre_album | grep '^.TITLE' )
 	artist_album=$( echo "$data" | grep ^DTITLE | cut -d= -f2- )
