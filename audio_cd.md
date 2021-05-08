@@ -37,7 +37,7 @@ elif (( $code == 200 )); then
   genre_id=$( echo "$query" | tail -1 | cut -d' ' -f2,3 | tr ' ' + )
 fi
 if [[ -n $genre_id ]]; then
-	read=$( curl -s "$server+read+$genre_id&$options" )
+	read=$( curl -s "$server+read+$genre_id&$options" | grep '^.TITLE' )
 	artist_album=$( echo "$read" | grep ^DTITLE | cut -d= -f2- )
 	tracks=$( echo "$read" | grep ^TTITLE | cut -d= -f2- )
 fi
