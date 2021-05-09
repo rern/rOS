@@ -1,2 +1,0 @@
-ACTION=="change", SUBSYSTEM=="block", KERNEL=="sr*", ENV{DISK_EJECT_REQUEST}=="", RUN+="/srv/http/bash/audiocd.sh"
-ACTION=="change", SUBSYSTEM=="block", KERNEL=="sr*", ENV{DISK_EJECT_REQUEST}=="1", RUN+="/srv/http/bash/audiocd.sh eject"
