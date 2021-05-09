@@ -46,7 +46,7 @@ clear -x # needed: fix stdout not scroll
 #----------------------------------------------------------------------------
 banner 'Upgrade kernel and default packages ...'
 
-packages='alsa-utils cronie dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
+packages='alsa-utils cronie cd-discid dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble '
 packages+='nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget wiringpi '
 
 if [[ -e /boot/kernel8.img ]]; then
