@@ -147,8 +147,6 @@ sed -i 's/User=.*/User=mpd/' /usr/lib/systemd/system/mpdscribble@.service
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
 # password
 echo root:ros | chpasswd
-# usb cd drive
-chmod +r /dev/sr0
 # user - set expire to none
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
