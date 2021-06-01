@@ -452,7 +452,7 @@ umount -l $BOOT
 umount -l $ROOT
 
 [[ ${partuuidBOOT:0:-3} != ${partuuidROOT:0:-3} ]] && usb=' and USB drive'
-[[ $rpi == 0 ]] && wait=60 || wait=30
+[[ $rpi == 0 ]] && sboot=60 || sboot=30
 
 dialog "${optbox[@]}" --msgbox "
 \Z1Finish\Z0
@@ -461,10 +461,24 @@ dialog "${optbox[@]}" --msgbox "
 
 1. Move micro SD card$usb to RPi
 2. Power on
-3. \Z1Wait $wait seconds\Z0
-4. Press \Z1Enter\Z0 to continue
+3. Press \Z1Enter\Z0 to continue
 
-" 14 55
+" 13 55
+
+( for (( i = 1; i < sboot; i++ )); do
+	cat <<EOF
+XXX
+$(( i * 100 / sboot ))
+\n  Boot \Z1r\Z0Audio ...
+\n  $i s
+XXX
+EOF
+	sleep 1
+done ) \
+| dialog "${opt[@]}" --gauge "
+  Boot ...
+  $i s
+" 9 50
 
 #----------------------------------------------------------------------------
 title='Connect to Raspberry Pi'
