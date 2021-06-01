@@ -174,5 +174,5 @@ Image file created:
 \Z1$imagefile\Z0
 $mb MiB
 
-\Z1BOOT\Z0 and \Z1ROOT\Z0 unmounted.
+\Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
 " 10 58
