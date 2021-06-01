@@ -452,7 +452,6 @@ umount -l $BOOT
 umount -l $ROOT
 
 [[ ${partuuidBOOT:0:-3} != ${partuuidROOT:0:-3} ]] && usb=' and USB drive'
-[[ $rpi == 0 ]] && sboot=60 || sboot=30
 
 dialog "${optbox[@]}" --msgbox "
 \Z1Finish\Z0
@@ -465,6 +464,13 @@ dialog "${optbox[@]}" --msgbox "
 
 " 13 55
 
+case $rpi in
+	0 | 1 ) sboot=75;; 
+	2 )     sboot=60;;
+	3 )     sboot=45;;
+	4 | 5 ) sboot=30;;
+esac
+	
 ( for (( i = 1; i < sboot; i++ )); do
 	cat <<EOF
 XXX
