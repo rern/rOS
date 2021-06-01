@@ -457,7 +457,7 @@ umount -l $ROOT
 dialog "${optbox[@]}" --msgbox "
 \Z1Finish\Z0
 
-\Z1BOOT\Z0 and \Z1ROOT\Z0 were unmounted.
+\Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
 
 1. Move micro SD card$usb to RPi
 2. Power on
