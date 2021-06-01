@@ -498,8 +498,12 @@ scanIP() {
   Scan IP address ...
 
 " 5 50
-
-	nmap=$( nmap -sn $subip* \
+	nmap=$( nmap -sn $subip* )
+	if ! echo "$nmap" | grep -q 'Raspberry Pi'; then
+		sleep 15
+		nmap=$( nmap -sn $subip* )
+	fi
+	nmap=$( echo "$nmap" \
 			| grep -v 'Starting\|Host is up\|Nmap done' \
 			| head -n -1 \
 			| sed 's/Nmap.*for /---/; s/MAC Address/ /' )
