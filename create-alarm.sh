@@ -116,10 +116,10 @@ ROOT: \Z1$ROOT\Z0
 		* ) rpiname=$rpi;;
 	esac
 	case $rpi in
-		0 | 1 ) sboot=60;; 
-		2 )     sboot=50;;
-		3 )     sboot=30;;
-		4 )     sboot=20;;
+		0 | 1 ) sboot=70;; 
+		2 )     sboot=60;;
+		3 )     sboot=45;;
+		4 )     sboot=30;;
 	esac
 	if [[ $rpi == 5 ]]; then
 		runon=$( dialog "${opt[@]}" --output-fd 1 --menu "
@@ -129,9 +129,9 @@ Create \Z164bit\Z0 on:
 3 'Raspberry Pi 3' \
 4 'Raspberry Pi 4' )
 		case $runon in
-			2 ) sboot=50;;
-			3 ) sboot=30;;
-			4 ) sboot=20;;
+			2 ) sboot=60;;
+			3 ) sboot=45;;
+			4 ) sboot=30;;
 		esac
 	fi
 	
