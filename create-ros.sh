@@ -182,11 +182,6 @@ rm /boot/{features,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg
 # expand partition
 touch /boot/expand
 
-if [[ -n $rpi01 && $features =~ upmpdcli ]]; then
-	echo Wait for upmpdcli to finish RSA key ...
-	sleep 30
-fi
-
 dialog "${optbox[@]}" --infobox "
 
             \Z1r\Z0Audio $version created successfully.
