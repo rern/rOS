@@ -164,13 +164,8 @@ sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 [[ ! -e /usr/bin/snapclient ]] && rm /etc/default/snapclient
 # no spotifyd
 [[ ! -e /usr/bin/spotifyd ]] && rm /etc/spotifyd.conf
-# upmpdcli - init RSA key
-if [[ -e /usr/bin/upmpdcli ]]; then
-	mpd --no-config &> /dev/null
-	upmpdcli &> /dev/null &
-else
-	rm -rf /etc/systemd/system/upmpdcli.service.d /etc/upmpdcli.conf
-fi
+# no upmpdcli
+[[ ! -e /usr/bin/upmpdcli ]] && rm -rf /etc/upmpdcli.conf /etc/systemd/system/upmpdcli.service.d
 # wireless-regdom
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
 # default startup services
