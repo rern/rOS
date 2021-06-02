@@ -110,12 +110,29 @@ ROOT: \Z1$ROOT\Z0
 		5 )     file+=aarch64-;;
 	esac
 	file+=latest.tar.gz
-	if [[ $rpi == 0 ]]; then
-		rpiname=Zero
-	elif [[ $rpi == 5 ]]; then
-		rpiname=64bit
-	else
-		rpiname=$rpi
+	case $rpi in
+		0 ) rpiname=Zero;; 
+		5 ) rpiname=64bit;;
+		* ) rpiname=$rpi;;
+	esac
+	case $rpi in
+		0 | 1 ) sboot=60;; 
+		2 )     sboot=50;;
+		3 )     sboot=30;;
+		4 )     sboot=20;;
+	esac
+	if [[ $rpi == 5 ]]; then
+		runon=$( dialog "${opt[@]}" --output-fd 1 --menu "
+Create \Z164bit\Z0 on:
+" 8 0 0 \
+2 'Raspberry Pi 2' \
+3 'Raspberry Pi 3' \
+4 'Raspberry Pi 4' )
+		case $runon in
+			2 ) sboot=50;;
+			3 ) sboot=30;;
+			4 ) sboot=20;;
+		esac
 	fi
 	
 	dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
@@ -123,6 +140,7 @@ Connect \Z1Wi-Fi\Z0 on boot?
 
 " 0 0
 	if [[ $? == 0 ]]; then
+		sboot=$(( sboot + 10 ))
 		ssid=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 \Z1Wi-Fi\Z0 - SSID:
 
@@ -464,13 +482,6 @@ dialog "${optbox[@]}" --msgbox "
 
 " 13 55
 
-case $rpi in
-	0 | 1 ) sboot=75;; 
-	2 )     sboot=60;;
-	3 )     sboot=45;;
-	4 | 5 ) sboot=30;;
-esac
-	
 ( for (( i = 1; i < sboot; i++ )); do
 	cat <<EOF
 XXX
