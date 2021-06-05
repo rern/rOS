@@ -50,7 +50,7 @@ if [[ $select == *' 4 '* ]]; then
 	journalctl --rotate
 	journalctl --vacuum-time=1s
 fi
-if [[ $select == *' 5 '* ]] && systemctl -q is-enabled netctl-auto@wlan0; then
+if [[ $select == *' 5 '* ]]; then
 	banner 'Clear Wi-Fi connection ...'
 	readarray -t profiles <<< $( ls -p /etc/netctl | grep -v / )
 	if [[ -n $profiles ]]; then
