@@ -56,8 +56,7 @@ fi
 
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
-	sed -i -e '/#TotalDownload/ s/^#//
-' -e '/\[core\]/ i\
+	sed -i '/\[core\]/ i\
 [+R]\
 SigLevel = Optional TrustAll\
 Server = https://rern.github.io/$arch\
