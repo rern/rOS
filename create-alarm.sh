@@ -524,7 +524,7 @@ scanIP() {
 
 	dialog "${opt[@]}" --msgbox "
 \Z1Find IP address of Raspberry Pi:\Z0
-(Raspberri Pi 4 may listed as Unknown)
+(If Raspberri Pi not listed, ping may find it.)
 \Z4[arrowdown] = scrolldown\Z0
 
 $lines
