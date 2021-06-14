@@ -476,9 +476,8 @@ dialog "${optbox[@]}" --msgbox "
 
 \Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
 
-1. Move micro SD card$usb to RPi
-2. Power on
-3. Press \Z1Enter\Z0 to continue
+- Move micro SD card$usb to RPi > Power on
+- Press \Z1Enter\Z0 to wait for boot
 
 " 13 55
 
