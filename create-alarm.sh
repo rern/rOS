@@ -477,7 +477,7 @@ dialog "${optbox[@]}" --msgbox "
 \Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
 
 - Move micro SD card$usb to RPi > Power on
-- Press \Z1Enter\Z0 to start timer for IP scan
+- Press \Z1Enter\Z0 to start boot timer > IP scan
 
 " 13 55
 
