@@ -485,7 +485,7 @@ dialog "${optbox[@]}" --msgbox "
 	cat <<EOF
 XXX
 $(( i * 100 / sboot ))
-\n  Boot \Z1r\Z0Audio ...
+\n  Boot Arch Linux Arm ...
 \n  $i s
 XXX
 EOF
