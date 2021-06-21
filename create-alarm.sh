@@ -116,7 +116,7 @@ ROOT: \Z1$ROOT\Z0
 		* ) rpiname=$rpi;;
 	esac
 	case $rpi in
-		0 | 1 ) sboot=70;; 
+		0 | 1 ) sboot=80;; 
 		2 )     sboot=60;;
 		3 )     sboot=45;;
 		4 )     sboot=30;;
