@@ -95,7 +95,7 @@ fi
 version=$( cat $ROOT/srv/http/data/system/version )
 
 imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
-Image file:
+Image filename:
 " 0 0 rAudio-$version-RPi$model.img.xz )
 
 imagedir=$( dialog "${optbox[@]}" --title 'Save to:' --stdout --dselect $PWD/ 20 40 )
