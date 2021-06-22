@@ -18,15 +18,12 @@ optbox=( --colors --no-shadow --no-collapse )
 if [[ -n $notempty ]]; then
 		dialog "${optbox[@]}" --infobox "
 \Z1$notempty\Z0 directory not empty.
-
 " 0 0
 	exit	
 fi
 
 dialog "${optbox[@]}" --infobox "
-
                        \Z1r\Z0Audio
-
                   \Z1Create\Z0 Image File
 " 9 58
 sleep 3
@@ -43,10 +40,8 @@ banner() {
 
 dialog "${optbox[@]}" --msgbox "
 \Z1Insert micro SD card\Z0
-
 If already inserted:
 For proper detection, remove and reinsert again.
-
 " 0 0
 
 sd=$( dmesg -T | tail | grep ' sd .*GB' )
@@ -72,11 +67,9 @@ dev=/dev/$( echo $sd | awk -F'[][]' '{print $4}' )
 
 dialog "${optbox[@]}" --yesno "
 Confirm micro SD card: \Z1$dev\Z0
-
 Detail:
 $( echo $sd | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
 $mount
-
 " 0 0
 [[ $? != 0 ]] && exit
 
@@ -86,7 +79,6 @@ ROOT=$( mount | grep /dev.*ROOT | cut -d' ' -f3 )
 if [[ ! -e $BOOT/config.txt ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1$dev\Z0 is not \Z1r\Z0Audio.
-
 " 0 0
 	exit
 fi
@@ -102,8 +94,11 @@ else
 fi
 version=$( cat $ROOT/srv/http/data/system/version )
 
-imagename=rAudio-$version-RPi$model.img.xz
-imagefile=$( dialog "${optbox[@]}" --title 'Save to:' --stdout --fselect "$PWD/$imagename" 30 70 )
+imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+Image file:
+" 0 0 rAudio-$version-RPi$model.img.xz )
+
+imagedir=$( dialog "${optbox[@]}" --title 'Save to:' --stdout --dselect $PWD/ 20 40 )
 
 # auto expand root partition
 touch $BOOT/expand
@@ -151,7 +146,7 @@ quit
 EOF
 	fi
 }
-banner "$imagename"
+banner "$imagefile"
 
 banner 'Shrink #1 ...'
 shrink
@@ -162,16 +157,14 @@ shrink
 banner 'Create compressed image file ...'
 echo $imagefile
 echo
-dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagefile"
+dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagedir/$imagefile"
 
 byte=$( stat --printf="%s" "$imagefile" )
 mb=$( awk "BEGIN { printf \"%.1f\n\", $byte / 1024 / 1024 }" )
 
 dialog "${optbox[@]}" --infobox "
 Image file created:
-
-\Z1$imagefile\Z0
+\Z1$imagedir/$imagefile\Z0
 $mb MiB
-
 \Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
 " 10 58
