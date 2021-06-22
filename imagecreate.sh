@@ -106,6 +106,8 @@ imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 Image file:
 " 0 0 rAudio-$version-RPi$model.img.xz )
 
+imagedir=$( dialog "${optbox[@]}" --title 'Image directory' --stdout --dselect $PWD/ 30 70 )
+
 # auto expand root partition
 touch $BOOT/expand
 
@@ -163,7 +165,7 @@ shrink
 banner 'Create compressed image file ...'
 echo $imagefile
 echo
-dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagefile"
+dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagedir/$imagefile"
 
 byte=$( stat --printf="%s" "$imagefile" )
 mb=$( awk "BEGIN { printf \"%.1f\n\", $byte / 1024 / 1024 }" )
@@ -171,7 +173,7 @@ mb=$( awk "BEGIN { printf \"%.1f\n\", $byte / 1024 / 1024 }" )
 dialog "${optbox[@]}" --infobox "
 Image file created:
 
-\Z1$imagefile\Z0
+\Z1$imagedir/$imagefile\Z0
 $mb MiB
 
 \Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
