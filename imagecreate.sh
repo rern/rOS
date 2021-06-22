@@ -106,7 +106,7 @@ imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 Image file:
 " 0 0 rAudio-$version-RPi$model.img.xz )
 
-imagedir=$( dialog "${optbox[@]}" --title 'Save to directory:' --stdout --dselect $PWD/ 20 40 )
+imagedir=$( dialog "${optbox[@]}" --title 'Save to:' --stdout --dselect $PWD/ 20 40 )
 
 # auto expand root partition
 touch $BOOT/expand
