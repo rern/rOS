@@ -517,6 +517,7 @@ foundIP() {
 			dialog "${opt[@]}" --msgbox "
 $ping
 " 14 70
+			foundIP
 			;;
 		4 ) dialog "${opt[@]}" --msgbox "
 Try starting over again.
