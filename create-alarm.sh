@@ -501,18 +501,22 @@ opt=( --backtitle "$title" ${optbox[@]} )
 routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 subip=${routerip%.*}.
 foundIP() {
-	action=$( dialog "${opt[@]}" --output-fd 1 --menu "
-	\Z1Found IP address of Raspberry Pi?\Z0
-	" 10 40 0 \
-	1 'Yes' \
-	2 'Rescan' \
-	3 'Ping known IP' \
-	4 'No' )
-	case $action in
+	ans=$( dialog "${opt[@]}" --output-fd 1 --menu "
+\Z1Found IP address of RPi?\Z0
+" 8 30 0 \
+1 'Yes' \
+2 'Rescan' \
+3 'Ping known IP' \
+4 'No' )
+	case $ans in
 		2 ) scanIP;;
 		3 ) ipping=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
- Ping IP:
+ Ping RPi at IP:
 " 0 0 $subip )
+			ping=$( ping -4 -c 3 -w 3 $ipping )
+			dialog "${opt[@]}" --msgbox "
+$ping
+" 14 70
 			;;
 		4 ) dialog "${opt[@]}" --msgbox "
 Try starting over again.
@@ -524,7 +528,7 @@ Try starting over again.
 }
 scanIP() {
 	dialog "${opt[@]}" --infobox "
-  Scan IP address ...
+  Scan IP addresses ...
 
 " 5 50
 	nmap=$( nmap -sn $subip* )
@@ -548,51 +552,9 @@ $lines
 
 " 25 80
 
-	dialog "${opt[@]}" --ok-label Yes --extra-button --extra-label Rescan --cancel-label No --yesno "\n
-\Z1Found IP address of Raspberry Pi?\Z0
-(Ping may find missing fixed IP.)
-" 8 38
-	ans=$?
-	if [[ $ans == 3 ]]; then
-		scanIP
-	elif [[ $ans == 1  ]]; then
-		dialog "${opt[@]}" --msgbox "
-Try starting over again.
-
-" 0 0
-		clear -x && exit
-	fi
+	foundIP
 }
-
 scanIP
-
-if [[ $ans == 1 ]]; then
-	dialog "${opt[@]}" --yesno "
-\Z1Connect with Wi-Fi?\Z0
-
-" 0 0
-	if [[ $? == 0 ]]; then
-		rescan=1
-		dialog "${opt[@]}" --msgbox "
-- Power off
-- Connect wired LAN
-- Power on
-- Wait 30 seconds
-- Press Enter to rescan
-
-" 0 0
-		scanIP
-	else
-		dialog "${opt[@]}" --msgbox "
-- Power off
-- Connect a monitor/TV
-- Power on and observe errors
-- Try starting over again
-
-" 0 0
-		clear -x && exit
-	fi
-fi
 
 # connect RPi
 rpiip=$( dialog "${opt[@]}" --output-fd 1 --cancel-label Rescan --inputbox "
