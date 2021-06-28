@@ -513,13 +513,13 @@ scanIP() {
 		sleep 15
 		nmap=$( nmap -sn $subip* )
 	fi
-	nmap=$( echo "$nmap" \
-			| grep -v 'Starting\|Host is up\|Nmap done' \
-			| head -n -1 \
-			| sed 's/Nmap.*for /---/; s/MAC Address/ /' )
-	lines=$( echo $nmap \
-			| sed 's/---/\n/g' \
-			| sed '/Raspberry Pi/ s/^/\\Z1/; s/$/\\Z0/' )
+	lines=$( echo "$nmap" \
+				| grep '^Nmap scan\|^MAC' \
+				| paste -sd ' \n' \
+				| grep 'MAC Address' \
+				| sed 's/Nmap.*for \|MAC Address//g' \
+				| sort -V -r \
+				| sed '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Z0/}' )
 
 	dialog "${opt[@]}" --msgbox "
 \Z1Find IP address of Raspberry Pi:\Z0
