@@ -517,9 +517,8 @@ scanIP() {
 				| grep '^Nmap scan\|^MAC' \
 				| paste -sd ' \n' \
 				| grep 'MAC Address' \
-				| sed 's/Nmap.*for \|MAC Address//g' \
-				| sort -V -r \
-				| sed '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Z0/}' )
+				| sed -e 's/Nmap.*for \|MAC Address//g' -e '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Z0/}' \
+				| tac )
 
 	dialog "${opt[@]}" --msgbox "
 \Z1Find IP address of Raspberry Pi:\Z0
