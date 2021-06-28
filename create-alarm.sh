@@ -520,7 +520,8 @@ $ping
 			foundIP
 			;;
 		4 ) dialog "${opt[@]}" --msgbox "
-Try starting over again.
+ RPi IP cannot be found.
+ Try starting over again.
 
 " 0 0
 			clear -x && exit
