@@ -155,13 +155,10 @@ Connect \Z1Wi-Fi\Z0 on boot?
 1 WPA \
 2 WEP \
 3 None )
-		if [[ $wpa == 1 ]]; then
-			wpa=wpa
-		elif [[ $wpa == 2 ]]; then
-			wpa=wep
-		else
-			wpa=
-		fi
+		case $wpa in
+			1 ) wpa=wpa;;
+			2 ) wpa=wep;;
+		esac
 		wifi="Wi-Fi settings
  SSID     : \Z1$ssid\Z0
  Password : \Z1$password\Z0
@@ -503,6 +500,28 @@ opt=( --backtitle "$title" ${optbox[@]} )
 # scan ip
 routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 subip=${routerip%.*}.
+foundIP() {
+	action=$( dialog "${opt[@]}" --output-fd 1 --menu "
+	\Z1Found IP address of Raspberry Pi?\Z0
+	" 10 40 0 \
+	1 'Yes' \
+	2 'Rescan' \
+	3 'Ping known IP' \
+	4 'No' )
+	case $action in
+		2 ) scanIP;;
+		3 ) ipping=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+ Ping IP:
+" 0 0 $subip )
+			;;
+		4 ) dialog "${opt[@]}" --msgbox "
+Try starting over again.
+
+" 0 0
+			clear -x && exit
+			;;
+	esac
+}
 scanIP() {
 	dialog "${opt[@]}" --infobox "
   Scan IP address ...
@@ -536,7 +555,7 @@ $lines
 	ans=$?
 	if [[ $ans == 3 ]]; then
 		scanIP
-	elif [[ $ans == 1 && -n $rescan ]]; then
+	elif [[ $ans == 1  ]]; then
 		dialog "${opt[@]}" --msgbox "
 Try starting over again.
 
@@ -544,6 +563,7 @@ Try starting over again.
 		clear -x && exit
 	fi
 }
+
 scanIP
 
 if [[ $ans == 1 ]]; then
