@@ -529,7 +529,7 @@ Try starting over again.
 }
 scanIP() {
 	dialog "${opt[@]}" --infobox "
-  Scan IP addresses ...
+  Scan network hosts ...
 
 " 5 50
 	nmap=$( nmap -sn $subip* )
