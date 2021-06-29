@@ -533,8 +533,7 @@ scanIP() {
   Scan network hosts ...
 
 " 5 50
-	nmap=$( nmap -sn $subip* )
-	lines=$( echo "$nmap" \
+	lines=$( nmap -sn $subip* \
 				| grep '^Nmap scan\|^MAC' \
 				| paste -sd ' \n' \
 				| grep 'MAC Address' \
