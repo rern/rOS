@@ -534,10 +534,6 @@ scanIP() {
 
 " 5 50
 	nmap=$( nmap -sn $subip* )
-	if ! echo "$nmap" | grep -q 'Raspberry Pi'; then
-		sleep 15
-		nmap=$( nmap -sn $subip* )
-	fi
 	lines=$( echo "$nmap" \
 				| grep '^Nmap scan\|^MAC' \
 				| paste -sd ' \n' \
