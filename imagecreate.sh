@@ -169,5 +169,6 @@ dialog "${optbox[@]}" --infobox "
 Image file created:
 \Z1$imagedir/$imagefile\Z0
 $mb MiB
+
 \Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
 " 10 58
