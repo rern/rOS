@@ -23,6 +23,7 @@ if [[ -n $notempty ]]; then
 fi
 
 dialog "${optbox[@]}" --infobox "
+
                        \Z1r\Z0Audio
                   \Z1Create\Z0 Image File
 " 9 58
@@ -42,6 +43,7 @@ dialog "${optbox[@]}" --msgbox "
 \Z1Insert micro SD card\Z0
 If already inserted:
 For proper detection, remove and reinsert again.
+
 " 0 0
 
 sd=$( dmesg -T | tail | grep ' sd .*GB' )
