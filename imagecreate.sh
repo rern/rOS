@@ -108,6 +108,8 @@ touch $BOOT/expand
 
 clear -x
 
+banner "$imagefile"
+
 banner 'Shrink ROOT partition ...'
 
 part=${dev}2
@@ -149,7 +151,6 @@ quit
 EOF
 	fi
 }
-banner "$imagefile"
 
 banner 'Shrink #1 ...'
 shrink
