@@ -1,5 +1,6 @@
 #!/bin/bash
 
+dirdata=/srv/http/data
 optbox=( --colors --no-shadow --no-collapse )
 
 col=$( tput cols )
@@ -33,12 +34,12 @@ mount | grep /mnt/MPD/USB && udevil umount -l "/mnt/MPD/USB/"*
 
 if [[ $select == *' 1 '* ]]; then
 	banner 'Reset MPD database ...'
-	rm -f /srv/http/data/mpd/*
+	rm -f $dirdata/mpd/*
 fi
 if [[ $select == *' 2 '* ]]; then
 	banner 'Reset user data directory ...'
-	rm -rf /root/.cache/* /srv/http/data/tmp/*
-	rm -f /srv/http/data/{bookmarks,coverarts,lyrics,mpd,playlists,webradios}/* /srv/http/data/system/gpio
+	rm -rf /root/.cache/* $dirdata/tmp/*
+	rm -f $dirdata/{bookmarks,coverarts,lyrics,mpd,playlists,webradios}/* $dirdata/system/gpio
 	curl -L https://github.com/rern/rOS/raw/main/radioparadise.tar.xz | bsdtar xvf - -C /
 fi
 if [[ $select == *' 3 '* ]]; then
@@ -61,6 +62,7 @@ if [[ $select == *' 5 '* ]]; then
 	fi
 fi
 
+[[ ! -e $dirdata/mpd/counts ]] && echo '{"webradio":'$( ls -1q $dirdata/webradios | wc -l )'}' > $dirdata/mpd/counts
 wget -q --show-progress https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -O /etc/pacman.d/mirrorlist
 
 banner 'Check disk ...'
