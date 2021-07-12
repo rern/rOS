@@ -108,7 +108,7 @@ touch $BOOT/expand
 
 clear -x
 
-banner "$imagefile"
+banner "Image: $imagefile"
 
 banner 'Shrink ROOT partition ...'
 
