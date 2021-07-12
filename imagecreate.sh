@@ -163,12 +163,13 @@ echo $imagefile
 echo
 dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagedir/$imagefile"
 
-byte=$( stat --printf="%s" "$imagefile" )
+imagepath="$imagedir/$imagefile"
+byte=$( stat --printf="%s" "$imagepath" )
 mb=$( awk "BEGIN { printf \"%.1f\n\", $byte / 1024 / 1024 }" )
 
 dialog "${optbox[@]}" --infobox "
 Image file created:
-\Z1$imagedir/$imagefile\Z0
+\Z1$imagepath\Z0
 $mb MiB
 
 \Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
