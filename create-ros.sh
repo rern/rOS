@@ -180,6 +180,19 @@ rm /boot/{features,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
 touch /boot/expand
+# build version
+version=$( cat $ROOT/srv/http/data/system/version )
+if [[ -e /boot/kernel8.img ]]; then
+	model=64
+elif [[ -e /boot/bcm2711-rpi-4-b.dtb ]]; then
+	model=4
+elif [[ -e /boot/kernel7.img ]]; then
+	model=2-3
+else
+	model=0-1
+fi
+kernel=$( uname -r | sed 's/-ARCH//' )
+echo rAudio-$version-RPi$model-$kernel > /srv/http/data/system/build
 
 dialog "${optbox[@]}" --infobox "
 

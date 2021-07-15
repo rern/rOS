@@ -95,11 +95,9 @@ elif [[ -e $BOOT/kernel7.img ]]; then
 else
 	model=0-1
 fi
-version=$( cat $ROOT/srv/http/data/system/version )
-
 imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 Image filename:
-" 0 0 rAudio-$version-RPi$model.img.xz )
+" 0 0 $( cat $ROOT/srv/http/data/system/build ).img.xz )
 
 imagedir=$( dialog "${optbox[@]}" --title 'Save to:' --stdout --dselect $PWD/ 20 40 )
 
