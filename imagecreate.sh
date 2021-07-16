@@ -118,6 +118,7 @@ umount -l -v ${dev}1 ${dev}2
 e2fsck -fy $part
 
 shrink() {
+	echo -e "\e[46m \e[0m Shrink #$1 ..."
 	partinfo=$( tune2fs -l $part )
 	blockcount=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
 	freeblocks=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
@@ -150,11 +151,9 @@ EOF
 	fi
 }
 
-banner 'Shrink #1 ...'
-shrink
+shrink 1
 
-banner 'Shrink #2 ...'
-shrink
+shrink 2
 
 banner 'Create compressed image file ...'
 echo $imagefile
