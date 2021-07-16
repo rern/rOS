@@ -103,7 +103,7 @@ Image filename:
 " 0 0 rAudio-$version-RPi$model-$revision.img.xz )
 
 imagedir=$( dialog "${optbox[@]}" --title 'Save to:' --stdout --dselect $PWD/ 20 40 )
-imagedir=${imagedir%/} # remove trailing /
+imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 
 # auto expand root partition
 touch $BOOT/expand
@@ -162,11 +162,10 @@ shrink 1
 shrink 2
 
 banner 'Create compressed image file ...'
-echo $imagefile
+echo $imagepath
 echo
-dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagedir/$imagefile"
+dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagepath"
 
-imagepath="$imagedir/$imagefile"
 byte=$( stat --printf="%s" "$imagepath" )
 mb=$( awk "BEGIN { printf \"%.1f\n\", $byte / 1024 / 1024 }" )
 
