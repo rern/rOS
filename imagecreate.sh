@@ -119,6 +119,7 @@ used=$( df -k 2> /dev/null | grep $part | awk '{print $3}' )
 
 umount -l -v ${dev}1 ${dev}2
 e2fsck -fy $part
+echo
 
 shrink() {
 	echo -e "\e[46m \e[0m Shrink #$1 ..."
