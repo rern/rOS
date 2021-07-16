@@ -86,7 +86,7 @@ if [[ ! -e $BOOT/config.txt ]]; then
 	exit
 fi
 
-version=$( cat $ROOT/srv/http/data/addons/version )
+version=$( cat $ROOT/srv/http/data/system/version )
 revision=$( cat $ROOT/srv/http/data/addons/r$version )
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64
