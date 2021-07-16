@@ -102,7 +102,8 @@ imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 Image filename:
 " 0 0 rAudio-$version-RPi$model-$revision.img.xz )
 
-imagedir=$( dialog "${optbox[@]}" --title 'Save to:' --stdout --dselect $PWD 20 40 )
+imagedir=$( dialog "${optbox[@]}" --title 'Save to:' --stdout --dselect $PWD/ 20 40 )
+imagedir=${imagedir%/} # remove trailing /
 
 # auto expand root partition
 touch $BOOT/expand
