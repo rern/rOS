@@ -123,6 +123,7 @@ echo
 
 shrink() {
 	echo -e "\e[46m \e[0m Shrink #$1 ..."
+	echo
 	partinfo=$( tune2fs -l $part )
 	blockcount=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
 	freeblocks=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
