@@ -317,7 +317,7 @@ else
 			print "\\n \\Z1'$file'\\Z0"
 			print "\\n Time left: "substr($0,74,5)"\nXXX" }' ) \
 		| dialog "${opt[@]}" --gauge "
-Connecting ...
+ Connecting ...
 " 9 50
 	# checksum
 	wget -qO $file.md5 http://os.archlinuxarm.org/os/$file.md5
