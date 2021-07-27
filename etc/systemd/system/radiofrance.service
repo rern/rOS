@@ -1,5 +1,5 @@
 [Unit]
-Description=radiofrance metadata
+Description=Radio France metadata
 
 [Service]
 Type=simple

@@ -1,5 +1,5 @@
 [Unit]
-Description=radioparadise metadata
+Description=Radio Paradise metadata
 
 [Service]
 Type=simple
