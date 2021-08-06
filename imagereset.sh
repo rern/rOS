@@ -40,7 +40,7 @@ if [[ $select == *' 2 '* ]]; then
 	banner 'Reset user data directory ...'
 	rm -rf /root/.cache/* $dirdata/tmp/*
 	rm -f $dirdata/{bookmarks,coverarts,lyrics,mpd,playlists,webradios}/* $dirdata/system/gpio
-	curl -L https://github.com/rern/rOS/raw/main/radioparadise.tar.xz | bsdtar xvf - -C /
+	curl -L https://github.com/rern/rAudio-addons/raw/main/webradio/radioparadise.tar.xz | bsdtar xvf - -C /
 fi
 if [[ $select == *' 3 '* ]]; then
 	banner 'Clear package cache ...'
