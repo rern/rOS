@@ -530,7 +530,7 @@ $ping
 }
 scanIP() {
 	dialog "${opt[@]}" --infobox "
-  Scan network hosts ...
+  Scan hosts in network ...
 
 " 5 50
 	lines=$( nmap -sn $subip* \
