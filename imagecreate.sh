@@ -123,7 +123,7 @@ e2fsck -fy $part
 echo
 
 shrink() {
-	echo -e "\e[46m \e[0m Shrink #$1 ..."
+	echo -e "\e[44m \e[0m Shrink #$1 ..."
 	echo
 	partinfo=$( tune2fs -l $part )
 	blockcount=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
