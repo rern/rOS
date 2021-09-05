@@ -13,5 +13,5 @@ for k in $isokeys; do
 	grep -q $k <<< "$codes" || iso3166=$( grep -v $k <<< "$iso3166" )
 done
 
-countrycodes=$iso3166
+json=$iso3166
 ```
