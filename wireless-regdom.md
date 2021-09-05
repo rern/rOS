@@ -5,13 +5,15 @@ codes=$( curl -sL https://git.kernel.org/pub/scm/linux/kernel/git/sforshee/wirel
   | cut -d' ' -f2 \
   | tr -d : )
   
-iso3166=$( curl -sL https://gist.github.com/ssskip/5a94bfcd2835bf1dea52/raw/3b2e5355eb49336f0c6bc0060c05d927c2d1e004/ISO3166-1.alpha2.json )
+iso3166=$( curl -sL https://gist.github.com/ssskip/5a94bfcd2835bf1dea52/raw/3b2e5355eb49336f0c6bc0060c05d927c2d1e004/ISO3166-1.alpha2.json \
+			| sort \
+			| head -n -2 )
 
-isokeys=$( echo "$iso3166list" | sed -e '1d' -e '$d' -e 's/^.*"\(.*\)":.*/\1/' )
+isokeys=$( echo "$iso3166list" | sed 's/^.*"\(.*\)":.*/\1/' )
 
 for k in $isokeys; do
 	grep -q $k <<< "$codes" || iso3166=$( grep -v $k <<< "$iso3166" )
 done
 
-json=$iso3166
+echo {$iso3166} | jq . > regdomcodes
 ```
