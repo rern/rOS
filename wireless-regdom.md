@@ -15,7 +15,7 @@ for k in $isokeys; do
 	grep -q $k <<< "$codes" || iso3166=$( grep -v $k <<< "$iso3166" )
 done
 
-regdomcodes='"00": "(Least common denominator)",'
+regdomcodes='"00": "00 - Generic",'
 regdomcodes+=$iso3166
 
 echo {$regdomcodes} | jq .
