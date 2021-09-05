@@ -18,5 +18,5 @@ done
 regdomcodes='"00": "00 - Generic",'
 regdomcodes+=$iso3166
 
-echo {$regdomcodes} | jq .
+echo {$regdomcodes} | jq . > regdomcodes.json
 ```
