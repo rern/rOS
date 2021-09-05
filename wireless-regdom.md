@@ -15,5 +15,8 @@ for k in $isokeys; do
 	grep -q $k <<< "$codes" || iso3166=$( grep -v $k <<< "$iso3166" )
 done
 
-echo {$iso3166} | jq . > regdomcodes
+regdomcodes='"00": "Global",'
+regdomcodes+=$iso3166
+
+echo {$regdomcodes} | jq .
 ```
