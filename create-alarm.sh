@@ -18,7 +18,7 @@ else
 fi
 
 #----------------------------------------------------------------------------
-title='Create Arch Linux Arm'
+title='rAudio - Create Arch Linux Arm'
 optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
 
@@ -494,7 +494,7 @@ done ) \
 " 9 50
 
 #----------------------------------------------------------------------------
-title='Connect to Raspberry Pi'
+title='rAudio - Connect to Raspberry Pi'
 opt=( --backtitle "$title" ${optbox[@]} )
 
 # scan ip
