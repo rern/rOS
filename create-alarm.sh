@@ -442,7 +442,7 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 
 # get create-ros.sh
 createrosfile=$ROOT/root/create-ros.sh
-url -sL https://github.com/rern/rOS/raw/main/create-ros.sh -o $createrosfile
+curl -sL https://github.com/rern/rOS/raw/main/create-ros.sh -o $createrosfile
 chmod 755 $createrosfile
 
 # packages mirror
