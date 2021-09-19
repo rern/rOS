@@ -66,7 +66,7 @@ $warnings
 fi
 
 # version - branch
-addons=( $( wget -qO - https://github.com/rern/rAudio-addons/raw/main/addons-list.json \
+addons=( $( curl -skL https://github.com/rern/rAudio-addons/raw/main/addons-list.json \
 			| grep -A2 '"r.":' \
 			| sed -e 2d -e 's/[^0-9]*//g' ) )
 version=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
@@ -258,14 +258,10 @@ fi
 SECONDS=0
 
 # package mirror server
-wget -q https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
-	| dialog "${opt[@]}" --gauge "
- Get package mirror list ...
-" 9 50
-mirrorlist=$( grep . mirrorlist \
+mirrorlist=$( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
+	| grep . mirrorlist \
 	| sed -n '/### A/,$ p' \
 	| sed 's/ (not Austria\!)//' )
-rm mirrorlist
 readarray -t lines <<< "$mirrorlist"
 clist=( 0 'Auto - By Geo-IP' )
 url=( '' )
@@ -292,7 +288,7 @@ ccode=${url[$code]}
 
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
-	wget -qO $file.md5 http://os.archlinuxarm.org/os/$file.md5 \
+	curl -skLO $file.md5 http://os.archlinuxarm.org/os/$file.md5 \
 		| dialog "${opt[@]}" --gauge "
   Verify already downloaded file ...
 " 9 50
