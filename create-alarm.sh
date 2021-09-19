@@ -441,8 +441,9 @@ id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 
 # get create-ros.sh
-wget -qN https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
-chmod 755 $ROOT/root/create-ros.sh
+createrosfile=$ROOT/root/create-ros.sh
+url -sL https://github.com/rern/rOS/raw/main/create-ros.sh -o $createrosfile
+chmod 755 $createrosfile
 
 # packages mirror
 [[ -n $ccode ]] && sed -i '/^Server/ s|//.*mirror|//'$ccode'.mirror|' $ROOT/etc/pacman.d/mirrorlist
