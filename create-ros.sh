@@ -46,12 +46,14 @@ clear -x # needed: fix stdout not scroll
 #----------------------------------------------------------------------------
 banner 'Upgrade kernel and default packages ...'
 
-packages='alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools gifsicle hfsprogs i2c-tools imagemagick inetutils jq '
-packages+='mpc mpd mpdscribble nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g parted php-fpm sshpass sudo udevil wget wiringpi '
+packages='alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools 
+gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble 
+nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g ntp 
+parted php-fpm sshpass sudo udevil wget wiringpi'
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
-	packages+='linux-raspberrypi4 raspberrypi-bootloader raspberrypi-bootloader-x raspberrypi-firmware '
+	packages+=' linux-raspberrypi4 raspberrypi-bootloader raspberrypi-bootloader-x raspberrypi-firmware'
 fi
 
 # add +R repo
