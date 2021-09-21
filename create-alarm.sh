@@ -288,7 +288,7 @@ ccode=${url[$code]}
 
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
-	curl -skLO $file.md5 http://os.archlinuxarm.org/os/$file.md5 \
+	curl -skLO http://os.archlinuxarm.org/os/$file.md5 \
 		| dialog "${opt[@]}" --gauge "
   Verify already downloaded file ...
 " 9 50
@@ -316,7 +316,7 @@ else
  Connecting ...
 " 9 50
 	# checksum
-	wget -qO $file.md5 http://os.archlinuxarm.org/os/$file.md5
+	curl -skLO http://os.archlinuxarm.org/os/$file.md5
 	if ! md5sum -c $file.md5; then
 		rm $file
 		dialog "${opt[@]}" --msgbox "
