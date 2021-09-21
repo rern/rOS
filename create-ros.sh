@@ -75,8 +75,8 @@ pacman -S --noconfirm --needed $packages $features
 
 banner 'Get configurations and user interface ...'
 
-wget -q --show-progress https://github.com/rern/rOS/archive/main.zip -O config.zip
-wget -q --show-progress https://github.com/rern/rAudio-$version/archive/$uibranch.zip -O ui.zip
+curl -skL https://github.com/rern/rOS/archive/main.zip -o config.zip
+curl -skL https://github.com/rern/rAudio-$version/archive/$uibranch.zip -o ui.zip
 mkdir -p /tmp/config
 bsdtar --strip 1 -C /tmp/config -xvf config.zip
 bsdtar --strip 1 -C /tmp/config -xvf ui.zip
