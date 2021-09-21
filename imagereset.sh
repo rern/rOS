@@ -40,7 +40,7 @@ if [[ $select == *' 2 '* ]]; then
 	banner 'Reset user data directory ...'
 	rm -rf /root/.cache/* $dirdata/tmp/*
 	rm -f $dirdata/{bookmarks,coverarts,lyrics,mpd,playlists,webradios}/* $dirdata/system/gpio
-	curl -L https://github.com/rern/rAudio-addons/raw/main/webradio/radioparadise.tar.xz | bsdtar xvf - -C /
+	curl -skL https://github.com/rern/rAudio-addons/raw/main/webradio/radioparadise.tar.xz | bsdtar xvf - -C /
 fi
 if [[ $select == *' 3 '* ]]; then
 	banner 'Clear package cache ...'
@@ -63,7 +63,7 @@ if [[ $select == *' 5 '* ]]; then
 fi
 
 [[ ! -e $dirdata/mpd/counts ]] && echo '{"webradio":'$( ls -1q $dirdata/webradios | wc -l )'}' > $dirdata/mpd/counts
-curl -L https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
+curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
 
 banner 'Check disk ...'
 fsck.fat -traw /dev/mmcblk0p1
