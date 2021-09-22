@@ -77,6 +77,6 @@ dialog "${optbox[@]}" --infobox "
        Before power off, observe \Z2green\Z0 LED:
          - Stop all services - Blip
          - Shutdown - 10 steady flashes to completely off
-" 12 65
+" 11 65
 shutdown -h now
 exit
