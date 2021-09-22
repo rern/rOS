@@ -503,7 +503,7 @@ foundIP() {
 " 8 30 0 \
 1 'Yes' \
 2 'Rescan' \
-3 'Ping known IP' \
+3 'Ping assigned IP' \
 4 'No' )
 	case $ans in
 		2 ) scanIP;;
