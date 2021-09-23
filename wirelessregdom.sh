@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# bash <( curl -skL https://github.com/rern/rOS/raw/main/wirelessregdom.sh )
+
 codes=$( curl -skL https://git.kernel.org/pub/scm/linux/kernel/git/sforshee/wireless-regdb.git/plain/db.txt \
 			| grep ^country \
 			| cut -d' ' -f2 \
