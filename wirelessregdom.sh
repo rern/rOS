@@ -1,5 +1,5 @@
-### Country codes:
-```sh
+#!/bin/bash
+
 codes=$( curl -skL https://git.kernel.org/pub/scm/linux/kernel/git/sforshee/wireless-regdb.git/plain/db.txt \
 			| grep ^country \
 			| cut -d' ' -f2 \
@@ -9,5 +9,6 @@ iso3166=$( curl -skL https://gist.github.com/ssskip/5a94bfcd2835bf1dea52/raw/3b2
 for k in ${codes[@]}; do
 	list+=$'\n'$( grep $k <<< "$iso3166" )
 done
+
 echo { '"00": "00 - Allowed worldwide"', $( echo "$list" | sort -k2 ) } | jq . > /srv/http/settings/regdomcodes.json
-```
+
