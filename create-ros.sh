@@ -46,7 +46,7 @@ clear -x # needed: fix stdout not scroll
 #----------------------------------------------------------------------------
 banner 'Upgrade kernel and default packages ...'
 
-packages='alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools 
+packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools 
 gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble 
 nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g ntp 
 parted php-fpm sshpass sudo udevil wget wiringpi'
