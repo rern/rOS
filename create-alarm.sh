@@ -259,7 +259,7 @@ SECONDS=0
 
 # package mirror server
 mirrorlist=$( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
-	| grep . mirrorlist \
+	| grep . \
 	| sed -n '/### A/,$ p' \
 	| sed 's/ (not Austria\!)//' )
 readarray -t lines <<< "$mirrorlist"
