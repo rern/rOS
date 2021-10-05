@@ -139,6 +139,7 @@ fi
 # hostapd
 [[ ! -e /usr/bin/hostapd ]] && rm -rf /etc/{hostapd,dnsmasq.conf}
 # mpd
+chsh -s /bin/bash mpd
 cp /usr/share/mpdscribble/mpdscribble.conf.example /etc/mpdscribble.conf
 # motd
 ln -sf /srv/http/bash/motd.sh /etc/profile.d/
