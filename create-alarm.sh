@@ -258,13 +258,12 @@ fi
 SECONDS=0
 
 # package mirror server
-mirrorlist=$( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
+readarray -t lines <<< $( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
 	| grep . \
 	| sed -n '/### A/,$ p' \
-	| sed 's/ (not Austria\!)//' )
-readarray -t lines <<< "$mirrorlist"
+	| sed 's/ (not Austria\!)//; s/.mirror.*//; s|.*//||' )
 clist=( 0 'Auto - By Geo-IP' )
-url=( '' )
+codelist=( '' )
 i=0
 for line in "${lines[@]}"; do
 	if [[ ${line:0:4} == '### ' ]];then
@@ -276,7 +275,7 @@ for line in "${lines[@]}"; do
 		[[ -n $city ]] && cc="$country - $city" || cc=$country
 		(( i++ ))
 		clist+=( $i "$cc" )
-		url+=( $( sed 's|.*//\(.*\).mirror.*|\1|' <<< $line ) )
+		codelist+=( $line )
 	fi
 done
 
@@ -284,7 +283,7 @@ code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Package mirror server:\Z0
 " 0 0 0 \
 "${clist[@]}" )
-ccode=${url[$code]}
+[[ $code != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'${codelist[$code]}'.mirror|' $ROOT/etc/pacman.d/mirrorlist
 
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
@@ -443,9 +442,6 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 createrosfile=$ROOT/root/create-ros.sh
 curl -skL https://github.com/rern/rOS/raw/main/create-ros.sh -o $createrosfile
 chmod 755 $createrosfile
-
-# packages mirror
-[[ -n $ccode ]] && sed -i '/^Server/ s|//.*mirror|//'$ccode'.mirror|' $ROOT/etc/pacman.d/mirrorlist
 
 target="                 \Z1Raspberry Pi $rpiname\Z0"
 [[ $rpi != 5 ]] && target="  $target"
