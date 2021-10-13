@@ -258,10 +258,11 @@ fi
 SECONDS=0
 
 # package mirror server
-readarray -t lines <<< $( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
-	| grep . \
-	| sed -n '/### A/,$ p' \
-	| sed 's/ (not Austria\!)//; s/.mirror.*//; s|.*//||' )
+filemirror=$ROOT/etc/pacman.d/mirrorlist
+curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o $filemirror
+readarray -t lines <<< $( grep . $filemirror \
+							| sed -n '/### A/,$ p' \
+							| sed 's/ (not Austria\!)//; s/.mirror.*//; s|.*//||' )
 clist=( 0 'Auto - By Geo-IP' )
 codelist=( '' )
 i=0
@@ -283,7 +284,7 @@ code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Package mirror server:\Z0
 " 0 0 0 \
 "${clist[@]}" )
-[[ $code != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'${codelist[$code]}'.mirror|' $ROOT/etc/pacman.d/mirrorlist
+[[ $code != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'${codelist[$code]}'.mirror|' $filemirror
 
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
