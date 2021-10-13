@@ -284,7 +284,6 @@ code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Package mirror server:\Z0
 " 0 0 0 \
 "${clist[@]}" )
-[[ $code != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'${codelist[$code]}'.mirror|' $filemirror
 
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
@@ -443,6 +442,9 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 createrosfile=$ROOT/root/create-ros.sh
 curl -skL https://github.com/rern/rOS/raw/main/create-ros.sh -o $createrosfile
 chmod 755 $createrosfile
+
+# set mirror server
+[[ $code != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'${codelist[$code]}'.mirror|' $filemirror
 
 target="                 \Z1Raspberry Pi $rpiname\Z0"
 [[ $rpi != 5 ]] && target="  $target"
