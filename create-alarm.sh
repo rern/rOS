@@ -443,7 +443,7 @@ curl -skL https://github.com/rern/rOS/raw/main/create-ros.sh -o $createrosfile
 chmod 755 $createrosfile
 
 # set mirror server
-[[ $code != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'${codelist[$code]}'.mirror|' $filemirror
+[[ $code != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'${codelist[$code]}'.mirror|' $ROOT/etc/pacman.d/mirrorlist
 
 target="                 \Z1Raspberry Pi $rpiname\Z0"
 [[ $rpi != 5 ]] && target="  $target"
