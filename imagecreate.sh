@@ -89,18 +89,18 @@ fi
 version=$( cat $ROOT/srv/http/data/system/version )
 revision=$( cat $ROOT/srv/http/data/addons/r$version )
 if [[ -e $BOOT/kernel8.img ]]; then
-	model=64
+	model=64bit
 elif [[ -e $BOOT/bcm2711-rpi-4-b.dtb ]]; then
-	model=4
+	model=RPi4
 elif [[ -e $BOOT/kernel7.img ]]; then
-	model=2-3
+	model=RPi2
 else
-	model=0-1
+	model=RPi0-1
 fi
 
 imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 Image filename:
-" 0 0 rAudio-$version-RPi$model-$revision.img.xz )
+" 0 0 rAudio-$version-$model-$revision.img.xz )
 
 imagedir=$( dialog "${optbox[@]}" --title 'Save to:' --stdout --dselect $PWD/ 20 40 )
 imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
