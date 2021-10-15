@@ -121,13 +121,12 @@ else
 	rm -rf /etc/systemd/system/{bluealsa,bluetooth}.service.d
 	rm -f /etc/systemd/system/blue*
 fi
-# chromium
-if [[ -e /usr/bin/chromium ]]; then
+# browser
+if [[ -e /usr/bin/firefox ]]; then
 	sed -i 's/\(console=\).*/\1tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt # boot splash
 	chmod 775 /etc/X11/xorg.conf.d                   # fix permission for rotate file
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # startx
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
-	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # script
 	systemctl daemon-reload
 	systemctl disable getty@tty1                     # login prompt
 	systemctl enable bootsplash localbrowser
