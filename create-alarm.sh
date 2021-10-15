@@ -194,7 +194,7 @@ $rpi01
 # features
   audiocd='\Z1Audio CD\Z0  - Play audio CD'
     bluez='\Z1Bluez\Z0     - Bluetooth audio'
- chromium='\Z1Chromium\Z0  - Browser on RPi screen'
+  browser='\Z1Firefox\Z0   - Browser on RPi screen'
   hostapd='\Z1hostapd\Z0   - RPi access point'
       kid='\Z1Kid3\Z0      - Metadata tag editor'
     samba='\Z1Samba\Z0     - File sharing'
@@ -204,10 +204,10 @@ shairport='\Z1Shairport\Z0 - AirPlay renderer'
  upmpdcli='\Z1upmpdcli\Z0  - UPnP renderer'
 
 if [[ $rpi == 0 || $rpi == 1 ]]; then
-	chromium='Chromium  - (not for RPi Zero, 1)'
-	onoffchromium=off
+	browser='Firefox  - (not for RPi Zero, 1)'
+	onoffbrowser=off
 else
-	onoffchromium=on
+	onoffbrowser=on
 fi
 
 selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
@@ -216,7 +216,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 \Z4[space] = Select / Deselect\Z0
 " 9 0 0 \
 1 "$bluez" on \
-2 "$chromium" $onoffchromium \
+2 "$browser" $onoffbrowser \
 3 "$hostapd" on \
 4 "$kid" on \
 5 "$samba" on \
@@ -229,7 +229,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 	features=
 	list=
 	[[ $select == *' 1 '* ]] && features+='bluez bluez-alsa bluez-utils python-dbus python-gobject python-requests ' && list+="$bluez"$'\n'
-	[[ $select == *' 2 '* ]] && features+='chromium matchbox-window-manager plymouth-lite-rbp upower xf86-input-evdev xf86-video-fbdev xf86-video-fbturbo xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$chromium"$'\n'
+	[[ $select == *' 2 '* ]] && features+='firefox matchbox-window-manager plymouth-lite-rbp upower xf86-input-evdev xf86-video-fbdev xf86-video-fbturbo xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$browser"$'\n'
 	[[ $select == *' 3 '* ]] && features+='dnsmasq hostapd ' && list+="$hostapd"$'\n'
 	[[ $select == *' 4 '* ]] && features+='kid3-common ' && list+="$kid"$'\n'
 	[[ $select == *' 5 '* ]] && features+='samba ' && list+="$samba"$'\n'
