@@ -1,5 +1,5 @@
 [Unit]
-Description=Local Browser - Chromium
+Description=Browser on RPi
 After=startup.service
 
 [Service]
