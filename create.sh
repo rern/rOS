@@ -8,7 +8,7 @@ dialog "${optbox[@]}" --infobox "
                           for
                     Arch Linux Arm
 " 9 58
-sleep 3
+sleep 2
 
 mounts=$( mount | awk '/dev\/sd.*\/BOOT/ || /dev\/sd.*\/ROOT/ {print $1" "$2" "$3}' )
 if [[ -n $mounts ]]; then
