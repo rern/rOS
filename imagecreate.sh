@@ -28,7 +28,7 @@ dialog "${optbox[@]}" --infobox "
 
                   \Z1Create\Z0 Image File
 " 9 58
-sleep 3
+sleep 2
 
 col=$( tput cols )
 banner() {
