@@ -302,7 +302,7 @@ Existing is the latest:
 No download required.
 
 " 0 0
-	sleep 3
+	sleep 2
 else
 	( wget -O $file http://os.archlinuxarm.org/os/$file 2>&1 \
 		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
