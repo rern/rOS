@@ -8,7 +8,7 @@ dialog "${optbox[@]}" --infobox "
 
                  \Z1Reset\Z0 for Image File
 " 9 58
-sleep 3
+sleep 2
 
 routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 subip=${routerip%.*}.
