@@ -281,7 +281,7 @@ version=$version
 release=$release
 col=$COLUMNS
 rpi01=$rpi01
-mirror$mirror
+mirror=$mirror
 " > $BOOT/versions
 
 routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
