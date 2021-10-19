@@ -273,9 +273,7 @@ code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 "${clist[@]}" )
 if [[ $code != 0 ]]; then
 	mirror=${codelist[$code]}
-	sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' $filemirrorlist
-else
-	mirror=0
+	sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' $ROOT/etc/pacman.d/mirrorlist
 fi
 
 echo -n "\
