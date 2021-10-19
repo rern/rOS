@@ -519,6 +519,7 @@ foundIP() {
  Ping RPi at IP:
 " 0 0 $subip )
 			ping=$( ping -4 -c 3 -w 3 $ipping | sed "s/\(from $ipping\)/from \\\Z1\1\\\Z0/" )
+			grep -q ', 0 received' <<< "$ping" && ping+=$'\n\n'"$ipping not found."
 			dialog "${opt[@]}" --msgbox "
 $ping
 " 14 70
