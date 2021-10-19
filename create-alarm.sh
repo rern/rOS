@@ -125,11 +125,6 @@ Create \Z164bit\Z0 on:
 2 'Raspberry Pi 2' \
 3 'Raspberry Pi 3' \
 4 'Raspberry Pi 4' )
-		case $runon in
-			2 ) sboot=60;;
-			3 ) sboot=45;;
-			4 ) sboot=30;;
-		esac
 	fi
 	
 	dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
@@ -494,21 +489,6 @@ dialog "${optbox[@]}" --msgbox "
 
 " 13 55
 
-( for (( i = 1; i < sboot; i++ )); do
-	cat <<EOF
-XXX
-$(( i * 100 / sboot ))
-\n  Boot \Z1Arch Linux Arm\Z0 ...
-\n  $i s
-XXX
-EOF
-	sleep 1
-done ) \
-| dialog "${opt[@]}" --gauge "
-  Boot ...
-  $i s
-" 9 50
-
 #----------------------------------------------------------------------------
 title='rAudio - Connect to Raspberry Pi'
 opt=( --backtitle "$title" ${optbox[@]} )
@@ -527,7 +507,7 @@ foundIP() {
 		3 ) ipping=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Ping RPi at IP:
 " 0 0 $subip )
-			ping=$( ping -4 -c 3 -w 3 $ipping | sed "s/\(from $ipping\)/from \\\Z1\1\\\Z0/" )
+			ping=$( ping -4 -c 1 -w 2 $ipping | sed "s/\(from $ipping\)/from \\\Z1\1\\\Z0/" )
 			grep -q ', 0 received' <<< "$ping" && ping+=$'\n\n'"\Z1$ipping\Z0 not found."
 			dialog "${opt[@]}" --msgbox "
 $ping
@@ -568,13 +548,32 @@ $lines
 }
 
 if [[ -n $assignedip ]]; then
-	ping=$( ping -4 -c 3 -w 3 $assignedip | sed "s/from \($assignedip\)/from \\\Z1\1\\\Z0/" )
+	sleep $(( sboot - 20 ))
+	for i in {1..10}; do
+		ping -4 -c 1 -w 2 $assignedip &> /dev/null && break
+		sleep 5
+	done
+	ping=$( ping -4 -c 1 -w 2 $assignedip | sed "s/from \($assignedip\)/from \\\Z1\1\\\Z0/" )
 	grep -q ', 0 received' <<< "$ping" && ping+=$'\n\n'"\Z1$assignedip\Z0 not found."
 	dialog "${opt[@]}" --msgbox "
 $ping
 " 14 70
 	foundIP
 else
+	( for (( i = 1; i < sboot; i++ )); do
+		cat <<EOF
+	XXX
+	$(( i * 100 / sboot ))
+	\n  Boot \Z1Arch Linux Arm\Z0 ...
+	\n  $i s
+	XXX
+	EOF
+		sleep 1
+	done ) \
+	| dialog "${opt[@]}" --gauge "
+  Boot ...
+  $i s
+" 9 50
 	scanIP
 fi
 
