@@ -561,7 +561,7 @@ $lines
 }
 
 if [[ -n $assignedip ]]; then
-	ping=$( ping -4 -c 3 -w 3 $ipping )
+	ping=$( ping -4 -c 3 -w 3 $assignedip )
 	dialog "${opt[@]}" --msgbox "
 $ping
 " 14 70
