@@ -194,7 +194,7 @@ $rpi01
 # features
   audiocd='\Z1Audio CD\Z0  - Play audio CD'
     bluez='\Z1Bluez\Z0     - Bluetooth audio'
-  browser='\Z1Firefox\Z0   - Browser on RPi screen'
+  browser='\Z1Chromium\Z0  - Browser on RPi screen'
   hostapd='\Z1hostapd\Z0   - RPi access point'
       kid='\Z1Kid3\Z0      - Metadata tag editor'
     samba='\Z1Samba\Z0     - File sharing'
@@ -229,7 +229,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 	features=
 	list=
 	[[ $select == *' 1 '* ]] && features+='bluez bluez-alsa bluez-utils python-dbus python-gobject python-requests ' && list+="$bluez"$'\n'
-	[[ $select == *' 2 '* ]] && features+='firefox matchbox-window-manager plymouth-lite-rbp upower xf86-input-evdev xf86-video-fbdev xf86-video-fbturbo xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$browser"$'\n'
+	[[ $select == *' 2 '* ]] && features+='chromium matchbox-window-manager plymouth-lite-rbp upower xf86-input-evdev xf86-video-fbdev xf86-video-fbturbo xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$browser"$'\n'
 	[[ $select == *' 3 '* ]] && features+='dnsmasq hostapd ' && list+="$hostapd"$'\n'
 	[[ $select == *' 4 '* ]] && features+='kid3-common ' && list+="$kid"$'\n'
 	[[ $select == *' 5 '* ]] && features+='samba ' && list+="$samba"$'\n'
