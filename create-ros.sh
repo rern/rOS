@@ -8,9 +8,9 @@ features=$( cat /boot/features )
 versions=( $( cat /boot/versions ) )
 version=${versions[0]}
 revision=${versions[1]}
-uibranch=${versions[2]}
-col=${versions[3]}
-rpi01=${versions[4]}
+col=${versions[2]}
+rpi01=${versions[3]}
+mirror=${versions[4]}
 
 banner() {
 	echo
@@ -75,12 +75,12 @@ pacman -S --noconfirm --needed $packages $features
 
 banner 'Get configurations and user interface ...'
 
-curl -skL https://github.com/rern/rOS/archive/main.zip -o config.zip
-curl -skL https://github.com/rern/rAudio-$version/archive/$uibranch.zip -o ui.zip
+curl -skLO https://github.com/rern/rOS/archive/main.tar.gz
+curl -skLO https://github.com/rern/rAudio-$version/archive/$revision.tar.gz
 mkdir -p /tmp/config
-bsdtar --strip 1 -C /tmp/config -xvf config.zip
-bsdtar --strip 1 -C /tmp/config -xvf ui.zip
-rm *.zip /tmp/config/*.* /tmp/config/.* 2> /dev/null
+bsdtar --strip 1 -C /tmp/config -xvf main.tar.gz
+bsdtar --strip 1 -C /tmp/config -xvf $revision.tar.gz
+rm *.gz /tmp/config/*.* /tmp/config/.* 2> /dev/null
 
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
