@@ -285,14 +285,13 @@ code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 "${clist[@]}" )
 [[ $code != 0 ]] && echo $code > $BOOT/code
 
+routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
+subip=${routerip%.*}.
+
 dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
 RPi with \Z1pre-assigned\Z0 IP?
 
 " 0 0
-
-routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
-subip=${routerip%.*}.
-
 if [[ $? == 0 ]]; then
 	assignedip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  \Z1Pre-assigned\Z0 IP:
