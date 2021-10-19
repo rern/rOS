@@ -74,7 +74,7 @@ addons=( $( curl -skL https://github.com/rern/rAudio-addons/raw/main/addons-list
 #
 #" 0 0 ${addons[0]} )
 version=1
-revision=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+release=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  \Z1r\Z0Audio $version release:
 
 " 0 0 ${addons[1]} )
@@ -166,7 +166,7 @@ Connect \Z1Wi-Fi\Z0 on boot?
 \Z1Confirm data:\Z0
 
 \Z1r\Z0Audio    : $version
-Revision  : $revision
+Release  : $release
 Target    : \Z1Raspberry Pi $rpiname\Z0
 
 BOOT path : \Z1$BOOT\Z0
@@ -278,7 +278,7 @@ fi
 
 echo -n "\
 $version
-$revision
+$release
 $COLUMNS
 $rpi01
 $mirror
