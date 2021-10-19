@@ -5,12 +5,7 @@ trap exit INT
 SECONDS=0
 
 features=$( cat /boot/features )
-readarray -t versions < /boot/versions
-version=${versions[0]}
-release=${versions[1]}
-col=${versions[2]}
-rpi01=${versions[3]}
-mirror=${versions[4]}
+. /boot/versions
 
 banner() {
 	echo
