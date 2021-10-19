@@ -276,12 +276,12 @@ if [[ $code != 0 ]]; then
 	sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' $ROOT/etc/pacman.d/mirrorlist
 fi
 
-echo -n "\
-$version
-$release
-$COLUMNS
-$rpi01
-$mirror
+echo "\
+version=$version
+release=$release
+col=$COLUMNS
+rpi01=$rpi01
+mirror$mirror
 " > $BOOT/versions
 
 routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
