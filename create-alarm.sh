@@ -284,6 +284,21 @@ code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 " 0 0 0 \
 "${clist[@]}" )
 
+dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
+RPi with \Z1pre-assigned\Z0 IP?
+
+" 0 0
+
+routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
+subip=${routerip%.*}.
+
+if [[ $? == 0 ]]; then
+	assignedip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+ \Z1Pre-assigned\Z0 IP:
+
+" 0 0 $subip )
+fi
+
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
 	curl -skLO http://os.archlinuxarm.org/os/$file.md5 \
@@ -492,8 +507,6 @@ title='rAudio - Connect to Raspberry Pi'
 opt=( --backtitle "$title" ${optbox[@]} )
 
 # scan ip
-routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
-subip=${routerip%.*}.
 foundIP() {
 	ans=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Found IP address of RPi?\Z0
