@@ -456,11 +456,16 @@ createrosfile=$ROOT/root/create-ros.sh
 curl -skL https://github.com/rern/rOS/raw/main/create-ros.sh -o $createrosfile
 chmod 755 $createrosfile
 
-bar='\e[44m  \e[0m'
-echo -e "\n$bar cmdline.txt"
-cat $BOOT/cmdline.txt
-echo -e "\n$bar config.txt"
-cat $BOOT/config.txt
+if ! grep -q rootwait $BOOT/cmdline.txt || ! grep -q initramfs $BOOT/config.txt; then
+	bar='\e[41m  \e[0m'
+	echo -e "\n$bar cmdline.txt"
+	cat $BOOT/cmdline.txt
+	echo -e "\n$bar config.txt"
+	cat $BOOT/config.txt
+	
+	echo -e "\n$bar Errors found. Start over again."
+	exit
+fi
 
 target="                 \Z1Raspberry Pi $rpiname\Z0"
 [[ $rpi != 5 ]] && target="  $target"
