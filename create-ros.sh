@@ -64,6 +64,7 @@ SigLevel = Optional TrustAll\
 Server = https://rern.github.io/$arch\
 ' /etc/pacman.conf
 fi
+[[ -n $mirror ]] && sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' /etc/pacman.d/mirrorlist
 
 pacman -Syu --noconfirm
 [[ $? != 0 ]] && pacman -Syu --noconfirm
