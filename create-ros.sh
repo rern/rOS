@@ -137,6 +137,8 @@ fi
 ( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/bash/cmd.sh addonsupdates &' ) | crontab -
 # hostapd
 [[ ! -e /usr/bin/hostapd ]] && rm -rf /etc/{hostapd,dnsmasq.conf}
+# mirrorlist
+[[ $mirror != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' /etc/pacman.d/mirrorlist
 # mpd
 chsh -s /bin/bash mpd
 cp /usr/share/mpdscribble/mpdscribble.conf.example /etc/mpdscribble.conf
