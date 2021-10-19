@@ -69,18 +69,15 @@ fi
 addons=( $( curl -skL https://github.com/rern/rAudio-addons/raw/main/addons-list.json \
 			| grep -A2 '"r.":' \
 			| sed -e 2d -e 's/[^0-9]*//g' ) )
-version=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
- \Z1r\Z0Audio version:
-
-" 0 0 ${addons[0]} )
+#version=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+# \Z1r\Z0Audio version:
+#
+#" 0 0 ${addons[0]} )
+version=1
 revision=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
- Revision:
+ rAudio $version release:
 
 " 0 0 ${addons[1]} )
-branch=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
- Branch:
-
-" 0 0 main )
 
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
