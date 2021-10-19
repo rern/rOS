@@ -65,7 +65,7 @@ $warnings
 	exit
 fi
 
-# version - branch
+# version - release
 addons=( $( curl -skL https://github.com/rern/rAudio-addons/raw/main/addons-list.json \
 			| grep -A2 '"r.":' \
 			| sed -e 2d -e 's/[^0-9]*//g' ) )
