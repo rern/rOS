@@ -507,7 +507,7 @@ foundIP() {
 		3 ) ipping=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Ping RPi at IP:
 " 0 0 $subip )
-			ping=$( ping -4 -c 1 -w 2 $ipping | sed "s/\(from $ipping\)/from \\\Z1\1\\\Z0/" )
+			ping=$( ping -4 -c 1 -w 5 $ipping | sed "s/\(from $ipping\)/from \\\Z1\1\\\Z0/" )
 			grep -q ', 0 received' <<< "$ping" && ping+=$'\n\n'"\Z1$ipping\Z0 not found."
 			dialog "${opt[@]}" --msgbox "
 $ping
@@ -549,11 +549,11 @@ $lines
 
 if [[ -n $assignedip ]]; then
 	sleep $(( sboot - 20 ))
-	for i in {1..10}; do
-		ping -4 -c 1 -w 2 $assignedip &> /dev/null && break
+	for i in {1..8}; do
+		ping -4 -c 1 -w 1 $assignedip &> /dev/null && break
 		sleep 5
 	done
-	ping=$( ping -4 -c 1 -w 2 $assignedip | sed "s/from \($assignedip\)/from \\\Z1\1\\\Z0/" )
+	ping=$( ping -4 -c 1 -w 1 $assignedip | sed "s/from \($assignedip\)/from \\\Z1\1\\\Z0/" )
 	grep -q ', 0 received' <<< "$ping" && ping+=$'\n\n'"\Z1$assignedip\Z0 not found."
 	dialog "${opt[@]}" --msgbox "
 $ping
