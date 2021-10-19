@@ -547,8 +547,28 @@ $lines
 	foundIP
 }
 
+[[ -n $assignedip ]] && sboot=$(( sboot - 20 ))
+( for (( i = 1; i < sboot; i++ )); do
+	cat <<EOF
+XXX
+$(( i * 100 / sboot ))
+\n  Boot \Z1Arch Linux Arm\Z0 ...
+\n  $i s
+XXX
+EOF
+	sleep 1
+done ) \
+	| dialog "${opt[@]}" --gauge "
+  Boot ...
+  $i s
+" 9 50
+
 if [[ -n $assignedip ]]; then
-	sleep $(( sboot - 20 ))
+	dialog "${opt[@]}" --infobox "
+
+
+           Ping ...
+" 9 50
 	for i in {1..8}; do
 		ping -4 -c 1 -w 1 $assignedip &> /dev/null && break
 		sleep 5
@@ -560,20 +580,6 @@ $ping
 " 14 70
 	foundIP
 else
-	( for (( i = 1; i < sboot; i++ )); do
-		cat <<EOF
-	XXX
-	$(( i * 100 / sboot ))
-	\n  Boot \Z1Arch Linux Arm\Z0 ...
-	\n  $i s
-	XXX
-	EOF
-		sleep 1
-	done ) \
-	| dialog "${opt[@]}" --gauge "
-  Boot ...
-  $i s
-" 9 50
 	scanIP
 fi
 
