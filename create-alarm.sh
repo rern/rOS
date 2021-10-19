@@ -75,7 +75,7 @@ addons=( $( curl -skL https://github.com/rern/rAudio-addons/raw/main/addons-list
 #" 0 0 ${addons[0]} )
 version=1
 revision=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
- rAudio $version release:
+ \Z1r\Z0Audio $version release:
 
 " 0 0 ${addons[1]} )
 
