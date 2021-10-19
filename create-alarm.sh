@@ -283,6 +283,7 @@ code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Package mirror server:\Z0
 " 0 0 0 \
 "${clist[@]}" )
+[[ $code != 0 ]] && echo $code > $BOOT/code
 
 dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
 RPi with \Z1pre-assigned\Z0 IP?
@@ -558,7 +559,16 @@ $lines
 
 	foundIP
 }
-scanIP
+
+if [[ -n $assignedip ]]; then
+	ping=$( ping -4 -c 3 -w 3 $ipping )
+	dialog "${opt[@]}" --msgbox "
+$ping
+" 14 70
+	foundIP
+else
+	scanIP
+fi
 
 # connect RPi
 rpiip=$( dialog "${opt[@]}" --output-fd 1 --cancel-label Rescan --inputbox "
