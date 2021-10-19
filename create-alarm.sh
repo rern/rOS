@@ -250,8 +250,9 @@ fi
 SECONDS=0
 
 # package mirror server
-readarray -t lines <<< $( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
-							| grep . \
+filemirrorlist=$ROOT/etc/pacman.d/mirrorlist
+curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o $filemirrorlist
+readarray -t lines <<< $( grep . $filemirrorlist \
 							| sed -n '/### A/,$ p' \
 							| sed 's/ (not Austria\!)//; s/.mirror.*//; s|.*//||' )
 clist=( 0 'Auto - By Geo-IP' )
@@ -275,7 +276,12 @@ code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Package mirror server:\Z0
 " 0 0 0 \
 "${clist[@]}" )
-[[ $code != 0 ]] && mirror=${codelist[$code]} || mirror=0
+if [[ $code != 0 ]]; then
+	mirror=${codelist[$code]}
+	sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' $filemirrorlist
+else
+	mirror=0
+fi
 
 echo -n "\
 $version
