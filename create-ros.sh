@@ -5,7 +5,7 @@ trap exit INT
 SECONDS=0
 
 features=$( cat /boot/features )
-versions=( $( cat /boot/versions ) )
+readarray -t versions < /boot/versions
 version=${versions[0]}
 release=${versions[1]}
 col=${versions[2]}
