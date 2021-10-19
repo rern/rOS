@@ -166,7 +166,7 @@ Connect \Z1Wi-Fi\Z0 on boot?
 \Z1Confirm data:\Z0
 
 \Z1r\Z0Audio    : $version
-Release  : $release
+Release   : $release
 Target    : \Z1Raspberry Pi $rpiname\Z0
 
 BOOT path : \Z1$BOOT\Z0
