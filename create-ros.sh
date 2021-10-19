@@ -4,8 +4,8 @@ trap exit INT
 
 SECONDS=0
 
-features=$( cat /boot/features )
 . /boot/versions
+features=$( cat /boot/features )
 
 banner() {
 	echo
