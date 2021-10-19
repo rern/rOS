@@ -183,14 +183,6 @@ $wifi
 }
 getData
 
-echo -n "\
-$version
-$revision
-$branch
-$COLUMNS
-$rpi01
-" > $BOOT/versions
-
 # features
   audiocd='\Z1Audio CD\Z0  - Play audio CD'
     bluez='\Z1Bluez\Z0     - Bluetooth audio'
@@ -279,11 +271,18 @@ for line in "${lines[@]}"; do
 	fi
 done
 
-code=$( dialog "${opt[@]}" --output-fd 1 --menu "
+mirror=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Package mirror server:\Z0
 " 0 0 0 \
 "${clist[@]}" )
-[[ $code != 0 ]] && echo $code > $BOOT/code
+
+echo -n "\
+$version
+$revision
+$COLUMNS
+$rpi01
+$mirror
+" > $BOOT/versions
 
 routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 subip=${routerip%.*}.
