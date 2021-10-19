@@ -523,7 +523,7 @@ foundIP() {
 		3 ) ipping=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Ping RPi at IP:
 " 0 0 $subip )
-			ping=$( ping -4 -c 3 -w 3 $ipping | sed "s/\(from $ipping\)/from \\Z1\1\\Z0/" )
+			ping=$( ping -4 -c 3 -w 3 $ipping | sed "s/\(from $ipping\)/from \\\Z1\1\\\Z0/" )
 			dialog "${opt[@]}" --msgbox "
 $ping
 " 14 70
@@ -563,7 +563,7 @@ $lines
 }
 
 if [[ -n $assignedip ]]; then
-	ping=$( ping -4 -c 3 -w 3 $assignedip | sed "s/from \($assignedip\)/from \\Z1\1\\Z0/" )
+	ping=$( ping -4 -c 3 -w 3 $assignedip | sed "s/from \($assignedip\)/from \\\Z1\1\\\Z0/" )
 	dialog "${opt[@]}" --msgbox "
 $ping
 " 14 70
