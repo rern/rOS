@@ -7,7 +7,7 @@ SECONDS=0
 features=$( cat /boot/features )
 versions=( $( cat /boot/versions ) )
 version=${versions[0]}
-revision=${versions[1]}
+release=${versions[1]}
 col=${versions[2]}
 rpi01=${versions[3]}
 mirror=${versions[4]}
@@ -76,10 +76,10 @@ pacman -S --noconfirm --needed $packages $features
 banner 'Get configurations and user interface ...'
 
 curl -skLO https://github.com/rern/rOS/archive/main.tar.gz
-curl -skLO https://github.com/rern/rAudio-$version/archive/$revision.tar.gz
+curl -skLO https://github.com/rern/rAudio-$version/archive/$release.tar.gz
 mkdir -p /tmp/config
 bsdtar --strip 1 -C /tmp/config -xvf main.tar.gz
-bsdtar --strip 1 -C /tmp/config -xvf $revision.tar.gz
+bsdtar --strip 1 -C /tmp/config -xvf $release.tar.gz
 rm *.gz /tmp/config/*.* /tmp/config/.* 2> /dev/null
 
 chmod -R go-wx /tmp/config
@@ -177,7 +177,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 
 #---------------------------------------------------------------------------------
 # data - settings directories
-/srv/http/bash/datareset.sh $version $revision
+/srv/http/bash/datareset.sh $version $release
 # remove files and package cache
 rm /boot/{features,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
