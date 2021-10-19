@@ -312,10 +312,10 @@ fi
 # download
 if [[ -e $file ]]; then
 	dialog "${opt[@]}" --infobox "
-Existing is the latest:
-\Z1$file\Z0
+ Existing is the latest:
+ \Z1$file\Z0
 
-No download required.
+ No download required.
 
 " 0 0
 	sleep 2
