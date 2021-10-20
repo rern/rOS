@@ -465,6 +465,7 @@ dialog "${optbox[@]}" --msgbox "
                          for
 $target
                 Created successfully.
+				
 $( date -d@$SECONDS -u +%M:%S )
 " 11 58
 
@@ -560,7 +561,9 @@ done ) \
 
 if [[ -n $assignedip ]]; then
 	dialog "${opt[@]}" --infobox "
-           Ping ...
+	
+           Ping \Z1$assignedip\Z0 ...
+		   
 " 9 50
 	for i in {1..8}; do
 		ping -4 -c 1 -w 1 $assignedip &> /dev/null && break
