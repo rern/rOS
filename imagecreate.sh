@@ -110,23 +110,26 @@ touch $BOOT/expand
 
 clear -x
 
-bar='\e[44m  \e[0m'
-echo -e "$bar cmdline.txt"
-cat $BOOT/cmdline.txt
-echo -e "$bar config.txt"
-cat $BOOT/config.txt
-
 banner "Image: $imagefile"
 
 banner 'Shrink ROOT partition ...'
 
+bar='\e[44m  \e[0m'
 part=${dev}2
 partsize=$( fdisk -l $part | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $part | awk '{print $3}' )
 
 umount -l -v ${dev}1 ${dev}2
 e2fsck -fy $part
+
+mount ${dev}1 $BOOT
+mount ${dev}2 $ROOT
 echo
+echo -e "$bar cmdline.txt"
+cat $BOOT/cmdline.txt
+echo -e "$bar config.txt"
+cat $BOOT/config.txt
+umount -l -v ${dev}1 ${dev}2
 
 shrink() {
 	echo -e "$bar Shrink #$1 ..."
