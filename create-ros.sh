@@ -166,6 +166,11 @@ rm /boot/{features,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg
 # expand partition
 touch /boot/expand
 
+if [[ -e /boot/cmdline.txt.64 ]]; then
+	mv /boot/cmdline.txt{.64,}
+	mv /boot/config.txt{.64,}
+fi
+
 dialog "${optbox[@]}" --infobox "
 
             \Z1r\Z0Audio $version created successfully.
