@@ -371,6 +371,7 @@ $partuuidBOOT  /boot  vfat  defaults,noatime  0  0
 $partuuidROOT  /      ext4  defaults,noatime  0  0
 EOF
 # cmdline.txt, config.txt
+[[ $rpi == 5 ]] && mv $BOOT/config.txt{,.backup}
 cat << EOF > $BOOT/cmdline.txt
 root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
 EOF
@@ -392,6 +393,7 @@ fi
 if [[ $rpi == 5 ]]; then
 	mv $BOOT/cmdline.txt{,64}
 	mv $BOOT/config.txt{,64}
+	mv $BOOT/config.txt{.backup,}
 fi
 # wifi
 if [[ $ssid ]]; then
