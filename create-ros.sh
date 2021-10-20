@@ -31,8 +31,6 @@ optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
 
 dialog "${optbox[@]}" --infobox "
-
-
                        \Z1r\Z0Audio $version
 " 9 58
 sleep 2
@@ -89,6 +87,21 @@ if [[ -n $rpi01 ]]; then
 	sed -i '/^.Service/,$ d' /etc/systemd/system/mpd.service.d/override.conf
 	sed -i '/ExecStart=/ d' /etc/systemd/system/spotifyd.service.d/override.conf
 	rm -rf /etc/systemd/system/{shairport-sync,upmpdcli}.service.d
+fi
+if [[ -e /boot/kernel8.img ]]; then
+	partuuidROOT=$( blkid | awk '/LABEL="ROOT"/ {print $NF}' | tr -d '"' )
+	cat << EOF > /boot/cmdline.txt
+root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
+EOF
+	cat << EOF > /boot/config.txt
+gpu_mem=32
+initramfs initramfs-linux.img followkernel
+max_usb_current=1
+disable_splash=1
+disable_overscan=1
+dtparam=krnbt=on
+dtparam=audio=on
+EOF
 fi
 #---------------------------------------------------------------------------------
 banner 'Configure ...'
@@ -166,17 +179,9 @@ rm /boot/{features,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg
 # expand partition
 touch /boot/expand
 
-if [[ -e /boot/cmdline.txt.64 ]]; then
-	mv /boot/cmdline.txt{.64,}
-	mv /boot/config.txt{.64,}
-fi
-
 dialog "${optbox[@]}" --infobox "
-
             \Z1r\Z0Audio $version created successfully.
-
                        \Z1Reboot\Z0 ...
-
 $( date -d@$SECONDS -u +%M:%S )
 " 9 58
 
