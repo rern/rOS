@@ -120,6 +120,11 @@ Create \Z164bit\Z0 on:
 2 'Raspberry Pi 2' \
 3 'Raspberry Pi 3' \
 4 'Raspberry Pi 4' )
+		case $runon in
+			2 ) sboot=60;;
+			3 ) sboot=45;;
+			4 ) sboot=30;;
+		esac
 	fi
 	
 	dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
