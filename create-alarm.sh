@@ -171,7 +171,6 @@ BOOT path : \Z1$BOOT\Z0
 ROOT path : \Z1$ROOT\Z0
 
 $wifi
-
 " 0 0
 	[[ $? == 1 ]] && getData
 }
