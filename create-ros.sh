@@ -91,7 +91,7 @@ if [[ -n $rpi01 ]]; then
 	rm -rf /etc/systemd/system/{shairport-sync,upmpdcli}.service.d
 fi
 if [[ -e /boot/config.txt64 ]]; then
-	mv /boot/cmdline.txt{64,}
+	mv -f /boot/cmdline.txt{64,}
 	mv -f /boot/config.txt{64,}
 fi
 #---------------------------------------------------------------------------------
