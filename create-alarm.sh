@@ -451,6 +451,27 @@ createrosfile=$ROOT/root/create-ros.sh
 curl -skL https://github.com/rern/rOS/raw/main/create-ros.sh -o $createrosfile
 chmod 755 $createrosfile
 
+if [[ -e $BOOT/cmdline.txt ]]; then
+	! grep -q rootwait $BOOT/cmdline.txt && error="
+\e[41m  \e[0m cmdline.txt
+$( cat $BOOT/cmdline.txt )
+"
+fi
+if [[ -e $BOOT/config.txt ]]; then
+	! grep -q rootwait $BOOT/config.txt && error+="
+\e[41m  \e[0m config.txt
+$( cat $BOOT/config.txt )
+"
+fi
+if [[ -n $error ]]; then
+	echo -e "
+Errors found:
+$error
+Start over again.
+"
+	exit
+fi
+
 target="                 \Z1Raspberry Pi $rpiname\Z0"
 [[ $rpi != 5 ]] && target="  $target"
 dialog "${optbox[@]}" --msgbox "
