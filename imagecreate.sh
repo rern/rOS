@@ -122,15 +122,6 @@ used=$( df -k 2> /dev/null | grep $part | awk '{print $3}' )
 umount -l -v ${dev}1 ${dev}2
 e2fsck -fy $part
 
-mount ${dev}1 $BOOT
-mount ${dev}2 $ROOT
-echo
-echo -e "$bar cmdline.txt"
-cat $BOOT/cmdline.txt
-echo -e "$bar config.txt"
-cat $BOOT/config.txt
-umount -l -v ${dev}1 ${dev}2
-
 shrink() {
 	echo -e "$bar Shrink #$1 ..."
 	echo
