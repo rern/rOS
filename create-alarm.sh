@@ -60,6 +60,7 @@ if [[ -n $warnings ]]; then
 	dialog "${opt[@]}" --msgbox "
 \Z1Warnings:\Z0
 $warnings
+
 " 0 0
 	exit
 fi
@@ -75,14 +76,17 @@ addons=( $( curl -skL https://github.com/rern/rAudio-addons/raw/main/addons-list
 version=1
 release=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  \Z1r\Z0Audio $version release:
+ 
 " 0 0 ${addons[1]} )
 
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
 	dialog "${opt[@]}" --yesno "
 \Z1Confirm path:\Z0
+
 BOOT: \Z1$BOOT\Z0
 ROOT: \Z1$ROOT\Z0
+
 " 0 0
 	[[ $? == 1 ]] && exit
 
@@ -130,14 +134,17 @@ Create \Z164bit\Z0 on:
 	
 	dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
 Connect \Z1Wi-Fi\Z0 on boot?
+
 " 0 0
 	if [[ $? == 0 ]]; then
 		sboot=$(( sboot + 10 ))
 		ssid=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 \Z1Wi-Fi\Z0 - SSID:
+
 " 0 0 $ssid )
 		password=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 \Z1Wi-Fi\Z0 - Password:
+
 " 0 0 $password )
 		wpa=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Wi-Fi\Z0 -Security:
@@ -157,12 +164,16 @@ Connect \Z1Wi-Fi\Z0 on boot?
 
 	dialog "${opt[@]}" --yesno "
 \Z1Confirm data:\Z0
+
 \Z1r\Z0Audio    : $version
 Release   : $release
 Target    : \Z1Raspberry Pi $rpiname\Z0
+
 BOOT path : \Z1$BOOT\Z0
 ROOT path : \Z1$ROOT\Z0
+
 $wifi
+
 " 0 0
 	[[ $? == 1 ]] && getData
 }
@@ -221,7 +232,9 @@ selectFeatures
 
 dialog "${opt[@]}" --yesno "
 Confirm features to install:
+
 $list
+
 " 0 0
 
 if [[ $? == 0 ]]; then
@@ -297,6 +310,7 @@ if [[ -e $file ]]; then
 	dialog "${opt[@]}" --infobox "
  Existing is the latest:
  \Z1$file\Z0
+ 
  No download required.
  
 " 0 0
@@ -317,7 +331,9 @@ else
 		rm $file
 		dialog "${opt[@]}" --msgbox "
 \Z1Download incomplete!\Z0
+
 Run \Z1./create-alarm.sh\Z0 again.
+
 " 0 0
 		exit
 	fi
@@ -462,9 +478,12 @@ umount -l $ROOT
 
 dialog "${optbox[@]}" --msgbox "
 \Z1Finish\Z0
+
 \Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
+
 - Move micro SD card$usb to RPi > Power on
 - Press \Z1Enter\Z0 to start boot timer > IP scan
+
 " 13 55
 
 #----------------------------------------------------------------------------
@@ -495,6 +514,7 @@ $ping
 		4 ) dialog "${opt[@]}" --msgbox "
  RPi IP cannot be found.
  Try starting over again.
+ 
 " 0 0
 			clear -x && exit
 			;;
@@ -503,6 +523,7 @@ $ping
 scanIP() {
 	dialog "${opt[@]}" --infobox "
   Scan hosts in network ...
+  
 " 5 50
 	lines=$( nmap -sn $subip* \
 				| grep '^Nmap scan\|^MAC' \
@@ -515,7 +536,9 @@ scanIP() {
 \Z1Find IP address of Raspberry Pi:\Z0
 (If Raspberri Pi not listed, ping may find it.)
 \Z4[arrowdown] = scrolldown\Z0
+
 $lines
+
 " 25 80
 
 	foundIP
@@ -558,6 +581,7 @@ fi
 # connect RPi
 rpiip=$( dialog "${opt[@]}" --output-fd 1 --cancel-label Rescan --inputbox "
 \Z1Raspberry Pi IP:\Z0
+
 " 0 0 $subip )
 [[ $? == 1 ]] && scanIP
 
