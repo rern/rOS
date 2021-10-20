@@ -298,6 +298,7 @@ if [[ -e $file ]]; then
  Existing is the latest:
  \Z1$file\Z0
  No download required.
+ 
 " 0 0
 	sleep 2
 else
@@ -443,6 +444,7 @@ chmod 755 $createrosfile
 target="                 \Z1Raspberry Pi $rpiname\Z0"
 [[ $rpi != 5 ]] && target="  $target"
 dialog "${optbox[@]}" --msgbox "
+
                    Arch Linux Arm
                          for
 $target
