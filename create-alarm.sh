@@ -286,6 +286,7 @@ subip=${routerip%.*}.
 
 dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
  RPi with \Z1pre-assigned\Z0 IP?
+ 
 " 0 0
 if [[ $? == 0 ]]; then
 	assignedip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
