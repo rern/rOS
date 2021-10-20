@@ -31,6 +31,8 @@ optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
 
 dialog "${optbox[@]}" --infobox "
+
+
                        \Z1r\Z0Audio $version
 " 9 58
 sleep 2
@@ -169,8 +171,11 @@ rm /boot/{features,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg
 touch /boot/expand
 
 dialog "${optbox[@]}" --infobox "
+
             \Z1r\Z0Audio $version created successfully.
+
                        \Z1Reboot\Z0 ...
+
 $( date -d@$SECONDS -u +%M:%S )
 " 9 58
 
