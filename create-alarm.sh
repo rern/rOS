@@ -23,6 +23,7 @@ optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
 
 dialog "${optbox[@]}" --infobox "
+
                     \Z1Arch Linux Arm\Z0
                           for
                      Raspberry Pi
