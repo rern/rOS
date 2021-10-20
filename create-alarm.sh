@@ -562,12 +562,13 @@ done ) \
 if [[ -n $assignedip ]]; then
 	dialog "${opt[@]}" --infobox "
 	
+	
            Ping \Z1$assignedip\Z0 ...
 		   
 " 9 50
-	for i in {1..8}; do
+	for i in {1..10}; do
 		ping -4 -c 1 -w 1 $assignedip &> /dev/null && break
-		sleep 5
+		sleep 3
 	done
 	ping=$( ping -4 -c 1 -w 1 $assignedip | sed "s/from \($assignedip\)/from \\\Z1\1\\\Z0/" )
 	grep -q ', 0 received' <<< "$ping" && ping+=$'\n\n'"\Z1$assignedip\Z0 not found."
