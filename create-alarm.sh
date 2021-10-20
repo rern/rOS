@@ -23,7 +23,6 @@ optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
 
 dialog "${optbox[@]}" --infobox "
-
                     \Z1Arch Linux Arm\Z0
                           for
                      Raspberry Pi
@@ -60,7 +59,6 @@ if [[ -n $warnings ]]; then
 	dialog "${opt[@]}" --msgbox "
 \Z1Warnings:\Z0
 $warnings
-
 " 0 0
 	exit
 fi
@@ -76,17 +74,14 @@ addons=( $( curl -skL https://github.com/rern/rAudio-addons/raw/main/addons-list
 version=1
 release=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  \Z1r\Z0Audio $version release:
-
 " 0 0 ${addons[1]} )
 
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
 	dialog "${opt[@]}" --yesno "
 \Z1Confirm path:\Z0
-
 BOOT: \Z1$BOOT\Z0
 ROOT: \Z1$ROOT\Z0
-
 " 0 0
 	[[ $? == 1 ]] && exit
 
@@ -129,17 +124,14 @@ Create \Z164bit\Z0 on:
 	
 	dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
 Connect \Z1Wi-Fi\Z0 on boot?
-
 " 0 0
 	if [[ $? == 0 ]]; then
 		sboot=$(( sboot + 10 ))
 		ssid=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 \Z1Wi-Fi\Z0 - SSID:
-
 " 0 0 $ssid )
 		password=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 \Z1Wi-Fi\Z0 - Password:
-
 " 0 0 $password )
 		wpa=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Wi-Fi\Z0 -Security:
@@ -159,16 +151,12 @@ Connect \Z1Wi-Fi\Z0 on boot?
 
 	dialog "${opt[@]}" --yesno "
 \Z1Confirm data:\Z0
-
 \Z1r\Z0Audio    : $version
 Release   : $release
 Target    : \Z1Raspberry Pi $rpiname\Z0
-
 BOOT path : \Z1$BOOT\Z0
 ROOT path : \Z1$ROOT\Z0
-
 $wifi
-
 " 0 0
 	[[ $? == 1 ]] && getData
 }
@@ -227,9 +215,7 @@ selectFeatures
 
 dialog "${opt[@]}" --yesno "
 Confirm features to install:
-
 $list
-
 " 0 0
 
 if [[ $? == 0 ]]; then
@@ -284,12 +270,10 @@ subip=${routerip%.*}.
 
 dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
  RPi with \Z1pre-assigned\Z0 IP?
-
 " 0 0
 if [[ $? == 0 ]]; then
 	assignedip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  \Z1Pre-assigned\Z0 IP:
-
 " 0 0 $subip )
 fi
 
@@ -307,9 +291,7 @@ if [[ -e $file ]]; then
 	dialog "${opt[@]}" --infobox "
  Existing is the latest:
  \Z1$file\Z0
-
  No download required.
-
 " 0 0
 	sleep 2
 else
@@ -328,9 +310,7 @@ else
 		rm $file
 		dialog "${opt[@]}" --msgbox "
 \Z1Download incomplete!\Z0
-
 Run \Z1./create-alarm.sh\Z0 again.
-
 " 0 0
 		exit
 	fi
@@ -383,11 +363,11 @@ cat << EOF > $ROOT/etc/fstab
 $partuuidBOOT  /boot  vfat  defaults,noatime  0  0
 $partuuidROOT  /      ext4  defaults,noatime  0  0
 EOF
-
-cat << EOF > $BOOT/cmdline.txt
+if [[ $rpi != 5 ]]; then
+	cat << EOF > $BOOT/cmdline.txt
 root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
 EOF
-cat << EOF > $BOOT/config.txt
+	cat << EOF > $BOOT/config.txt
 gpu_mem=32
 initramfs initramfs-linux.img followkernel
 max_usb_current=1
@@ -396,11 +376,12 @@ disable_overscan=1
 dtparam=krnbt=on
 dtparam=audio=on
 EOF
-if [[ $rpi == 0 ]]; then
-	sed -i 's/ isolcpus=3//' $BOOT/cmdline.txt
-	sed -i '1 i\
+	if [[ $rpi == 0 ]]; then
+		sed -i 's/ isolcpus=3//' $BOOT/cmdline.txt
+		sed -i '1 i\
 force_turbo=1\
 hdmi_drive=2' $BOOT/config.txt
+	fi
 fi
 # wifi
 if [[ $ssid ]]; then
@@ -453,7 +434,6 @@ chmod 755 $createrosfile
 target="                 \Z1Raspberry Pi $rpiname\Z0"
 [[ $rpi != 5 ]] && target="  $target"
 dialog "${optbox[@]}" --msgbox "
-
                    Arch Linux Arm
                          for
 $target
@@ -469,12 +449,9 @@ umount -l $ROOT
 
 dialog "${optbox[@]}" --msgbox "
 \Z1Finish\Z0
-
 \Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
-
 - Move micro SD card$usb to RPi > Power on
 - Press \Z1Enter\Z0 to start boot timer > IP scan
-
 " 13 55
 
 #----------------------------------------------------------------------------
@@ -505,7 +482,6 @@ $ping
 		4 ) dialog "${opt[@]}" --msgbox "
  RPi IP cannot be found.
  Try starting over again.
-
 " 0 0
 			clear -x && exit
 			;;
@@ -514,7 +490,6 @@ $ping
 scanIP() {
 	dialog "${opt[@]}" --infobox "
   Scan hosts in network ...
-
 " 5 50
 	lines=$( nmap -sn $subip* \
 				| grep '^Nmap scan\|^MAC' \
@@ -527,9 +502,7 @@ scanIP() {
 \Z1Find IP address of Raspberry Pi:\Z0
 (If Raspberri Pi not listed, ping may find it.)
 \Z4[arrowdown] = scrolldown\Z0
-
 $lines
-
 " 25 80
 
 	foundIP
@@ -553,8 +526,6 @@ done ) \
 
 if [[ -n $assignedip ]]; then
 	dialog "${opt[@]}" --infobox "
-
-
            Ping ...
 " 9 50
 	for i in {1..8}; do
@@ -574,7 +545,6 @@ fi
 # connect RPi
 rpiip=$( dialog "${opt[@]}" --output-fd 1 --cancel-label Rescan --inputbox "
 \Z1Raspberry Pi IP:\Z0
-
 " 0 0 $subip )
 [[ $? == 1 ]] && scanIP
 
