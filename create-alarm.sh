@@ -138,11 +138,9 @@ Connect \Z1Wi-Fi\Z0 on boot?
 		sboot=$(( sboot + 10 ))
 		ssid=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 \Z1Wi-Fi\Z0 - SSID:
-
 " 0 0 $ssid )
 		password=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 \Z1Wi-Fi\Z0 - Password:
-
 " 0 0 $password )
 		wpa=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Wi-Fi\Z0 -Security:
@@ -154,10 +152,10 @@ Connect \Z1Wi-Fi\Z0 on boot?
 			1 ) wpa=wpa;;
 			2 ) wpa=wep;;
 		esac
-		wifi="Wi-Fi settings
- SSID     : \Z1$ssid\Z0
- Password : \Z1$password\Z0
- Security : \Z1${wpa^^}\Z0"
+		wifi="
+SSID      : \Z1$ssid\Z0
+Password  : \Z1$password\Z0
+Security  : \Z1${wpa^^}\Z0"
 	fi
 
 	dialog "${opt[@]}" --yesno "
