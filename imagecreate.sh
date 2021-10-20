@@ -110,6 +110,12 @@ touch $BOOT/expand
 
 clear -x
 
+bar='\e[44m  \e[0m'
+echo -e "$bar cmdline.txt"
+cat $BOOT/cmdline.txt
+echo -e "$bar config.txt"
+cat $BOOT/config.txt
+
 banner "Image: $imagefile"
 
 banner 'Shrink ROOT partition ...'
@@ -123,7 +129,7 @@ e2fsck -fy $part
 echo
 
 shrink() {
-	echo -e "\e[44m  \e[0m Shrink #$1 ..."
+	echo -e "$bar Shrink #$1 ..."
 	echo
 	partinfo=$( tune2fs -l $part )
 	blockcount=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
