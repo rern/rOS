@@ -166,23 +166,6 @@ rm /boot/{features,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg
 # expand partition
 touch /boot/expand
 
-! grep -q rootwait /boot/cmdline.txt && error="
-\e[41m  \e[0m cmdline.txt
-$( cat /boot/cmdline.txt )
-"
-! grep -q rootwait /boot/config.txt && error+="
-\e[41m  \e[0m config.txt
-$( cat /boot/config.txt )
-"
-if [[ -n $error ]]; then
-	echo -e "
-Errors found:
-$error
-Start over again.
-"
-	exit
-fi
-
 dialog "${optbox[@]}" --infobox "
 
             \Z1r\Z0Audio $version created successfully.
