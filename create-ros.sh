@@ -15,7 +15,7 @@ banner() {
     printf "$bg%-${col}s$def\n" "  $1"
     printf "$bg%*s$def\n" $col
 }
-
+#----------------------------------------------------------------------------
 banner 'Initialize Arch Linux Arm ...'
 
 pacman-key --init
@@ -29,7 +29,7 @@ systemctl start systemd-random-seed
 title="Create rOS $version"
 optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
-
+#----------------------------------------------------------------------------
 dialog "${optbox[@]}" --infobox "
 
 
@@ -63,12 +63,12 @@ fi
 
 pacman -Syu --noconfirm
 [[ $? != 0 ]] && pacman -Syu --noconfirm
-
+#----------------------------------------------------------------------------
 banner 'Install packages ...'
 
 pacman -S --noconfirm --needed $packages $features
 [[ $? != 0 ]] && pacman -S --noconfirm --needed $packages $features
-
+#----------------------------------------------------------------------------
 banner 'Get configurations and user interface ...'
 
 curl -skLO https://github.com/rern/rOS/archive/main.tar.gz
@@ -169,7 +169,7 @@ rm /boot/{features,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
 touch /boot/expand
-
+#----------------------------------------------------------------------------
 dialog "${optbox[@]}" --infobox "
 
             \Z1r\Z0Audio $version created successfully.
