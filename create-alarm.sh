@@ -17,11 +17,10 @@ else
 	[[ -n $packages ]] && apt install -y $packages
 fi
 
-#----------------------------------------------------------------------------
 title='rAudio - Create Arch Linux Arm'
 optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 dialog "${optbox[@]}" --infobox "
 
                     \Z1Arch Linux Arm\Z0
@@ -57,7 +56,7 @@ ROOT not ext4"
 fi
 # partition warnings
 if [[ -n $warnings ]]; then
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	dialog "${opt[@]}" --msgbox "
 \Z1Warnings:\Z0
 $warnings
@@ -70,11 +69,12 @@ fi
 addons=( $( curl -skL https://github.com/rern/rAudio-addons/raw/main/addons-list.json \
 			| grep -A2 '"r.":' \
 			| sed -e 2d -e 's/[^0-9]*//g' ) )
+#----------------------------------------------------------------------------
 #version=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 # \Z1r\Z0Audio version:
 #" 0 0 ${addons[0]} )
 version=1
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 release=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  \Z1r\Z0Audio $version release:
 " 0 0 ${addons[1]} )
@@ -89,7 +89,7 @@ ROOT: \Z1$ROOT\Z0
 
 " 0 0
 	[[ $? == 1 ]] && exit
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	rpi=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Target:\Z0
 " 8 0 0 \
@@ -116,7 +116,7 @@ ROOT: \Z1$ROOT\Z0
 	if [[ $rpi != 5 ]]; then
 		runon=$rpi	
 	else
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 		runon=$( dialog "${opt[@]}" --output-fd 1 --menu "
 Create \Z164bit\Z0 on:
 " 8 0 0 \
@@ -126,13 +126,13 @@ Create \Z164bit\Z0 on:
 	fi
 	routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 	subip=${routerip%.*}.
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
  RPi with \Z1pre-assigned\Z0 IP?
 
 " 0 0
 	if [[ $? == 0 ]]; then
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 		assignedip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  \Z1Pre-assigned\Z0 IP:
 " 0 0 $subip )
@@ -150,21 +150,21 @@ Create \Z164bit\Z0 on:
 			4 )     sboot=30;;
 		esac	
 	fi
-#>>>>>>>>>>>	
+#----------------------------------------------------------------------------	
 	dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
 Connect \Z1Wi-Fi\Z0 on boot?
 
 " 0 0
 	if [[ $? == 0 ]]; then
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 		ssid=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 \Z1Wi-Fi\Z0 - SSID:
 " 0 0 $ssid )
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 		password=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
 \Z1Wi-Fi\Z0 - Password:
 " 0 0 $password )
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 		wpa=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Wi-Fi\Z0 -Security:
 " 8 0 0 \
@@ -180,7 +180,7 @@ SSID      : \Z1$ssid\Z0
 Password  : \Z1$password\Z0
 Security  : \Z1${wpa^^}\Z0"
 	fi
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	dialog "${opt[@]}" --yesno "
 \Z1Confirm data:\Z0
 
@@ -217,7 +217,7 @@ else
 fi
 
 selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	select=$( dialog "${opt[@]}" --output-fd 1 --checklist "
 \Z1Select features to install:
 \Z4[space] = Select / Deselect\Z0
@@ -248,7 +248,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 selectFeatures
 
 [[ -z $list ]] && list=(none)
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 dialog "${opt[@]}" --yesno "
 Confirm features to install:
 
@@ -285,7 +285,7 @@ for line in "${lines[@]}"; do
 		codelist+=( $line )
 	fi
 done
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Package mirror server:\Z0
 " 0 0 0 \
@@ -305,7 +305,7 @@ mirror=$mirror
 
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	curl -skLO http://os.archlinuxarm.org/os/$file.md5 \
 		| dialog "${opt[@]}" --gauge "
   Verify already downloaded file ...
@@ -315,7 +315,7 @@ fi
 
 # download
 if [[ -e $file ]]; then
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	dialog "${opt[@]}" --infobox "
  Existing is the latest:
  \Z1$file\Z0
@@ -325,7 +325,7 @@ if [[ -e $file ]]; then
 " 0 0
 	sleep 2
 else
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	( wget -O $file http://os.archlinuxarm.org/os/$file 2>&1 \
 		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
 			print "XXX\n "substr($0,63,3)
@@ -339,7 +339,7 @@ else
 	curl -skLO http://os.archlinuxarm.org/os/$file.md5
 	if ! md5sum -c $file.md5; then
 		rm $file
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 		dialog "${opt[@]}" --msgbox "
 \Z1Download incomplete!\Z0
 
@@ -353,7 +353,7 @@ fi
 rm $file.md5
 
 # expand
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 ( pv -n $file \
 	| bsdtar -C $ROOT -xpf - ) 2>&1 \
 	| dialog "${opt[@]}" --gauge "
@@ -365,7 +365,7 @@ sync &
 
 Sstart=$( date +%s )
 dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 ( while (( $( awk '/Dirty:/{print $2}' /proc/meminfo ) > 1000 )); do
 	left=$( awk '/Dirty:/{print $2}' /proc/meminfo )
 	percent=$(( $(( dirty - left )) * 100 / dirty ))
@@ -390,7 +390,6 @@ rm -rf $ROOT/boot/dtbs/!(broadcom)/ # aarch64 - remove other drivers to save tim
 
 mv $ROOT/boot/* $BOOT &> /dev/null
 
-#----------------------------------------------------------------------------
 # fstab
 PATH=$PATH:/sbin  # Debian not include /sbin in PATH
 partuuidBOOT=$( blkid | awk '/LABEL="BOOT"/ {print $NF}' | tr -d '"' )
@@ -474,7 +473,7 @@ chmod 755 $createrosfile
 
 target="                 \Z1Raspberry Pi $rpiname\Z0"
 [[ $rpi != 5 ]] && target="  $target"
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 dialog "${optbox[@]}" --msgbox "
 
                    Arch Linux Arm
@@ -485,12 +484,11 @@ $target
 $( date -d@$SECONDS -u +%M:%S )
 " 11 58
 
-#----------------------------------------------------------------------------
 umount -l $BOOT
 umount -l $ROOT
 
 [[ ${partuuidBOOT:0:-3} != ${partuuidROOT:0:-3} ]] && usb=' and USB drive'
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 dialog "${optbox[@]}" --msgbox "
 \Z1Finish\Z0
 
@@ -501,13 +499,12 @@ dialog "${optbox[@]}" --msgbox "
 
 " 13 55
 
-#----------------------------------------------------------------------------
 title='rAudio - Connect to Raspberry Pi'
 opt=( --backtitle "$title" ${optbox[@]} )
 
 # scan ip
 foundIP() {
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	ans=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Found IP address of RPi?\Z0
 " 8 30 0 \
@@ -517,19 +514,19 @@ foundIP() {
 4 'No' )
 	case $ans in
 		2 ) scanIP;;
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 		3 ) ipping=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Ping RPi at IP:
 " 0 0 $subip )
 			ping=$( ping -4 -c 1 -w 5 $ipping | sed "s/\(from $ipping\)/from \\\Z1\1\\\Z0/" )
 			grep -q ', 0 received' <<< "$ping" && ping+=$'\n\n'"\Z1$ipping\Z0 not found."
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 			dialog "${opt[@]}" --msgbox "
 $ping
 " 14 70
 			foundIP
 			;;
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 		4 ) dialog "${opt[@]}" --msgbox "
  RPi IP cannot be found.
  Try starting over again.
@@ -540,7 +537,7 @@ $ping
 	esac
 }
 scanIP() {
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	dialog "${opt[@]}" --infobox "
   Scan hosts in network ...
   
@@ -551,7 +548,7 @@ scanIP() {
 				| grep 'MAC Address' \
 				| sed -e 's/Nmap.*for \|MAC Address//g' -e '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Z0/}' \
 				| tac )
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	dialog "${opt[@]}" --msgbox "
 \Z1Find IP address of Raspberry Pi:\Z0
 (If Raspberri Pi not listed, ping may find it.)
@@ -565,7 +562,7 @@ $lines
 }
 
 [[ -n $assignedip ]] && sboot=$(( sboot - 20 ))
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 ( for (( i = 1; i < sboot; i++ )); do
 	cat <<EOF
 XXX
@@ -582,7 +579,7 @@ done ) \
 " 9 50
 
 if [[ -n $assignedip ]]; then
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	dialog "${opt[@]}" --infobox "
 	
 	
@@ -595,7 +592,7 @@ if [[ -n $assignedip ]]; then
 	done
 	ping=$( ping -4 -c 1 -w 1 $assignedip | sed "s/from \($assignedip\)/from \\\Z1\1\\\Z0/" )
 	grep -q ', 0 received' <<< "$ping" && ping+=$'\n\n'"\Z1$assignedip\Z0 not found."
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 	dialog "${opt[@]}" --msgbox "
 $ping
 " 14 70
@@ -605,7 +602,7 @@ else
 fi
 
 # connect RPi
-#>>>>>>>>>>>
+#----------------------------------------------------------------------------
 rpiip=$( dialog "${opt[@]}" --output-fd 1 --cancel-label Rescan --inputbox "
 \Z1Raspberry Pi IP:\Z0
 
