@@ -135,8 +135,8 @@ Create \Z164bit\Z0 on:
 		case $runon in
 			0 | 1 ) sboot=40;; 
 			2 )     sboot=30;;
-			3 )     sboot=15;;
-			4 )     sboot=10;;
+			3 )     sboot=20;;
+			4 )     sboot=15;;
 		esac
 	else
 		case $runon in
