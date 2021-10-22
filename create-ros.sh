@@ -115,6 +115,7 @@ fi
 if [[ -e /usr/bin/firefox || -e /usr/bin/chromium ]]; then
 	sed -i 's/\(console=\).*/\1tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt # boot splash
 	chmod 775 /etc/X11/xorg.conf.d                   # fix permission for rotate file
+	DISPLAY=:0 xset s off                            # disable screen saver
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # startx
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
 	systemctl disable getty@tty1                     # login prompt
