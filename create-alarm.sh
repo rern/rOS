@@ -578,8 +578,8 @@ if [[ -n $assignedip ]]; then
 		cat <<EOF
 XXX
 $(( i * 10 ))
-\n  Ping #$i ...
-\n  \Z1$assignedip\Z0
+\n  Ping \Z1$assignedip\Z0 ...
+\n  #$i
 XXX
 EOF
 		ping -4 -c 1 -w 1 $assignedip &> /dev/null && break
