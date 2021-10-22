@@ -482,7 +482,7 @@ $target
                 Created successfully.
 				
 $( date -d@$SECONDS -u +%M:%S )
-" 11 58
+" 12 58
 
 umount -l $BOOT
 umount -l $ROOT
