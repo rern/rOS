@@ -133,7 +133,7 @@ Create \Z164bit\Z0 on:
  \Z1Pre-assigned\Z0 IP:
 " 0 0 $subip )
 		case $runon in
-			0 | 1 ) sboot=50;; 
+			0 | 1 ) sboot=40;; 
 			2 )     sboot=30;;
 			3 )     sboot=20;;
 			4 )     sboot=15;;
