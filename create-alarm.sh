@@ -514,8 +514,12 @@ foundIP() {
 		3 ) ipping=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  Ping RPi at IP:
 " 0 0 $subip )
-			ping=$( ping -4 -c 1 -w 5 $ipping | sed "s/\(from $ipping\)/from \\\Z1\1\\\Z0/" )
-			grep -q ', 0 received' <<< "$ping" && ping+=$'\n\n'"\Z1$ipping\Z0 not found."
+			ping=$( ping -4 -c 1 -w 5 $ipping | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Z0/" )
+			if grep -q 'Unreachable' <<< "$ping"; then
+				ping+=$'\n\n'"$ipping \Z1NOT\Z0 found."
+			else
+				ping+=$'\n\n'"$ipping \Z1found\Z0."
+			fi
 #----------------------------------------------------------------------------
 			dialog "${opt[@]}" --msgbox "
 $ping
