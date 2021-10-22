@@ -490,7 +490,7 @@ umount -l $ROOT
 [[ ${partuuidBOOT:0:-3} != ${partuuidROOT:0:-3} ]] && usb=' and USB drive'
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --msgbox "
-\Z1Finish\Z0
+Arch Linux Arm is ready.
 
 \Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
 
