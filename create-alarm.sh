@@ -135,8 +135,8 @@ Create \Z164bit\Z0 on:
 		case $runon in
 			0 | 1 ) sboot=40;; 
 			2 )     sboot=30;;
-			3 )     sboot=20;;
-			4 )     sboot=15;;
+			3 )     sboot=15;;
+			4 )     sboot=10;;
 		esac
 	else
 		case $runon in
@@ -226,11 +226,13 @@ $ping
 	esac
 }
 pingIP() {
-	ping=$( ping -4 -c 1 -w $1 $2 | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Z0/" )
+	wait=$1
+	ip=$2
+	ping=$( ping -4 -c 1 -w $wait $ip | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Z0/" )
 	if grep -q 'Unreachable' <<< "$ping"; then
-		ping+=$'\n\n'"$ipping \Z1NOT\Z0 found."
+		ping+=$'\n\n'"$ip \Z1NOT\Z0 found."
 	else
-		ping+=$'\n\n'"$ipping \Z1found\Z0."
+		ping+=$'\n\n'"$ip \Z1found\Z0."
 	fi
 }
 scanIP() {
@@ -596,7 +598,7 @@ EOF
 Ping
 
 " 9 50
-	pingIP 5 $assignedip
+	pingIP 1 $assignedip
 #----------------------------------------------------------------------------
 	dialog "${opt[@]}" --msgbox "
 $ping
