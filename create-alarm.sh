@@ -205,7 +205,7 @@ shairport='\Z1Shairport\Z0 - AirPlay renderer'
   spotify='\Z1Spotifyd\Z0  - Spotify renderer'
  upmpdcli='\Z1upmpdcli\Z0  - UPnP renderer'
 
-if [[ $rpi == 0 || $rpi == 1 ]]; then
+if [[ -n $rpi01 ]]; then
 	browser='Chromium  - (not for RPi Zero, 1)'
 	onoffbrowser=off
 else
