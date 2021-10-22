@@ -171,7 +171,7 @@ Connect \Z1Wi-Fi\Z0 on boot?
 			1 ) wpa=wpa;;
 			2 ) wpa=wep;;
 		esac
-		wifi="
+		wifi="\
 SSID      : \Z1$ssid\Z0
 Password  : \Z1$password\Z0
 Security  : \Z1${wpa^^}\Z0"
