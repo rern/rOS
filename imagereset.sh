@@ -64,6 +64,7 @@ fi
 
 [[ ! -e $dirdata/mpd/counts ]] && echo '{"webradio":'$( ls -1q $dirdata/webradios | wc -l )'}' > $dirdata/mpd/counts
 curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
+rm -rf /root/.config/chromium
 
 banner 'Check disk ...'
 fsck.fat -traw /dev/mmcblk0p1
