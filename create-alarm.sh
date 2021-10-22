@@ -193,6 +193,71 @@ $wifi
 }
 getData
 
+foundIP() {
+#----------------------------------------------------------------------------
+	ans=$( dialog "${opt[@]}" --output-fd 1 --menu "
+\Z1Found IP address of RPi?\Z0
+" 8 30 0 \
+1 'Yes' \
+2 'Rescan' \
+3 'Ping assigned IP' \
+4 'No' )
+	case $ans in
+		2 ) scanIP;;
+#----------------------------------------------------------------------------
+		3 ) ipping=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+ Ping RPi at IP:
+" 0 0 $subip )
+			pingIP 5 $ipping
+#----------------------------------------------------------------------------
+			dialog "${opt[@]}" --msgbox "
+$ping
+" 14 70
+			foundIP
+			;;
+#----------------------------------------------------------------------------
+		4 ) dialog "${opt[@]}" --msgbox "
+ RPi IP cannot be found.
+ Try starting over again.
+ 
+" 0 0
+			clear -x && exit
+			;;
+	esac
+}
+pingIP() {
+	ping=$( ping -4 -c 1 -w $1 $2 | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Z0/" )
+	if grep -q 'Unreachable' <<< "$ping"; then
+		ping+=$'\n\n'"$ipping \Z1NOT\Z0 found."
+	else
+		ping+=$'\n\n'"$ipping \Z1found\Z0."
+	fi
+}
+scanIP() {
+#----------------------------------------------------------------------------
+	dialog "${opt[@]}" --infobox "
+  Scan hosts in network ...
+  
+" 5 50
+	lines=$( nmap -sn $subip* \
+				| grep '^Nmap scan\|^MAC' \
+				| paste -sd ' \n' \
+				| grep 'MAC Address' \
+				| sed -e 's/Nmap.*for \|MAC Address//g' -e '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Z0/}' \
+				| tac )
+#----------------------------------------------------------------------------
+	dialog "${opt[@]}" --msgbox "
+\Z1Find IP address of Raspberry Pi:\Z0
+(If Raspberri Pi not listed, ping may find it.)
+\Z4[arrowdown] = scrolldown\Z0
+
+$lines
+
+" 25 80
+
+	foundIP
+}
+
 # features
   audiocd='\Z1Audio CD\Z0  - Play audio CD'
     bluez='\Z1Bluez\Z0     - Bluetooth audio'
@@ -497,69 +562,6 @@ Arch Linux Arm is ready.
 
 title='rAudio - Connect to Raspberry Pi'
 opt=( --backtitle "$title" ${optbox[@]} )
-
-# scan ip
-foundIP() {
-#----------------------------------------------------------------------------
-	ans=$( dialog "${opt[@]}" --output-fd 1 --menu "
-\Z1Found IP address of RPi?\Z0
-" 8 30 0 \
-1 'Yes' \
-2 'Rescan' \
-3 'Ping assigned IP' \
-4 'No' )
-	case $ans in
-		2 ) scanIP;;
-#----------------------------------------------------------------------------
-		3 ) ipping=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
- Ping RPi at IP:
-" 0 0 $subip )
-			ping=$( ping -4 -c 1 -w 5 $ipping | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Z0/" )
-			if grep -q 'Unreachable' <<< "$ping"; then
-				ping+=$'\n\n'"$ipping \Z1NOT\Z0 found."
-			else
-				ping+=$'\n\n'"$ipping \Z1found\Z0."
-			fi
-#----------------------------------------------------------------------------
-			dialog "${opt[@]}" --msgbox "
-$ping
-" 14 70
-			foundIP
-			;;
-#----------------------------------------------------------------------------
-		4 ) dialog "${opt[@]}" --msgbox "
- RPi IP cannot be found.
- Try starting over again.
- 
-" 0 0
-			clear -x && exit
-			;;
-	esac
-}
-scanIP() {
-#----------------------------------------------------------------------------
-	dialog "${opt[@]}" --infobox "
-  Scan hosts in network ...
-  
-" 5 50
-	lines=$( nmap -sn $subip* \
-				| grep '^Nmap scan\|^MAC' \
-				| paste -sd ' \n' \
-				| grep 'MAC Address' \
-				| sed -e 's/Nmap.*for \|MAC Address//g' -e '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Z0/}' \
-				| tac )
-#----------------------------------------------------------------------------
-	dialog "${opt[@]}" --msgbox "
-\Z1Find IP address of Raspberry Pi:\Z0
-(If Raspberri Pi not listed, ping may find it.)
-\Z4[arrowdown] = scrolldown\Z0
-
-$lines
-
-" 25 80
-
-	foundIP
-}
 #----------------------------------------------------------------------------
 ( for (( i = 1; i < sboot; i++ )); do
 	cat <<EOF
@@ -594,8 +596,7 @@ EOF
 Ping
 
 " 9 50
-	ping=$( ping -4 -c 1 -w 1 $assignedip | sed "s/from \($assignedip\)/from \\\Z1\1\\\Z0/" )
-	grep -q ', 0 received' <<< "$ping" && ping+=$'\n\n'"\Z1$assignedip\Z0 not found."
+	pingIP 5 $assignedip
 #----------------------------------------------------------------------------
 	dialog "${opt[@]}" --msgbox "
 $ping
