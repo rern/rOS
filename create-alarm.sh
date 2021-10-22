@@ -578,16 +578,22 @@ done ) \
 
 if [[ -n $assignedip ]]; then
 #----------------------------------------------------------------------------
-	dialog "${opt[@]}" --infobox "
-	
-	
-           Ping \Z1$assignedip\Z0 ...
-		   
-" 9 50
-	for i in {1..10}; do
+	( for i in {1..10}; do
+		cat <<EOF
+XXX
+$(( i * 10 ))
+\n  Ping #$i ...
+\n  \Z1$assignedip\Z0
+XXX
+EOF
 		ping -4 -c 1 -w 1 $assignedip &> /dev/null && break
 		sleep 3
-	done
+	done ) \
+		| dialog "${opt[@]}" --gauge "
+
+Ping
+
+" 9 50
 	ping=$( ping -4 -c 1 -w 1 $assignedip | sed "s/from \($assignedip\)/from \\\Z1\1\\\Z0/" )
 	grep -q ', 0 received' <<< "$ping" && ping+=$'\n\n'"\Z1$assignedip\Z0 not found."
 #----------------------------------------------------------------------------
