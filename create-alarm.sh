@@ -229,7 +229,7 @@ pingIP() {
 	wait=$1
 	ip=$2
 	ping=$( ping -4 -c 1 -w $wait $ip | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Z0/" )
-	if grep -q 'Unreachable' <<< "$ping"; then
+	if grep -q ' 0 received' <<< "$ping"; then
 		ping+=$'\n\n'"$ip \Z1NOT\Z0 found."
 	else
 		ping+=$'\n\n'"$ip \Z1found\Z0."
