@@ -63,6 +63,11 @@ fi
 
 pacman -Syu --noconfirm
 [[ $? != 0 ]] && pacman -Syu --noconfirm
+
+if [[ -n $mirror && -e /etc/pacman.d/mirrorlist.pacnew ]]; then
+	mv -f /etc/pacman.d/mirrorlist{.pacnew,}
+	sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' /etc/pacman.d/mirrorlist
+fi
 #----------------------------------------------------------------------------
 banner 'Install packages ...'
 
@@ -122,11 +127,6 @@ fi
 ( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/bash/cmd.sh addonsupdates &' ) | crontab -
 # hostapd
 [[ ! -e /usr/bin/hostapd ]] && rm -rf /etc/{hostapd,dnsmasq.conf}
-# mirrorlist
-if [[ -e /etc/pacman.d/mirrorlist.pacnew && -n $mirror ]]; then
-	mv -f /etc/pacman.d/mirrorlist{.pacnew,}
-	sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' /etc/pacman.d/mirrorlist
-fi
 # mpd
 chsh -s /bin/bash mpd
 cp /usr/share/mpdscribble/mpdscribble.conf.example /etc/mpdscribble.conf
