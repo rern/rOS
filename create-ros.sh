@@ -42,7 +42,7 @@ clear -x # needed: fix stdout not scroll
 banner 'Upgrade kernel and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools 
-gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd mpdscribble 
+gifsicle hfsprogs i2c-tools imagemagick inetutils jq mpc mpd 
 nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g ntp 
 parted php-fpm sshpass sudo udevil wget wiringpi'
 
@@ -129,11 +129,8 @@ fi
 [[ ! -e /usr/bin/hostapd ]] && rm -rf /etc/{hostapd,dnsmasq.conf}
 # mpd
 chsh -s /bin/bash mpd
-cp /usr/share/mpdscribble/mpdscribble.conf.example /etc/mpdscribble.conf
 # motd
 ln -sf /srv/http/bash/motd.sh /etc/profile.d/
-#mpdscribble
-sed -i 's/User=.*/User=mpd/' /usr/lib/systemd/system/mpdscribble@.service
 # pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
 # password
