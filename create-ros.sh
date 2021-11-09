@@ -93,7 +93,8 @@ chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
 if [[ -n $rpi01 ]]; then
 	sed -i '/^.Service/,$ d' /etc/systemd/system/mpd.service.d/override.conf
 	sed -i '/ExecStart=/ d' /etc/systemd/system/spotifyd.service.d/override.conf
-	rm -rf /etc/systemd/system/{shairport-sync,upmpdcli}.service.d
+	rm -rf /etc/systemd/system/shairport-sync.service.d
+	sed -i 's|/usr/bin/taskset -c 3 ||' /etc/systemd/system/upmpdcli.service
 fi
 if [[ -e /boot/config.txt64 ]]; then
 	mv -f /boot/cmdline.txt{64,}
