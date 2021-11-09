@@ -113,7 +113,7 @@ else
 	rm -f /etc/systemd/system/blue*
 fi
 # browser
-if [[ -e /usr/bin/firefox || -e /usr/bin/chromium ]]; then
+if [[ -e /usr/bin/chromium || -e /usr/bin/firefox ]]; then
 	sed -i 's/\(console=\).*/\1tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt # boot splash
 	chmod 775 /etc/X11/xorg.conf.d                   # fix permission for rotate file
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # startx
