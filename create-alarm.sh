@@ -353,10 +353,7 @@ code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Package mirror server:\Z0
 " 0 0 0 \
 "${clist[@]}" )
-if [[ $code != 0 ]]; then
-	mirror=${codelist[$code]}
-	sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' $ROOT/etc/pacman.d/mirrorlist
-fi
+[[ $code != 0 ]] && mirror=${codelist[$code]}
 
 echo "\
 version=$version
