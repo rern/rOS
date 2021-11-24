@@ -154,7 +154,14 @@ sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 # no spotifyd
 [[ ! -e /usr/bin/spotifyd ]] && rm /etc/spotifyd.conf
 # no upmpdcli
-[[ ! -e /usr/bin/upmpdcli ]] && rm -rf /etc/upmpdcli.conf /etc/systemd/system/upmpdcli.service.d
+if [[ -e /usr/bin/upmpdcli ]]; then
+	file=/var/cache/upmpdcli/ohcreds/credkey.pem
+	openssl genrsa -out $file 4096
+	openssl rsa -in $file -RSAPublicKey_out
+	chown upmpdcli:root $file
+else
+	rm -rf /etc/upmpdcli.conf /etc/systemd/system/upmpdcli.service.d
+fi
 # wireless-regdom
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
 # default startup services
