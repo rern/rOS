@@ -150,7 +150,9 @@ sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 [[ ! -e /usr/bin/spotifyd ]] && rm /etc/spotifyd.conf
 # no upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
-	file=/var/cache/upmpdcli/ohcreds/credkey.pem
+	dir=/var/cache/upmpdcli/ohcreds
+	file=$dir/credkey.pem
+	mkdir -p $dir
 	openssl genrsa -out $file 4096
 	openssl rsa -in $file -RSAPublicKey_out
 	chown upmpdcli:root $file
