@@ -49,6 +49,6 @@ imageUpload() {
 }
 
 readarray -t imgfiles <<< "$imgfiles"
-for $file in "${imgfiles[@]}"; do
+for file in "${imgfiles[@]}"; do
 	imageUpload "$file"
 done
