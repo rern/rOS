@@ -1,6 +1,17 @@
 ##!/bin/bash
 
+imgfiles=$( ls -1 rAudio*.img.xz 2> /dev/null )
+[[ -z $imgfiles ]] && echo 'No image files found in current directory.' && exit
+
 optbox=( --colors --no-shadow --no-collapse )
+
+dialog "${optbox[@]}" --yesno "
+\Z1Image files list:\Z0
+
+$imgfiles
+
+" 0 0
+[[ $? != 0 ]] && exit
 
 user=rern
 repo=rAudio-1
@@ -24,6 +35,6 @@ imageUpload() {
 		| jq
 }
 
-for rpi in 64bit RPi2 RPi0-1; do
-	imageUpload rAudio-1-$rpi-$tag.img.xz
+for $file in "${imgfiles[@]}"; do
+	imageUpload $file
 done
