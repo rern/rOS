@@ -353,14 +353,13 @@ code=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Package mirror server:\Z0
 " 0 0 0 \
 "${clist[@]}" )
-[[ $code != 0 ]] && mirror=${codelist[$code]}
 
 echo "\
 version=$version
 release=$release
 col=$COLUMNS
 rpi01=$rpi01
-mirror=$mirror
+mirror=${codelist[$code]}
 " > $BOOT/versions
 
 # if already downloaded, verify latest
