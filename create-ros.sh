@@ -63,11 +63,6 @@ fi
 
 pacman -Syu --noconfirm
 [[ $? != 0 ]] && pacman -Syu --noconfirm
-
-if [[ -n $mirror && -e /etc/pacman.d/mirrorlist.pacnew ]]; then
-	mv -f /etc/pacman.d/mirrorlist{.pacnew,}
-	sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' /etc/pacman.d/mirrorlist
-fi
 #----------------------------------------------------------------------------
 banner 'Install packages ...'
 
