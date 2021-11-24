@@ -17,23 +17,35 @@ $imgfiles
 
 user=rern
 repo=rAudio-1
-tag=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
-Release:
-" 0 0 i2021 )
+tag=$( echo ${imgfiles[0]/*-} | cut -d. -f1 )
 token=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
 Token:
 " 9 50 )
 id=$( curl -sH "Authorization: token $token" \
 		https://api.github.com/repos/$user/$repo/releases/tags/$tag \
 		| jq .id )
-		
+
+col=$( tput cols )
+banner() {
+	echo
+	def='\e[0m'
+	bg='\e[44m'
+    printf "$bg%*s$def\n" $col
+    printf "$bg%-${col}s$def\n" "  $1"
+    printf "$bg%*s$def\n" $col
+}
+
 imageUpload() {
-	file=$1
+	file="$1"
+	filename=$( basename "$file" )
+	
+	banner "Upload: $filename"
+	
 	curl \
 		-H "Authorization: token $token" \
 		-H "Content-Type: application/x-xz" \
 		--data-binary @"$file" \
-		"https://uploads.github.com/repos/$user/$repo/releases/$id/assets?name=$( basename $file )" \
+		"https://uploads.github.com/repos/$user/$repo/releases/$id/assets?name=$filename" \
 		| jq
 }
 
