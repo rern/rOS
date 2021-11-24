@@ -16,8 +16,8 @@ $imgfiles
 user=rern
 repo=rAudio-1
 tag=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
-Tag:
-" 0 0 )
+Release:
+" 0 0 i2021 )
 token=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
 Token:
 " 9 50 )
