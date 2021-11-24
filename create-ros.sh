@@ -5,7 +5,7 @@ trap exit INT
 SECONDS=0
 
 . /boot/versions
-[[ -n $mirror ]] && sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' /etc/pacman.d/mirrorlist
+[[ $mirror != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' /etc/pacman.d/mirrorlist
 features=$( cat /boot/features )
 
 banner() {
