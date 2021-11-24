@@ -48,6 +48,7 @@ imageUpload() {
 		| jq
 }
 
+echo
 readarray -t imgfiles <<< "$imgfiles"
 for file in "${imgfiles[@]}"; do
 	imageUpload "$file"
