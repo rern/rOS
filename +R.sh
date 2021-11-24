@@ -14,11 +14,12 @@ cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 " 8 0 0 \
 1 'Create rAudio' \
 2 'Reset to default' \
-3 'Compress to Image file' \
-4 'Distcc client' \
-5 'Docker' \
-6 '+R repo update' \
-7 'SSH to RPi' )
+3 'Compress to image file' \
+4 'Upload image files' \
+5 'Distcc client' \
+6 'Docker' \
+7 '+R repo update' \
+8 'SSH to RPi' )
 
 url=https://github.com/rern/rOS/raw/main
 
@@ -26,10 +27,11 @@ case $cmd in
 	1 ) bash <( curl -sL $url/create.sh );;
 	2 ) bash <( curl -sL $url/reset.sh );;
 	3 ) bash <( curl -sL $url/imagecreate.sh );;
-	4 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/distcc-client.sh );;
-	5 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/docker.sh );;
-	6 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/repoupdate.sh );;
-	7 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+	4 ) bash <( curl -sL $url/imageupload.sh );;
+	5 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/distcc-client.sh );;
+	6 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/docker.sh );;
+	7 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/repoupdate.sh );;
+	8 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  IP:
 " 0 0 192.168.1. )
 	sed -i "/$rpiip/ d" ~/.ssh/known_hosts
