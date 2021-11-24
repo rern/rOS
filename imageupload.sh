@@ -18,7 +18,7 @@ imageUpload() {
 	file=$1
 	curl \
 		-H "Authorization: token $token" \
-		-H "Content-Type: $( file -b --mime-type $file )" \
+		-H "Content-Type: application/x-xz" \
 		--data-binary @"$file" \
 		"https://uploads.github.com/repos/$user/$repo/releases/$id/assets?name=$( basename $file )" \
 		| jq
