@@ -9,7 +9,7 @@ Tag:
 " 0 0 )
 Token=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
 Token:
-" 0 0 )
+" 10 50 )
 id=$( curl -sH "Authorization: token $token" \
 		https://api.github.com/repos/$user/$repo/releases/tags/$tag \
 		| jq .id )
