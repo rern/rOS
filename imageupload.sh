@@ -38,5 +38,5 @@ imageUpload() {
 }
 
 for $file in "${imgfiles[@]}"; do
-	imageUpload $file
+	imageUpload "$file"
 done
