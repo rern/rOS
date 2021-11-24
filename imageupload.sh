@@ -7,7 +7,7 @@ repo=rAudio-1
 tag=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
 Tag:
 " 0 0 )
-Token=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
+token=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
 Token:
 " 9 50 )
 id=$( curl -sH "Authorization: token $token" \
