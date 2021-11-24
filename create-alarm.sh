@@ -328,8 +328,8 @@ fi
 SECONDS=0
 
 # package mirror server
-readarray -t lines <<< $( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
-							| grep . \
+curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o $ROOT/etc/pacman.d/mirrorlist
+readarray -t lines <<< $( grep . $ROOT/etc/pacman.d/mirrorlist \
 							| sed -n '/### A/,$ p' \
 							| sed 's/ (not Austria\!)//; s/.mirror.*//; s|.*//||' )
 clist=( 0 'Auto - By Geo-IP' )
