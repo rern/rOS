@@ -1,8 +1,7 @@
 ##!/bin/bash
 
 imgdir=$( dialog "${optbox[@]}" --title 'Image file:' --stdout --dselect $PWD/ 20 40 )
-
-readarray -t imgfiles <<< $( ls -1 "$imgdir"/rAudio*.img.xz 2> /dev/null )
+imgfiles=$( ls -1 "$imgdir"/rAudio*.img.xz 2> /dev/null )
 [[ -z $imgfiles ]] && echo "No image files found in $imgdir" && exit
 
 optbox=( --colors --no-shadow --no-collapse )
@@ -49,6 +48,7 @@ imageUpload() {
 		| jq
 }
 
+readarray -t imgfiles <<< "$imgfiles"
 for $file in "${imgfiles[@]}"; do
 	imageUpload "$file"
 done
