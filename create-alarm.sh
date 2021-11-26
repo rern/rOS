@@ -566,7 +566,8 @@ opt=( --backtitle "$title" ${optbox[@]} )
 	sleep 1
 done ) \
 	| dialog "${opt[@]}" --gauge "
-  Boot \Z1Arch Linux Arm\Z0 ...
+  Boot ...
+  \Z1Arch Linux Arm\Z0
 " 9 50
 
 if [[ -n $assignedip ]]; then
