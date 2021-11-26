@@ -70,7 +70,7 @@ fi
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
 	dialog "${opt[@]}" --yesno "
-\Z1Confirm path:\Z0
+\Z1Confirm SD card path:\Z0
 
 BOOT: \Z1$BOOT\Z0
 ROOT: \Z1$ROOT\Z0
@@ -549,7 +549,7 @@ umount -l $ROOT
 [[ ${partuuidBOOT:0:-3} != ${partuuidROOT:0:-3} ]] && usb=' and USB drive'
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --msgbox "
-Arch Linux Arm is ready.
+\Z1Arch Linux Arm\Z0 is ready.
 
 \Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
 
@@ -562,7 +562,7 @@ title='rAudio - Connect to Raspberry Pi'
 opt=( --backtitle "$title" ${optbox[@]} )
 #----------------------------------------------------------------------------
 ( for (( i = 1; i < sboot; i++ )); do
-	echo$(( i * 100 / sboot ))
+	echo $(( i * 100 / sboot ))
 	sleep 1
 done ) \
 	| dialog "${opt[@]}" --gauge "
