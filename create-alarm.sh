@@ -70,7 +70,7 @@ fi
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
 	dialog "${opt[@]}" --yesno "
-\Z1Confirm SD card path:\Z0
+Confirm \Z1SD card\Z0 path:
 
 BOOT: \Z1$BOOT\Z0
 ROOT: \Z1$ROOT\Z0
