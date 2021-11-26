@@ -573,14 +573,14 @@ if [[ -n $assignedip ]]; then
 #----------------------------------------------------------------------------
 	( for i in {1..10}; do
 		echo $(( i * 10 ))
-		ping -4 -c 1 -w 1 $assignedip &> /dev/null && foundip=$assignedip && break
+		ping -4 -c 1 -w 1 $assignedip &> /dev/null && break
 		sleep 3
 	done ) \
 		| dialog "${opt[@]}" --gauge "
   Ping \Z1$assignedip\Z0 ...
   #$i
 " 9 50
-	if [[ -n $foundip ]]; then
+	if ping -4 -c 1 -w 1 $assignedip &> /dev/null; then
 		[[ -n $rpi01 ]] && sec=10 || sec=5
 		( for i in $(seq 1 $sec); do
 			echo $(( i * 100 / sec ))
