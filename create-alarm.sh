@@ -594,6 +594,8 @@ EOF
   \Z1$assignedip\Z0
 " 9 50
 		sshRpi $assignedip
+		exit
+		
 	else
 		scanIP
 	fi
