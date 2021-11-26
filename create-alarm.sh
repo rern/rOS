@@ -259,6 +259,13 @@ $lines
 
 	foundIP
 }
+sshRpi() {
+	ip=$1
+	sed -i "/$ip/ d" ~/.ssh/known_hosts
+	ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh
+	[[ $? != 0 ]] && sleep 5 && ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh
+	clear -x
+}
 
 # features
   audiocd='\Z1Audio CD\Z0  - Play audio CD'
@@ -427,17 +434,10 @@ dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
 #----------------------------------------------------------------------------
 ( while (( $( awk '/Dirty:/{print $2}' /proc/meminfo ) > 1000 )); do
 	left=$( awk '/Dirty:/{print $2}' /proc/meminfo )
-	percent=$(( $(( dirty - left )) * 100 / dirty ))
-	cat <<EOF
-XXX
-$percent
-\n  Write to SD card
-\n  \Z1$file\Z0 ...
-XXX
-EOF
+	echo $(( $(( dirty - left )) * 100 / dirty ))
 	sleep 2
 done ) \
-| dialog "${opt[@]}" --gauge "
+	| dialog "${opt[@]}" --gauge "
   Write to SD card
   \Z1$file\Z0 ...
 " 9 50
@@ -562,44 +562,38 @@ title='rAudio - Connect to Raspberry Pi'
 opt=( --backtitle "$title" ${optbox[@]} )
 #----------------------------------------------------------------------------
 ( for (( i = 1; i < sboot; i++ )); do
-	cat <<EOF
-XXX
-$(( i * 100 / sboot ))
-\n  Boot \Z1Arch Linux Arm\Z0 ...
-\n  $i s
-XXX
-EOF
+	echo$(( i * 100 / sboot ))
 	sleep 1
 done ) \
 	| dialog "${opt[@]}" --gauge "
-  Boot ...
-  $i s
+  Boot \Z1Arch Linux Arm\Z0 ...
 " 9 50
 
 if [[ -n $assignedip ]]; then
 #----------------------------------------------------------------------------
 	( for i in {1..10}; do
-		cat <<EOF
-XXX
-$(( i * 10 ))
-\n  Ping \Z1$assignedip\Z0 ...
-\n  #$i
-XXX
-EOF
-		ping -4 -c 1 -w 1 $assignedip &> /dev/null && break
+		echo $(( i * 10 ))
+		ping -4 -c 1 -w 1 $assignedip &> /dev/null && foundip=$assignedip && break
 		sleep 3
 	done ) \
 		| dialog "${opt[@]}" --gauge "
-
-Ping
-
+  Ping \Z1$assignedip\Z0 ...
+  #$i
 " 9 50
-	pingIP 1 $assignedip
-#----------------------------------------------------------------------------
-	dialog "${opt[@]}" --msgbox "
-$ping
-" 15 90
-	foundIP
+	if [[ -n $foundip ]]; then
+		[[ -n $rpi01 ]] && sec=10 || sec=5
+		( for i in $(seq 1 $sec); do
+			echo $(( i * 100 / sec ))
+			sleep 1
+		done ) \
+			| dialog "${opt[@]}" --gauge "
+  SSH Raspberry Pi ...
+  \Z1$foundip\Z0
+" 9 50
+		sshRpi $foundip
+	else
+		scanIP
+	fi
 else
 	scanIP
 fi
@@ -612,8 +606,4 @@ rpiip=$( dialog "${opt[@]}" --output-fd 1 --cancel-label Rescan --inputbox "
 " 0 0 $subip )
 [[ $? == 1 ]] && scanIP
 
-sed -i "/$rpiip/ d" ~/.ssh/known_hosts
-
-ssh -tt -o StrictHostKeyChecking=no root@$rpiip /root/create-ros.sh
-
-clear -x
+sshRpi $rpiip
