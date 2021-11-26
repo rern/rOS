@@ -572,14 +572,17 @@ done ) \
 if [[ -n $assignedip ]]; then
 #----------------------------------------------------------------------------
 	( for i in {1..10}; do
-		echo $(( i * 10 ))
+		cat <<EOF
+XXX
+$(( i * 10 ))
+\n  Ping \Z1$assignedip\Z0 ...
+\n  #$i
+XXX
+EOF
 		ping -4 -c 1 -w 1 $assignedip &> /dev/null && break
 		sleep 3
 	done ) \
-		| dialog "${opt[@]}" --gauge "
-  Ping \Z1$assignedip\Z0 ...
-  #$i
-" 9 50
+		| dialog "${opt[@]}" --gauge '' 9 50
 	if ping -4 -c 1 -w 1 $assignedip &> /dev/null; then
 		[[ -n $rpi01 ]] && sec=10 || sec=5
 		( for i in $(seq 1 $sec); do
@@ -588,9 +591,9 @@ if [[ -n $assignedip ]]; then
 		done ) \
 			| dialog "${opt[@]}" --gauge "
   SSH Raspberry Pi ...
-  \Z1$foundip\Z0
+  \Z1$assignedip\Z0
 " 9 50
-		sshRpi $foundip
+		sshRpi $assignedip
 	else
 		scanIP
 	fi
