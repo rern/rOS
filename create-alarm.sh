@@ -591,7 +591,7 @@ EOF
 			sleep 1
 		done ) \
 			| dialog "${opt[@]}" --gauge "
-  SSH Raspberry Pi ...
+  \Z1Arch Linux Arm\Z0 SSH start ...
   \Z1$assignedip\Z0
 " 9 50
 		sshRpi $assignedip
