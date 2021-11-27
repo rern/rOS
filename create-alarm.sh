@@ -34,6 +34,7 @@ sleep 2
 if [[ $1 == nopathcheck ]]; then
 	BOOT=/mnt/BOOT
 	ROOT=/mnt/ROOT
+	nopathcheck=1
 else
 	BOOT=$( mount | grep /dev.*BOOT | cut -d' ' -f3 )
 	ROOT=$( mount | grep /dev.*ROOT | cut -d' ' -f3 )
@@ -74,7 +75,7 @@ fi
 
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
-	if [[ $1 != nopathcheck ]]; then
+	if [[ -z $nopathcheck ]]; then
 #----------------------------------------------------------------------------
 		dialog "${opt[@]}" --yesno "
 Confirm \Z1SD card\Z0 path:
