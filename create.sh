@@ -56,7 +56,7 @@ Make sure this is the target SD card.
 \Z1All data on this device will be deleted.\Z0
 
 Confirm:
-Micro SD card is \Z1$dev\Z0 - $size
+SD card is \Z1$dev\Z0 - $size
 
 " 0 0
 
