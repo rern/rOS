@@ -49,7 +49,7 @@ parted php-fpm sshpass python-rpi-gpio sudo udevil wget wiringpi'
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
-	packages+=' linux-raspberrypi4 raspberrypi-bootloader-x raspberrypi-firmware'
+	packages+=' linux-rpi raspberrypi-bootloader-x raspberrypi-firmware'
 fi
 
 # add +R repo
