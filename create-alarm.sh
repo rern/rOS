@@ -592,7 +592,7 @@ EOF
 		done ) \
 			| dialog "${opt[@]}" --gauge "
   \Z1Arch Linux Arm\Z0 SSH start ...
-  \Z1$assignedip\Z0
+  $assignedip
 " 9 50
 		sshRpi $assignedip
 		exit
