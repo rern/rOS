@@ -99,4 +99,4 @@ $devroot - /mnt/ROOT
 " 0 0
 sleep 2
 
-bash <( curl -sLO https://github.com/rern/rOS/raw/main/create-alarm.sh ) -p nopathcheck
+bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh ) -p nopathcheck
