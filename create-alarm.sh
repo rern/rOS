@@ -31,52 +31,61 @@ dialog "${optbox[@]}" --infobox "
 " 9 58
 sleep 2
 
-BOOT=$( mount | grep /dev.*BOOT | cut -d' ' -f3 )
-ROOT=$( mount | grep /dev.*ROOT | cut -d' ' -f3 )
-
-# check mounts
-[[ -z $BOOT ]] && warnings+="
+if [[ $1 == nopathcheck ]]; then
+	BOOT=/mnt/BOOT
+	ROOT=/mnt/ROOT
+else
+	BOOT=$( mount | grep /dev.*BOOT | cut -d' ' -f3 )
+	ROOT=$( mount | grep /dev.*ROOT | cut -d' ' -f3 )
+	# check mounts
+	[[ -z $BOOT ]] && warnings+="
 BOOT not mounted"
-[[ -z $ROOT ]] && warnings+="
+	[[ -z $ROOT ]] && warnings+="
 ROOT not mounted"
-if [[ -z $warnings  ]]; then
-	# check duplicate names
-	(( $( echo "$BOOT" | wc -l ) > 1 )) && warnings+="
+	if [[ -z $warnings  ]]; then
+		# check duplicate names
+		(( $( echo "$BOOT" | wc -l ) > 1 )) && warnings+="
 BOOT has more than 1"
-	(( $( echo "$ROOT" | wc -l ) > 1 )) && warnings+="
+		(( $( echo "$ROOT" | wc -l ) > 1 )) && warnings+="
 ROOT has more than 1"
-	# check empty to prevent wrong partitions
-	[[ -n $( ls $BOOT | grep -v 'System Volume Information\|lost+found\|features' ) ]] && warnings+="
+		# check empty to prevent wrong partitions
+		[[ -n $( ls $BOOT | grep -v 'System Volume Information\|lost+found\|features' ) ]] && warnings+="
 BOOT not empty"
-	[[ -n $( ls $ROOT | grep -v 'lost+found' ) ]] && warnings+="
+		[[ -n $( ls $ROOT | grep -v 'lost+found' ) ]] && warnings+="
 ROOT not empty"
-	# check fstype
-	[[ $( df --output=fstype $BOOT | tail -1 ) != vfat ]] && warnings+="
+		# check fstype
+		[[ $( df --output=fstype $BOOT | tail -1 ) != vfat ]] && warnings+="
 BOOT not fat32"
-	[[ $( df --output=fstype $ROOT | tail -1 ) != ext4 ]] && warnings+="\
+		[[ $( df --output=fstype $ROOT | tail -1 ) != ext4 ]] && warnings+="\
 ROOT not ext4"
-fi
-# partition warnings
-if [[ -n $warnings ]]; then
+	fi
+	# partition warnings
+	if [[ -n $warnings ]]; then
 #----------------------------------------------------------------------------
-	dialog "${opt[@]}" --msgbox "
+		dialog "${opt[@]}" --msgbox "
 \Z1Warnings:\Z0
 $warnings
 
 " 0 0
-	exit
+		exit
+		
+	fi
 fi
 
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
-	dialog "${opt[@]}" --yesno "
+	if [[ $1 != nopathcheck ]]; then
+#----------------------------------------------------------------------------
+		dialog "${opt[@]}" --yesno "
 Confirm \Z1SD card\Z0 path:
 
 BOOT: \Z1$BOOT\Z0
 ROOT: \Z1$ROOT\Z0
 
 " 0 0
-	[[ $? == 1 ]] && exit
+		[[ $? == 1 ]] && exit
+		
+	fi
 	
 	addons=( $( curl -skL https://github.com/rern/rAudio-addons/raw/main/addons-list.json \
 				| grep -A2 '"r.":' \
