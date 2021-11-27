@@ -36,6 +36,7 @@ For proper detection, remove and reinsert again.
 
 sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*(\(.*\))|/dev/\1 - \2|' )
 [[ -z $sd ]] && sleep 2 && sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*(\(.*\))|/dev/\1 - \2|' )
+dev=${sd/ *}
 
 if [[ -z $sd ]]; then
 	dialog "${optbox[@]}" --infobox "
