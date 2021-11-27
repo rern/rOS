@@ -91,7 +91,7 @@ mount $devboot /mnt/BOOT
 mount $devroot /mnt/ROOT
 
 dialog "${optbox[@]}" --infobox "
-\Z1SD card path:\Z0
+\Z1SD card new path:\Z0
 $devboot - /mnt/BOOT
 $devroot - /mnt/ROOT
 " 0 0
