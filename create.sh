@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rm $0
+
 optbox=( --colors --no-shadow --no-collapse )
 
 dialog "${optbox[@]}" --infobox "
