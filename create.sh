@@ -49,14 +49,14 @@ if [[ -z $sd_size ]]; then
 fi
 
 dialog "${optbox[@]}" --yesno "
-Confirm micro SD card:
-\Z1$dev\Z0 - $size
-
 $( lsblk -o name,size,mountpoint | sed -e '1 s/.*/Device list:/' -e "/^$sd/ s/^/\\\Z1/; s/$/\\\Z0/" )
 
 Caution:
 Make sure this is the target SD card.
 \Z1All data on this device will be deleted.\Z0
+
+Confirm:
+Micro SD card is \Z1$dev\Z0 - $size
 
 " 0 0
 
