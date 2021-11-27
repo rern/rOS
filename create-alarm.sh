@@ -86,7 +86,7 @@ ROOT: \Z1$ROOT\Z0
  \Z1r\Z0Audio $version release:
 " 0 0 ${addons[1]} )
 #----------------------------------------------------------------------------
-	rpi=$( dialog "${opt[@]}" --output-fd 1 --menu "
+	rpi=$( dialog "${opt[@]}" --output-fd 1 --default-item 5 --menu "
 \Z1Target:\Z0
 " 8 0 0 \
 0 'Raspberry Pi Zero' \
@@ -113,7 +113,7 @@ ROOT: \Z1$ROOT\Z0
 		runon=$rpi	
 	else
 #----------------------------------------------------------------------------
-		runon=$( dialog "${opt[@]}" --output-fd 1 --menu "
+		runon=$( dialog "${opt[@]}" --output-fd 1 --default-item 4 --menu "
 Create \Z164bit\Z0 on:
 " 8 0 0 \
 2 'Raspberry Pi 2' \
