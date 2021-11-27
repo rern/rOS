@@ -281,6 +281,7 @@ sshRpi() {
 			sleep 3
 		fi
 	done
+	scanIP
 }
 
 # features
