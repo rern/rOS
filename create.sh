@@ -34,8 +34,8 @@ For proper detection, remove and reinsert again.
 
 " 0 0
 
-sd=$( dmesg -T | tail | grep ' sd .* logical blocks' )
-[[ -z $sd ]] && sleep 2 && sd=$( dmesg -T | tail | grep ' sd .* logical blocks' )
+sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*(\(.*\))|/dev/\1 - \2|' )
+[[ -z $sd ]] && sleep 2 && sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*(\(.*\))|/dev/\1 - \2|' )
 
 if [[ -z $sd ]]; then
 	dialog "${optbox[@]}" --infobox "
@@ -45,14 +45,11 @@ if [[ -z $sd ]]; then
 	exit
 fi
 
-dev=/dev/$( echo $sd | awk -F'[][]' '{print $4}' )
-detail=$( echo $sd | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
-
 dialog "${optbox[@]}" --yesno "
-Confirm micro SD card: \Z1$dev\Z0
+Confirm micro SD card:
+\Z1$sd\Z0
 
-Detail:
-$detail
+$( lsblk -o name,size,mountpoint | sed '1 s/.*/Device list:/' )
 
 Caution:
 Make sure this is the target SD card.
