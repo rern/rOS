@@ -34,11 +34,13 @@ For proper detection, remove and reinsert again.
 
 " 0 0
 
-sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*(\(.*\))|/dev/\1 - \2|' )
-[[ -z $sd ]] && sleep 2 && sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*(\(.*\))|/dev/\1 - \2|' )
-dev=${sd/ *}
+sd_size=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*(\(.*\))|\1 \2|' )
+[[ -z $sd_size ]] && sleep 2 && sd_size=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*(\(.*\))|/\1 \2|' )
+sd=${sd_size/ *}
+size=$( echo $sd_size | cut -d' ' -f2- )
+dev=/dev/$sd
 
-if [[ -z $sd ]]; then
+if [[ -z $sd_size ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1No SD card found.\Z0
 
@@ -48,9 +50,9 @@ fi
 
 dialog "${optbox[@]}" --yesno "
 Confirm micro SD card:
-\Z1$sd\Z0
+\Z1$dev\Z0 - $size
 
-$( lsblk -o name,size,mountpoint | sed '1 s/.*/Device list:/' )
+$( lsblk -o name,size,mountpoint | sed -e '1 s/.*/Device list:/' -e "/^$sd/ s/^/\\\Z1/; s/$/\\\Z0/" )
 
 Caution:
 Make sure this is the target SD card.
