@@ -274,9 +274,13 @@ sshRpi() {
 	sed -i "/$ip/ d" ~/.ssh/known_hosts
 	for i in 1 2 3; do
 		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh 
-		[[ $? == 0 ]] && break || sleep 3
+		if [[ $? == 0 ]]; then
+			clear -x
+			exit
+		else
+			sleep 3
+		fi
 	done
-	clear -x
 }
 
 # features
