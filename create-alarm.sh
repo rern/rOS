@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rm $0
+
 version=1
 	
 trap exit INT
