@@ -262,8 +262,10 @@ $lines
 sshRpi() {
 	ip=$1
 	sed -i "/$ip/ d" ~/.ssh/known_hosts
-	ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh
-	[[ $? != 0 ]] && sleep 5 && ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh
+	for i in 1 2 3; do
+		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh 
+		[[ $? == 0 ]] && break || sleep 3
+	done
 	clear -x
 }
 
@@ -585,18 +587,12 @@ EOF
 	done ) \
 		| dialog "${opt[@]}" --gauge '' 9 50
 	if ping -4 -c 1 -w 1 $assignedip &> /dev/null; then
-		[[ -n $rpi01 ]] && sec=10 || sec=5
-		( for i in $(seq 1 $sec); do
-			echo $(( i * 100 / sec ))
-			sleep 1
-		done ) \
-			| dialog "${opt[@]}" --gauge "
-  \Z1Arch Linux Arm\Z0 SSH start ...
+		dialog "${opt[@]}" --infobox "
+  \Z1Arch Linux Arm\Z0 SSH ...
   $assignedip
 " 9 50
+		sleep 3
 		sshRpi $assignedip
-		exit
-		
 	else
 		scanIP
 	fi
