@@ -123,7 +123,7 @@ Create \Z164bit\Z0 on:
 	routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 	subip=${routerip%.*}.
 #----------------------------------------------------------------------------
-	dialog --defaultno "${opt[@]}" --yesno "
+	dialog "${opt[@]}" --yesno "
  RPi with \Z1pre-assigned\Z0 IP?
 
 " 0 0
