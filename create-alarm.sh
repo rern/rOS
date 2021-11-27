@@ -555,10 +555,11 @@ dialog "${optbox[@]}" --msgbox "
 
 \Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
 
+- Make sure writing was finished.
 - Move micro SD card$usb to RPi > Power on
 - Press \Z1Enter\Z0 to start boot timer > IP scan
 
-" 13 55
+" 14 55
 
 title='rAudio - Connect to Raspberry Pi'
 opt=( --backtitle "$title" ${optbox[@]} )
