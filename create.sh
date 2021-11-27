@@ -90,4 +90,11 @@ mkdir -p /mnt/{BOOT,ROOT}
 mount $devboot /mnt/BOOT
 mount $devroot /mnt/ROOT
 
+dialog "${optbox[@]}" --infobox "
+\Z1SD card path:\Z0
+$devboot - /mnt/BOOT
+$devroot - /mnt/ROOT
+" 0 0
+sleep 2
+
 curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh | sh
