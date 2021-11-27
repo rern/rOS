@@ -90,6 +90,4 @@ mkdir -p /mnt/{BOOT,ROOT}
 mount $devboot /mnt/BOOT
 mount $devroot /mnt/ROOT
 
-curl -sLO https://github.com/rern/rOS/raw/main/create-alarm.sh
-chmod +x create-alarm.sh
-./create-alarm.sh nopathcheck
+bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh ) nopathcheck
