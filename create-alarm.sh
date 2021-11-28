@@ -603,7 +603,7 @@ EOF
 		| dialog "${opt[@]}" --gauge '' 9 50
 	if ping -4 -c 1 -w 1 $assignedip &> /dev/null; then
 		dialog "${opt[@]}" --infobox "
-  \Z1Arch Linux Arm\Z0 SSH ...
+  SSH \Z1Arch Linux Arm\Z0 ...
   $assignedip
 " 9 50
 		sleep 3
