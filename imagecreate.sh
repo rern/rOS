@@ -4,18 +4,18 @@
 if [[ -e /usr/bin/pacman ]]; then
 	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar '
 	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
-	[[ -n $packages ]] && pacman -Sy --noconfirm $packages
+	[[ $packages ]] && pacman -Sy --noconfirm $packages
 else
 	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar libarchive-tools '
 	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
-	[[ -n $packages ]] && apt install -y $packages
+	[[ $packages ]] && apt install -y $packages
 fi
 
 optbox=( --colors --no-shadow --no-collapse )
 
 [[ $( ls -A BOOT ) ]] && notempty+='BOOT '
 [[ $( ls -A ROOT ) ]] && notempty+='ROOT'
-if [[ -n $notempty ]]; then
+if [[ $notempty ]]; then
 		dialog "${optbox[@]}" --infobox "
 \Z1$notempty\Z0 directory not empty.
 " 0 0

@@ -10,13 +10,13 @@ if [[ -e /usr/bin/pacman ]]; then
 	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
 	[[ ! -e /usr/bin/nmap ]] && packages+='nmap '
 	[[ ! -e /usr/bin/pv ]] && packages+='pv '
-	[[ -n $packages ]] && pacman -Sy --noconfirm $packages
+	[[ $packages ]] && pacman -Sy --noconfirm $packages
 else
 	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar libarchive-tools '
 	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
 	[[ ! -e /usr/bin/nmap ]] && packages+='nmap '
 	[[ ! -e /usr/bin/pv ]] && packages+='pv '
-	[[ -n $packages ]] && apt install -y $packages
+	[[ $packages ]] && apt install -y $packages
 fi
 
 title='rAudio - Create Arch Linux Arm'
@@ -50,9 +50,9 @@ BOOT has more than 1"
 		(( $( echo "$ROOT" | wc -l ) > 1 )) && warnings+="
 ROOT has more than 1"
 		# check empty to prevent wrong partitions
-		[[ -n $( ls $BOOT | grep -v 'System Volume Information\|lost+found\|features' ) ]] && warnings+="
+		[[ $( ls $BOOT | grep -v 'System Volume Information\|lost+found\|features' ) ]] && warnings+="
 BOOT not empty"
-		[[ -n $( ls $ROOT | grep -v 'lost+found' ) ]] && warnings+="
+		[[ $( ls $ROOT | grep -v 'lost+found' ) ]] && warnings+="
 ROOT not empty"
 		# check fstype
 		[[ $( df --output=fstype $BOOT | tail -1 ) != vfat ]] && warnings+="
@@ -61,7 +61,7 @@ BOOT not fat32"
 ROOT not ext4"
 	fi
 	# partition warnings
-	if [[ -n $warnings ]]; then
+	if [[ $warnings ]]; then
 #----------------------------------------------------------------------------
 		dialog "${opt[@]}" --msgbox "
 \Z1Warnings:\Z0
@@ -296,7 +296,7 @@ shairport='\Z1Shairport\Z0 - AirPlay renderer'
   spotify='\Z1Spotifyd\Z0  - Spotify renderer'
  upmpdcli='\Z1upmpdcli\Z0  - UPnP renderer'
 
-if [[ -n $rpi01 ]]; then
+if [[ $rpi01 ]]; then
 	browser='Chromium  - (not for RPi Zero, 1)'
 	onoffbrowser=off
 else
@@ -366,7 +366,7 @@ for line in "${lines[@]}"; do
 	elif [[ ${line:0:3} == '## ' ]];then
 		city=${line:3}
 	else
-		[[ -n $city ]] && cc="$country - $city" || cc=$country
+		[[ $city ]] && cc="$country - $city" || cc=$country
 		(( i++ ))
 		clist+=( $i "$cc" )
 		codelist+=( $line )
@@ -590,7 +590,7 @@ done ) \
   \Z1Arch Linux Arm\Z0
 " 9 50
 
-if [[ -n $assignedip ]]; then
+if [[ $assignedip ]]; then
 #----------------------------------------------------------------------------
 	( for i in {1..10}; do
 		cat <<EOF

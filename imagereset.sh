@@ -54,7 +54,7 @@ fi
 if [[ $select == *' 5 '* ]]; then
 	banner 'Clear Wi-Fi connection ...'
 	readarray -t profiles <<< $( ls -p /etc/netctl | grep -v / )
-	if [[ -n $profiles ]]; then
+	if [[ $profiles ]]; then
 		for profile in "${profiles[@]}"; do
 			netctl disable "$profile"
 		done
