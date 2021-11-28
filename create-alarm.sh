@@ -145,7 +145,7 @@ Create \Z164bit\Z0 on:
 		case $runon in
 			0 | 1 ) sboot=50;; 
 			2 )     sboot=40;;
-			3 )     sboot=25;;
+			3 )     sboot=20;;
 			4 )     sboot=20;;
 		esac
 	else
@@ -606,7 +606,7 @@ EOF
 		| dialog "${opt[@]}" --gauge '' 9 50
 	if ping -4 -c 1 -w 1 $assignedip &> /dev/null; then
 		dialog "${opt[@]}" --infobox "
-  \Z1Arch Linux Arm\Z0 SSH ...
+  SSH \Z1Arch Linux Arm\Z0 ...
   $assignedip
 " 9 50
 		sleep 3
