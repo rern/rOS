@@ -100,10 +100,9 @@ if [[ -n $rpi01 ]]; then
 	rm -rf /etc/systemd/system/shairport-sync.service.d
 	sed -i -e 's|/usr/bin/taskset -c 3 ||' -e '/upnpnice/ d' /etc/systemd/system/upmpdcli.service
 fi
-if [[ -e /boot/config.txt64 ]]; then
-	mv -f /boot/cmdline.txt{64,}
-	mv -f /boot/config.txt{64,}
-fi
+
+mv -f /boot/cmdline.txt{0,}
+mv -f /boot/config.txt{0,}
 #---------------------------------------------------------------------------------
 banner 'Configure ...'
 

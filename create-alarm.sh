@@ -495,9 +495,12 @@ force_turbo=1\
 hdmi_drive=2' $BOOT/config.txt
 fi
 if [[ $rpi == 5 ]]; then
-	mv $BOOT/cmdline.txt{,64}
-	mv $BOOT/config.txt{,64}
+	mv $BOOT/cmdline.txt{,0}
+	mv $BOOT/config.txt{,0}
 	mv $BOOT/config.txt{.backup,}
+else
+	cp /boot/cmdline.txt{,0}
+	cp /boot/config.txt{,0}
 fi
 # wifi
 if [[ $ssid ]]; then
