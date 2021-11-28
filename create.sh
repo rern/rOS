@@ -51,12 +51,12 @@ dialog "${optbox[@]}" --yesno "
 Device list:
 $list
 
-Caution:
+Warning:
 Make sure this is the target SD card.
 \Z1All data on this device will be deleted.\Z0
 
-Confirm:
-SD card is $( echo "$list" | grep '\\Z1' )
+Confirm SD card:
+$( echo "$list" | grep '\\Z1' )
 
 " 0 0
 
