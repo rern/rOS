@@ -103,6 +103,7 @@ fi
 
 mv -f /boot/cmdline.txt{0,}
 mv -f /boot/config.txt{0,}
+rm -f /boot/{cmdline,config}.txt.pacsave
 #---------------------------------------------------------------------------------
 banner 'Configure ...'
 
