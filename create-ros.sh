@@ -66,6 +66,15 @@ pacman -Syu --noconfirm
 #----------------------------------------------------------------------------
 banner 'Install packages ...'
 
+# temp until fixed
+if grep -q chromium <<< $features; then
+	[[ $( uname -m ) == aarch64 ]] && arch=aarch64 || arch=armv7h
+	curl -kLO https://github.com/rern/rern.github.io/releases/download/20210307/chromium-95.0.4638.69-2-$arch.pkg.tar.xz
+	pacman -U --noconfirm chromium*
+	rm chromium*
+	sed -i '/#IgnorePkg/ a\IgnorePkg   = chromium' /etc/pacman.conf
+fi
+
 pacman -S --noconfirm --needed $packages $features
 [[ $? != 0 ]] && pacman -S --noconfirm --needed $packages $features
 #----------------------------------------------------------------------------
