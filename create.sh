@@ -34,7 +34,7 @@ For proper detection, remove and reinsert again.
 
 " 0 0
 
-sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*(\(.*\))|\1 \2|' )
+sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*|\1|' )
 [[ -z $sd ]] && sleep 2 && sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*|/\1|' )
 dev=/dev/$sd
 
