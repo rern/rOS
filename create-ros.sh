@@ -66,15 +66,6 @@ pacman -Syu --noconfirm
 #----------------------------------------------------------------------------
 banner 'Install packages ...'
 
-# temp until fixed
-if grep -q chromium <<< $features; then
-	[[ $( uname -m ) == aarch64 ]] && arch=aarch64 || arch=armv7h
-	curl -kLO https://github.com/rern/rern.github.io/releases/download/20210307/chromium-95.0.4638.69-2-$arch.pkg.tar.xz
-	pacman -U --noconfirm chromium*
-	rm chromium*
-	sed -i '/#IgnorePkg/ a\IgnorePkg   = chromium' /etc/pacman.conf
-fi
-
 pacman -S --noconfirm --needed $packages $features
 [[ $? != 0 ]] && pacman -S --noconfirm --needed $packages $features
 #----------------------------------------------------------------------------
@@ -117,14 +108,13 @@ else
 	rm -f /etc/systemd/system/blue*
 fi
 # browser
-if [[ -e /usr/bin/chromium || -e /usr/bin/firefox ]]; then
+if [[ -e /usr/bin/chromium ]]; then
 	sed -i 's/\(console=\).*/\1tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt # boot splash
 	chmod 775 /etc/X11/xorg.conf.d                   # fix permission for rotate file
 	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # startx
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
 	systemctl disable getty@tty1                     # login prompt
 	systemctl enable bootsplash localbrowser
-	[[ -e /usr/bin/firefox ]] && timeout 1 firefox --headless # init to create /root/.mozilla
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
 fi
