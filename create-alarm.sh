@@ -148,6 +148,8 @@ Create \Z164bit\Z0 on:
 			3 )     sboot=20;;
 			4 )     sboot=20;;
 		esac
+		confirmassignedip="
+RPi IP    : $assignedip"
 	else
 		case $runon in
 			0 | 1 ) sboot=80;; 
@@ -181,7 +183,7 @@ Connect \Z1Wi-Fi\Z0 on boot?
 			1 ) wpa=wpa;;
 			2 ) wpa=wep;;
 		esac
-		wifi="\
+		confirmwifi="
 SSID      : \Z1$ssid\Z0
 Password  : \Z1$password\Z0
 Security  : \Z1${wpa^^}\Z0"
@@ -196,8 +198,8 @@ Target    : \Z1Raspberry Pi $rpiname\Z0
 
 BOOT path : \Z1$BOOT\Z0
 ROOT path : \Z1$ROOT\Z0
-
-$wifi
+$confirmwifi
+$confirmassignedip
 " 0 0
 	[[ $? == 1 ]] && getData
 }
