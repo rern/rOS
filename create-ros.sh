@@ -44,7 +44,7 @@ banner 'Upgrade kernel and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools 
 gifsicle hdparm hfsprogs i2c-tools imagemagick inetutils jq mpc mpd 
-nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g ntp 
+nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g 
 parted php-fpm sshpass python-rpi-gpio sudo udevil wget wiringpi'
 
 if [[ -e /boot/kernel8.img ]]; then
@@ -140,6 +140,11 @@ ln -sf /srv/http/bash/motd.sh /etc/profile.d/
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
 # password
 echo root:ros | chpasswd
+# timesyncd - fix if no eth connection
+file=$( ls /etc/systemd/network/eth* )
+grep -q RequiredForOnline=no $file || echo "
+[Link]
+RequiredForOnline=no" >> $file
 # user - set expire to none
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
