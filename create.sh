@@ -65,13 +65,13 @@ $( echo "$list" | grep '\\Z1' )
 clear -x
 
 # 1. create default partitions: gparted
-# 2. dump partitions table for script: sfdisk -d /dev/sdx | grep '^/dev' > alarm.sfdisk
+# 2. dump partitions table for script: sfdisk -d /dev/sdx | grep '^/dev' | sed 's|^/dev.* : ||'
 # setup partitions
 umount -l ${dev}1 ${dev}2
 wipefs -a $dev
 echo "\
-${dev}1 : start=        2048, size=      204800, type=b
-${dev}2 : start=      206848, size=    10240000, type=83
+start=        2048, size=      204800, type=b
+start=      206848, size=    10240000, type=83
 " | sfdisk $dev
 
 devboot=${dev}1
