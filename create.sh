@@ -68,11 +68,11 @@ clear -x
 # 2. dump partitions table for script: sfdisk -d /dev/sdx | grep '^/dev' | sed 's|^/dev.* : ||'
 # setup partitions
 umount -l ${dev}1 ${dev}2
-wipefs -a $dev
+sfdisk --delete $dev
 echo "\
 start=        2048, size=      204800, type=b
-start=      206848, size=    10240000, type=83
-" | sfdisk $dev
+start=      206848, size=    10240000, type=83" \
+ | sfdisk --wipe always $dev
 
 devboot=${dev}1
 devroot=${dev}2
