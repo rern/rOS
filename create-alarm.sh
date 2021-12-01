@@ -277,7 +277,6 @@ sshRpi() {
 	for i in 1 2 3; do
 		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh 
 		if [[ $? == 0 ]]; then
-			clear -x
 			exit
 		else
 			sleep 3
