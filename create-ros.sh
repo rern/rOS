@@ -40,7 +40,7 @@ sleep 2
 
 clear -x # needed: fix stdout not scroll
 #----------------------------------------------------------------------------
-banner 'Upgrade kernel and default packages ...'
+banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools 
 gifsicle hdparm hfsprogs i2c-tools imagemagick inetutils jq mpc mpd 
@@ -62,12 +62,27 @@ Server = https://rern.github.io/$arch\
 fi
 
 pacman -Syu --noconfirm
-[[ $? != 0 ]] && pacman -Syu --noconfirm
+if [[ $? != 0 ]]; then
+	echo -e "\e[38;5;0m\e[48;5;3m ! \e[0m Retry upgrade system ..."
+	pacman -Syu --noconfirm
+	if [[ $? != 0 ]]; then
+		echo -e "\e[38;5;7m\e[48;5;1m ! \e[0m System upgrade incomplete."
+		exit
+	fi
+fi
 #----------------------------------------------------------------------------
 banner 'Install packages ...'
 
 pacman -S --noconfirm --needed $packages $features
-[[ $? != 0 ]] && pacman -S --noconfirm --needed $packages $features
+if [[ $? != 0 ]]; then
+	echo -e "\e[38;5;0m\e[48;5;3m ! \e[0m Retry download packages ..."
+	pacman -S --noconfirm --needed $packages $features
+	if [[ $? != 0 ]]; then
+		echo -e "\e[38;5;7m\e[48;5;1m ! \e[0m Packages download incomplete."
+		exit
+	fi
+	
+fi
 #----------------------------------------------------------------------------
 banner 'Get configurations and user interface ...'
 
