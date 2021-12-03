@@ -143,7 +143,7 @@ Create \Z164bit\Z0 on:
  \Z1Pre-assigned\Z0 IP:
 " 0 0 $subip )
 		case $runon in
-			0 | 1 ) sboot=50;; 
+			0 | 1 ) sboot=70;; 
 			2 )     sboot=40;;
 			3 )     sboot=20;;
 			4 )     sboot=20;;
@@ -274,7 +274,13 @@ $lines
 sshRpi() {
 	ip=$1
 	sed -i "/$ip/ d" ~/.ssh/known_hosts
-	[[ $rpi01 ]] && sleep 10
+	if [[ $rpi01 ]]; then
+		dialog "${opt[@]}" --infobox "
+  Start \Z1SSH\Z0 ...
+  
+" 5 50
+		sleep 20
+	fi
 	for i in 1 2 3; do
 		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh 
 		if [[ $? == 0 ]]; then
