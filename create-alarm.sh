@@ -100,7 +100,7 @@ ROOT: \Z1$ROOT\Z0
 \Z1Raspberry Pi:\Z0
 " 8 0 0 \
 0 'Zero, 1' \
-1 '2, 3' \
+1 '32bit' \
 2 '64bit' )
 
 	file=ArchLinuxARM-rpi-
@@ -112,7 +112,7 @@ ROOT: \Z1$ROOT\Z0
 			;; 
 		1 )
 			file+=armv7-
-			rpiname='2, 3'
+			rpiname=32bit
 			sboot=60
 			;;
 		2 )
