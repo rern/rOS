@@ -16,12 +16,12 @@ $imgfiles
 
 user=rern
 repo=rAudio-1
-tag=$( echo ${imgfiles[0]/*-} | cut -d. -f1 )
+release=$( echo ${imgfiles[0]/*-} | cut -d. -f1 )
 token=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
 Token: (https://github.com/settings/tokens)
 " 9 50 )
 id=$( curl -sH "Authorization: token $token" \
-		https://api.github.com/repos/$user/$repo/releases/tags/$tag \
+		https://api.github.com/repos/$user/$repo/releases/tags/i$release \
 		| jq .id )
 
 col=$( tput cols )
