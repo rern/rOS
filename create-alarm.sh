@@ -274,13 +274,6 @@ $lines
 sshRpi() {
 	ip=$1
 	sed -i "/$ip/ d" ~/.ssh/known_hosts
-	if [[ $rpi01 ]]; then
-		dialog "${opt[@]}" --infobox "
-  Start \Z1SSH\Z0 ...
-  
-" 5 50
-		sleep 20
-	fi
 	for i in 1 2 3; do
 		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh 
 		if [[ $? == 0 ]]; then
@@ -613,6 +606,13 @@ EOF
 	done ) \
 		| dialog "${opt[@]}" --gauge '' 9 50
 	if ping -4 -c 1 -w 1 $assignedip &> /dev/null; then
+		if [[ $rpi01 ]]; then
+			dialog "${opt[@]}" --infobox "
+  Start \Z1SSH\Z0 ...
+  
+" 5 50
+		sleep 20
+		fi
 		dialog "${opt[@]}" --infobox "
   SSH \Z1Arch Linux Arm\Z0 ...
   $assignedip
