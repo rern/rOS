@@ -274,6 +274,7 @@ $lines
 sshRpi() {
 	ip=$1
 	sed -i "/$ip/ d" ~/.ssh/known_hosts
+	[[ $rpi01 ]] && sleep 10
 	for i in 1 2 3; do
 		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh 
 		if [[ $? == 0 ]]; then
