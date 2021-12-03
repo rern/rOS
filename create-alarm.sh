@@ -97,11 +97,11 @@ ROOT: \Z1$ROOT\Z0
 " 0 0 ${addons[1]} )
 #----------------------------------------------------------------------------
 	rpi=$( dialog "${opt[@]}" --output-fd 1 --default-item 5 --menu "
-\Z1Target:\Z0
+\Z1Raspberry Pi:\Z0
 " 8 0 0 \
-0 'Raspberry Pi Zero, 1' \
-1 'Raspberry Pi 2, 3' \
-2 'Raspberry Pi 64bit' )
+0 'Zero, 1' \
+1 '2, 3' \
+2 '64bit' )
 
 	file=ArchLinuxARM-rpi-
 	case $rpi in
