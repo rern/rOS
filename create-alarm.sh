@@ -507,8 +507,8 @@ if [[ $rpi == 5 ]]; then
 	mv $BOOT/config.txt{,0}
 	mv $BOOT/config.txt{.backup,}
 else
-	cp /boot/cmdline.txt{,0}
-	cp /boot/config.txt{,0}
+	cp $BOOT/boot/cmdline.txt{,0}
+	cp $BOOT/boot/config.txt{,0}
 fi
 # wifi
 if [[ $ssid ]]; then
