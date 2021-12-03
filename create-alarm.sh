@@ -102,24 +102,21 @@ ROOT: \Z1$ROOT\Z0
 0 'Raspberry Pi Zero' \
 1 'Raspberry Pi 1' \
 2 'Raspberry Pi 2' \
-3 'Raspberry Pi 3' \
-4 'Raspberry Pi 4' \
-5 'Raspberry Pi 64bit' )
+3 'Raspberry Pi 64bit' )
 
 	file=ArchLinuxARM-rpi-
 	case $rpi in
 		0 | 1 ) rpi01=1;; 
-		2 | 3 ) file+=2-;;
-		4 )     file+=4-;;
-		5 )     file+=aarch64-;;
+		2 ) file+=armv7-;;
+		3 ) file+=aarch64-;;
 	esac
 	file+=latest.tar.gz
 	case $rpi in
 		0 ) rpiname=Zero;; 
-		5 ) rpiname=64bit;;
+		3 ) rpiname=64bit;;
 		* ) rpiname=$rpi;;
 	esac
-	if [[ $rpi != 5 ]]; then
+	if [[ $rpi != 3 ]]; then
 		runon=$rpi	
 	else
 #----------------------------------------------------------------------------
