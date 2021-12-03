@@ -99,34 +99,29 @@ ROOT: \Z1$ROOT\Z0
 	rpi=$( dialog "${opt[@]}" --output-fd 1 --default-item 5 --menu "
 \Z1Target:\Z0
 " 8 0 0 \
-0 'Raspberry Pi Zero' \
-1 'Raspberry Pi 1' \
-2 'Raspberry Pi 2' \
-3 'Raspberry Pi 64bit' )
+0 'Raspberry Pi Zero, 1' \
+1 'Raspberry Pi 2, 3' \
+2 'Raspberry Pi 64bit' )
 
 	file=ArchLinuxARM-rpi-
 	case $rpi in
-		0 | 1 ) rpi01=1;; 
-		2 ) file+=armv7-;;
-		3 ) file+=aarch64-;;
+		0 )
+			rpi01=1
+			rpiname='Zero, 1'
+			sboot=80
+			;; 
+		1 )
+			file+=armv7-
+			rpiname='2, 3'
+			sboot=60
+			;;
+		2 )
+			file+=aarch64-
+			rpiname=64bit
+			sboot=45
+			;;
 	esac
 	file+=latest.tar.gz
-	case $rpi in
-		0 ) rpiname=Zero;; 
-		3 ) rpiname=64bit;;
-		* ) rpiname=$rpi;;
-	esac
-	if [[ $rpi != 3 ]]; then
-		runon=$rpi	
-	else
-#----------------------------------------------------------------------------
-		runon=$( dialog "${opt[@]}" --output-fd 1 --default-item 4 --menu "
-Create \Z164bit\Z0 on:
-" 8 0 0 \
-2 'Raspberry Pi 2' \
-3 'Raspberry Pi 3' \
-4 'Raspberry Pi 4' )
-	fi
 	routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 	subip=${routerip%.*}.
 #----------------------------------------------------------------------------
@@ -139,21 +134,13 @@ Create \Z164bit\Z0 on:
 		assignedip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  \Z1Pre-assigned\Z0 IP:
 " 0 0 $subip )
-		case $runon in
-			0 | 1 ) sboot=70;; 
-			2 )     sboot=40;;
-			3 )     sboot=20;;
-			4 )     sboot=20;;
+		case $rpi in
+			0 ) sboot=70;; 
+			1 ) sboot=40;;
+			2 ) sboot=20;;
 		esac
 		confirmassignedip="
 RPi IP    : $assignedip"
-	else
-		case $runon in
-			0 | 1 ) sboot=80;; 
-			2 )     sboot=60;;
-			3 )     sboot=45;;
-			4 )     sboot=30;;
-		esac	
 	fi
 #----------------------------------------------------------------------------	
 	dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
