@@ -92,8 +92,6 @@ version=$( cat $ROOT/srv/http/data/system/version )
 revision=$( cat $ROOT/srv/http/data/addons/r$version )
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
-elif [[ -e $BOOT/bcm2711-rpi-4-b.dtb ]]; then
-	model=RPi4
 elif [[ -e $BOOT/kernel7.img ]]; then
 	model=RPi2
 else
