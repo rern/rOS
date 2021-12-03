@@ -140,7 +140,7 @@ ROOT: \Z1$ROOT\Z0
 			2 ) sboot=20;;
 		esac
 		confirmassignedip="
-RPi IP    : $assignedip"
+Assigned IP  : $assignedip"
 	fi
 #----------------------------------------------------------------------------	
 	dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
@@ -168,20 +168,20 @@ Connect \Z1Wi-Fi\Z0 on boot?
 			2 ) wpa=wep;;
 		esac
 		confirmwifi="
-SSID      : \Z1$ssid\Z0
-Password  : \Z1$password\Z0
-Security  : \Z1${wpa^^}\Z0"
+SSID         : \Z1$ssid\Z0
+Password     : \Z1$password\Z0
+Security     : \Z1${wpa^^}\Z0"
 	fi
 #----------------------------------------------------------------------------
 	dialog "${opt[@]}" --yesno "
 \Z1Confirm data:\Z0
 
-\Z1r\Z0Audio    : $version
-Release   : $release
-Target    : \Z1Raspberry Pi $rpiname\Z0
+\Z1r\Z0Audio       : $version
+Release      : $release
+Raspberry Pi : \Z1$rpiname\Z0
 
-BOOT path : \Z1$BOOT\Z0
-ROOT path : \Z1$ROOT\Z0
+BOOT path    : \Z1$BOOT\Z0
+ROOT path    : \Z1$ROOT\Z0
 $confirmwifi
 $confirmassignedip
 " 0 0
