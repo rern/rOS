@@ -38,7 +38,7 @@ imageUpload() {
 	file="$1"
 	filename=$( basename "$file" )
 	
-	banner "Upload: $filename"
+	banner "$filename"
 	
 	curl \
 		-H "Authorization: token $token" \
