@@ -3,6 +3,7 @@
 optbox=( --colors --no-shadow --no-collapse )
 
 dialog "${optbox[@]}" --infobox "
+
                \Z1Partition Micro SD Card\Z0
                           for
                     Arch Linux Arm
@@ -13,7 +14,9 @@ mounts=$( mount | awk '/dev\/sd.*\/BOOT/ || /dev\/sd.*\/ROOT/ {print $1" "$2" "$
 if [[ $mounts ]]; then
 	dialog "${optbox[@]}" --yesno "
 \Z1Unmount partitions?\Z0
+
 $mounts
+
 " 0 0
 	[[ $? != 0 ]] && exit
 	
@@ -25,8 +28,10 @@ fi
 
 dialog "${optbox[@]}" --msgbox "
 \Z1Insert micro SD card\Z0
+
 If already inserted:
 For proper detection, remove and reinsert again.
+
 " 0 0
 
 sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*|\1|' )
@@ -36,6 +41,7 @@ dev=/dev/$sd
 if [[ -z $sd ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1No SD card found.\Z0
+
 " 0 0
 	exit
 fi
@@ -44,11 +50,14 @@ list=$( lsblk -o name,size,mountpoint | sed "/^$sd/ s/^/\\\Z1/; s/$/\\\Z0/" )
 dialog "${optbox[@]}" --yesno "
 Device list:
 $list
+
 Warning:
 Make sure this is the target SD card.
 \Z1All data on this device will be deleted.\Z0
+
 Confirm SD card:
 $( echo "$list" | grep '\\Z1' )
+
 " 0 0
 
 [[ $? != 0 ]] && exit
