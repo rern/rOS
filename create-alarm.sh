@@ -96,29 +96,29 @@ ROOT: \Z1$ROOT\Z0
  \Z1r\Z0Audio $version release:
 " 0 0 ${addons[1]} )
 #----------------------------------------------------------------------------
-	rpi=$( dialog "${opt[@]}" --output-fd 1 --default-item 2 --menu "
+	rpi=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Raspberry Pi:\Z0
 " 8 0 0 \
-0 'Zero, 1' \
-1 '32bit' \
-2 '64bit' )
+1 '64bit' \
+2 '32bit' \
+3 'Zero, 1' )
 
 	file=ArchLinuxARM-rpi-
 	case $rpi in
-		0 )
-			rpi01=1
-			rpiname='Zero, 1'
-			sboot=80
-			;; 
 		1 )
+			file+=aarch64-
+			rpiname=64bit
+			sboot=45
+			;; 
+		2 )
 			file+=armv7-
 			rpiname=32bit
 			sboot=60
 			;;
-		2 )
-			file+=aarch64-
-			rpiname=64bit
-			sboot=45
+		3 )
+			rpi01=1
+			rpiname='Zero, 1'
+			sboot=80
 			;;
 	esac
 	file+=latest.tar.gz
@@ -135,15 +135,15 @@ ROOT: \Z1$ROOT\Z0
  \Z1Pre-assigned\Z0 IP:
 " 0 0 $subip )
 		case $rpi in
-			0 ) sboot=70;; 
-			1 ) sboot=40;;
-			2 ) sboot=20;;
+			1 ) sboot=30;; 
+			2 ) sboot=40;;
+			3 ) sboot=70;;
 		esac
 		confirmassignedip="
 Assigned IP  : $assignedip"
 	fi
 #----------------------------------------------------------------------------	
-	dialog $( [[ $rpi != 0 ]] && echo --defaultno ) "${opt[@]}" --yesno "
+	dialog $( [[ $rpi != 3 ]] && echo --defaultno ) "${opt[@]}" --yesno "
 Connect \Z1Wi-Fi\Z0 on boot?
 
 " 0 0
@@ -460,7 +460,7 @@ $partuuidBOOT  /boot  vfat  defaults,noatime  0  0
 $partuuidROOT  /      ext4  defaults,noatime  0  0
 EOF
 # cmdline.txt, config.txt
-[[ $rpi == 2 ]] && mv $BOOT/config.txt{,.backup}
+[[ $rpi == 0 ]] && mv $BOOT/config.txt{,.backup}
 cat << EOF > $BOOT/cmdline.txt
 root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
 EOF
@@ -473,13 +473,13 @@ disable_overscan=1
 dtparam=krnbt=on
 dtparam=audio=on
 EOF
-if [[ $rpi == 0 ]]; then
+if [[ $rpi == 3 ]]; then
 	sed -i 's/ isolcpus=3//' $BOOT/cmdline.txt
 	sed -i '1 i\
 force_turbo=1\
 hdmi_drive=2' $BOOT/config.txt
 fi
-if [[ $rpi == 2 ]]; then
+if [[ $rpi == 0 ]]; then
 	mv $BOOT/cmdline.txt{,0}
 	mv $BOOT/config.txt{,0}
 	mv $BOOT/config.txt{.backup,}
