@@ -536,7 +536,6 @@ curl -skL https://github.com/rern/rOS/raw/main/create-ros.sh -o $createrosfile
 chmod 755 $createrosfile
 
 target="                 \Z1Raspberry Pi $rpiname\Z0"
-[[ $rpi != 5 ]] && target="  $target"
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --msgbox "
 
