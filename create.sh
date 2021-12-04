@@ -3,7 +3,6 @@
 optbox=( --colors --no-shadow --no-collapse )
 
 dialog "${optbox[@]}" --infobox "
-
                \Z1Partition Micro SD Card\Z0
                           for
                     Arch Linux Arm
@@ -14,9 +13,7 @@ mounts=$( mount | awk '/dev\/sd.*\/BOOT/ || /dev\/sd.*\/ROOT/ {print $1" "$2" "$
 if [[ $mounts ]]; then
 	dialog "${optbox[@]}" --yesno "
 \Z1Unmount partitions?\Z0
-
 $mounts
-
 " 0 0
 	[[ $? != 0 ]] && exit
 	
@@ -28,10 +25,8 @@ fi
 
 dialog "${optbox[@]}" --msgbox "
 \Z1Insert micro SD card\Z0
-
 If already inserted:
 For proper detection, remove and reinsert again.
-
 " 0 0
 
 sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*|\1|' )
@@ -41,7 +36,6 @@ dev=/dev/$sd
 if [[ -z $sd ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1No SD card found.\Z0
-
 " 0 0
 	exit
 fi
@@ -50,14 +44,11 @@ list=$( lsblk -o name,size,mountpoint | sed "/^$sd/ s/^/\\\Z1/; s/$/\\\Z0/" )
 dialog "${optbox[@]}" --yesno "
 Device list:
 $list
-
 Warning:
 Make sure this is the target SD card.
 \Z1All data on this device will be deleted.\Z0
-
 Confirm SD card:
 $( echo "$list" | grep '\\Z1' )
-
 " 0 0
 
 [[ $? != 0 ]] && exit
@@ -65,14 +56,14 @@ $( echo "$list" | grep '\\Z1' )
 clear -x
 
 # 1. create default partitions: gparted
-# 2. dump partitions table for script: sfdisk -d /dev/sdx | grep '^/dev' | sed 's|^/dev.* : ||'
+# 2. dump partitions table for script: sfdisk -d /dev/sdx | grep '^/dev' > alarm.sfdisk
 # setup partitions
 umount -l ${dev}1 ${dev}2
-sfdisk --delete $dev
+wipefs -a $dev
 echo "\
-start=        2048, size=      204800, type=b
-start=      206848, size=    10240000, type=83" \
- | sfdisk --wipe always $dev
+${dev}1 : start=        2048, size=      204800, type=b
+${dev}2 : start=      206848, size=    10240000, type=83
+" | sfdisk $dev
 
 devboot=${dev}1
 devroot=${dev}2
