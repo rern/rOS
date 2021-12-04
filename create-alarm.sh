@@ -98,7 +98,7 @@ ROOT: \Z1$ROOT\Z0
 #----------------------------------------------------------------------------
 	rpi=$( dialog "${opt[@]}" --output-fd 1 --default-item 5 --menu "
 \Z1Raspberry Pi:\Z0
-" 8 0 2 \
+" 8 0 0 \
 0 'Zero, 1' \
 1 '32bit' \
 2 '64bit' )
