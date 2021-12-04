@@ -96,7 +96,7 @@ ROOT: \Z1$ROOT\Z0
  \Z1r\Z0Audio $version release:
 " 0 0 ${addons[1]} )
 #----------------------------------------------------------------------------
-	rpi=$( dialog "${opt[@]}" --output-fd 1 --default-item 5 --menu "
+	rpi=$( dialog "${opt[@]}" --output-fd 1 --default-item 2 --menu "
 \Z1Raspberry Pi:\Z0
 " 8 0 0 \
 0 'Zero, 1' \
