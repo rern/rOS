@@ -98,7 +98,7 @@ ROOT: \Z1$ROOT\Z0
 #----------------------------------------------------------------------------
 	rpi=$( dialog "${opt[@]}" --output-fd 1 --default-item 5 --menu "
 \Z1Raspberry Pi:\Z0
-" 8 0 2 \
+" 8 0 0 \
 0 'Zero, 1' \
 1 '32bit' \
 2 '64bit' )
@@ -460,7 +460,7 @@ $partuuidBOOT  /boot  vfat  defaults,noatime  0  0
 $partuuidROOT  /      ext4  defaults,noatime  0  0
 EOF
 # cmdline.txt, config.txt
-[[ $rpi == 2 ]] && mv $BOOT/config.txt{,.backup}
+[[ $rpi == 5 ]] && mv $BOOT/config.txt{,.backup}
 cat << EOF > $BOOT/cmdline.txt
 root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
 EOF
@@ -479,7 +479,7 @@ if [[ $rpi == 0 ]]; then
 force_turbo=1\
 hdmi_drive=2' $BOOT/config.txt
 fi
-if [[ $rpi == 2 ]]; then
+if [[ $rpi == 5 ]]; then
 	mv $BOOT/cmdline.txt{,0}
 	mv $BOOT/config.txt{,0}
 	mv $BOOT/config.txt{.backup,}
@@ -535,12 +535,14 @@ createrosfile=$ROOT/root/create-ros.sh
 curl -skL https://github.com/rern/rOS/raw/main/create-ros.sh -o $createrosfile
 chmod 755 $createrosfile
 
+target="                 \Z1Raspberry Pi $rpiname\Z0"
+[[ $rpi != 5 ]] && target="  $target"
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --msgbox "
 
                    Arch Linux Arm
                          for
-                 \Z1Raspberry Pi $rpiname\Z0"
+$target
                 Created successfully.
 				
 $( date -d@$SECONDS -u +%M:%S )
