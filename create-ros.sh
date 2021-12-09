@@ -165,8 +165,15 @@ sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 [[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
 # no snapcast
 [[ ! -e /usr/bin/snapclient ]] && rm /etc/default/snapclient
-# no spotifyd
-[[ ! -e /usr/bin/spotifyd ]] && rm /etc/spotifyd.conf
+# spotifyd
+if [[ -e /usr/bin/spotifyd ]]; then
+	cp /lib/systemd/{user,system}/spotifyd.service
+	sed -i '/ExecStart/ i\
+Environment="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket"
+' /lib/systemd/system/spotifyd.service
+else
+	rm /etc/spotifyd.conf
+fi
 # no upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
