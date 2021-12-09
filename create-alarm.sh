@@ -99,9 +99,9 @@ ROOT: \Z1$ROOT\Z0
 	rpi=$( dialog "${opt[@]}" --output-fd 1 --menu "
 \Z1Raspberry Pi:\Z0
 " 8 0 0 \
-1 '64bit' \
-2 '32bit' \
-3 'Zero, 1' )
+1 '64bit  : 4, 3, 2' \
+2 '32bit  : 2 (BCM2836)' \
+3 'Legacy : 1, Zero' )
 
 	file=ArchLinuxARM-rpi-
 	case $rpi in
