@@ -145,6 +145,25 @@ ln -sf /srv/http/bash/motd.sh /etc/profile.d/
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
 # password
 echo root:ros | chpasswd
+# samba
+[[ -e /usr/bin/smbd ]] && ( echo ros; echo ros ) | smbpasswd -s -a root
+# shairport-sync - not installed
+[[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
+# snapcast - not installed
+[[ ! -e /usr/bin/snapclient ]] && rm /etc/default/snapclient
+# spotifyd
+if [[ -e /usr/bin/spotifyd ]]; then
+	mv /lib/systemd/{user,system}/spotifyd.service
+	sed -i '/ExecStart/ i\
+Environment="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket"
+' /lib/systemd/system/spotifyd.service
+else
+	rm /etc/spotifyd.conf
+fi
+# sshd
+sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
+' -e 's/.*\(PrintLastLog \).*/\1no/
+' /etc/ssh/sshd_config
 # timesyncd - fix if no eth connection
 file=$( ls /etc/systemd/network/eth* )
 grep -q RequiredForOnline=no $file || echo "
@@ -155,26 +174,7 @@ users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
 	chage -E -1 $user
 done
-# sshd
-sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
-' -e 's/.*\(PrintLastLog \).*/\1no/
-' /etc/ssh/sshd_config
-# samba
-[[ -e /usr/bin/smbd ]] && ( echo ros; echo ros ) | smbpasswd -s -a root
-# no shairport-sync
-[[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
-# no snapcast
-[[ ! -e /usr/bin/snapclient ]] && rm /etc/default/snapclient
-# spotifyd
-if [[ -e /usr/bin/spotifyd ]]; then
-	cp /lib/systemd/{user,system}/spotifyd.service
-	sed -i '/ExecStart/ i\
-Environment="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket"
-' /lib/systemd/system/spotifyd.service
-else
-	rm /etc/spotifyd.conf
-fi
-# no upmpdcli
+# upmpdcli - not installed
 if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
 	file=$dir/credkey.pem
