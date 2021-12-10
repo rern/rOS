@@ -116,7 +116,6 @@ ROOT: \Z1$ROOT\Z0
 			sboot=60
 			;;
 		3 )
-			rpi01=1
 			rpiname='Zero, 1'
 			sboot=80
 			;;
@@ -281,8 +280,8 @@ shairport='\Z1Shairport\Z0 - AirPlay renderer'
   spotify='\Z1Spotifyd\Z0  - Spotify renderer'
  upmpdcli='\Z1upmpdcli\Z0  - UPnP renderer'
 
-if [[ $rpi01 ]]; then
-	browser='Chromium  - (not for RPi Zero, 1)'
+if [[ $rpi == 3 ]]; then
+	browser='Chromium  - (not for RPi 1, Zero)'
 	onoffbrowser=off
 else
 	onoffbrowser=on
@@ -367,7 +366,7 @@ echo "\
 version=$version
 release=$release
 col=$COLUMNS
-rpi01=$rpi01
+rpi01=$( [[ $rpi  == 3 ]] && echo true )
 mirror=${codelist[$code]}
 " > $BOOT/versions
 
@@ -588,7 +587,7 @@ EOF
 	done ) \
 		| dialog "${opt[@]}" --gauge '' 9 50
 	if ping -4 -c 1 -w 1 $assignedip &> /dev/null; then
-		if [[ $rpi01 ]]; then
+		if [[ $rpi == 3 ]]; then
 			dialog "${opt[@]}" --infobox "
   Start \Z1SSH\Z0 ...
   
