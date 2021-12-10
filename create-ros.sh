@@ -154,9 +154,6 @@ echo root:ros | chpasswd
 # spotifyd
 if [[ -e /usr/bin/spotifyd ]]; then
 	mv /lib/systemd/{user,system}/spotifyd.service
-	sed -i '/ExecStart/ i\
-Environment="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket"
-' /lib/systemd/system/spotifyd.service
 else
 	rm /etc/spotifyd.conf
 fi
