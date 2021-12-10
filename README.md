@@ -3,9 +3,9 @@ rOS - DIY rAudio
 Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer for Raspberry Pi
 
 - For all **Raspberry Pi**s:
-	- 64bit: 4, 3, 2
-	- 32bit: 2 (`BCM2836`)
-	- Legacy: 1 and Zero
+	- 64bit: `4` `3` `2` `Zero 2`
+	- 32bit: `2 (BCM2836)`
+	- Legacy: `1` `Zero`
 - Create **rAudio** from latest releases of [**Arch Linux Arm**](https://archlinuxarm.org/about/downloads)
 - Interactive interface
 - Options:
