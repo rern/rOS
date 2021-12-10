@@ -36,9 +36,9 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- Setup Wi-Fi auto-connect
 	- Create image file
 - Expert mode (1 command line - for Alternative 1: Micro SD card only)
-```sh
-bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
-```
+	```sh
+	bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
+	```
 
 ![dialog1](https://github.com/rern/rOS/raw/main/select-hw.png)
 ![dialog2](https://github.com/rern/rOS/raw/main/select-features.png)  
