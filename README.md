@@ -40,8 +40,8 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
 ```
 
-![dialog1](https://github.com/rern/rOS/raw/main/select-hw.jpg)
-![dialog2](https://github.com/rern/rOS/raw/main/select-features.jpg)  
+![dialog1](https://github.com/rern/rOS/raw/main/select-hw.png)
+![dialog2](https://github.com/rern/rOS/raw/main/select-features.png)  
 
 **Need**
 - PC - Linux - any distro
