@@ -94,7 +94,7 @@ if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
 elif [[ -e $BOOT/kernel7.img ]]; then
 	model=RPi2
-else
+else # $BOOT/kernel.img
 	model=RPi0-1
 fi
 

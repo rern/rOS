@@ -100,7 +100,7 @@ chown http:http /etc/fstab
 chown -R http:http /etc/netctl /etc/systemd/network /srv/http
 chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
 
-if [[ $rpi01 ]]; then
+if [[ -e /boot/kernel.img ]]; then
 	sed -i '/^.Service/,$ d' /etc/systemd/system/mpd.service.d/override.conf
 	sed -i '/ExecStart=/ d' /etc/systemd/system/spotifyd.service.d/override.conf
 	rm -rf /etc/systemd/system/shairport-sync.service.d

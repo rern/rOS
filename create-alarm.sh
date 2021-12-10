@@ -366,7 +366,6 @@ echo "\
 version=$version
 release=$release
 col=$COLUMNS
-rpi01=$( [[ $rpi  == 3 ]] && echo true )
 mirror=${codelist[$code]}
 " > $BOOT/versions
 
