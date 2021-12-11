@@ -19,7 +19,7 @@ else
 	[[ $packages ]] && apt install -y $packages
 fi
 
-title='rAudio - Create Arch Linux Arm'
+title='rAudio'
 optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
 #----------------------------------------------------------------------------
