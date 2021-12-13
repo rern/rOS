@@ -51,7 +51,7 @@
 - By `/boot/kernel*.img` file:
 ```sh
 if [[ -e /boot/kernel8.img ]]; then
-	os=64bit
+    os=64bit
 elif [[ -e /boot/kernel7.img ]]; then # 2 (BCM2836)
     os=32bit
 elif [[ -e /boot/kernel.img ]]; then # 1 and Zero
