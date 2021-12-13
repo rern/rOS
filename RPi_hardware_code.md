@@ -55,7 +55,7 @@ if [[ -e /boot/kernel8.img ]]; then
 elif [[ -e /boot/kernel7.img ]]; then # 2 (BCM2836)
     os=32bit
 elif [[ -e /boot/kernel.img ]]; then # 1 and Zero
-	os=legacy
+    os=legacy
 fi
 ```
 
