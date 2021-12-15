@@ -48,14 +48,7 @@
 	-  Model A - without ethernet
 	-  Model B - on-board ethernet
 - 3.5mm headphone output: None in Zero and Zero W
-- By `/boot/kernel*.img` file:
-```sh
-if [[ -e /boot/kernel8.img ]]; then
-    os=64bit
-elif [[ -e /boot/kernel7.img ]]; then # 2 (BCM2836)
-    os=32bit
-elif [[ -e /boot/kernel.img ]]; then # 1 and Zero
-    os=legacy
-fi
-```
-
+- `/boot/kernel*.img` :
+	- `/boot/kernel8.img` - 64bit
+	- `/boot/kernel7.img` - 32bit
+	- `/boot/kernel.img` - legacy (Zero, 1)
