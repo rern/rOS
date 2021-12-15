@@ -44,8 +44,8 @@
 - Single core (Zero and 1 - BCM2835): `[[ $C == 0 ]]`
 - On-board Wi-Fi and Bluetooth: `[[ $BB =~ ^(08|0c|0d|0e|11|12)$ ]]`
 - Ethernet:
-	- Model `A` - without ethernet
-	- Model `B` - on-board ethernet
+	- Model A - without ethernet
+	- Model B - on-board ethernet
 - On-board HDMI: (If not connected, disabled by kernel.)
 - None in Zero and Zero 2:
 	- 3.5mm headphone output
