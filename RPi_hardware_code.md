@@ -29,7 +29,7 @@
 
 - `A` - PCB revision
 - `BB` - Name - `BB=${EDCBBA: -3:2}` (Zero W: `19000c1` - 7 characters)
-- `C` - SoC - `C=${EDCBBA: -4:1}`
+- `C` - CPU - `C=${EDCBBA: -4:1}`
 - `D` - Manufacturer:
 	- `0` - Sony - UK
 	- `2` - Embest - China
