@@ -1,2 +1,0 @@
-START_SNAPCLIENT=true
-SNAPCLIENT_OPTS="--latency=800"
