@@ -149,8 +149,6 @@ echo root:ros | chpasswd
 [[ -e /usr/bin/smbd ]] && ( echo ros; echo ros ) | smbpasswd -s -a root
 # shairport-sync - not installed
 [[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
-# snapcast
-rm -f /etc/default/snap{client,server}
 # spotifyd
 if [[ -e /usr/bin/spotifyd ]]; then
 	mv /lib/systemd/{user,system}/spotifyd.service
