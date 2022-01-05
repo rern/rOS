@@ -123,7 +123,7 @@ umount -l -v ${dev}1 ${dev}2
 e2fsck -fy $part
 
 shrink() {
-	echo -e "\n$bar Shrink #$1 ...\n"
+	echo -e "$bar Shrink #$1 ...\n"
 	partinfo=$( tune2fs -l $part )
 	blockcount=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
 	freeblocks=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
@@ -156,6 +156,7 @@ EOF
 	fi
 }
 
+echo
 shrink 1
 
 shrink 2
