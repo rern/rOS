@@ -100,11 +100,11 @@ chown http:http /etc/fstab
 chown -R http:http /etc/netctl /etc/systemd/network /srv/http
 chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
 
-if [[ -e /boot/kernel.img ]]; then
+if [[ -e /boot/kernel.img ]]; then # single core cpu
 	sed -i '/^.Service/,$ d' /etc/systemd/system/mpd.service.d/override.conf
 	sed -i '/ExecStart=/ d' /etc/systemd/system/spotifyd.service.d/override.conf
-	rm -rf /etc/systemd/system/shairport-sync.service.d
-	sed -i -e 's|/usr/bin/taskset -c 3 ||' -e '/upnpnice/ d' /etc/systemd/system/upmpdcli.service
+	sed -i '/ExecStart=/ d'  /etc/systemd/system/shairport-sync.service.d/override.conf
+	sed -i -e 's|/usr/bin/taskset -c 3 ||' /etc/systemd/system/upmpdcli.service
 fi
 
 mv -f /boot/cmdline.txt{0,}
