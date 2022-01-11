@@ -92,7 +92,7 @@ ROOT: \Z1$ROOT\Z0
 				| grep -A2 '"r.":' \
 				| sed -e 2d -e 's/[^0-9]*//g' ) )
 #----------------------------------------------------------------------------
-	release=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+	release=$( dialog "${opt[@]}" --output-fd 1 --nocancel --inputbox "
  \Z1r\Z0Audio $version release:
 " 0 0 ${addons[1]} )
 #----------------------------------------------------------------------------
@@ -130,7 +130,7 @@ ROOT: \Z1$ROOT\Z0
 " 0 0
 	if [[ $? == 0 ]]; then
 #----------------------------------------------------------------------------
-		assignedip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+		assignedip=$( dialog "${opt[@]}" --output-fd 1 --nocancel --inputbox "
  \Z1Pre-assigned\Z0 IP:
 " 0 0 $subip )
 		case $rpi in
@@ -148,11 +148,11 @@ Connect \Z1Wi-Fi\Z0 on boot?
 " 0 0
 	if [[ $? == 0 ]]; then
 #----------------------------------------------------------------------------
-		ssid=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+		ssid=$( dialog "${opt[@]}" --output-fd 1 --nocancel --inputbox "
 \Z1Wi-Fi\Z0 - SSID:
 " 0 0 $ssid )
 #----------------------------------------------------------------------------
-		password=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+		password=$( dialog "${opt[@]}" --output-fd 1 --nocancel --inputbox "
 \Z1Wi-Fi\Z0 - Password:
 " 0 0 $password )
 #----------------------------------------------------------------------------
@@ -200,7 +200,7 @@ foundIP() {
 	case $ans in
 		2 ) scanIP;;
 #----------------------------------------------------------------------------
-		3 ) ipping=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+		3 ) ipping=$( dialog "${opt[@]}" --output-fd 1 --nocancel --inputbox "
  Ping RPi at IP:
 " 0 0 $subip )
 			pingIP 5 $ipping
