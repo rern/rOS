@@ -96,7 +96,7 @@ ROOT: \Z1$ROOT\Z0
  \Z1r\Z0Audio $version release:
 " 0 0 ${addons[1]} )
 #----------------------------------------------------------------------------
-	rpi=$( dialog "${opt[@]}" --output-fd 1 --menu "
+	rpi=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 \Z1Raspberry Pi:\Z0
 " 8 0 0 \
 1 '64bit  : 4, 3, 2, Zero 2' \
@@ -156,7 +156,7 @@ Connect \Z1Wi-Fi\Z0 on boot?
 \Z1Wi-Fi\Z0 - Password:
 " 0 0 $password )
 #----------------------------------------------------------------------------
-		wpa=$( dialog "${opt[@]}" --output-fd 1 --menu "
+		wpa=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 \Z1Wi-Fi\Z0 -Security:
 " 8 0 0 \
 1 WPA \
@@ -190,7 +190,7 @@ getData
 
 foundIP() {
 #----------------------------------------------------------------------------
-	ans=$( dialog "${opt[@]}" --output-fd 1 --menu "
+	ans=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 \Z1Found IP address of RPi?\Z0
 " 8 30 0 \
 1 'Yes' \
@@ -357,7 +357,7 @@ for line in "${lines[@]}"; do
 	fi
 done
 #----------------------------------------------------------------------------
-code=$( dialog "${opt[@]}" --output-fd 1 --menu "
+code=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 \Z1Package mirror server:\Z0
 " 0 0 0 \
 "${clist[@]}" )
