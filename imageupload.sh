@@ -17,7 +17,7 @@ $imgfiles
 user=rern
 repo=rAudio-1
 release=i$( echo ${imgfiles[0]/*-} | cut -d. -f1 )
-token=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
+token=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --inputbox "
 Token: (https://github.com/settings/tokens)
 " 9 50 )
 id=$( curl -sH "Authorization: token $token" \
@@ -28,7 +28,7 @@ col=$( tput cols )
 
 dialog "${optbox[@]}" --output-fd 1 --msgbox "
 Make sure release \Z1$release\Z0 exists.
-" 7 40
+" 7 50
 
 banner() {
 	echo
