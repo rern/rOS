@@ -25,6 +25,11 @@ id=$( curl -sH "Authorization: token $token" \
 		| jq .id )
 
 col=$( tput cols )
+
+dialog "${optbox[@]}" --output-fd 1 --msgbox "
+Make sure release \Z1$release\Z0 exists.
+" 7 40
+
 banner() {
 	echo
 	def='\e[0m'
