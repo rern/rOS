@@ -307,7 +307,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 	features=
 	list=
 	[[ $select == *' 1 '* ]] && features+='bluez bluez-alsa bluez-utils python-dbus python-gobject python-requests ' && list+="$bluez"$'\n'
-	[[ $select == *' 2 '* ]] && features+='chromium matchbox-window-manager plymouth-lite-rbp upower xf86-input-evdev xf86-video-fbdev xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$browser"$'\n'
+	[[ $select == *' 2 '* ]] && features+='chromium matchbox-window-manager plymouth-lite-rbp upower xf86-input-evdev xf86-video-fbdev xf86-video-fbturbo-git xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$browser"$'\n'
 	[[ $select == *' 3 '* ]] && features+='dnsmasq hostapd ' && list+="$hostapd"$'\n'
 	[[ $select == *' 4 '* ]] && features+='kid3-common ' && list+="$kid"$'\n'
 	[[ $select == *' 5 '* ]] && features+='samba ' && list+="$samba"$'\n'
