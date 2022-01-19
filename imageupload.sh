@@ -17,19 +17,19 @@ $imgfiles
 user=rern
 repo=rAudio-1
 release=i$( echo ${imgfiles[0]/*-} | cut -d. -f1 )
+id=$( curl -s https://api.github.com/repos/$user/$repo/releases/tags/$release | jq .id )
+if [[ $id == null ]]; then
+	dialog "${optbox[@]}" --output-fd 1 --msgbox "
+Release \Z1$release\Z0 not exists.
+" 7 0
+	exit
+fi
+
 token=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --inputbox "
 Token: (https://github.com/settings/tokens)
 " 9 50 )
-id=$( curl -sH "Authorization: token $token" \
-		https://api.github.com/repos/$user/$repo/releases/tags/$release \
-		| jq .id )
 
 col=$( tput cols )
-
-dialog "${optbox[@]}" --output-fd 1 --msgbox "
-Make sure release \Z1$release\Z0 exists.
-" 7 50
-
 banner() {
 	echo
 	def='\e[0m'
