@@ -65,7 +65,7 @@ if [[ -z $mount ]]; then
 	exit
 fi
 
-dev=/dev/$( echo $sd | awk -F'[][]' '{print $4}' )
+dev=/dev/$( echo "$sd" | awk -F'[][]' '{print $4}' )
 #devname=$( dmesg | grep Direct-Access | tail -1 | tr -s ' ' | awk '{NF-=5;print substr($0,index($0,$6))}' )
 
 dialog "${optbox[@]}" --yesno "
