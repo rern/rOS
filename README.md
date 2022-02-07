@@ -5,7 +5,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 - For all **Raspberry Pi**s:
 	- 64bit: `4` `3` `2` `Zero 2`
 	- 32bit: `2 (BCM2836)`
-	- ~~Legacy: `1` `Zero`~~ (Arch Linux Arm [ended armv6h CPU support](https://archlinuxarm.org/forum/viewtopic.php?f=3&t=15721). Use pre-built [image file](https://github.com/rern/rAudio-1#image-files) instead)
+	- ~~Legacy: `1` `Zero`~~ (Arch Linux Arm [ended ARMv6 CPU support](https://archlinuxarm.org/forum/viewtopic.php?f=3&t=15721). Use pre-built [image file](https://github.com/rern/rAudio-1#image-files) instead)
 - Create **rAudio** from latest releases of [**Arch Linux Arm**](https://archlinuxarm.org/about/downloads)
 - Interactive interface
 - Options:
