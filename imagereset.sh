@@ -74,8 +74,8 @@ dialog "${optbox[@]}" --infobox "
                     \Z1r\Z0Audio reset finished.
 
                          \Z1Shutdown\Z0 ...
-					
-       Before disconnecting power, observe \Z2green LED\Z0:
+
+       Before disconnecting power, observe \Z2█ LED\Z0:
          - Stop all services - Blips
          - Shutdown - 10 steady flashes to completely off
 " 11 65
