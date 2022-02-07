@@ -98,28 +98,20 @@ ROOT: \Z1$ROOT\Z0
 #----------------------------------------------------------------------------
 	rpi=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 \Z1Raspberry Pi:\Z0
-" 8 0 0 \
+" 7 0 0 \
 1 '64bit  : 4, 3, 2, Zero 2' \
-2 '32bit  : 2 (BCM2836)' \
-3 'Legacy : 1, Zero' )
+2 '32bit  : 2 (BCM2836)' )
 
 	file=ArchLinuxARM-rpi-
-	case $rpi in
-		1 )
+	if [[ $rpi == 1 ]]; then
 			file+=aarch64-
 			rpiname=64bit
 			sboot=45
-			;; 
-		2 )
+	else
 			file+=armv7-
 			rpiname=32bit
 			sboot=60
-			;;
-		3 )
-			rpiname='Zero, 1'
-			sboot=80
-			;;
-	esac
+	fi
 	file+=latest.tar.gz
 	routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 	subip=${routerip%.*}.
@@ -133,11 +125,7 @@ ROOT: \Z1$ROOT\Z0
 		assignedip=$( dialog "${opt[@]}" --output-fd 1 --nocancel --inputbox "
  \Z1Pre-assigned\Z0 IP:
 " 0 0 $subip )
-		case $rpi in
-			1 ) sboot=30;; 
-			2 ) sboot=40;;
-			3 ) sboot=70;;
-		esac
+		[[ $rpi == 1 ]] && sboot=30 || sboot=40
 		confirmassignedip="
 Assigned IP  : $assignedip"
 	fi
@@ -280,13 +268,6 @@ shairport='\Z1Shairport\Z0 - AirPlay renderer'
   spotify='\Z1Spotifyd\Z0  - Spotify renderer'
  upmpdcli='\Z1upmpdcli\Z0  - UPnP renderer'
 
-if [[ $rpi == 3 ]]; then
-	browser='Chromium  - (not for RPi 1, Zero)'
-	onoffbrowser=off
-else
-	onoffbrowser=on
-fi
-
 selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
 #----------------------------------------------------------------------------
 	select=$( dialog "${opt[@]}" --output-fd 1 --nocancel --checklist "
@@ -294,7 +275,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 \Z4[space] = Select / Deselect\Z0
 " 9 0 0 \
 1 "$bluez" on \
-2 "$browser" $onoffbrowser \
+2 "$browser" on \
 3 "$hostapd" on \
 4 "$kid" on \
 5 "$samba" on \
@@ -471,12 +452,6 @@ disable_overscan=1
 dtparam=krnbt=on
 dtparam=audio=on
 EOF
-if [[ $rpi == 3 ]]; then
-	sed -i 's/ isolcpus=3//' $BOOT/cmdline.txt
-	sed -i '1 i\
-force_turbo=1\
-hdmi_drive=2' $BOOT/config.txt
-fi
 if [[ $rpi == 1 ]]; then
 	mv $BOOT/cmdline.txt{,0}
 	mv $BOOT/config.txt{,0}
@@ -586,13 +561,6 @@ EOF
 	done ) \
 		| dialog "${opt[@]}" --gauge '' 9 50
 	if ping -4 -c 1 -w 1 $assignedip &> /dev/null; then
-		if [[ $rpi == 3 ]]; then
-			dialog "${opt[@]}" --infobox "
-  Start \Z1SSH\Z0 ...
-  
-" 5 50
-		sleep 20
-		fi
 		dialog "${opt[@]}" --infobox "
   SSH \Z1Arch Linux Arm\Z0 ...
   $assignedip
