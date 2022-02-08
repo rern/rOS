@@ -31,7 +31,7 @@ case $cmd in
 	5 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/distcc-client.sh );;
 	6 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/docker.sh );;
 	7 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/repoupdate.sh );;
-	8 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox ";;
+	8 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  IP:
 " 0 0 192.168.1. )
 	sed -i "/$rpiip/ d" ~/.ssh/known_hosts
