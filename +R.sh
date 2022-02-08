@@ -19,8 +19,7 @@ cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 5 'Distcc client' \
 6 'Docker' \
 7 '+R repo update' \
-8 'AUR Git setup' \
-9 'SSH to RPi' )
+8 'SSH to RPi' )
 
 url=https://github.com/rern/rOS/raw/main
 
@@ -32,8 +31,7 @@ case $cmd in
 	5 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/distcc-client.sh );;
 	6 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/docker.sh );;
 	7 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/master/repoupdate.sh );;
-	8 ) bash <( https://github.com/rern/rern.github.io/raw/master/AUR/git_setup.sh );;
-	9 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+	8 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox ";;
  IP:
 " 0 0 192.168.1. )
 	sed -i "/$rpiip/ d" ~/.ssh/known_hosts
