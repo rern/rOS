@@ -342,18 +342,19 @@ code=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 \Z1Package mirror server:\Z0
 " 0 0 0 \
 "${clist[@]}" )
+mirror=${codelist[$code]}
 
 echo "\
 version=$version
 release=$release
 col=$COLUMNS
-mirror=${codelist[$code]}
+mirror=$mirror
 " > $BOOT/versions
 
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
-#----------------------------------------------------------------------------
-	curl -skLO http://os.archlinuxarm.org/os/$file.md5 \
+#----------------------------------------------------------------------------	   
+	curl -skLO http://$mirror.mirror.archlinuxarm.org/os/$file.md5 \
 		| dialog "${opt[@]}" --gauge "
   Verify already downloaded file ...
 " 9 50
