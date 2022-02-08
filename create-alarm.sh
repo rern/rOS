@@ -343,6 +343,7 @@ code=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 " 0 0 0 \
 "${clist[@]}" )
 mirror=${codelist[$code]}
+[[ $mirror == 0 ]] && url=http://os.archlinuxarm.org/os || url=http://$mirror.mirror.archlinuxarm.org/os
 
 echo "\
 version=$version
@@ -354,7 +355,7 @@ mirror=$mirror
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
 #----------------------------------------------------------------------------	   
-	curl -skLO http://$mirror.mirror.archlinuxarm.org/os/$file.md5 \
+	curl -skLO $url/$file.md5 \
 		| dialog "${opt[@]}" --gauge "
   Verify already downloaded file ...
 " 9 50
@@ -374,7 +375,7 @@ if [[ -e $file ]]; then
 	sleep 2
 else
 #----------------------------------------------------------------------------
-	( wget -O $file http://os.archlinuxarm.org/os/$file 2>&1 \
+	( wget -O $file $url/$file 2>&1 \
 		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
 			print "XXX\n "substr($0,63,3)
 			print "\\n Download"
@@ -384,7 +385,7 @@ else
  Connecting ...
 " 9 50
 	# checksum
-	curl -skLO http://os.archlinuxarm.org/os/$file.md5
+	curl -skLO $url/$file.md5
 	if ! md5sum -c $file.md5; then
 		rm $file
 #----------------------------------------------------------------------------
