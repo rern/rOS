@@ -42,10 +42,9 @@ clear -x # needed: fix stdout not scroll
 #----------------------------------------------------------------------------
 banner 'Upgrade system and default packages ...'
 
-packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools 
-evtest gifsicle hdparm hfsprogs i2c-tools imagemagick inetutils jq mpc mpd 
-nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g 
-parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 sudo udevil wget wiringpi'
+packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools evtest gifsicle hdparm hfsprogs 
+i2c-tools imagemagick inetutils jq mpc mpd nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g 
+parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 raspberrypi-stop-initramfs sudo udevil wget wiringpi'
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
