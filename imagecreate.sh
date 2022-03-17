@@ -113,7 +113,7 @@ clear -x
 banner "Image: $imagefile"
 
 banner 'Shrink ROOT partition ...'
-
+echo
 bar='\e[44m  \e[0m'
 part=${dev}2
 partsize=$( fdisk -l $part | awk '/^Disk/ {print $2" "$3}' )
@@ -161,7 +161,8 @@ shrink 1
 
 shrink 2
 
-banner 'Create compressed image file ...'
+banner 'Compressed to image file ...'
+echo
 echo $imagepath
 echo
 dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 > "$imagepath"
