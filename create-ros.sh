@@ -82,6 +82,27 @@ if [[ $? != 0 ]]; then
 	fi
 	
 fi
+# camilladsp
+if [[ $features == *'aiohttp'* ]]; then
+	getVersion() {
+		user=HEnquist
+		repo=$1
+		version=$( curl -I https://github.com/$user/$repo/releases/latest \
+					| awk -F'/' '/^location/ {print $NF}' \
+					| sed 's/[^v.0-9]//g' )
+	}
+	getVersion pycamilladsp
+	pip install git+https://github.com/HEnquist/pycamilladsp.git@$version
+	getVersion pycamilladsp-plot
+	pip install git+https://github.com/HEnquist/pycamilladsp-plot.git@version
+	curl -L https://github.com/rern/rAudio-addons/raw/main/CamillaDSP/camilladsp.tar.xz | bsdtar xf - -C /usr/bin
+	chmod +x /usr/bin/camilladsp
+	getVersion camillagui-backend
+	wget https://github.com/HEnquist/camillagui-backend/releases/download/$version/camillagui.zip
+	dircamillagui=/srv/http/camillagui
+	unzip camillagui -d $dircamillagui
+	rm camillagui.zip
+fi
 #----------------------------------------------------------------------------
 banner 'Get configurations and user interface ...'
 
@@ -126,6 +147,11 @@ if [[ -e /usr/bin/chromium ]]; then
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* \
 	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
+fi
+# camilladsp - allow symlinks
+if [[ -e /usr/bin/camilladsp ]]; then
+	sed -i 's/"build")$/"build", follow_symlinks=True)/' /srv/http/settings/camillagui/backend/routes.py
+	ln -s /srv/http/{,settings/camillagui/build/static/}assets
 fi
 # cron - for addons updates
 ( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/bash/cmd.sh addonsupdates &' ) | crontab -

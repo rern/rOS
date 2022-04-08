@@ -257,16 +257,16 @@ sshRpi() {
 }
 
 # features
-  audiocd='\Z1Audio CD\Z0  - Play audio CD'
-    bluez='\Z1Bluez\Z0     - Bluetooth audio'
-  browser='\Z1Chromium\Z0  - Browser on RPi screen'
-  hostapd='\Z1hostapd\Z0   - RPi access point'
-      kid='\Z1Kid3\Z0      - Metadata tag editor'
-    samba='\Z1Samba\Z0     - File sharing'
-shairport='\Z1Shairport\Z0 - AirPlay renderer'
- snapcast='\Z1Snapcast\Z0  - Synchronous multiroom player'
-  spotify='\Z1Spotifyd\Z0  - Spotify renderer'
- upmpdcli='\Z1upmpdcli\Z0  - UPnP renderer'
+    bluez='\Z1Bluez\Z0      - Bluetooth audio'
+  camilla='\Z1CamillaDSP\Z0 - Digital signal processor'
+  browser='\Z1Chromium\Z0   - Browser on RPi screen'
+  hostapd='\Z1hostapd\Z0    - RPi access point'
+      kid='\Z1Kid3\Z0       - Metadata tag editor'
+    samba='\Z1Samba\Z0      - File sharing'
+shairport='\Z1Shairport\Z0  - AirPlay renderer'
+ snapcast='\Z1Snapcast\Z0   - Synchronous multiroom player'
+  spotify='\Z1Spotifyd\Z0   - Spotify renderer'
+ upmpdcli='\Z1upmpdcli\Z0   - UPnP renderer'
 
 selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
 #----------------------------------------------------------------------------
@@ -275,27 +275,29 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 \Z4[space] = Select / Deselect\Z0
 " 9 0 0 \
 1 "$bluez" on \
-2 "$browser" on \
-3 "$hostapd" on \
-4 "$kid" on \
-5 "$samba" on \
-6 "$shairport" on \
-7 "$snapcast" on \
-8 "$spotify" on \
-9 "$upmpdcli" on )
+2 "$camilla" on \
+3 "$browser" on \
+4 "$hostapd" on \
+5 "$kid" on \
+6 "$samba" on \
+7 "$shairport" on \
+8 "$snapcast" on \
+9 "$spotify" on \
+10 "$upmpdcli" on )
 	
 	select=" $select "
 	features=
 	list=
 	[[ $select == *' 1 '* ]] && features+='bluez bluez-alsa bluez-utils python-dbus python-gobject python-requests ' && list+="$bluez"$'\n'
-	[[ $select == *' 2 '* ]] && features+='chromium matchbox-window-manager plymouth-lite-rbp upower xf86-input-evdev xf86-video-fbdev xf86-video-fbturbo-git xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$browser"$'\n'
-	[[ $select == *' 3 '* ]] && features+='dnsmasq hostapd ' && list+="$hostapd"$'\n'
-	[[ $select == *' 4 '* ]] && features+='kid3-common ' && list+="$kid"$'\n'
-	[[ $select == *' 5 '* ]] && features+='samba ' && list+="$samba"$'\n'
-	[[ $select == *' 6 '* ]] && features+='shairport-sync ' && list+="$shairport"$'\n'
-	[[ $select == *' 7 '* ]] && features+='snapcast ' && list+="$snapcast"$'\n'
-	[[ $select == *' 8 '* ]] && features+='spotifyd ' && list+="$spotify"$'\n'
-	[[ $select == *' 9 '* ]] && features+='upmpdcli ' && list+="$upmpdcli"$'\n'
+	[[ $select == *' 2 '* ]] && features+='python-aiohttp python-jsonschema python-matplotlib python-numpy python-pip python-websocket python-websocket-client unzip ' && list+="$camilla"$'\n'
+	[[ $select == *' 3 '* ]] && features+='chromium matchbox-window-manager plymouth-lite-rbp upower xf86-input-evdev xf86-video-fbdev xf86-video-fbturbo-git xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$browser"$'\n'
+	[[ $select == *' 4 '* ]] && features+='dnsmasq hostapd ' && list+="$hostapd"$'\n'
+	[[ $select == *' 5 '* ]] && features+='kid3-common ' && list+="$kid"$'\n'
+	[[ $select == *' 6 '* ]] && features+='samba ' && list+="$samba"$'\n'
+	[[ $select == *' 7 '* ]] && features+='shairport-sync ' && list+="$shairport"$'\n'
+	[[ $select == *' 8 '* ]] && features+='snapcast ' && list+="$snapcast"$'\n'
+	[[ $select == *' 9 '* ]] && features+='spotifyd ' && list+="$spotify"$'\n'
+	[[ $select == *' 10 '* ]] && features+='upmpdcli ' && list+="$upmpdcli"$'\n'
 }
 selectFeatures
 
