@@ -43,7 +43,7 @@ clear -x # needed: fix stdout not scroll
 banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools evtest gifsicle hdparm hfsprogs 
-i2c-tools imagemagick inetutils jq mpc mpd nfs-utils nginx-mainline-pushstream nss-mdns ntfs-3g 
+i2c-tools imagemagick inetutils jq mpc mpd nfs-utils nginx-mainline-pushstream nss-mdns 
 parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 raspberrypi-stop-initramfs sudo udevil wget wiringpi'
 
 if [[ -e /boot/kernel8.img ]]; then
@@ -124,7 +124,8 @@ if [[ -e /usr/bin/chromium ]]; then
 	systemctl enable bootsplash localbrowser
 	[[ $( uname -m ) == armv7l ]] && sed -i '/^chromium/ a\	--no-xshm \\' /srv/http/bash/xinitrc
 else
-	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
+	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* \
+	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
 fi
 # cron - for addons updates
 ( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/bash/cmd.sh addonsupdates &' ) | crontab -
