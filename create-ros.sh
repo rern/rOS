@@ -87,19 +87,19 @@ if [[ $features == *'aiohttp'* ]]; then
 	getVersion() {
 		user=HEnquist
 		repo=$1
-		version=$( curl -I https://github.com/$user/$repo/releases/latest \
+		v=$( curl -I https://github.com/$user/$repo/releases/latest \
 					| awk -F'/' '/^location/ {print $NF}' \
 					| sed 's/[^v.0-9]//g' )
 	}
 	pacman -S --noconfirm --needed python-aiohttp python-jsonschema python-matplotlib python-numpy python-pip python-websocket python-websocket-client python-wheel
 	getVersion pycamilladsp
-	pip install https://github.com/HEnquist/pycamilladsp/archive/refs/tags/$version.tar.gz
+	pip install https://github.com/HEnquist/pycamilladsp/archive/refs/tags/$v.tar.gz
 	getVersion pycamilladsp-plot
-	pip install https://github.com/HEnquist/pycamilladsp-plot/archive/refs/tags/$version.tar.gz
+	pip install https://github.com/HEnquist/pycamilladsp-plot/archive/refs/tags/$.tar.gz
 	curl -L https://github.com/rern/rAudio-addons/raw/main/CamillaDSP/camilladsp.tar.xz | bsdtar xf - -C /usr/bin
 	chmod +x /usr/bin/camilladsp
 	getVersion camillagui-backend
-	wget https://github.com/HEnquist/camillagui-backend/releases/download/$version/camillagui.zip
+	wget https://github.com/HEnquist/camillagui-backend/releases/download/$v/camillagui.zip
 	dircamillagui=/srv/http/camillagui
 	unzip camillagui -d $dircamillagui
 	rm camillagui.zip
