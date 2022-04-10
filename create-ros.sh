@@ -101,8 +101,7 @@ if [[ $camilladsp ]]; then
 	pip install https://github.com/HEnquist/pycamilladsp-plot/archive/refs/tags/$v.tar.gz
 	getVersion camillagui-backend
 	wget https://github.com/HEnquist/camillagui-backend/releases/download/$v/camillagui.zip
-	dircamillagui=/srv/http/camillagui
-	unzip camillagui -d $dircamillagui
+	unzip camillagui -d /srv/http/settings/camillagui
 	rm camillagui.zip
 	# binary
 	curl -L https://github.com/rern/rAudio-addons/raw/main/CamillaDSP/camilladsp.tar.xz | bsdtar xf - -C /usr/bin
