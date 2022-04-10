@@ -98,12 +98,13 @@ if [[ $features == *'aiohttp'* ]]; then
 	getVersion camillagui-backend
 	wget https://github.com/HEnquist/camillagui-backend/releases/download/$v/camillagui.zip
 	dircamillagui=/srv/http/settings/camillagui
+	mkdir -p $dircamillagui
 	unzip camillagui -d $dircamillagui
 	rm camillagui.zip
 	# binary
 	curl -L https://github.com/rern/rAudio-addons/raw/main/CamillaDSP/camilladsp.tar.xz | bsdtar xf - -C /usr/bin
 	chmod +x /usr/bin/camilladsp
-	echo -e "\e[38;5;7m\e[48;5;6m  \e[0m Remove unused packages after CamillaDSP installed."
+	echo -e "\n\e[38;5;7m\e[48;5;6m  \e[0m Remove unused packages after CamillaDSP installed.\n"
 	pacman -Rcns --noconfirm git python-pip python-wheel unzip
 fi
 #----------------------------------------------------------------------------
