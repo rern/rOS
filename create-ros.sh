@@ -45,6 +45,10 @@ banner 'Upgrade system and default packages ...'
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils jq mpc mpd nfs-utils nginx-mainline-pushstream nss-mdns 
 parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 raspberrypi-stop-initramfs sudo udevil wget wiringpi'
+if [[ $features == *'aiohttp'* ]]; then
+	camilladsp=1
+	packages+=' python-aiohttp python-jsonschema python-matplotlib python-numpy python-pip python-websockets python-websocket-client python-wheel'
+fi
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
@@ -83,7 +87,7 @@ if [[ $? != 0 ]]; then
 	
 fi
 # camilladsp
-if [[ $features == *'aiohttp'* ]]; then
+if [[ $camilladsp ]]; then
 	getVersion() {
 		user=HEnquist
 		repo=$1
@@ -91,18 +95,18 @@ if [[ $features == *'aiohttp'* ]]; then
 					| awk -F'/' '/^location/ {print $NF}' \
 					| sed 's/[^v.0-9]//g' )
 	}
-	pacman -S --noconfirm --needed python-aiohttp python-jsonschema python-matplotlib python-numpy python-pip python-websocket python-websocket-client python-wheel
 	getVersion pycamilladsp
 	pip install https://github.com/HEnquist/pycamilladsp/archive/refs/tags/$v.tar.gz
 	getVersion pycamilladsp-plot
 	pip install https://github.com/HEnquist/pycamilladsp-plot/archive/refs/tags/$.tar.gz
-	curl -L https://github.com/rern/rAudio-addons/raw/main/CamillaDSP/camilladsp.tar.xz | bsdtar xf - -C /usr/bin
-	chmod +x /usr/bin/camilladsp
 	getVersion camillagui-backend
 	wget https://github.com/HEnquist/camillagui-backend/releases/download/$v/camillagui.zip
 	dircamillagui=/srv/http/camillagui
 	unzip camillagui -d $dircamillagui
 	rm camillagui.zip
+	# binary
+	curl -L https://github.com/rern/rAudio-addons/raw/main/CamillaDSP/camilladsp.tar.xz | bsdtar xf - -C /usr/bin
+	chmod +x /usr/bin/camilladsp
 fi
 #----------------------------------------------------------------------------
 banner 'Get configurations and user interface ...'
