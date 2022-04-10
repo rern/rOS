@@ -215,7 +215,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 # data - settings directories
 /srv/http/bash/datareset.sh $version $release
 # remove files and package cache
-rm /boot/{features,versions} /etc/motd /root/create-ros.sh /var/cache/pacman/pkg/*
+rm /boot/{features,versions} /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
