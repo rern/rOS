@@ -63,6 +63,7 @@ fi
 pacman -Syu --noconfirm
 if [[ $? != 0 ]]; then
 	echo -e "\e[38;5;0m\e[48;5;3m ! \e[0m Retry upgrade system ..."
+	sleep 3
 	pacman -Syu --noconfirm
 	if [[ $? != 0 ]]; then
 		echo -e "\e[38;5;7m\e[48;5;1m ! \e[0m System upgrade incomplete."
