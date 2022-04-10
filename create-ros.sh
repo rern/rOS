@@ -45,10 +45,6 @@ banner 'Upgrade system and default packages ...'
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils jq mpc mpd nfs-utils nginx-mainline-pushstream nss-mdns 
 parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 raspberrypi-stop-initramfs sudo udevil wget wiringpi'
-if [[ $features == *'aiohttp'* ]]; then
-	camilladsp=1
-	packages+=' python-aiohttp python-jsonschema python-matplotlib python-numpy python-pip python-websockets python-websocket-client python-wheel'
-fi
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
