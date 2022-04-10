@@ -188,7 +188,8 @@ sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 ' -e 's/.*\(PrintLastLog \).*/\1no/
 ' /etc/ssh/sshd_config
 # timesyncd - fix if no eth connection
-file=$( ls /etc/systemd/network/eth* )
+[[ -e /boot/kernel8.img ]] && eth=eth || eth=eth0
+file=/etc/systemd/network/$eth.network
 grep -q RequiredForOnline=no $file || echo "
 [Link]
 RequiredForOnline=no" >> $file
