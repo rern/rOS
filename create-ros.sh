@@ -83,7 +83,7 @@ if [[ $? != 0 ]]; then
 	
 fi
 # camilladsp
-if [[ $camilladsp ]]; then
+if [[ $features == *'aiohttp'* ]]; then
 	getVersion() {
 		user=HEnquist
 		repo=$1
@@ -156,7 +156,7 @@ else
 	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
 fi
 # camilladsp - allow symlinks
-if [[ $camilladsp ]]; then
+if [[ -e /usr/bin/camilladsp ]]; then
 	sed -i 's/"build")$/"build", follow_symlinks=True)/' $dircamillagui/backend/routes.py
 	ln -s /srv/http/assets $dircamillagui/build/static/assets
 fi
