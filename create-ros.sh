@@ -101,7 +101,8 @@ if [[ $camilladsp ]]; then
 	pip install https://github.com/HEnquist/pycamilladsp-plot/archive/refs/tags/$v.tar.gz
 	getVersion camillagui-backend
 	wget https://github.com/HEnquist/camillagui-backend/releases/download/$v/camillagui.zip
-	unzip camillagui -d /srv/http/settings/camillagui
+	dircamillagui=/srv/http/settings/camillagui
+	unzip camillagui -d $dircamillagui
 	rm camillagui.zip
 	# binary
 	curl -L https://github.com/rern/rAudio-addons/raw/main/CamillaDSP/camilladsp.tar.xz | bsdtar xf - -C /usr/bin
@@ -153,9 +154,9 @@ else
 	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
 fi
 # camilladsp - allow symlinks
-if [[ -e /usr/bin/camilladsp ]]; then
-	sed -i 's/"build")$/"build", follow_symlinks=True)/' /srv/http/settings/camillagui/backend/routes.py
-	ln -s /srv/http/{,settings/camillagui/build/static/}assets
+if [[ $camilladsp ]]; then
+	sed -i 's/"build")$/"build", follow_symlinks=True)/' $dircamillagui/backend/routes.py
+	ln -s /srv/http/assets $dircamillagui/build/static/assets
 fi
 # cron - for addons updates
 ( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/bash/cmd.sh addonsupdates &' ) | crontab -
