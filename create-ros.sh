@@ -106,12 +106,11 @@ if [[ $features == *'aiohttp'* ]]; then
 	curl -L https://github.com/rern/rAudio-addons/raw/main/CamillaDSP/camilladsp.tar.xz | bsdtar xf - -C /usr/bin
 	chmod +x /usr/bin/camilladsp
 	echo -e "\n\e[38;5;7m\e[48;5;6m  \e[0m Remove unused packages after CamillaDSP installed.\n"
-	#pacman -Rcns --noconfirm git python-pip python-wheel unzip
 	pacman -R --noconfirm git perl-error perl-mailtools perl-timedate python-appdirs \
 		python-cachecontrol python-cffi python-colorama python-contextlib2 python-cryptography python-distlib python-distro \
 		python-html5lib python-more-itertools python-msgpack python-ordered-set \
-		python-packaging python-pep517 python-pip python-ply python-progress python-pycparser python-pyopenssl python-pyparsing \
-		python-resolvelib python-retrying python-setuptools python-six python-toml python-tomli python-webencodings python-wheel unzip
+		python-pep517 python-pip python-ply python-progress python-pycparser python-pyopenssl \
+		python-resolvelib python-retrying python-toml python-tomli python-webencodings python-wheel unzip
 fi
 #----------------------------------------------------------------------------
 banner 'Get configurations and user interface ...'
