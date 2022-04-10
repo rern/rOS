@@ -45,7 +45,6 @@ banner 'Upgrade system and default packages ...'
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils jq mpc mpd nfs-utils nginx-mainline-pushstream nss-mdns 
 parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 raspberrypi-stop-initramfs sudo udevil wget wiringpi'
-[[ $features == *'aiohttp'* ]] && packages+=' git'
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
@@ -93,9 +92,9 @@ if [[ $features == *'aiohttp'* ]]; then
 					| sed 's/[^v.0-9]//g' )
 	}
 	getVersion pycamilladsp
-	pip install git+https://github.com/HEnquist/pycamilladsp.git@$version
+	pip install https://github.com/HEnquist/pycamilladsp/archive/refs/tags/$version.tar.gz
 	getVersion pycamilladsp-plot
-	pip install git+https://github.com/HEnquist/pycamilladsp-plot.git@version
+	pip install https://github.com/HEnquist/pycamilladsp-plot/archive/refs/tags/$version.tar.gz
 	curl -L https://github.com/rern/rAudio-addons/raw/main/CamillaDSP/camilladsp.tar.xz | bsdtar xf - -C /usr/bin
 	chmod +x /usr/bin/camilladsp
 	getVersion camillagui-backend
