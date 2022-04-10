@@ -98,7 +98,7 @@ if [[ $camilladsp ]]; then
 	getVersion pycamilladsp
 	pip install https://github.com/HEnquist/pycamilladsp/archive/refs/tags/$v.tar.gz
 	getVersion pycamilladsp-plot
-	pip install https://github.com/HEnquist/pycamilladsp-plot/archive/refs/tags/$.tar.gz
+	pip install https://github.com/HEnquist/pycamilladsp-plot/archive/refs/tags/$v.tar.gz
 	getVersion camillagui-backend
 	wget https://github.com/HEnquist/camillagui-backend/releases/download/$v/camillagui.zip
 	dircamillagui=/srv/http/camillagui
