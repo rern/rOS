@@ -44,7 +44,7 @@ banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils jq mpc mpd nfs-utils nginx-mainline-pushstream nss-mdns 
-parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 python-wheel raspberrypi-stop-initramfs sudo udevil wget wiringpi'
+parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 raspberrypi-stop-initramfs sudo udevil wget wiringpi'
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
@@ -91,6 +91,7 @@ if [[ $features == *'aiohttp'* ]]; then
 					| awk -F'/' '/^location/ {print $NF}' \
 					| sed 's/[^v.0-9]//g' )
 	}
+	pacman -S --noconfirm --needed python-aiohttp python-jsonschema python-matplotlib python-numpy python-pip python-websocket python-websocket-client python-wheel
 	getVersion pycamilladsp
 	pip install https://github.com/HEnquist/pycamilladsp/archive/refs/tags/$version.tar.gz
 	getVersion pycamilladsp-plot
