@@ -8,9 +8,9 @@ banner() {
 	echo
 	def='\e[0m'
 	bg='\e[44m'
-    printf "$bg%*s$def\n" $col
-    printf "$bg%-${col}s$def\n" "  $1"
-    printf "$bg%*s$def\n" $col
+	printf "$bg%*s$def\n" $col
+	printf "$bg%-${col}s$def\n" "  $1"
+	printf "$bg%*s$def\n" $col
 }
 
 select=$( dialog "${optbox[@]}" \
@@ -52,7 +52,8 @@ if [[ $select == *' 4 '* ]]; then
 	journalctl --vacuum-time=1s
 fi
 if [[ $select == *' 5 '* ]]; then
-	banner 'Clear Wi-Fi connection ...'
+	banner 'Clear Bluetooth and Wi-Fi connection ...'
+	rm -rf /var/lib/bluetooth/*
 	readarray -t profiles <<< $( ls -p /etc/netctl | grep -v / )
 	if [[ $profiles ]]; then
 		for profile in "${profiles[@]}"; do
