@@ -62,10 +62,6 @@ if [[ $select == *' 5 '* ]]; then
 		rm /etc/netctl/* 2> /dev/null
 	fi
 fi
-banner 'Disable optional features and system ...'
-for service in bluetooth hostapd mpd_oled powerbutton rotaryencoder shairport-sync smb snapclient snapserver spotifyd upmpdcli; do
-	systemctl disable $service
-done
 
 [[ ! -e $dirdata/mpd/counts ]] && echo '{"webradio":'$( ls -1q $dirdata/webradios | wc -l )'}' > $dirdata/mpd/counts
 [[ ! -e /boot/kernel.img ]] && curl -skL \
