@@ -1,2 +1,2 @@
 ACTION=="add", SUBSYSTEM=="net", SUBSYSTEMS=="usb", RUN+="/srv/http/bash/networks.sh usbwifi"
-ACTION=="remove", SUBSYSTEM=="net", SUBSYSTEMS=="usb", RUN+="/srv/http/bash/networks.sh usbwifi"
+ACTION=="remove", SUBSYSTEM=="net", SUBSYSTEMS=="usb", RUN+="/srv/http/bash/networks.sh usbwifi$'\n'remove"
