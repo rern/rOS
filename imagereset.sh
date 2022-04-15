@@ -64,9 +64,11 @@ if [[ $select == *' 5 '* ]]; then
 fi
 
 [[ ! -e $dirdata/mpd/counts ]] && echo '{"webradio":'$( ls -1q $dirdata/webradios | wc -l )'}' > $dirdata/mpd/counts
-! grep -q alaa.ad24.cz /etc/pacman.d/mirrorlist && curl -skL \
-									https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
-									-o /etc/pacman.d/mirrorlist # skip on rpi 0, 1
+
+if ! grep -q alaa.ad24.cz /etc/pacman.d/mirrorlist; then # skip on rpi 0, 1
+	curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
+fi
+
 rm -rf /root/.config/chromium
 
 banner 'Check disk ...'
