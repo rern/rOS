@@ -84,7 +84,7 @@ if [[ $? != 0 ]]; then
 	
 fi
 # camilladsp
-if [[ $features == *'aiohttp'* ]]; then
+if [[ -e /usr/bin/camilladsp ]]; then
 	getVersion() {
 		user=HEnquist
 		repo=$1
