@@ -83,30 +83,6 @@ if [[ $? != 0 ]]; then
 	fi
 	
 fi
-# camilladsp
-if [[ -e /usr/bin/camilladsp ]]; then
-	getVersion() {
-		user=HEnquist
-		repo=$1
-		v=$( curl -I https://github.com/$user/$repo/releases/latest \
-					| awk -F'/' '/^location/ {print $NF}' \
-					| sed 's/[^v.0-9]//g' )
-	}
-	getVersion pycamilladsp
-	pip install https://github.com/HEnquist/pycamilladsp/archive/refs/tags/$v.tar.gz
-	getVersion pycamilladsp-plot
-	pip install https://github.com/HEnquist/pycamilladsp-plot/archive/refs/tags/$v.tar.gz
-	getVersion camillagui-backend
-	wget https://github.com/HEnquist/camillagui-backend/releases/download/$v/camillagui.zip
-	dircamillagui=/srv/http/settings/camillagui
-	mkdir -p $dircamillagui
-	unzip camillagui -d $dircamillagui
-	rm camillagui.zip
-	echo -e "\n\e[38;5;7m\e[48;5;6m  \e[0m Remove unused packages after CamillaDSP installed.\n"
-	pacman -R --noconfirm python-cachecontrol python-cffi python-colorama python-contextlib2 python-cryptography python-distlib python-distro \
-		python-html5lib python-msgpack python-pep517 python-pip python-ply python-progress python-pycparser python-pyopenssl \
-		python-resolvelib python-retrying python-toml python-tomli python-webencodings python-wheel unzip
-fi
 #----------------------------------------------------------------------------
 banner 'Get configurations and user interface ...'
 
@@ -152,11 +128,8 @@ else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* \
 	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
 fi
-# camilladsp - allow symlinks
-if [[ -e /usr/bin/camilladsp ]]; then
-	sed -i 's/"build")$/"build", follow_symlinks=True)/' $dircamillagui/backend/routes.py
-	ln -s /srv/http/assets $dircamillagui/build/static/assets
-fi
+# camilladsp
+[[ -e /usr/bin/camilladsp ]] && ln -s /srv/http/assets /srv/http/settings/camillagui/build/static/assets
 # cron - for addons updates
 ( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/bash/cmd.sh addonsupdates &' ) | crontab -
 # hostapd
