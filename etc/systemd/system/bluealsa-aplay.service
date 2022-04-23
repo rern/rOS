@@ -1,5 +1,5 @@
 [Unit]
-Description=Bluetooth audio receiver
+Description=Bluetooth audio as receiver
 After=bluetooth.service
 Requires=bluetooth.service
 

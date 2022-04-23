@@ -1,5 +1,5 @@
 [Unit]
-Description=Bluetooth Dbus
+Description=Dbus for Bluetooth audio as receiver
 After=bluetooth.service
 Requires=bluetooth.service
 
