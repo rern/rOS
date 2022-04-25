@@ -88,13 +88,13 @@ ROOT: \Z1$ROOT\Z0
 		
 	fi
 	
-	addons=( $( curl -skL https://github.com/rern/rAudio-addons/raw/main/addons-list.json \
-				| grep -A2 '"r.":' \
-				| sed -e 2d -e 's/[^0-9]*//g' ) )
+	latest=$( curl -I https://github.com/rern/rAudio-1/releases/latest \
+				| awk -F'/' '/^location/ {print $NF}' \
+				| sed 's/[^v.0-9]//g' )
 #----------------------------------------------------------------------------
 	release=$( dialog "${opt[@]}" --output-fd 1 --nocancel --inputbox "
  \Z1r\Z0Audio $version release:
-" 0 0 ${addons[1]} )
+" 0 0 $latest )
 #----------------------------------------------------------------------------
 	rpi=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 \Z1Raspberry Pi:\Z0
