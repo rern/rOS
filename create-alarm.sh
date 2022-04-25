@@ -257,7 +257,7 @@ sshRpi() {
 }
 
 # features
-    bluez='\Z1Bluez\Z0      - Bluetooth audio'
+ bluealsa='\Z1BlueALSA\Z0   - Bluetooth audio'
   camilla='\Z1CamillaDSP\Z0 - Digital signal processor'
   browser='\Z1Chromium\Z0   - Browser on RPi screen'
   hostapd='\Z1hostapd\Z0    - RPi access point'
@@ -274,25 +274,23 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 \Z1Select features to install:
 \Z4[space] = Select / Deselect\Z0
 " 9 0 0 \
-1 "$bluez" on \
-2 "$camilla" on \
-3 "$browser" on \
-4 "$hostapd" on \
-5 "$kid" on \
-6 "$samba" on \
+1 "$bluealsa"  on \
+2 "$camilla"   on \
+3 "$browser"   on \
+4 "$hostapd"   on \
+5 "$kid"       on \
+6 "$samba"     on \
 7 "$shairport" on \
-8 "$snapcast" on \
-9 "$spotify" on \
+8 "$snapcast"  on \
+9 "$spotify"   on \
 10 "$upmpdcli" on )
 	
 	select=" $select "
-	features=
-	list=
-	[[ $select == *' 1 '* ]] && features+='bluez bluez-alsa bluez-utils python-dbus python-gobject python-requests ' && list+="$bluez"$'\n'
+	[[ $select == *' 1 '* ]] && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests ' && list+="$bluealsa"$'\n'
 	[[ $select == *' 2 '* ]] && features+='camilladsp camillagui python-aiohttp python-jsonschema python-matplotlib python-numpy 
-											python-pycamilladsp python-pycamilladsp-plot python-websocket-client python-websockets ' && list+="$camilla"$'\n'
+										   python-pycamilladsp python-pycamilladsp-plot python-websocket-client python-websockets ' && list+="$camilla"$'\n'
 	[[ $select == *' 3 '* ]] && features+='chromium matchbox-window-manager plymouth-lite-rbp upower xf86-input-evdev xf86-video-fbdev 
-											xf86-video-fbturbo-git xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$browser"$'\n'
+										   xf86-video-fbturbo-git xf86-video-vesa xinput_calibrator xorg-server xorg-xinit ' && list+="$browser"$'\n'
 	[[ $select == *' 4 '* ]] && features+='dnsmasq hostapd ' && list+="$hostapd"$'\n'
 	[[ $select == *' 5 '* ]] && features+='kid3-common ' && list+="$kid"$'\n'
 	[[ $select == *' 6 '* ]] && features+='samba ' && list+="$samba"$'\n'

@@ -4,4 +4,4 @@ After=bluetooth.service
 Requires=bluetooth.service
 
 [Service]
-ExecStart=/srv/http/bash/bluezdbus.py
+ExecStart=/srv/http/bash/bluealsa-dbus.py
