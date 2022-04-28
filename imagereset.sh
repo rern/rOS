@@ -35,6 +35,24 @@ mount | grep /mnt/MPD/USB && udevil umount -l "/mnt/MPD/USB/"*
 if [[ $select == *' 1 '* ]]; then
 	banner 'Reset MPD database ...'
 	rm -f $dirdata/mpd/*
+	cat << EOF > $dirdata/mpd/counts
+{
+  "album": 0,
+  "albumartist": 0,
+  "artist": 0,
+  "composer": 0,
+  "conductor": 0,
+  "date": 0,
+  "genre": 0,
+  "playlists": 0,
+  "latest": 0,
+  "nas": 0,
+  "sd": 0,
+  "usb": 0,
+  "song": 0,
+  "webradio": 4
+}
+EOF
 fi
 if [[ $select == *' 2 '* ]]; then
 	banner 'Reset user data directory ...'
@@ -62,25 +80,6 @@ if [[ $select == *' 5 '* ]]; then
 		rm /etc/netctl/* 2> /dev/null
 	fi
 fi
-
-cat << EOF > $dirdata/mpd/counts
-{
-  "album": 0,
-  "albumartist": 0,
-  "artist": 0,
-  "composer": 0,
-  "conductor": 0,
-  "date": 0,
-  "genre": 0,
-  "playlists": 0,
-  "latest": 0,
-  "nas": 0,
-  "sd": 0,
-  "usb": 0,
-  "song": 0,
-  "webradio": 4
-}
-EOF
 
 if ! grep -q alaa.ad24.cz /etc/pacman.d/mirrorlist; then # skip on rpi 0, 1
 	curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
