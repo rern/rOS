@@ -129,7 +129,11 @@ else
 	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
 fi
 # camilladsp
-[[ -e /usr/bin/camilladsp ]] && ln -s /srv/http/assets /srv/http/settings/camillagui/build/static/assets
+if [[ -e /usr/bin/camilladsp ]]; then
+	dir=/srv/http/settings/camillagui/build/static/assets
+	ln -s /srv/http/assets $dir
+	chown -h http:http $dir
+fi
 # cron - for addons updates
 ( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/bash/cmd.sh addonsupdates &' ) | crontab -
 # hostapd
