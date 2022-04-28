@@ -63,8 +63,6 @@ if [[ $select == *' 5 '* ]]; then
 	fi
 fi
 
-if [[ ! -e $dirdata/mpd/counts ]]; then
-	webradio=$( ls -1q $dirdata/webradios | wc -l )
 cat << EOF > $dirdata/mpd/counts
 {
   "album": 0,
@@ -80,10 +78,9 @@ cat << EOF > $dirdata/mpd/counts
   "sd": 0,
   "usb": 0,
   "song": 0,
-  "webradio": $webradio
+  "webradio": 4
 }
 EOF
-fi
 
 if ! grep -q alaa.ad24.cz /etc/pacman.d/mirrorlist; then # skip on rpi 0, 1
 	curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
