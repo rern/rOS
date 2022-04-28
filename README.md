@@ -183,6 +183,13 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/reset.sh )
 bash <( wget -qO - https://github.com/rern/rOS/raw/main/imagecreate.sh )
 ```
 
+**LED flashes - errors**
+
+- 3 flashes: `start.elf` not found
+- 4 flashes: `start.elf` not launched
+- 7 flashes: `kernel.img` not found
+- 8 flashes: SD card not recognised
+
 **Fix - Error: Known host keys on SSH**
 ```sh
 sed -i "/IP_ADDRESS/ d" ~/.ssh/known_hosts
