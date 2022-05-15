@@ -287,7 +287,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 	
 	select=" $select "
 	[[ $select == *' 1 '* ]] && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests ' && list+="$bluealsa"$'\n'
-	[[ $select == *' 2 '* ]] && features+='camilladsp camillagui ' && list+="$camilla"$'\n'
+	[[ $select == *' 2 '* ]] && features+='camilladsp camillagui-backend ' && list+="$camilla"$'\n'
 	[[ $select == *' 3 '* ]] && features+='chromium matchbox-window-manager plymouth-lite-rbp upower xf86-video-fbturbo ' && list+="$browser"$'\n'
 	[[ $select == *' 4 '* ]] && features+='dnsmasq hostapd ' && list+="$hostapd"$'\n'
 	[[ $select == *' 5 '* ]] && features+='kid3-common ' && list+="$kid"$'\n'
