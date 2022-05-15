@@ -97,12 +97,13 @@ chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
 cp -r /tmp/config/* /
 chown http:http /etc/fstab
-chown -R http:http /etc/netctl /etc/systemd/network /srv/http
-chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
+chown -R http:http /etc/netctl /etc/systemd/network
 
 mv -f /boot/cmdline.txt{0,}
 mv -f /boot/config.txt{0,}
 rm -f /boot/{cmdline,config}.txt.pacsave
+
+curl -skL https://github.com/rern/_assets/raw/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img
 #---------------------------------------------------------------------------------
 banner 'Configure ...'
 
