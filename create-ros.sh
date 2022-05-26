@@ -98,6 +98,7 @@ chmod -R u+rwX,go+rX /tmp/config
 cp -r /tmp/config/* /
 chown http:http /etc/fstab
 chown -R http:http /etc/netctl /etc/systemd/network
+chmod -R 755 /srv/http/bash
 
 mv -f /boot/cmdline.txt{0,}
 mv -f /boot/config.txt{0,}
