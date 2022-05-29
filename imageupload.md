@@ -34,5 +34,5 @@ cd REPO
 
 - Upload
 ```sh
-gh release create VERSION ../PATH/*.tar.xz
+gh release create VERSION ../PATH/*.img.xz
 ```
