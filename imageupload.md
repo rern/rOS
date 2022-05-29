@@ -24,9 +24,6 @@ gh auth login
 #   > /home/USER/.ssh/id_rsa.pub
 # ? How would you like to authenticate GitHub CLI?
 #   > Login with a web browser
-#     - If failed, follow on-screen instructions to login
-#   > (OR) Paste an authentication token
-#     - Follow on-screen instructions to get the token
 ```
 
 - Clone repo
