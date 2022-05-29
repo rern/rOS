@@ -21,7 +21,7 @@ gh auth login
 # ? What is your preferred protocol for Git operations?
 #   > SSH
 # ? Upload your SSH public key to your GitHub account?
-#   > /home/USER/.ssh/aur.pub
+#   > /home/USER/.ssh/id_rsa.pub
 # ? How would you like to authenticate GitHub CLI?
 #   > Login with a web browser
 #     - If failed, follow on-screen instructions to login
