@@ -1,5 +1,7 @@
 ##!/bin/bash
 
+[[ ! -e rAudio-1 ]] && echo rAudio-1 not found. && exit
+
 imgdir=$( dialog "${optbox[@]}" --title 'Image file:' --stdout --dselect $PWD/ 20 40 )
 imgfiles=$( ls -1 "$imgdir"/rAudio*.img.xz 2> /dev/null )
 [[ -z $imgfiles ]] && echo "No image files found in $imgdir" && exit
@@ -14,21 +16,6 @@ $imgfiles
 " 0 0
 [[ $? != 0 ]] && exit
 
-user=rern
-repo=rAudio-1
-release=i$( echo ${imgfiles[0]/*-} | cut -d. -f1 )
-id=$( curl -s https://api.github.com/repos/$user/$repo/releases/tags/$release | jq .id )
-if [[ $id == null ]]; then
-	dialog "${optbox[@]}" --output-fd 1 --msgbox "
-Release \Z1$release\Z0 not exists.
-" 7 0
-	exit
-fi
-
-token=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --inputbox "
-Token: (https://github.com/settings/tokens)
-" 9 50 )
-
 col=$( tput cols )
 banner() {
 	echo
@@ -40,24 +27,9 @@ banner() {
 	echo
 }
 
-imageUpload() {
-	file="$1"
-	filename=$( basename "$file" )
-	
-	banner "$filename"
-	
-	curl \
-		-H "Authorization: token $token" \
-		-H "Content-Type: application/x-xz" \
-		--data-binary @"$file" \
-		https://uploads.github.com/repos/$user/$repo/releases/$id/assets?name=$filename \
-		| jq
-}
+release=i$( echo ${imgfiles[0]/*-} | cut -d. -f1 )
 
-echo
 banner "rAudio Image Files: $release"
 
-readarray -t imgfiles <<< "$imgfiles"
-for file in "${imgfiles[@]}"; do
-	imageUpload "$file"
-done
+cd rAudio-1
+gh release create $release $imgdir/*.img.xz
