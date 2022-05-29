@@ -16,9 +16,17 @@ ssh-keygen
 # login
 gh auth login
 
-# > Protocol: SSH
-# > Public key: upload
-# > Authenticate: Token
+# ? What account do you want to log into? 
+#   > GitHub.com
+# ? What is your preferred protocol for Git operations?
+#   > SSH
+# ? Upload your SSH public key to your GitHub account?
+#   > /home/USER/.ssh/aur.pub
+# ? How would you like to authenticate GitHub CLI?
+#   > Login with a web browser
+#     - If failed, follow on-screen instructions to login
+#   > (OR) Paste an authentication token
+#     - Follow on-screen instructions to get the token
 ```
 
 - Clone repo
