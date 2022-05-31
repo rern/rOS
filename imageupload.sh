@@ -38,4 +38,4 @@ notes='
 banner "rAudio Image Files: i$release"
 
 cd rAudio-1
-gh release create i$release --notes "$notes" $imgdir/*.img.xz
+gh release create i$release --title i$release --notes "$notes" $imgdir/*.img.xz
