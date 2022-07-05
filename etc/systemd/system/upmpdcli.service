@@ -1,6 +1,6 @@
 [Unit]
 Description=UPnP Renderer front-end to MPD
-After=mpd.service
+After=startup.service
 
 [Service]
 Type=simple
