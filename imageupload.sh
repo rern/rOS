@@ -2,18 +2,20 @@
 
 [[ ! -e rAudio-1 ]] && echo rAudio-1 not found. && exit
 
-imgdir=$( dialog "${optbox[@]}" --title 'Image file:' --stdout --dselect $PWD/ 20 40 )
-imgfiles=$( ls -1 "$imgdir"/rAudio*.img.xz 2> /dev/null )
-[[ -z $imgfiles ]] && echo "No image files found in $imgdir" && exit
-
 optbox=( --colors --no-shadow --no-collapse )
 
-dialog "${optbox[@]}" --yesno "
-\Z1Image files list:\Z0
+imgdir=$( dialog "${optbox[@]}" --title 'Image file:' --stdout --dselect $PWD/ 20 40 )
+imgfiles=( $( cd "$imgdir" && ls -1 rAudio*.img.xz 2> /dev/null ) )
+for file in "${imgfiles[@]}"; do
+	filelist+=" $file on"
+done
 
-$imgfiles
+select=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist "
+\Z1Select files to upload:\Z0
+$imgdir
+" $(( ${#imgfiles[@]} + 2 )) 0 0 \
+$filelist )
 
-" 0 0
 [[ $? != 0 ]] && exit
 
 col=$( tput cols )
@@ -37,5 +39,5 @@ notes='
 '
 banner "rAudio Image Files: i$release"
 
-cd rAudio-1
-gh release create i$release --title i$release --notes "$notes" $imgdir/*.img.xz
+( cd "$imgdir"
+gh release create i$release --title i$release --notes "$notes" $select )
