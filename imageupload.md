@@ -14,17 +14,16 @@ cd
 ssh-keygen
 
 # login
-gh auth login
+gh auth login -p ssh
 
 # ? What account do you want to log into? 
 #   > GitHub.com
-# ? What is your preferred protocol for Git operations?
-#   > SSH
 # ? Upload your SSH public key to your GitHub account?
-#   > /home/USER/.ssh/id_rsa.pub
+#   > Skip
 # ? How would you like to authenticate GitHub CLI?
-#   > Login with a web browser
+#   > Paste an authentication token
 ```
+- Get token: [Personal access token](https://github.com/settings/tokens)
 
 - Clone repo
 ```sh
