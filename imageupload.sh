@@ -1,10 +1,10 @@
 ##!/bin/bash
 
-[[ $( basename $PWD ) != rAudio-1 ]] && echo Current directory not rAudio-1 repo. && exit
+[[ $( basename $PWD ) != rAudio-1 ]] && echo -e "\nCurrent directory not rAudio-1 repo.\n" && exit
 
 [[ ! -e /usr/bin/gh ]] && pacman -Sy --noconfirm github-cli
 
-! gh auth status &> /dev/null && echo GitHub login required: https://github.com/rern/rOS/blob/main/imageupload.md && exit
+! gh auth status &> /dev/null && echo -e "\nGitHub authentication required: https://github.com/rern/rOS/blob/main/imageupload.md\n" && exit
 
 optbox=( --colors --no-shadow --no-collapse )
 
