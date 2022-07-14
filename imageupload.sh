@@ -40,7 +40,7 @@ notes='
 | `2 BCM2836`                  | [rAudio-1-RPi2-'$releas'e.img.xz](https://github.com/rern/rAudio-1/releases/download/i'$release'/rAudio-1-RPi2-'$release'.img.xz)     | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-1-RPi2-'$release'.img.xz)   |
 | *`1` *`Zero`                 | [rAudio-1-RPi0-1-'$release'.img.xz](https://github.com/rern/rAudio-1/releases/download/i'$release'/rAudio-1-RPi0-1-'$release'.img.xz) | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-1-RPi0-1-'$release'.img.xz) |
 '
-echo -e "\nrAudio Image Files: i$release\n"
+echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
 for file in $selectfiles; do
 	uploadfiles+="$imgdir/$file "
