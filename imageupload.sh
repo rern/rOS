@@ -26,7 +26,7 @@ for file in "${imgfiles[@]}"; do
 	filelist+=" $file on"
 done
 
-select=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist "
+selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist "
  \Z1Select files to upload:\Z0
  $imgdir
 " $(( ${#imgfiles[@]} + 6 )) 0 0 \
@@ -43,7 +43,7 @@ banner() {
 	echo
 }
 
-release=$( echo ${imgfiles[0]/*-} | cut -d. -f1 )
+release=$( echo ${selectfiles[0]/*-} | cut -d. -f1 )
 notes='
 | Raspberry Pi                 | Image  File | Mirror |
 |:-----------------------------|:------------|:-------|
@@ -53,5 +53,7 @@ notes='
 '
 banner "rAudio Image Files: i$release"
 
-gh release create i$release --title i$release --notes "$notes" $imgdir/{${select// /,}}
-
+for file in $selectfiles; do
+	uploadfiles+="$imgdir/$file "
+done
+gh release create i$release --title i$release --notes "$notes" $uploadfiles
