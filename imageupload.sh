@@ -2,23 +2,11 @@
 
 [[ $( basename $PWD ) != rAudio-1 ]] && echo Current directory not rAudio-1 repo. && exit
 
-optbox=( --colors --no-shadow --no-collapse )
-
 [[ ! -e /usr/bin/gh ]] && pacman -Sy --noconfirm github-cli
-if ! gh auth status &> /dev/null; then
-	dialog "${optbox[@]}" --infobox "
-\Z1Login required:\Z0
-gh auth login -p ssh
-> GitHub.com
-> Skip SSH key
-> Paste token
-> Get token: https://github.com/settings/tokens 
-> Personal access token:
-  - repo, admin:org, admin:public_key
-  
-" 0 0
-	exit
-fi
+
+! gh auth status &> /dev/null && echo GitHub login required: https://github.com/rern/rOS/blob/main/imageupload.md && exit
+
+optbox=( --colors --no-shadow --no-collapse )
 
 imgdir=$( dialog "${optbox[@]}" --title 'Image file:' --stdout --dselect $PWD/ 20 40 )
 imgfiles=( $( cd "$imgdir" && ls -1 rAudio*.img.xz 2> /dev/null ) )
