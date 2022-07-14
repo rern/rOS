@@ -28,11 +28,11 @@ gh auth login
 
 - Clone repo
 ```sh
-gh repo clone REPO
-cd REPO
+gh repo clone rern/rAudio-1
 ```
 
 - Upload
 ```sh
-gh release create VERSION ../PATH/*.img.xz
+cd rAudio-1
+gh release create VERSION /PATH/*.img.xz
 ```
