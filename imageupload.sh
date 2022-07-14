@@ -1,6 +1,6 @@
 ##!/bin/bash
 
-[[ ! -e rAudio-1 ]] && echo rAudio-1 repo not found. && exit
+[[ $( basename $PWD ) != rAudio-1 ]] && echo Current directory not rAudio-1 repo. && exit
 
 optbox=( --colors --no-shadow --no-collapse )
 
@@ -45,7 +45,5 @@ echo -e "\nUpload rAudio Image Files: i$release ...\n"
 for file in $selectfiles; do
 	uploadfiles+="$imgdir/$file "
 done
-cd rAudio-1
-gh release create i$release --title i$release --notes "$notes" $uploadfiles
-cd ..
 
+gh release create i$release --title i$release --notes "$notes" $uploadfiles
