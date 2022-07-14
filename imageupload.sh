@@ -11,9 +11,9 @@ for file in "${imgfiles[@]}"; do
 done
 
 select=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist "
-\Z1Select files to upload:\Z0
-$imgdir
-" $(( ${#imgfiles[@]} + 2 )) 0 0 \
+ \Z1Select files to upload:\Z0
+ $imgdir
+" $(( ${#imgfiles[@]} + 6 )) 0 0 \
 $filelist )
 
 [[ $? != 0 ]] && exit
