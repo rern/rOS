@@ -1,5 +1,7 @@
 ##!/bin/bash
 
+[[ ! -e rAudio ]] && echo rAudio-1 repo not found. && exit
+
 optbox=( --colors --no-shadow --no-collapse )
 
 [[ ! -e /usr/bin/gh ]] && pacman -Sy --noconfirm github-cli
@@ -51,7 +53,5 @@ notes='
 '
 banner "rAudio Image Files: i$release"
 
-pwd=$PWD
-cd "$imgdir"
-gh release create i$release --title i$release --notes "$notes" $select
-cd "$pwd"
+gh release create i$release --title i$release --notes "$notes" ../$imgdir/{${select// /,}}
+
