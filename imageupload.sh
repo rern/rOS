@@ -1,5 +1,7 @@
 ##!/bin/bash
 
+optbox=( --colors --no-shadow --no-collapse )
+
 [[ ! -e /usr/bin/gh ]] && pacman -Sy --noconfirm github-cli
 if ! gh auth status &> /dev/null; then
 	dialog "${optbox[@]}" --infobox "
@@ -12,8 +14,6 @@ gh auth login -p ssh
 " 9 58
 	exit
 fi
-
-optbox=( --colors --no-shadow --no-collapse )
 
 imgdir=$( dialog "${optbox[@]}" --title 'Image file:' --stdout --dselect $PWD/ 20 40 )
 imgfiles=( $( cd "$imgdir" && ls -1 rAudio*.img.xz 2> /dev/null ) )
