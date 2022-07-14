@@ -53,5 +53,5 @@ notes='
 '
 banner "rAudio Image Files: i$release"
 
-gh release create i$release --title i$release --notes "$notes" ../$imgdir/{${select// /,}}
+gh release create i$release --title i$release --notes "$notes" $imgdir/{${select// /,}}
 
