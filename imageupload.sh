@@ -1,6 +1,17 @@
 ##!/bin/bash
 
 [[ ! -e /usr/bin/gh ]] && pacman -Sy --noconfirm github-cli
+if ! gh auth status &> /dev/null; then
+	dialog "${optbox[@]}" --infobox "
+\Z1Login required:\Z0
+gh auth login -p ssh
+> GitHub.com
+> Skip SSH key
+> Paste token
+> Get token: https://github.com/settings/tokens
+" 9 58
+	exit
+fi
 
 optbox=( --colors --no-shadow --no-collapse )
 
