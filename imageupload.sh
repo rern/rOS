@@ -51,5 +51,7 @@ notes='
 '
 banner "rAudio Image Files: i$release"
 
-( cd "$imgdir"
-gh release create i$release --title i$release --notes "$notes" $select )
+pwd=$PWD
+cd "$imgdir"
+gh release create i$release --title i$release --notes "$notes" $select
+cd "$pwd"
