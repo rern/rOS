@@ -14,7 +14,7 @@ routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 subip=${routerip%.*}.
 
 rpiip=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
-\Z1Raspberry Pi IP:\Z0
+ \Z1Raspberry Pi IP:\Z0
 " 0 0 $subip )
 
 sed -i "/$rpiip/ d" ~/.ssh/known_hosts
