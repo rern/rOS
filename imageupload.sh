@@ -10,7 +10,8 @@ gh auth login -p ssh
 > GitHub.com
 > Skip SSH key
 > Paste token
-> Get token: https://github.com/settings/tokens
+> Get token: https://github.com/settings/tokens 
+> Personal access token - repo, admin:org, admin:public_key
 " 9 58
 	exit
 fi
