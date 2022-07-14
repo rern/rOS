@@ -1,6 +1,6 @@
 ##!/bin/bash
 
-[[ ! -e rAudio ]] && echo rAudio-1 repo not found. && exit
+[[ ! -e rAudio-1 ]] && echo rAudio-1 repo not found. && exit
 
 optbox=( --colors --no-shadow --no-collapse )
 
