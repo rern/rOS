@@ -45,4 +45,7 @@ echo -e "\nrAudio Image Files: i$release\n"
 for file in $selectfiles; do
 	uploadfiles+="$imgdir/$file "
 done
+cd rAudio-1
 gh release create i$release --title i$release --notes "$notes" $uploadfiles
+cd ..
+
