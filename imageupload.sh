@@ -1,6 +1,6 @@
 ##!/bin/bash
 
-[[ ! -e rAudio-1 ]] && echo rAudio-1 not found. && exit
+[[ ! -e /usr/bin/gh ]] && pacman -Sy --noconfirm github-cli
 
 optbox=( --colors --no-shadow --no-collapse )
 
