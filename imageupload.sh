@@ -16,8 +16,6 @@ select=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist 
 " $(( ${#imgfiles[@]} + 6 )) 0 0 \
 $filelist )
 
-[[ $? != 0 ]] && exit
-
 col=$( tput cols )
 banner() {
 	echo
