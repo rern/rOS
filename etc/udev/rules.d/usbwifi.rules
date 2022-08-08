@@ -1,9 +1,9 @@
 ACTION=="add", \
 SUBSYSTEMS=="usb", \
 SUBSYSTEM=="net", \
-RUN+="/srv/http/bash/usbwifi.sh add"
+RUN+="/srv/http/bash/settings/networks.sh usbwifion"
 
 ACTION=="remove", \
 SUBSYSTEMS=="usb", \
 SUBSYSTEM=="net", \
-RUN+="/srv/http/bash/usbwifi.sh remove"
+RUN+="/srv/http/bash/settings/networks.sh usbwifioff"
