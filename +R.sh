@@ -29,9 +29,10 @@ case $cmd in
 	4 ) bash <( curl -sL $url/imageupload.sh );;
 	5 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/main/distcc-client.sh );;
 	6 ) bash <( curl -sL https://github.com/rern/rern.github.io/raw/main/docker.sh );;
-	7 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox ";;
+	7 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  IP:
 " 0 0 192.168.1. )
 	sed -i "/$rpiip/ d" ~/.ssh/known_hosts
 	sshpass -p ros ssh -t -o StrictHostKeyChecking=no root@$rpiip
+	;;
 esac
