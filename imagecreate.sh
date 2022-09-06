@@ -47,10 +47,16 @@ For proper detection, remove and reinsert again.
 
 " 0 0
 
-sd=$( dmesg -T | tail | grep ' sd .*GB' )
-[[ -z $sd ]] && sleep 2 && sd=$( dmesg -T | tail | grep ' sd .* logical blocks' )
+deviceLine() {
+	devline=$( dmesg \
+				| tail \
+				| egrep ' sd.* GiB|mmcblk.* GiB' \
+				| tail -1 )
+}
+deviceLine
+[[ ! $devline ]] && sleep 2 && deviceLine
 
-if [[ -z $sd ]]; then
+if [[ ! $devline ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1No SD card found.\Z0
 " 0 0
@@ -67,12 +73,23 @@ fi
 
 dev=/dev/$( echo "$sd" | awk -F'[][]' '{print $4}' )
 #devname=$( dmesg | grep Direct-Access | tail -1 | tr -s ' ' | awk '{NF-=5;print substr($0,index($0,$6))}' )
+if [[ $devline == *\[sd?\]* ]]; then
+	name=$( echo $devline | sed -E 's|.*\[(.*)\].*|\1|' )
+	dev=/dev/$name
+	partboot=${dev}1
+	partroot=${dev}2
+else
+	name=$( echo $devline | sed -E 's/.*] (.*): .*/\1/' )
+	dev=/dev/$name
+	partboot=${dev}p1
+	partroot=${dev}p2
+fi
 
 dialog "${optbox[@]}" --yesno "
 Confirm micro SD card: \Z1$dev\Z0
 
 Detail:
-$( echo $sd | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
+$( echo $devline | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
 
 $mount
 " 0 0
@@ -115,22 +132,21 @@ banner "Image: $imagefile"
 banner 'Shrink ROOT partition ...'
 echo
 bar='\e[44m  \e[0m'
-part=${dev}2
-partsize=$( fdisk -l $part | awk '/^Disk/ {print $2" "$3}' )
-used=$( df -k 2> /dev/null | grep $part | awk '{print $3}' )
+partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )
+used=$( df -k 2> /dev/null | grep $partroot | awk '{print $3}' )
 
-umount -l -v ${dev}1 ${dev}2
-e2fsck -fy $part
+umount -l -v $partboot $partroot
+e2fsck -fy $partroot
 
 shrink() {
 	echo -e "$bar Shrink #$1 ...\n"
-	partinfo=$( tune2fs -l $part )
+	partinfo=$( tune2fs -l $partroot )
 	blockcount=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
 	freeblocks=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
 	blocksize=$( awk '/Block size/ {print $NF}' <<< "$partinfo" )
 
 	sectorsize=$( sfdisk -l $dev | awk '/Units/ {print $8}' )
-	startsector=$( fdisk -l $dev | grep $part | awk '{print $2}' )
+	startsector=$( fdisk -l $dev | grep $partroot | awk '{print $2}' )
 
 	usedblocks=$(( blockcount - freeblocks ))
 	targetblocks=$(( usedblocks * 105 / 100 ))
@@ -143,7 +159,7 @@ shrink() {
 		echo Already reached minimum size.
 	else
 		# shrink filesystem to minimum
-		resize2fs -fp $part $(( newsize * Kblock ))K
+		resize2fs -fp $partroot $(( newsize * Kblock ))K
 		parted $dev ---pretend-input-tty <<EOF
 unit
 s
