@@ -62,7 +62,6 @@ else
 	partroot=${dev}p2
 fi
 
-
 list=$( lsblk -o name,size,mountpoint | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
 dialog "${optbox[@]}" --yesno "
 Device list:
@@ -81,13 +80,11 @@ $( echo "$list" | grep '\\Z1' )
 
 clear -x
 
-# 1. create default partitions: gparted
-# 2. dump partitions table for script: sfdisk -d /dev/sdx | grep '^/dev' > alarm.sfdisk
-# setup partitions
 for p in $dev?*; do
 	umount -l $p
 done
 wipefs -a $dev
+# setup partitions (create partitions with gparted > get parameters: sfdisk -d /dev/sdx | grep '^/dev' > alarm.sfdisk)
 echo "\
 $partboot : start=        2048, size=      204800, type=b
 $partroot : start=      206848, size=    10240000, type=83
