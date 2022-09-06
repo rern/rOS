@@ -1,5 +1,13 @@
 #!/bin/bash
 
+cleanup() {
+	umount $partboot 2> /dev/null
+	umount $partroot 2> /dev/null
+	rmdir /home/$USER/{BOOT,ROOT} 2> /dev/null
+	exit
+}
+trap cleanup INT
+
 # required packages
 if [[ -e /usr/bin/pacman ]]; then
 	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar '
