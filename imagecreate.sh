@@ -64,7 +64,7 @@ if [[ ! $devline ]]; then
 fi
 
 mount=$( mount | grep '/dev.*BOOT\|/dev.*ROOT' | cut -d' ' -f1-3 | sort )
-if [[ -z $mount ]]; then
+if [[ ! $mount ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1SD card not mounted.\Z0
 " 0 0
