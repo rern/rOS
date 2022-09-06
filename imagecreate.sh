@@ -121,7 +121,7 @@ else # $BOOT/kernel.img
 	model=RPi0-1
 fi
 
-imagefile=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
+imagefile=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
 Image filename:
 " 0 0 rAudio-$version-$model-$revision.img.xz )
 
