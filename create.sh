@@ -34,11 +34,15 @@ For proper detection, remove and reinsert again.
 
 " 0 0
 
-sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*|\1|' )
-[[ -z $sd ]] && sleep 2 && sd=$( dmesg -T | tail | grep ' sd .* logical blocks' | sed 's|.*\[\(.*\)\].*|/\1|' )
-dev=/dev/$sd
-
-if [[ -z $sd ]]; then
+deviceLine() {
+	devline=$( dmesg \
+				| tail \
+				| egrep ' sd.* GiB|mmcblk.* GiB' \
+				| tail -1 )
+}
+deviceLine
+[[ ! $devline ]] && sleep 2 && deviceLine
+if [[ ! $devline ]]; then
 	dialog "${optbox[@]}" --infobox "
 \Z1No SD card found.\Z0
 
@@ -46,7 +50,14 @@ if [[ -z $sd ]]; then
 	exit
 fi
 
-list=$( lsblk -o name,size,mountpoint | sed "/^$sd/ s/^/\\\Z1/; s/$/\\\Z0/" )
+if [[ $devline == *logical* ]]; then
+	type=$( echo $devline | sed -E 's|.*\[(.*)\].*|\1|' )
+else
+	type=$( echo $devline | sed -E 's/.*] (.*): .*/\1/' )
+fi
+dev=/dev/$type
+
+list=$( lsblk -o name,size,mountpoint | sed "/^$type/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
 dialog "${optbox[@]}" --yesno "
 Device list:
 $list
