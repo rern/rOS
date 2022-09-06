@@ -63,14 +63,6 @@ if [[ ! $devline ]]; then
 	exit
 fi
 
-mount=$( mount | grep '/dev.*BOOT\|/dev.*ROOT' | cut -d' ' -f1-3 | sort )
-if [[ ! $mount ]]; then
-	dialog "${optbox[@]}" --infobox "
-\Z1SD card not mounted.\Z0
-" 0 0
-	exit
-fi
-
 dev=/dev/$( echo "$sd" | awk -F'[][]' '{print $4}' )
 #devname=$( dmesg | grep Direct-Access | tail -1 | tr -s ' ' | awk '{NF-=5;print substr($0,index($0,$6))}' )
 if [[ $devline == *\[sd?\]* ]]; then
@@ -95,8 +87,14 @@ $( echo "$list" | grep '\\Z1' )
 " 0 0
 [[ $? != 0 ]] && exit
 
-BOOT=$( mount | grep /dev.*BOOT | cut -d' ' -f3 )
-ROOT=$( mount | grep /dev.*ROOT | cut -d' ' -f3 )
+umount $partboot 2> /dev/null
+umount $partroot 2> /dev/null
+
+BOOT=/home/$USER/BOOT
+ROOT=/home/$USER/ROOT
+mkdir -p /home/$USER/{BOOT,ROOT}
+mount $partboot $BOOT
+mount $partroot $ROOT
 
 if [[ ! -e $BOOT/config.txt ]]; then
 	dialog "${optbox[@]}" --infobox "
@@ -127,16 +125,18 @@ touch $BOOT/expand
 
 clear -x
 
+umount -l -v $partboot $partroot
+rmdir /home/$USER/{BOOT,ROOT}
+e2fsck -fy $partroot
+
 banner "Image: $imagefile"
 
 banner 'Shrink ROOT partition ...'
 echo
+
 bar='\e[44m  \e[0m'
 partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $partroot | awk '{print $3}' )
-
-umount -l -v $partboot $partroot
-e2fsck -fy $partroot
 
 shrink() {
 	echo -e "$bar Shrink #$1 ...\n"
