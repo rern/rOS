@@ -66,7 +66,7 @@ Warning:
 Make sure this is the target SD card.
 \Z1All data on this device will be deleted.\Z0
 
-Confirm SD card:
+Continue formatting:
 $( echo "$list" | grep '\\Z1' )
 
 " 0 0
