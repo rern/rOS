@@ -85,13 +85,13 @@ else
 	partroot=${dev}p2
 fi
 
+list=$( lsblk -o name,size,mountpoint | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
 dialog "${optbox[@]}" --yesno "
-Confirm micro SD card: \Z1$dev\Z0
+Device list:
+$list
 
-Detail:
-$( echo $devline | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
-
-$mount
+Confirm SD card:
+$( echo "$list" | grep '\\Z1' )
 " 0 0
 [[ $? != 0 ]] && exit
 
