@@ -50,14 +50,20 @@ if [[ ! $devline ]]; then
 	exit
 fi
 
-if [[ $devline == *logical* ]]; then
-	type=$( echo $devline | sed -E 's|.*\[(.*)\].*|\1|' )
+if [[ $devline == *\[sd?\]* ]]; then
+	name=$( echo $devline | sed -E 's|.*\[(.*)\].*|\1|' )
+	dev=/dev/$name
+	partboot=${dev}1
+	partroot=${dev}2
 else
-	type=$( echo $devline | sed -E 's/.*] (.*): .*/\1/' )
+	name=$( echo $devline | sed -E 's/.*] (.*): .*/\1/' )
+	dev=/dev/$name
+	partboot=${dev}p1
+	partroot=${dev}p2
 fi
-dev=/dev/$type
 
-list=$( lsblk -o name,size,mountpoint | sed "/^$type/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
+
+list=$( lsblk -o name,size,mountpoint | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
 dialog "${optbox[@]}" --yesno "
 Device list:
 $list
@@ -78,27 +84,26 @@ clear -x
 # 1. create default partitions: gparted
 # 2. dump partitions table for script: sfdisk -d /dev/sdx | grep '^/dev' > alarm.sfdisk
 # setup partitions
-umount -l ${dev}1 ${dev}2 2> /dev/null
+for p in $dev?*; do
+	umount -l $p
+done
 wipefs -a $dev
 echo "\
-${dev}1 : start=        2048, size=      204800, type=b
-${dev}2 : start=      206848, size=    10240000, type=83
+$partboot : start=        2048, size=      204800, type=b
+$partroot : start=      206848, size=    10240000, type=83
 " | sfdisk $dev
 
-devboot=${dev}1
-devroot=${dev}2
+mkfs.fat -F 32 $partboot
+mkfs.ext4 -F $partroot
 
-mkfs.fat -F 32 $devboot
-mkfs.ext4 -F $devroot
+fsck.fat -a $partboot
+e2fsck -p $partroot
 
-fsck.fat -a $devboot
-e2fsck -p $devroot
-
-fatlabel $devboot BOOT
-e2label $devroot ROOT
+fatlabel $partboot BOOT
+e2label $partroot ROOT
 
 mkdir -p /mnt/{BOOT,ROOT}
-mount $devboot /mnt/BOOT
-mount $devroot /mnt/ROOT
+mount $partboot /mnt/BOOT
+mount $partroot /mnt/ROOT
 
 bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh ) nopathcheck
