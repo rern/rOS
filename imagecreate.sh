@@ -19,7 +19,7 @@ else
 	[[ $packages ]] && apt install -y $packages
 fi
 
-optbox=( --colors --no-shadow --no-collapse )
+optbox=( --colors --no-shadow --no-collapse --nocancel )
 
 [[ $( ls -A BOOT ) ]] && notempty+='BOOT '
 [[ $( ls -A ROOT ) ]] && notempty+='ROOT'
