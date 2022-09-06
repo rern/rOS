@@ -81,7 +81,7 @@ $( echo "$list" | grep '\\Z1' )
 clear -x
 
 for p in $dev?*; do
-	umount -l $p
+	umount -l $p 2> /dev/null
 done
 wipefs -a $dev
 # setup partitions (create partitions with gparted > get parameters: sfdisk -d /dev/sdx | grep '^/dev' > alarm.sfdisk)
