@@ -45,6 +45,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	```sh
 	bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
 	```
+	- If the SD card was not recognized, use GParted to wipe all partitions.
 
 ![dialog1](https://github.com/rern/rOS/raw/main/select-hw.png)
 ![dialog2](https://github.com/rern/rOS/raw/main/select-features.png)  
