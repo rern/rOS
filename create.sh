@@ -1,5 +1,7 @@
 #!/bin/bash
 
+trap exit INT
+
 optbox=( --colors --no-shadow --no-collapse )
 
 dialog "${optbox[@]}" --infobox "
