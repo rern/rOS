@@ -31,19 +31,19 @@ dialog "${optbox[@]}" --infobox "
 " 9 58
 sleep 2
 
-if [[ $1 == nopathcheck ]]; then
+nopathcheck=$1
+if [[ $nopathcheck ]]; then
 	BOOT=/mnt/BOOT
 	ROOT=/mnt/ROOT
-	nopathcheck=1
 else
 	BOOT=$( mount | grep /dev.*BOOT | cut -d' ' -f3 )
 	ROOT=$( mount | grep /dev.*ROOT | cut -d' ' -f3 )
 	# check mounts
-	[[ -z $BOOT ]] && warnings+="
+	[[ ! $BOOT ]] && warnings+="
 BOOT not mounted"
-	[[ -z $ROOT ]] && warnings+="
+	[[ ! $ROOT ]] && warnings+="
 ROOT not mounted"
-	if [[ -z $warnings  ]]; then
+	if [[ ! $warnings  ]]; then
 		# check duplicate names
 		(( $( echo "$BOOT" | wc -l ) > 1 )) && warnings+="
 BOOT has more than 1"
@@ -75,7 +75,7 @@ fi
 
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
-	if [[ -z $nopathcheck ]]; then
+	if [[ ! $nopathcheck ]]; then
 #----------------------------------------------------------------------------
 		dialog "${opt[@]}" --yesno "
 Confirm \Z1SD card\Z0 path:
@@ -299,7 +299,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 }
 selectFeatures
 
-[[ -z $list ]] && list=(none)
+[[ ! $list ]] && list=(none)
 #----------------------------------------------------------------------------
 dialog "${opt[@]}" --yesno "
 Confirm features to install:
@@ -473,7 +473,7 @@ ESSID="$ssid"
 Security=$wpa
 Key="$password"
 EOF
-	[[ -z $wpa ]] && sed -i '/Security=\|Key=/ d' "$profile"
+	[[ ! $wpa ]] && sed -i '/Security=\|Key=/ d' "$profile"
 	dir="$ROOT/etc/systemd/system/netctl@$ssid.service.d"
 	mkdir -p $dir
 	cat << EOF > "$dir/profile.conf"

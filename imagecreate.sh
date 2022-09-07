@@ -20,15 +20,6 @@ fi
 
 optbox=( --colors --no-shadow --no-collapse --nocancel )
 
-[[ $( ls -A BOOT ) ]] && notempty+='BOOT '
-[[ $( ls -A ROOT ) ]] && notempty+='ROOT'
-if [[ $notempty ]]; then
-		dialog "${optbox[@]}" --infobox "
-\Z1$notempty\Z0 directory not empty.
-" 0 0
-	exit	
-fi
-
 dialog "${optbox[@]}" --infobox "
 
                        \Z1r\Z0Audio
@@ -95,9 +86,16 @@ $( echo "$list" | grep '\\Z1' )
 [[ $? != 0 ]] && exit
 
 umount -l $partboot $partroot 2> /dev/null
-BOOT=/home/$USER/BOOT
-ROOT=/home/$USER/ROOT
-mkdir -p /home/$USER/{BOOT,ROOT}
+
+BOOT=/mnt/BOOT
+ROOT=/mnt/ROOT
+[[ $( ls -A $BOOT 2> /dev/null ) ]] && warnings="
+$BOOT not empty."
+[[ $( ls -A $ROOT 2> /dev/null ) ]] && warnings+="
+$ROOT not empty."
+[[ $warnings ]] && dialog "${optbox[@]}" --infobox "$warnings" 0 0 && exit
+
+mkdir -p /mnt/{BOOT,ROOT}
 mount $partboot $BOOT
 mount $partroot $ROOT
 
