@@ -139,7 +139,7 @@ partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $partroot | awk '{print $3}' )
 
 shrink() {
-	echo -e "$bar Shrink #$1 ...\n"
+	echo -e "$bar Shrink Pass #$1 ...\n"
 	partinfo=$( tune2fs -l $partroot )
 	blockcount=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
 	freeblocks=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
@@ -179,7 +179,7 @@ shrink 2
 
 banner 'Compressed to image file ...'
 echo
-echo $imagepath
+echo -e "$bar $imagepath"
 echo
 dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -9 --verbose --threads=0 --memlimit=100% > "$imagepath"
 
