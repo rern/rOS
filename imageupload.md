@@ -24,6 +24,9 @@ gh auth login -p ssh
 #   > Paste an authentication token
 ```
 - Get token: [Personal access token](https://github.com/settings/tokens)
+- New machine - Fix `Permission denied (publickey)`:
+	- [SSH keys](https://github.com/settings/keys) > `New SSH key`
+	- Get key: `cat .ssh/id_rsa.pub`
 
 - Clone repo
 ```sh
