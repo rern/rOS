@@ -82,15 +82,15 @@ $( echo "$list" | grep '\\Z1' )
 
 clear -x
 
-for p in $dev?*; do
-	umount -l $p 2> /dev/null
-done
+umount $partboot $partroot 2> /dev/null
 wipefs -a $dev
 # setup partitions (create partitions with gparted > get parameters: sfdisk -d /dev/sdx | grep '^/dev' > alarm.sfdisk)
 echo "\
 $partboot : start=        2048, size=      204800, type=b
 $partroot : start=      206848, size=    10240000, type=83
 " | sfdisk $dev
+
+umount $partboot $partroot 2> /dev/null
 
 mkfs.fat -F 32 $partboot
 mkfs.ext4 -F $partroot
