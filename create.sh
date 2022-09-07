@@ -12,22 +12,6 @@ dialog "${optbox[@]}" --infobox "
 " 9 58
 sleep 2
 
-mounts=$( mount | awk '/dev\/sd.*\/BOOT/ || /dev\/sd.*\/ROOT/ {print $1" "$2" "$3}' )
-if [[ $mounts ]]; then
-	dialog "${optbox[@]}" --yesno "
-\Z1Unmount partitions?\Z0
-
-$mounts
-
-" 0 0
-	[[ $? != 0 ]] && exit
-	
-	mounts=( $( echo "$mounts" | cut -d' ' -f1 ) )
-	for mnt in "${mounts[@]}"; do
-		umount -l $mnt
-	done
-fi
-
 dialog "${optbox[@]}" --msgbox "
 \Z1Insert micro SD card\Z0
 
@@ -83,6 +67,7 @@ $( echo "$list" | grep '\\Z1' )
 clear -x
 
 umount $partboot $partroot 2> /dev/null
+
 wipefs -a $dev
 # setup partitions (create partitions with gparted > get parameters: sfdisk -d /dev/sdx | grep '^/dev' > alarm.sfdisk)
 echo "\
