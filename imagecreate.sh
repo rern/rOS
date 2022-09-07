@@ -1,8 +1,7 @@
 #!/bin/bash
 
 cleanup() {
-	umount $partboot 2> /dev/null
-	umount $partroot 2> /dev/null
+	umount -l $partboot $partroot 2> /dev/null
 	rmdir /home/$USER/{BOOT,ROOT} 2> /dev/null
 	exit
 }
@@ -95,9 +94,7 @@ $( echo "$list" | grep '\\Z1' )
 " 0 0
 [[ $? != 0 ]] && exit
 
-umount $partboot 2> /dev/null
-umount $partroot 2> /dev/null
-
+umount -l $partboot $partroot 2> /dev/null
 BOOT=/home/$USER/BOOT
 ROOT=/home/$USER/ROOT
 mkdir -p /home/$USER/{BOOT,ROOT}
@@ -128,11 +125,8 @@ Image filename:
 imagedir=$( dialog "${optbox[@]}" --title 'Save to: ([space]=select)' --stdout --dselect $PWD/ 20 40 )
 imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 
-# auto expand root partition
-touch $BOOT/expand
-
 clear -x
-
+touch $BOOT/expand # auto expand root partition
 umount -l -v $partboot $partroot
 rmdir /home/$USER/{BOOT,ROOT}
 e2fsck -fy $partroot
