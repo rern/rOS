@@ -35,5 +35,5 @@ pacman -Sy github-cli
 - Upload
 	```sh
 	cd rAudio-1
-	gh release create VERSION /PATH/*.img.xz
+	gh release create <VERSION< /<PATH>/*.img.xz
 	```
