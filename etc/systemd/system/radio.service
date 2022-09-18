@@ -1,5 +1,5 @@
 [Unit]
-Description=WebRadio metadata
+Description=Web Radio metadata
 
 [Service]
 Type=simple
