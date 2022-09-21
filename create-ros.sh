@@ -105,7 +105,9 @@ mv -f /boot/config.txt{0,}
 rm -f /boot/{cmdline,config}.txt.pacsave
 
 ln -s /srv/http/assets /srv/http/settings/camillagui/build/static
-curl -skL https://github.com/rern/_assets/raw/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img
+
+mkdir /srv/http/assets/img/guide
+curl -skL https://github.com/rern/_assets/raw/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
 #---------------------------------------------------------------------------------
 banner 'Configure ...'
 
