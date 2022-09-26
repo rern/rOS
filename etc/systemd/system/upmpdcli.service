@@ -6,7 +6,6 @@ After=startup.service
 Type=simple
 CPUAffinity=3
 ExecStart=/usr/bin/upmpdcli -c /etc/upmpdcli.conf
-ExecStartPost=/srv/http/bash/cmd.sh upnpnice
 
 [Install]
 WantedBy=multi-user.target
