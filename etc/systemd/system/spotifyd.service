@@ -8,7 +8,6 @@ After=network-online.target
 [Service]
 CPUAffinity=3
 ExecStart=/usr/bin/spotifyd --no-daemon
-ExecStartPost=/srv/http/bash/cmd.sh nicespotify
 Restart=always
 RestartSec=12
 
