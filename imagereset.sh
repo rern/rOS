@@ -15,13 +15,14 @@ banner() {
 
 select=$( dialog "${optbox[@]}" \
 	   --output-fd 1 \
+	   --no-items \
 	   --checklist '\n\Z1Select tasks:\n
 \Z4[space] = Select / Deselect\Z0' 9 50 0 \
-			1 "Reset MPD database" on \
-			2 "Reset user data directory" on \
-			3 "Clear package cache" on \
-			4 "Clear system log" on \
-			5 "Clear Wi-Fi connection" on )
+			"Reset MPD database" on \
+			"Reset user data directory" on \
+			"Clear package cache" on \
+			"Clear system log" on \
+			"Clear Wi-Fi connection" on )
 
 clear
 [[ $? == 1 ]] && exit
