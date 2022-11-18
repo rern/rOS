@@ -5,7 +5,17 @@
 
 [[ ! -e /usr/bin/gh ]] && pacman -Sy --noconfirm github-cli
 
-! gh auth status &> /dev/null && gh auth login -p ssh
+if ! gh auth status &> /dev/null; then
+	echo '
+? What account do you want to log into? 
+   > GitHub.com
+? Upload your SSH public key to your GitHub account?
+   > Skip
+? How would you like to authenticate GitHub CLI?
+   > Paste an authentication token
+'
+	gh auth login -p ssh
+fi
 
 optbox=( --colors --no-shadow --no-collapse )
 
