@@ -5,7 +5,7 @@
 
 [[ ! -e /usr/bin/gh ]] && pacman -Sy --noconfirm github-cli
 
-! gh auth status &> /dev/null && echo -e "\nGitHub authentication required: https://github.com/rern/rOS/blob/main/imageupload.md\n" && exit
+! gh auth status &> /dev/null && gh auth login -p ssh
 
 optbox=( --colors --no-shadow --no-collapse )
 
