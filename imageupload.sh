@@ -1,5 +1,6 @@
 ##!/bin/bash
 
+[[ $( basename $PWD ) != rAudio-1 ]] && cd rAudio-1
 [[ $( basename $PWD ) != rAudio-1 ]] && echo -e "\nCurrent directory not rAudio-1 repo.\n" && exit
 
 [[ ! -e /usr/bin/gh ]] && pacman -Sy --noconfirm github-cli
