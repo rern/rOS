@@ -135,6 +135,7 @@ else
 fi
 # camilladsp
 if [[ -e /usr/bin/camilladsp ]]; then
+	sed -i 's/5000/5005/' /srv/http/settings/camillagui/config/camillagui.yml
 	dir=/srv/http/settings/camillagui/build/static/assets
 	ln -s /srv/http/assets $dir
 	chown -h http:http $dir

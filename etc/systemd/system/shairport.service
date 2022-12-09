@@ -1,0 +1,8 @@
+[Unit]
+Description=Shairport Sync metadata 
+After=network.target shairport-sync.service
+
+[Service]
+ExecStart=/srv/http/bash/shairport.sh
+User=root
+Group=root
