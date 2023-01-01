@@ -23,7 +23,7 @@ For proper detection, remove and reinsert again.
 deviceLine() {
 	devline=$( dmesg \
 				| tail \
-				| egrep ' sd.* GiB|mmcblk.* GiB' \
+				| grep ' sd.* GiB\|mmcblk.* GiB' \
 				| tail -1 )
 }
 deviceLine
