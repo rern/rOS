@@ -1,7 +1,5 @@
 #!/bin/bash
 
-version=1
-	
 trap exit INT
 
 # required packages
@@ -93,8 +91,9 @@ ROOT: \Z1$ROOT\Z0
 				| sed 's/[^v.0-9]//g' )
 #----------------------------------------------------------------------------
 	release=$( dialog "${opt[@]}" --output-fd 1 --nocancel --inputbox "
- \Z1r\Z0Audio $version release:
+ \Z1r\Z0Audio release:
 " 0 0 $latest )
+echo $release > $BOOT/release
 #----------------------------------------------------------------------------
 	rpi=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 \Z1Raspberry Pi:\Z0
@@ -163,7 +162,7 @@ Security     : \Z1${wpa^^}\Z0"
 	dialog "${opt[@]}" --yesno "
 \Z1Confirm data:\Z0
 
-\Z1r\Z0Audio       : $version
+\Z1r\Z0Audio
 Release      : $release
 Raspberry Pi : \Z1$rpiname\Z0
 
@@ -345,13 +344,6 @@ code=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 mirror=${codelist[$code]}
 [[ $mirror == 0 ]] && url=http://os.archlinuxarm.org/os || url=http://$mirror.mirror.archlinuxarm.org/os
 
-echo "\
-version=$version
-release=$release
-col=$COLUMNS
-mirror=$mirror
-" > $BOOT/versions
-
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
 #----------------------------------------------------------------------------	   
@@ -486,6 +478,9 @@ fi
 
 # dhcpd - disable arp
 echo noarp >> $ROOT/etc/dhcpcd.conf
+
+# mirror server
+[[ $mirror != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' $ROOT/etc/pacman.d/mirrorlist
 
 # fix dns errors
 echo DNSSEC=no >> $ROOT/etc/systemd/resolved.conf

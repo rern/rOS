@@ -4,17 +4,15 @@ trap exit INT
 
 SECONDS=0
 
-. /boot/versions
-[[ $mirror != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' /etc/pacman.d/mirrorlist
 features=$( cat /boot/features )
 
 banner() {
 	echo
 	def='\e[0m'
 	bg='\e[44m'
-    printf "$bg%*s$def\n" $col
-    printf "$bg%-${col}s$def\n" "  $1"
-    printf "$bg%*s$def\n" $col
+    printf "$bg%*s$def\n" $COLUMNS
+    printf "$bg%-${COLUMNS}s$def\n" "  $1"
+    printf "$bg%*s$def\n" $COLUMNS
 }
 #----------------------------------------------------------------------------
 banner 'Initialize Arch Linux Arm ...'
@@ -27,14 +25,14 @@ rm -f /var/lib/pacman/db.lck  # in case of rerun
 # fill entropy pool (fix - Kernel entropy pool is not initialized)
 systemctl start systemd-random-seed
 
-title="rAudio $version"
+title=rAudio
 optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --infobox "
 
 
-                       \Z1r\Z0Audio $version
+                        \Z1r\Z0Audio
 " 9 58
 sleep 2
 
@@ -86,8 +84,9 @@ fi
 #----------------------------------------------------------------------------
 banner 'Get configurations and user interface ...'
 
+release=$( cat /boot/release )
 curl -skLO https://github.com/rern/rOS/archive/main.tar.gz
-curl -skLO https://github.com/rern/rAudio-$version/archive/$release.tar.gz
+curl -skLO https://github.com/rern/rAudio-1/archive/$release.tar.gz
 mkdir -p /tmp/config
 bsdtar --strip 1 -C /tmp/config -xvf main.tar.gz
 bsdtar --strip 1 -C /tmp/config -xvf $release.tar.gz
@@ -197,9 +196,9 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 
 #---------------------------------------------------------------------------------
 # data - settings directories
-/srv/http/bash/settings/system-datareset.sh $version $release
+/srv/http/bash/settings/system-datareset.sh $release
 # remove files and package cache
-rm /boot/{features,versions} /root/create-ros.sh /var/cache/pacman/pkg/*
+rm /boot/{features,release} /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
@@ -207,7 +206,7 @@ touch /boot/expand
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --infobox "
 
-            \Z1r\Z0Audio $version created successfully.
+            \Z1r\Z0Audio created successfully.
 
                        \Z1Reboot\Z0 ...
 
