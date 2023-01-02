@@ -8,9 +8,9 @@ banner() {
 	echo
 	def='\e[0m'
 	bg='\e[44m'
-	printf "$bg%*s$def\n" $col
-	printf "$bg%-${col}s$def\n" "  $1"
-	printf "$bg%*s$def\n" $col
+	printf "$bg%*s$def\n" $COLUMNS
+	printf "$bg%-${COLUMNS}s$def\n" "  $1"
+	printf "$bg%*s$def\n" $COLUMNS
 }
 
 select=$( dialog "${optbox[@]}" \
