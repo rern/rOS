@@ -105,8 +105,7 @@ if [[ ! -e $BOOT/config.txt ]]; then
 	exit
 fi
 
-version=$( cat $ROOT/srv/http/data/system/version )
-revision=$( cat $ROOT/srv/http/data/addons/r$version )
+release=$( cat $ROOT/srv/http/data/addons/r1 )
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
 elif [[ -e $BOOT/kernel7.img ]]; then
@@ -117,7 +116,7 @@ fi
 
 imagefile=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
 Image filename:
-" 0 0 rAudio-$version-$model-$revision.img.xz )
+" 0 0 rAudio-$model-$release.img.xz )
 
 imagedir=$( dialog "${optbox[@]}" --title 'Save to: ([space]=select)' --stdout --dselect $PWD/ 20 40 )
 imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
