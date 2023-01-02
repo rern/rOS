@@ -124,7 +124,7 @@ imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 clear -x
 touch $BOOT/expand # auto expand root partition
 umount -l -v $partboot $partroot
-rmdir /home/$USER/{BOOT,ROOT}
+rmdir /home/$USER/{BOOT,ROOT} 2> /dev/null
 e2fsck -fy $partroot
 
 banner "Image: $imagefile"
