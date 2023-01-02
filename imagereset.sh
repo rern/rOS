@@ -3,7 +3,6 @@
 dirdata=/srv/http/data
 optbox=( --colors --no-shadow --no-collapse )
 
-col=$( tput cols )
 banner() {
 	echo
 	def='\e[0m'
