@@ -42,8 +42,8 @@ if [[ $select == *' 1 '* ]]; then
 fi
 if [[ $select == *' 2 '* ]]; then
 	banner 'Reset user data directory ...'
-	rm -rf /root/.cache/* $dirdata/tmp/*
-	rm -f $dirdata/{bookmarks,coverarts,lyrics,mpd,playlists,webradios}/* $dirdata/system/gpio
+	rm -rf /root/.cache/*
+	rm -f $dirdata/{bookmarks,coverarts,lyrics,mpd,playlists,webradios}/*
 	curl -skL https://github.com/rern/rAudio-addons/raw/main/webradio/radioparadise.tar.xz | bsdtar xvf - -C $dirdata/webradio
 fi
 if [[ $select == *' 3 '* ]]; then
@@ -67,7 +67,7 @@ if [[ $select == *' 5 '* ]]; then
 	fi
 fi
 
-if ! grep -q alaa.ad24.cz /etc/pacman.d/mirrorlist; then # skip on rpi 0, 1
+if [[ ! -e /boot/kernel.img ]]; then # skip on rpi 0, 1
 	curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
 fi
 
