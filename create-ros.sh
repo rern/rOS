@@ -127,7 +127,7 @@ if [[ -e /usr/bin/chromium ]]; then
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
 	systemctl disable getty@tty1                     # login prompt
 	systemctl enable bootsplash localbrowser
-	[[ $( uname -m ) == armv7l ]] && sed -i '/^chromium/ a\	--no-xshm \\' /srv/http/bash/xinitrc
+	[[ -e /boot/kernel7.img ]] && sed -i '/^chromium/ a\	--no-xshm \\' /srv/http/bash/xinitrc
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* \
 	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
