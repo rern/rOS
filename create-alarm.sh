@@ -443,8 +443,8 @@ initramfs initramfs-linux.img followkernel
 max_usb_current=1
 disable_splash=1
 disable_overscan=1
-dtparam=krnbt=on
 dtparam=audio=on
+dtparam=krnbt=on
 EOF
 if [[ $rpi == 1 ]]; then
 	mv $BOOT/cmdline.txt{,0}
