@@ -141,7 +141,7 @@ if [[ -e /usr/bin/camilladsp ]]; then
 	ln -sf /srv/http/assets/fonts $dircamillagui
 	ln -sf /srv/http/assets/css/colors.css $dircamillagui
 	ln -sf /srv/http/assets/img/icon.png $dircamillagui
-	ln -sf $dircamilladsp/configs/{camilladsp,active_config}.yml
+	ln -sf /srv/http/data/camilladsp/configs/{camilladsp,active_config}.yml
 else
 	rm -rf /srv/http/data/camilladsp
 fi
