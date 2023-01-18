@@ -135,9 +135,13 @@ fi
 # camilladsp
 if [[ -e /usr/bin/camilladsp ]]; then
 	sed -i 's/5000/5005/' /srv/http/settings/camillagui/config/camillagui.yml
-	dir=/srv/http/settings/camillagui/build/static/assets
+	dir=/srv/http/settings/camillagui/build/static
 	ln -s /srv/http/assets $dir
-	chown -h http:http $dir
+	dircamillagui=/srv/http/settings/camillagui/build
+	ln -sf /srv/http/assets/fonts $dircamillagui
+	ln -sf /srv/http/assets/css/colors.css $dircamillagui
+	ln -sf /srv/http/assets/img/icon.png $dircamillagui
+	ln -sf $dircamilladsp/configs/{camilladsp,active_config}.yml
 else
 	rm -rf /srv/http/data/camilladsp
 fi
