@@ -138,6 +138,8 @@ if [[ -e /usr/bin/camilladsp ]]; then
 	dir=/srv/http/settings/camillagui/build/static/assets
 	ln -s /srv/http/assets $dir
 	chown -h http:http $dir
+else
+	rm -rf /srv/http/data/camilladsp
 fi
 # cron - for addons updates
 ( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/bash/cmd.sh addonsupdates &' ) | crontab -
