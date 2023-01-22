@@ -78,8 +78,8 @@ if [[ $? != 0 ]]; then
 	if [[ $? != 0 ]]; then
 		echo -e "\e[38;5;7m\e[48;5;1m ! \e[0m Packages download incomplete."
 		exit
+		
 	fi
-	
 fi
 #----------------------------------------------------------------------------
 banner 'Get configurations and user interface ...'
@@ -131,19 +131,6 @@ if [[ -e /usr/bin/chromium ]]; then
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* \
 	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
-fi
-# camilladsp
-if [[ -e /usr/bin/camilladsp ]]; then
-	sed -i 's/5000/5005/' /srv/http/settings/camillagui/config/camillagui.yml
-	dir=/srv/http/settings/camillagui/build/static
-	ln -s /srv/http/assets $dir
-	dircamillagui=/srv/http/settings/camillagui/build
-	ln -sf /srv/http/assets/fonts $dircamillagui
-	ln -sf /srv/http/assets/css/colors.css $dircamillagui
-	ln -sf /srv/http/assets/img/icon.png $dircamillagui
-	ln -sf /srv/http/data/camilladsp/configs/{camilladsp,active_config}.yml
-else
-	rm -rf /srv/http/data/camilladsp
 fi
 # cron - for addons updates
 ( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/bash/cmd.sh addonsupdates &' ) | crontab -
