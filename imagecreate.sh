@@ -60,8 +60,6 @@ if [[ ! $devline ]]; then
 	exit
 fi
 
-dev=/dev/$( echo "$sd" | awk -F'[][]' '{print $4}' )
-#devname=$( dmesg | grep Direct-Access | tail -1 | tr -s ' ' | awk '{NF-=5;print substr($0,index($0,$6))}' )
 if [[ $devline == *\[sd?\]* ]]; then
 	name=$( echo $devline | sed -E 's|.*\[(.*)\].*|\1|' )
 	dev=/dev/$name
