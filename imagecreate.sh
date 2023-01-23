@@ -177,7 +177,8 @@ banner 'Compressed to image file ...'
 echo
 echo -e "$bar $imagepath"
 echo
-dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v > "$imagepath"
+threads=$(( $( nproc ) - 2 ))
+dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$imagepath"
 
 byte=$( stat --printf="%s" "$imagepath" )
 mb=$( awk "BEGIN { printf \"%.1f\n\", $byte / 1024 / 1024 }" )
