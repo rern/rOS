@@ -17,10 +17,11 @@ if ! gh auth status &> /dev/null; then
 	gh auth login -p ssh
 fi
 
-optbox=( --colors --no-shadow --no-collapse )
+rm -f rAudio*img.xz
+ln -s ../BIG/*.xz .
 
-imgdir=$( dialog "${optbox[@]}" --title 'Image file:' --stdout --dselect $PWD/ 20 40 )
-imgfiles=( $( cd "$imgdir" && ls -1 rAudio*.img.xz 2> /dev/null ) )
+optbox=( --colors --no-shadow --no-collapse )
+imgfiles=( $( cd $PWD && ls -1 rAudio*.img.xz 2> /dev/null ) )
 for file in "${imgfiles[@]}"; do
 	filelist+=" $file on"
 done
