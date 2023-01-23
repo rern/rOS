@@ -24,6 +24,8 @@ pacman -Sy github-cli
 	#   > Paste an authentication token
 	```
 	- Get token: [Personal access token](https://github.com/settings/tokens) via github.com
+		- Select existing `Release upload` > `Regenerate token`
+		- Copy > Paste
 - Upload [SSH keys](https://github.com/settings/keys) > `New SSH key` via github.com
 	- Get key: `cat .ssh/id_rsa.pub`
 
