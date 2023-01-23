@@ -1,12 +1,12 @@
 ##!/bin/bash
 
-if [[ $( basename $PWD ) != rAudio-1 ]]; then
-	[[ ! -d rAudio-1 ]] && echo -e "\nDirectory rAudio-1 not found.\n" && exit
-	
-	cd rAudio-1
-fi
+[[ ! -e /usr/bin/gh ]] && echo -e "\nPackage gh not yet installed.\n" && exit
 
-[[ ! -e /usr/bin/gh ]] && pacman -Sy --noconfirm github-cli
+su x
+cd
+[[ ! -d rAudio-1 ]] && echo -e "\nDirectory rAudio-1 not found.\n" && exit
+	
+cd rAudio-1
 
 if ! gh auth status &> /dev/null; then
 	echo '
