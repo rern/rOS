@@ -46,7 +46,7 @@ notes='
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
 for file in $selectfiles; do
-	uploadfiles+="rAudio/$file "
+	uploadfiles+="$file "
 done
 
 gh release create i$release --title i$release --notes "$notes" $uploadfiles
