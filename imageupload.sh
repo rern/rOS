@@ -24,7 +24,7 @@ rm -f rAudio*img.xz
 ln -s ../BIG/*.xz .
 
 optbox=( --colors --no-shadow --no-collapse )
-imgfiles=( $( cd $PWD && ls -1 rAudio*.img.xz 2> /dev/null ) )
+imgfiles=( $( ls -1 rAudio*.img.xz 2> /dev/null ) )
 for file in "${imgfiles[@]}"; do
 	filelist+=" $file on"
 done
@@ -45,8 +45,4 @@ notes='
 '
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
-for file in $selectfiles; do
-	uploadfiles+="$file "
-done
-
-gh release create i$release --title i$release --notes "$notes" $uploadfiles
+gh release create i$release --title i$release --notes "$notes" $selectfiles
