@@ -116,7 +116,9 @@ imagefile=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
 Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 
-imagedir=$( dialog "${optbox[@]}" --title 'Save to: ([space]=select)' --stdout --dselect $PWD/ 20 40 )
+selectdir=$PWD/
+[[ -e $PWD/BIG ]] && selectdir+=BIG
+imagedir=$( dialog "${optbox[@]}" --title 'Save to: ([space]=select)' --stdout --dselect $selectdir 20 40 )
 imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 
 clear -x
