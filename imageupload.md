@@ -19,7 +19,7 @@ pacman -Sy github-cli
 	# ? What account do you want to log into? 
 	#   > GitHub.com
 	# ? Upload your SSH public key to your GitHub account?
-	#   > Skip
+	#   > n
 	# ? How would you like to authenticate GitHub CLI?
 	#   > Paste an authentication token
 	```
