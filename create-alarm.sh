@@ -440,7 +440,6 @@ EOF
 cat << EOF > $BOOT/config.txt
 gpu_mem=32
 initramfs initramfs-linux.img followkernel
-max_usb_current=1
 disable_splash=1
 disable_overscan=1
 dtparam=audio=on
