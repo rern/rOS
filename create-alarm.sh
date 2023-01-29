@@ -439,8 +439,8 @@ root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N
 EOF
 cat << EOF > $BOOT/config.txt
 initramfs initramfs-linux.img followkernel
-disable_splash=1
 disable_overscan=1
+disable_splash=1
 dtparam=audio=on
 dtparam=krnbt=on
 EOF
