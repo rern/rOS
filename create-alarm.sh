@@ -438,7 +438,6 @@ cat << EOF > $BOOT/cmdline.txt
 root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
 EOF
 cat << EOF > $BOOT/config.txt
-gpu_mem=32
 initramfs initramfs-linux.img followkernel
 disable_splash=1
 disable_overscan=1
