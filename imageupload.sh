@@ -3,10 +3,9 @@
 
 [[ $EUID == 0 ]] && su x $0
 
-cd
-[[ ! -d rAudio-1 ]] && echo -e "\nDirectory rAudio-1 not found.\n" && exit
+[[ ! -d /home/x/rAudio-1 ]] && echo -e "\nDirectory /home/x/rAudio-1 not found.\n" && exit
 	
-cd rAudio-1
+cd /home/x/rAudio-1
 
 if ! gh auth status &> /dev/null; then
 	echo '
