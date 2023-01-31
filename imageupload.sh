@@ -11,6 +11,8 @@ if ! gh auth status &> /dev/null; then
 	echo '
 ? What account do you want to log into? 
    > GitHub.com
+? Generate a new SSH key to add to your GitHub account?
+   > n
 ? Upload your SSH public key to your GitHub account?
    > Skip
 ? How would you like to authenticate GitHub CLI?
