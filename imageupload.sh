@@ -1,7 +1,7 @@
 ##!/bin/bash
 [[ ! -e /usr/bin/gh ]] && echo -e "\nPackage gh not yet installed.\n" && exit
 
-[[ $USER != x ]] && echo -e "\nThis is not user x.\n" && exit
+[[ $EUID == 0 ]] && su x
 
 cd
 [[ ! -d rAudio-1 ]] && echo -e "\nDirectory rAudio-1 not found.\n" && exit
