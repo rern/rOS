@@ -1,7 +1,7 @@
 ##!/bin/bash
 [[ ! -e /usr/bin/gh ]] && echo -e "\nPackage gh not yet installed.\n" && exit
 
-#[[ $EUID == 0 ]] && echo -e "\nRun as user x.\n" && exit
+[[ $EUID == 0 ]] && echo -e "\nRun as user x.\n" && exit
 
 [[ ! -d /home/x/rAudio-1 ]] && echo -e "\nDirectory /home/x/rAudio-1 not found.\n" && exit
 	
