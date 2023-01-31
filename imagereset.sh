@@ -36,7 +36,7 @@ if [[ $select == *' 1 '* ]]; then
 	rm -f $dirdata/mpd/*
 	echo '{
   "playlists" : 0
-, "webradio"  : 4
+, "webradio"  : '$( find -L $dirdata/webradio -type f ! -path '*/img/*' | wc -l )'
 }' > $dirdata/mpd/counts
 fi
 if [[ $select == *' 2 '* ]]; then
