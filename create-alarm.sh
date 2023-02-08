@@ -317,11 +317,9 @@ SECONDS=0
 
 # package mirror server
 readarray -t lines <<< $( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
-							| grep . \
-							| sed -n '/### A/,$ p' \
-							| sed 's/ (not Austria\!)//; s/.mirror.*//; s|.*//||' )
-clist=( 0 'Auto - By Geo-IP' )
-codelist=( '' )
+							| sed -E -n '/^### Mirror/,$ {/^\s*$|^### Mirror/ d; s|.*//(.*)\.mirror.*|\1|; p}' )
+clist=( 0 'Auto (By Geo-IP)' )
+codelist=( 0 )
 i=0
 for line in "${lines[@]}"; do
 	if [[ ${line:0:4} == '### ' ]];then
