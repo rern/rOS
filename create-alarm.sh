@@ -86,9 +86,7 @@ ROOT: \Z1$ROOT\Z0
 		
 	fi
 	
-	latest=$( curl -I https://github.com/rern/rAudio-1/releases/latest \
-				| awk -F'/' '/^location/ {print $NF}' \
-				| sed 's/[^v.0-9]//g' )
+	latest=$( curl -I https://github.com/rern/rAudio-1/releases/latest | sed -n '/^location/ {s|.*/||;p}' )
 #----------------------------------------------------------------------------
 	release=$( dialog "${opt[@]}" --output-fd 1 --nocancel --inputbox "
  \Z1r\Z0Audio release:
@@ -329,6 +327,8 @@ for line in "${lines[@]}"; do
 		city=${line:3}
 	else
 		[[ $city ]] && cc="$country - $city" || cc=$country
+		[[ $cc == $ccprev ]] && cc+=' 2'
+		ccprev=$cc
 		(( i++ ))
 		clist+=( $i "$cc" )
 		codelist+=( $line )
