@@ -97,7 +97,8 @@ chmod -R u+rwX,go+rX /tmp/config
 cp -r /tmp/config/* /
 chown http:http /etc/fstab
 chown -R http:http /etc/netctl /etc/systemd/network
-chmod -R 755 /srv/http/bash
+dirbash=/srv/http/bash
+chmod -R 755 $dirbash
 
 mv -f /boot/cmdline.txt{0,}
 mv -f /boot/config.txt{0,}
@@ -120,26 +121,25 @@ else
 	rm -f /etc/systemd/system/blue*
 fi
 # browser
-if [[ -e /usr/bin/chromium ]]; then
+if [[ -e /usr/bin/chromium || -e /usr/bin/firefox ]]; then
 	sed -i 's/\(console=\).*/\1tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt # boot splash
 	chmod 775 /etc/X11/xorg.conf.d                   # fix permission for rotate file
-	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit     # startx
+	ln -sf $dirbash/xinitrc /etc/X11/xinit     # startx
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
 	systemctl disable getty@tty1                     # login prompt
 	systemctl enable bootsplash localbrowser
-	[[ -e /boot/kernel7.img ]] && sed -i '/^chromium/ a\	--no-xshm \\' /srv/http/bash/xinitrc
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* \
-	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* /srv/http/bash/xinitrc /usr/local/bin/ply-image 2> /dev/null
+	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* $dirbash/xinitrc /usr/local/bin/ply-image 2> /dev/null
 fi
 # cron - for addons updates
-( crontab -l &> /dev/null; echo '00 01 * * * /srv/http/bash/cmd.sh addonsupdates &' ) | crontab -
+( crontab -l &> /dev/null; echo '00 01 * * * $dirbash/cmd.sh addonsupdates &' ) | crontab -
 # hostapd
 [[ ! -e /usr/bin/hostapd ]] && rm -rf /etc/{hostapd,dnsmasq.conf}
 # mpd
 chsh -s /bin/bash mpd
 # motd
-ln -sf /srv/http/bash/motd.sh /etc/profile.d/
+ln -sf $dirbash/motd.sh /etc/profile.d/
 # pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
 # password
@@ -189,7 +189,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 
 #---------------------------------------------------------------------------------
 # data - settings directories
-/srv/http/bash/settings/system-datareset.sh $release
+$dirbash/settings/system-datareset.sh $release
 # remove files and package cache
 rm /boot/{features,release} /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
