@@ -3,9 +3,9 @@
 
 [[ $EUID == 0 ]] && echo -e "\nsu x and run again.\n" && exit
 
-[[ ! -d /home/x/rAudio-1 ]] && echo -e "\nDirectory /home/x/rAudio-1 not found.\n" && exit
+[[ ! -d /home/x/rAudio ]] && echo -e "\nDirectory /home/x/rAudio not found.\n" && exit
 	
-cd /home/x/rAudio-1
+cd /home/x/rAudio
 
 if ! gh auth status &> /dev/null; then
 	echo '
@@ -38,9 +38,9 @@ release=$( echo ${selectfiles[0]/*-} | cut -d. -f1 )
 notes='
 | Raspberry Pi                 | Image  File | Mirror |
 |:-----------------------------|:------------|:-------|
-| `4` `3` `2 BCM2837` `Zero 2` | [rAudio-64bit-'$release'.img.xz](https://github.com/rern/rAudio-1/releases/download/i'$release'/rAudio-64bit-'$release'.img.xz)   | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-64bit-'$release'.img.xz)  |
-| `2 BCM2836`                  | [rAudio-RPi2-'$release'.img.xz](https://github.com/rern/rAudio-1/releases/download/i'$release'/rAudio-RPi2-'$release'.img.xz)     | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-RPi2-'$release'.img.xz)   |
-| `1` `Zero`                   | [rAudio-RPi0-1-'$release'.img.xz](https://github.com/rern/rAudio-1/releases/download/i'$release'/rAudio-RPi0-1-'$release'.img.xz) | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-RPi0-1-'$release'.img.xz) |
+| `4` `3` `2 BCM2837` `Zero 2` | [rAudio-64bit-'$release'.img.xz](https://github.com/rern/rAudio/releases/download/i'$release'/rAudio-64bit-'$release'.img.xz)   | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-64bit-'$release'.img.xz)  |
+| `2 BCM2836`                  | [rAudio-RPi2-'$release'.img.xz](https://github.com/rern/rAudio/releases/download/i'$release'/rAudio-RPi2-'$release'.img.xz)     | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-RPi2-'$release'.img.xz)   |
+| `1` `Zero`                   | [rAudio-RPi0-1-'$release'.img.xz](https://github.com/rern/rAudio/releases/download/i'$release'/rAudio-RPi0-1-'$release'.img.xz) | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-RPi0-1-'$release'.img.xz) |
 '
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
