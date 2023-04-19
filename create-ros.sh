@@ -86,7 +86,7 @@ banner 'Get configurations and user interface ...'
 
 release=$( cat /boot/release )
 curl -skLO https://github.com/rern/rOS/archive/main.tar.gz
-curl -skLO https://github.com/rern/rAudio-1/archive/$release.tar.gz
+curl -skLO https://github.com/rern/rAudio/archive/$release.tar.gz
 mkdir -p /tmp/config
 bsdtar --strip 1 -C /tmp/config -xvf main.tar.gz
 bsdtar --strip 1 -C /tmp/config -xvf $release.tar.gz
