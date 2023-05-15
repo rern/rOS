@@ -1,0 +1,5 @@
+[Unit]
+Description=Character LCD
+
+[Service]
+ExecStart=/srv/http/bash/lcdchar.py
