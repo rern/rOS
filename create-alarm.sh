@@ -434,25 +434,21 @@ $partuuidBOOT  /boot  vfat  defaults,noatime  0  0
 $partuuidROOT  /      ext4  defaults,noatime  0  0
 EOF
 # cmdline.txt, config.txt
-[[ $rpi == 1 ]] && mv $BOOT/config.txt{,.backup}
-cat << EOF > $BOOT/cmdline.txt
-root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1
-EOF
-cat << EOF > $BOOT/config.txt
+cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1"
+config="\
 initramfs initramfs-linux.img followkernel
 disable_overscan=1
 disable_splash=1
 dtparam=audio=on
-dtparam=krnbt=on
-EOF
+dtparam=krnbt=on"
 if [[ $rpi == 1 ]]; then
-	mv $BOOT/cmdline.txt{,0}
-	mv $BOOT/config.txt{,0}
-	mv $BOOT/config.txt{.backup,}
+	echo $cmdline > $BOOT/cmdline.txt0
+	echo "$config" > $BOOT/config.txt0
 else
-	[[ $features == *firefox* ]] && echo hdmi_force_hotplug=1 >> $BOOT/config.txt
-	cp $BOOT/cmdline.txt{,0}
-	cp $BOOT/config.txt{,0}
+	[[ $features == *firefox* ]] && config+='
+hdmi_force_hotplug=1'
+	echo $cmdline > $BOOT/cmdline.txt
+	echo "$config" > $BOOT/config.txt
 fi
 # wifi
 if [[ $ssid ]]; then
