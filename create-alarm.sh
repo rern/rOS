@@ -86,7 +86,7 @@ ROOT: \Z1$ROOT\Z0
 		
 	fi
 	
-	latest=$( curl -sI https://github.com/rern/rAudio/releases/latest | sed -n '/^location/ {s|.*/||;p}' )
+	latest=$( curl -sI https://github.com/rern/rAudio/releases/latest | sed -E -n '/^location/ {s/.*\/|[\n\r]//g; p}' )
 #----------------------------------------------------------------------------
 	release=$( dialog "${opt[@]}" --output-fd 1 --nocancel --inputbox "
  \Z1r\Z0Audio release:
