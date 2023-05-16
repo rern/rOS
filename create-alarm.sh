@@ -129,7 +129,7 @@ echo $release > $BOOT/release
 Assigned IP  : $assignedip"
 	fi
 #----------------------------------------------------------------------------	
-	dialog $( [[ $rpi != 3 ]] && echo --defaultno ) "${opt[@]}" --yesno "
+	dialog --defaultno "${opt[@]}" --yesno "
 Connect \Z1Wi-Fi\Z0 on boot?
 
 " 0 0
