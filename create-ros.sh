@@ -100,8 +100,10 @@ chown -R http:http /etc/netctl /etc/systemd/network
 dirbash=/srv/http/bash
 chmod -R 755 $dirbash
 
-mv -f /boot/cmdline.txt{0,}
-mv -f /boot/config.txt{0,}
+if [[ -e /boot/cmdline.txt0 ]]; then
+	mv -f /boot/cmdline.txt{0,}
+	mv -f /boot/config.txt{0,}
+fi
 rm -f /boot/{cmdline,config}.txt.pacsave
 
 ln -s /srv/http/assets /srv/http/settings/camillagui/build/static
