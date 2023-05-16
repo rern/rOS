@@ -158,13 +158,6 @@ fi
 sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 ' -e 's/.*\(PrintLastLog \).*/\1no/
 ' /etc/ssh/sshd_config
-# timesyncd - fix if no eth connection
-files=$( ls /etc/systemd/network )
-for file in $files; do
-	! grep -q RequiredForOnline=no $file && echo '
-[Link]
-RequiredForOnline=no' >> $file
-done
 # user - set expire to none
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
