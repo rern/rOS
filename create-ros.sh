@@ -135,7 +135,8 @@ else
 	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* $dirbash/xinitrc /usr/local/bin/ply-image 2> /dev/null
 fi
 # cron - for addons updates
-( crontab -l &> /dev/null; echo '00 01 * * * $dirbash/cmd.sh addonsupdates &' ) | crontab -
+echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
+
 # hostapd
 [[ ! -e /usr/bin/hostapd ]] && rm -rf /etc/{hostapd,dnsmasq.conf}
 # mpd
