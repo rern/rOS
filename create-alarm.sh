@@ -420,9 +420,6 @@ done ) \
 
 sync
 
-shopt -s extglob
-rm -rf $ROOT/boot/dtbs/!(broadcom)/ # aarch64 - remove other drivers to save time
-
 mv $ROOT/boot/* $BOOT &> /dev/null
 
 # fstab
@@ -444,6 +441,8 @@ dtparam=krnbt=on"
 if [[ -e $BOOT/kernel8.img ]]; then
 	echo $cmdline > $BOOT/cmdline.txt0
 	echo "$config" > $BOOT/config.txt0
+	shopt -s extglob
+	rm -rf $BOOT/dtbs/!(broadcom)/
 else
 	[[ $features == *firefox* ]] && config+='
 hdmi_force_hotplug=1'
