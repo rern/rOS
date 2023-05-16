@@ -420,6 +420,11 @@ done ) \
 
 sync
 
+if [[ -e $ROOT/boot/kernel8.img ]]; then
+	mv $ROOT/boot/dtbs/broadcom $ROOT/boot
+	rm -rf $ROOT/boot/dtbs/*/
+	mv $ROOT/boot/broadcom $ROOT/boot/dtbs
+fi
 mv $ROOT/boot/* $BOOT &> /dev/null
 
 # fstab
@@ -441,8 +446,6 @@ dtparam=krnbt=on"
 if [[ -e $BOOT/kernel8.img ]]; then
 	echo $cmdline > $BOOT/cmdline.txt0
 	echo "$config" > $BOOT/config.txt0
-	shopt -s extglob
-	rm -rf $BOOT/dtbs/!(broadcom)/
 else
 	[[ $features == *firefox* ]] && config+='
 hdmi_force_hotplug=1'
