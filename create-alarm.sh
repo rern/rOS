@@ -441,7 +441,7 @@ disable_overscan=1
 disable_splash=1
 dtparam=audio=on
 dtparam=krnbt=on"
-if [[ $rpi == 1 ]]; then
+if [[ -e $BOOT/kernel8.img ]]; then
 	echo $cmdline > $BOOT/cmdline.txt0
 	echo "$config" > $BOOT/config.txt0
 else
