@@ -485,6 +485,14 @@ echo noarp >> $ROOT/etc/dhcpcd.conf
 # fix dns errors
 echo DNSSEC=no >> $ROOT/etc/systemd/resolved.conf
 
+# timesyncd - fix if no eth connection
+files=$( ls $ROOT/etc/systemd/network )
+for file in $files; do
+	! grep -q RequiredForOnline=no $file && echo '
+[Link]
+RequiredForOnline=no' >> $file
+done
+
 # disable wait-online
 rm -r $ROOT/etc/systemd/system/network-online.target.wants
 
