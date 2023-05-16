@@ -485,8 +485,8 @@ echo noarp >> $ROOT/etc/dhcpcd.conf
 # fix dns errors
 echo DNSSEC=no >> $ROOT/etc/systemd/resolved.conf
 
-# timesyncd - fix if no eth connection
-files=$( ls $ROOT/etc/systemd/network )
+# fix: time not sync on wlan
+files=$( ls $ROOT/etc/systemd/network/* )
 for file in $files; do
 	! grep -q RequiredForOnline=no $file && echo '
 [Link]
