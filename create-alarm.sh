@@ -424,6 +424,7 @@ if [[ -e $ROOT/boot/dtbs ]]; then # 64bit u-boot
 	mkdir $BOOT/dtbs
 	mv $ROOT/boot/dtbs/broadcom $BOOT/dtbs
 	rm -rf $ROOT/boot/dtbs
+	rm $ROOT/boot/initramfs-linux-fallback.img
 fi
 mv $ROOT/boot/* $BOOT &> /dev/null
 
