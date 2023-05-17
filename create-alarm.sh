@@ -420,6 +420,8 @@ done ) \
 
 sync
 
+PATH=$PATH:/sbin  # Debian not include /sbin in PATH
+
 # cmdline.txt, config.txt
 cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1"
 config="\
@@ -434,13 +436,12 @@ if [[ -e $ROOT/boot/dtbs ]]; then
 	mv $ROOT/boot/dtbs/broadcom $BOOT/dtbs
 	rm -rf $ROOT/boot/{dtbs,initramfs-linux-fallback.img}
 fi
-[[ $features != *firefox* ]] && config=${config%$'\n'*}
+[[ $features != *firefox* ]] && config=$( sed '$d' <<< $config )
 mv $ROOT/boot/* $BOOT
 echo $cmdline $BOOT/cmdline.txt0
 echo "$config" > $BOOT/config.txt0
 
 # fstab
-PATH=$PATH:/sbin  # Debian not include /sbin in PATH
 partuuidBOOT=$( blkid | awk '/LABEL="BOOT"/ {print $NF}' | tr -d '"' )
 partuuidROOT=${partuuidBOOT:0:-1}2
 echp"\
