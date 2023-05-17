@@ -440,8 +440,8 @@ else
 	mv $ROOT/boot/* $BOOT &> /dev/null
 	[[ $features == *firefox* ]] && config+='
 hdmi_force_hotplug=1'
-	echo $cmdline > $BOOT/cmdline.txt
-	echo "$config" > $BOOT/config.txt
+	echo $cmdline | tee $BOOT/cmdline.txt > $BOOT/cmdline.txt0
+	echo "$config" | tee $BOOT/config.txt > $BOOT/config.txt0
 fi
 
 # fstab
