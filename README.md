@@ -90,7 +90,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 
 | No. | Size        | Type    | Format | Label |
 |-----|-------------|---------|--------|-------|
-| #1  | 200MiB      | primary | fat32  | BOOT  |
+| #1  | 100MiB      | primary | fat32  | BOOT  |
 | #2  | (the rest)  | primary | ext4   | ROOT  |
 	
 **Alternative 2: Micro SD card + USB drive**
@@ -100,7 +100,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 
 | No. | Size        | Type    | Format | Label |
 |-----|-------------|---------|--------|-------|
-| #1  | 200MiB      | primary | fat32  | BOOT  |
+| #1  | 100MiB      | primary | fat32  | BOOT  |
 
 - USB drive - Blank:
 	- `Unmount` > `Delete` all partitions (Caution: make sure it's the USB drive)
@@ -128,7 +128,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 
 | No. | Size        | Type    | Format | Label |
 |-----|-------------|---------|--------|-------|
-| #1  | 200MiB      | primary | fat32  | BOOT  |
+| #1  | 100MiB      | primary | fat32  | BOOT  |
 | #2  | 5000MiB     | primary | ext4   | ROOT  |
 | #3  | (the rest)  | primary | ext4   | (any) |
 
