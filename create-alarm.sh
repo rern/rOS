@@ -421,9 +421,9 @@ done ) \
 sync
 
 if [[ -e $ROOT/boot/kernel8.img ]]; then
-	mv $ROOT/boot/dtbs/broadcom $ROOT/boot
-	rm -rf $ROOT/boot/dtbs/*/
-	mv $ROOT/boot/broadcom $ROOT/boot/dtbs
+	mkdir $BOOT/dtbs
+	mv $ROOT/boot/dtbs/broadcom $BOOT/dtbs
+	rm -rf $ROOT/boot/dtbs
 fi
 mv $ROOT/boot/* $BOOT &> /dev/null
 
