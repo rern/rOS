@@ -420,22 +420,6 @@ done ) \
 
 sync
 
-if [[ -e $ROOT/boot/dtbs ]]; then # 64bit u-boot
-	mkdir $BOOT/dtbs
-	mv $ROOT/boot/dtbs/broadcom $BOOT/dtbs
-	rm -rf $ROOT/boot/dtbs
-	rm $ROOT/boot/initramfs-linux-fallback.img
-fi
-mv $ROOT/boot/* $BOOT &> /dev/null
-
-# fstab
-PATH=$PATH:/sbin  # Debian not include /sbin in PATH
-partuuidBOOT=$( blkid | awk '/LABEL="BOOT"/ {print $NF}' | tr -d '"' )
-partuuidROOT=${partuuidBOOT:0:-1}2
-cat << EOF > $ROOT/etc/fstab
-$partuuidBOOT  /boot  vfat  defaults,noatime  0  0
-$partuuidROOT  /      ext4  defaults,noatime  0  0
-EOF
 # cmdline.txt, config.txt
 cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1"
 config="\
@@ -445,33 +429,45 @@ disable_splash=1
 dtparam=audio=on
 dtparam=krnbt=on"
 if [[ -e $BOOT/kernel8.img ]]; then
+	mkdir $BOOT/dtbs
+	mv $ROOT/boot/dtbs/broadcom $BOOT/dtbs
+	rm -rf $ROOT/boot/dtbs
+	rm $ROOT/boot/initramfs-linux-fallback.img
+	mv $ROOT/boot/* $BOOT &> /dev/null
 	echo $cmdline > $BOOT/cmdline.txt0
 	echo "$config" > $BOOT/config.txt0
 else
+	mv $ROOT/boot/* $BOOT &> /dev/null
 	[[ $features == *firefox* ]] && config+='
 hdmi_force_hotplug=1'
 	echo $cmdline > $BOOT/cmdline.txt
 	echo "$config" > $BOOT/config.txt
 fi
+
+# fstab
+PATH=$PATH:/sbin  # Debian not include /sbin in PATH
+partuuidBOOT=$( blkid | awk '/LABEL="BOOT"/ {print $NF}' | tr -d '"' )
+partuuidROOT=${partuuidBOOT:0:-1}2
+echp"\
+$partuuidBOOT  /boot  vfat  defaults,noatime  0  0
+$partuuidROOT  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
+
 # wifi
 if [[ $ssid ]]; then
 	profile=$ROOT/etc/netctl/$ssid
-	cat << EOF > $profile
-Interface=wlan0
+	echo 'Interface=wlan0
 Connection=wireless
 IP=dhcp
-ESSID="$ssid"
-Security=$wpa
-Key="$password"
-EOF
+ESSID="'$ssid'"
+Security='$wpa'
+Key="'$password'"' > $profile
 	[[ ! $wpa ]] && sed -i '/Security=\|Key=/ d' "$profile"
 	dir="$ROOT/etc/systemd/system/netctl@$ssid.service.d"
 	mkdir -p $dir
-	cat << EOF > "$dir/profile.conf"
+	echo "\
 [Unit]
 BindsTo=sys-subsystem-net-devices-wlan0.device
-After=sys-subsystem-net-devices-wlan0.device
-EOF
+After=sys-subsystem-net-devices-wlan0.device" > "$dir/profile.conf"
 	ln -sr $ROOT/usr/lib/systemd/system/netctl@.service "$ROOT/etc/systemd/system/multi-user.target.wants/netctl@$ssid.service"
 fi
 
