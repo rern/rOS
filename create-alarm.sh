@@ -461,7 +461,7 @@ IP=dhcp
 ESSID="'$ssid'"
 Security='$wpa'
 Key="'$password'"' > $profile
-	[[ ! $wpa ]] && sed -i '/Security=\|Key=/ d' "$profile"
+	[[ ! $wpa ]] && sed -E -i '/^Security|^Key/ d' "$profile"
 	dir="$ROOT/etc/systemd/system/netctl@$ssid.service.d"
 	mkdir -p $dir
 	echo "\
