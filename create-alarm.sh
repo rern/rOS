@@ -420,7 +420,7 @@ done ) \
 
 sync
 
-if [[ -e $ROOT/boot/kernel8.img ]]; then
+if [[ -e $ROOT/boot/dtbs ]]; then # 64bit u-boot
 	mkdir $BOOT/dtbs
 	mv $ROOT/boot/dtbs/broadcom $BOOT/dtbs
 	rm -rf $ROOT/boot/dtbs
