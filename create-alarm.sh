@@ -427,22 +427,17 @@ initramfs initramfs-linux.img followkernel
 disable_overscan=1
 disable_splash=1
 dtparam=audio=on
-dtparam=krnbt=on"
-if [[ -e $BOOT/kernel8.img ]]; then
+dtparam=krnbt=on
+hdmi_force_hotplug=1"
+if [[ -e $ROOT/boot/dtbs ]]; then
 	mkdir $BOOT/dtbs
 	mv $ROOT/boot/dtbs/broadcom $BOOT/dtbs
-	rm -rf $ROOT/boot/dtbs
-	rm $ROOT/boot/initramfs-linux-fallback.img
-	mv $ROOT/boot/* $BOOT &> /dev/null
-	echo $cmdline > $BOOT/cmdline.txt0
-	echo "$config" > $BOOT/config.txt0
-else
-	mv $ROOT/boot/* $BOOT &> /dev/null
-	[[ $features == *firefox* ]] && config+='
-hdmi_force_hotplug=1'
-	echo $cmdline | tee $BOOT/cmdline.txt > $BOOT/cmdline.txt0
-	echo "$config" | tee $BOOT/config.txt > $BOOT/config.txt0
+	rm -rf $ROOT/boot/{dtbs,initramfs-linux-fallback.img}
 fi
+[[ $features != *firefox* ]] && config=${config%$'\n'*}
+mv $ROOT/boot/* $BOOT
+echo $cmdline $BOOT/cmdline.txt0
+echo "$config" > $BOOT/config.txt0
 
 # fstab
 PATH=$PATH:/sbin  # Debian not include /sbin in PATH
