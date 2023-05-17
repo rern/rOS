@@ -420,6 +420,13 @@ done ) \
 
 sync
 
+# fstab
+partuuidBOOT=$( blkid | awk '/LABEL="BOOT"/ {print $NF}' | tr -d '"' )
+partuuidROOT=${partuuidBOOT:0:-1}2
+echo "\
+$partuuidBOOT  /boot  vfat  defaults,noatime  0  0
+$partuuidROOT  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
+
 # cmdline.txt, config.txt
 cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console=tty1"
 config="\
@@ -438,13 +445,6 @@ fi
 mv $ROOT/boot/* $BOOT
 echo $cmdline > $BOOT/cmdline.txt0
 echo "$config" > $BOOT/config.txt0
-
-# fstab
-partuuidBOOT=$( blkid | awk '/LABEL="BOOT"/ {print $NF}' | tr -d '"' )
-partuuidROOT=${partuuidBOOT:0:-1}2
-echo "\
-$partuuidBOOT  /boot  vfat  defaults,noatime  0  0
-$partuuidROOT  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
 
 # wifi
 if [[ $ssid ]]; then
