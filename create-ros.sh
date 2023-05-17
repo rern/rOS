@@ -185,7 +185,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
 
 #---------------------------------------------------------------------------------
 # data - settings directories
-$dirbash/settings/system-datareset.sh $release
+$dirbash/settings/system-datareset.sh
 # remove files and package cache
 rm /boot/{features,release} /root/create-ros.sh /var/cache/pacman/pkg/*
 # usb boot - disable sd card polling
