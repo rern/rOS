@@ -436,7 +436,7 @@ if [[ -e $ROOT/boot/dtbs ]]; then
 fi
 [[ $features != *firefox* ]] && config=$( sed '/^hdmi/ d' <<< $config )
 mv $ROOT/boot/* $BOOT
-echo $cmdline $BOOT/cmdline.txt0
+echo $cmdline > $BOOT/cmdline.txt0
 echo "$config" > $BOOT/config.txt0
 
 # fstab
