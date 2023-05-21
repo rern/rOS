@@ -14,14 +14,12 @@ pacman -Sy github-cli
 	ssh-keygen
 
 	# login
-	gh auth login -p ssh
+	gh auth login -p ssh -w
 
 	# ? What account do you want to log into? 
 	#   > GitHub.com
 	# ? Upload your SSH public key to your GitHub account?
-	#   > n
-	# ? How would you like to authenticate GitHub CLI?
-	#   > Authentication via web browser
+	#   > Skip (if already)
 	```
 - Upload [SSH keys](https://github.com/settings/keys) > `New SSH key` via github.com
 	- Get key: `cat .ssh/id_rsa.pub`
