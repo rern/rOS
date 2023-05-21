@@ -91,7 +91,12 @@ ROOT: \Z1$ROOT\Z0
 	release=$( dialog "${opt[@]}" --output-fd 1 --nocancel --inputbox "
  \Z1r\Z0Audio release:
 " 0 0 $latest )
-echo $release > $BOOT/release
+	if ! curl -sIfo /dev/null 'https://github.com/rern/rAudio/releases/tag/'$release; then
+		echo $release not found.
+		exit
+	fi
+	
+	echo $release > $BOOT/release
 #----------------------------------------------------------------------------
 	rpi=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 \Z1Raspberry Pi:\Z0
