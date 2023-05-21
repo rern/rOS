@@ -7,17 +7,7 @@
 	
 cd /home/x/rAudio
 
-if ! gh auth status &> /dev/null; then
-	echo '
-? What account do you want to log into? 
-   > GitHub.com
-? Upload your SSH public key to your GitHub account?
-   > Skip
-? How would you like to authenticate GitHub CLI?
-   > Paste an authentication token
-'
-	gh auth login -p ssh
-fi
+! gh auth status &> /dev/null && gh auth login -p ssh -w
 
 rm -f rAudio*img.xz
 ln -s ../BIG/*.xz .
