@@ -25,12 +25,15 @@ selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --check
 $filelist )
 
 release=$( echo ${selectfiles[0]/*-} | cut -d. -f1 )
+version=$release.img.xz
+imagefile="[rAudio-64bit-$version](https://github.com/rern/rAudio/releases/download/i$release/rAudio-64bit-$version)"
+mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-64bit-$version)"
 notes='
-| Raspberry Pi                 | Image  File | Mirror |
-|:-----------------------------|:------------|:-------|
-| `4` `3` `2 BCM2837` `Zero 2` | [rAudio-64bit-'$release'.img.xz](https://github.com/rern/rAudio/releases/download/i'$release'/rAudio-64bit-'$release'.img.xz)   | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-64bit-'$release'.img.xz)  |
-| `2 BCM2836`                  | [rAudio-RPi2-'$release'.img.xz](https://github.com/rern/rAudio/releases/download/i'$release'/rAudio-RPi2-'$release'.img.xz)     | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-RPi2-'$release'.img.xz)   |
-| `1` `Zero`                   | [rAudio-RPi0-1-'$release'.img.xz](https://github.com/rern/rAudio/releases/download/i'$release'/rAudio-RPi0-1-'$release'.img.xz) | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-RPi0-1-'$release'.img.xz) |
+| Raspberry Pi                 | Image  File                  | Mirror                    |
+|:-----------------------------|:-----------------------------|:--------------------------|
+| `4` `3` `2 BCM2837` `Zero 2` | '$imagefile'                 | '$mirror'                 |
+| `2 BCM2836`                  | '${imagefile//64bit/RPi2}'   | '${mirror//64bit/RPi2}'   |
+| `1` `Zero`                   | '${imagefile//64bit/RPi0-1}' | '${mirror//64bit/RPi0-1}' |
 '
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
