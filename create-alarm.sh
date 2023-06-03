@@ -440,7 +440,6 @@ initramfs initramfs-linux.img followkernel
 disable_overscan=1
 disable_splash=1
 dtparam=audio=on
-dtparam=krnbt=on
 hdmi_force_hotplug=1"
 if [[ -e $ROOT/boot/dtbs ]]; then
 	mkdir $BOOT/dtbs
