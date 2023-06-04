@@ -135,6 +135,7 @@ else
 fi
 # cron - for addons updates
 echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
+echo VISUAL=nano >> /etc/environment
 
 # hostapd
 [[ ! -e /usr/bin/hostapd ]] && rm -rf /etc/{hostapd,dnsmasq.conf}
