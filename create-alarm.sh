@@ -561,8 +561,8 @@ EOF
 		| dialog "${opt[@]}" --gauge '' 9 50
 	if ping -4 -c 1 -w 1 $assignedip &> /dev/null; then
 		dialog "${opt[@]}" --infobox "
-  SSH \Z1Arch Linux Arm\Z0 ...
-  $assignedip
+  SSH Arch Linux Arm ...
+  @ \Z1$assignedip\Z0
 " 9 50
 		sleep 3
 		sshRpi $assignedip
