@@ -6,7 +6,6 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-CPUAffinity=3
 User=root
 ExecStart=/usr/bin/spotifyd --no-daemon
 Restart=always
