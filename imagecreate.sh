@@ -72,7 +72,7 @@ else
 	partroot=${dev}p2
 fi
 
-list=$( lsblk -o name,size,mountpoint | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
+list=$( lsblk -o name,size,mountpoint | grep -v ^loop | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
 dialog "${optbox[@]}" --yesno "
 Device list:
 $list
