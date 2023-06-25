@@ -433,19 +433,13 @@ $partuuidBOOT  /boot  vfat  defaults,noatime  0  0
 $partuuidROOT  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
 
 # cmdline.txt, config.txt
-cmdline="root=$partuuidROOT rw rootwait selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console="
+cmdline="root=$partuuidROOT rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 ipv6.disable=1 fsck.repair=yes isolcpus=3 console="
 [[ $features != *matchbox* ]] && cmdline+='tty1' || cmdline+='tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0'
 config="\
-initramfs initramfs-linux.img followkernel
 disable_overscan=1
 disable_splash=1
 dtparam=audio=on
 hdmi_force_hotplug=1"
-if [[ -e $ROOT/boot/dtbs ]]; then
-	mkdir $BOOT/dtbs
-	mv $ROOT/boot/dtbs/broadcom $BOOT/dtbs
-	rm -rf $ROOT/boot/{dtbs,initramfs-linux-fallback.img}
-fi
 [[ $features != *firefox* ]] && config=$( sed '/^hdmi/ d' <<< $config )
 mv $ROOT/boot/* $BOOT
 echo $cmdline > $BOOT/cmdline.txt0
