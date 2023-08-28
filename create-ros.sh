@@ -42,7 +42,7 @@ banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils jq mpc mpd nfs-utils nginx-mainline-pushstream nss-mdns 
-parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 raspberrypi-stop-initramfs sudo udevil wget wiringpi'
+parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 python-websockets raspberrypi-stop-initramfs sudo udevil wget wiringpi'
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
@@ -108,8 +108,6 @@ if [[ -e /boot/cmdline.txt0 ]]; then
 fi
 rm -f /boot/{cmdline,config}.txt.pacsave
 
-ln -s /srv/http/assets /srv/http/settings/camillagui/build/static
-
 mkdir /srv/http/assets/img/guide
 curl -skL https://github.com/rern/_assets/raw/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
 #---------------------------------------------------------------------------------
@@ -127,13 +125,20 @@ fi
 # browser
 if [[ -e /usr/bin/chromium || -e /usr/bin/firefox ]]; then
 	chmod 775 /etc/X11/xorg.conf.d                   # fix permission for rotate file
-	ln -sf $dirbash/xinitrc /etc/X11/xinit     # startx
+	ln -sf $dirbash/xinitrc /etc/X11/xinit           # startx
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
 	systemctl disable getty@tty1                     # login prompt
 	systemctl enable bootsplash localbrowser
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* \
-	    /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* $dirbash/xinitrc /usr/local/bin/ply-image 2> /dev/null
+		/srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* $dirbash/xinitrc /usr/local/bin/ply-image 2> /dev/null
+fi
+# camilladsp
+if [[ -e /usr/bin/camilladsp ]]; then
+	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
+	dirconfigs=/srv/http/data/camilladsp/configs
+	mkdir $dirconfigs
+	sed '/  Volume:/ {N;N;N;d}' /etc/camilladsp/configs/camilladsp.yml > $dirconfigs/camilladsp.yml
 fi
 # cron - for addons updates
 echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
@@ -168,7 +173,7 @@ users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
 	chage -E -1 $user
 done
-# upmpdcli - not installed
+# upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
 	file=$dir/credkey.pem
@@ -183,7 +188,7 @@ fi
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
 # default startup services
 systemctl daemon-reload
-systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup
+systemctl enable avahi-daemon cmd-websocket cronie devmon@http nginx php-fpm startup
 
 #---------------------------------------------------------------------------------
 # data - settings directories
