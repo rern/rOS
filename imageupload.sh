@@ -3,7 +3,7 @@
 
 [[ $EUID == 0 ]] && echo -e "\nsu x and run again.\n" && exit
 
-[[ ! -d /home/x/rAudio ]] && echo -e "\nDirectory /home/x/rAudio not found.\n" && exit
+[[ ! -d /home/x/rAudio ]] && git clone https://github.com/rern/rAudio/
 	
 cd /home/x/rAudio
 
