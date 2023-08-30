@@ -138,7 +138,9 @@ if [[ -e /usr/bin/camilladsp ]]; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
 	dirconfigs=/srv/http/data/camilladsp/configs
 	mkdir -p $dirconfigs
-	sed '/  Volume:/ {N;N;N;d}' /etc/camilladsp/configs/camilladsp.yml > $dirconfigs/camilladsp.yml
+	sed -e '/  Volume:/,/type: Volume/ d
+' -e '/- Volume/ d
+' /etc/camilladsp/configs/camilladsp.yml > $dirconfigs/camilladsp.yml
 fi
 # cron - for addons updates
 echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
