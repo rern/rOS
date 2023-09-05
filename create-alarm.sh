@@ -109,12 +109,10 @@ ROOT: \Z1$ROOT\Z0
 			file+=aarch64-
 			rpiname=64bit
 			sboot=45
-			ch_fi=Chromium
 	else
 			file+=armv7-
 			rpiname=32bit
 			sboot=60
-			ch_fi='Firefox '
 	fi
 	file+=latest.tar.gz
 	routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
@@ -263,7 +261,7 @@ sshRpi() {
 # features
  bluealsa='\Z1BlueALSA\Z0   - Bluetooth audio'
   camilla='\Z1CamillaDSP\Z0 - Digital signal processor'
-  browser='\Z1'$ch_fi'\Z0   - Browser on RPi screen'
+  browser='\Z1Firefox\Z0    - Browser on RPi screen'
   hostapd='\Z1hostapd\Z0    - RPi access point'
       kid='\Z1Kid3\Z0       - Metadata tag editor'
     samba='\Z1Samba\Z0      - File sharing'
@@ -293,7 +291,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 	select=" $select "
 	[[ $select == *' 1 '* ]]  && list+="$bluealsa"$'\n'  && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests '
 	[[ $select == *' 2 '* ]]  && list+="$camilla"$'\n'   && features+='camilladsp python-pycamilladsp-plot python-websocket-client '
-	[[ $select == *' 3 '* ]]  && list+="$browser"$'\n'   && features+=${ch_fi,}' matchbox-window-manager plymouth-lite-rbp upower xf86-video-fbturbo '
+	[[ $select == *' 3 '* ]]  && list+="$browser"$'\n'   && features+='firefox matchbox-window-manager plymouth-lite-rbp upower xf86-video-fbturbo '
 	[[ $select == *' 4 '* ]]  && list+="$hostapd"$'\n'   && features+='dnsmasq hostapd '
 	[[ $select == *' 5 '* ]]  && list+="$kid"$'\n'       && features+='kid3-common '
 	[[ $select == *' 6 '* ]]  && list+="$samba"$'\n'     && features+='samba '

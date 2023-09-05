@@ -123,7 +123,7 @@ else
 	rm -f /etc/systemd/system/blue*
 fi
 # browser
-if [[ -e /usr/bin/chromium || -e /usr/bin/firefox ]]; then
+if [[ -e /usr/bin/firefox ]]; then
 	chmod 775 /etc/X11/xorg.conf.d                   # fix permission for rotate file
 	ln -sf $dirbash/xinitrc /etc/X11/xinit           # startx
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
