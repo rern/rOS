@@ -1,0 +1,9 @@
+[Unit]
+Description=Websocket server
+Before=startup.service
+
+[Service]
+ExecStart=/srv/http/bash/websocket-server.py
+
+[Install]
+WantedBy=multi-user.target

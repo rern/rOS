@@ -41,7 +41,7 @@ clear -x # needed: fix stdout not scroll
 banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools evtest gifsicle hdparm hfsprogs 
-i2c-tools imagemagick inetutils jq mpc mpd nfs-utils nginx-mainline-pushstream nss-mdns 
+i2c-tools imagemagick inetutils jq mpc mpd nfs-utils nginx-mainline nss-mdns 
 parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 python-websockets raspberrypi-stop-initramfs sudo udevil wget wiringpi'
 
 if [[ -e /boot/kernel8.img ]]; then
@@ -190,7 +190,7 @@ fi
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
 # default startup services
 systemctl daemon-reload
-systemctl enable avahi-daemon cmd-websocket cronie devmon@http nginx php-fpm startup
+systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 
 #---------------------------------------------------------------------------------
 # data - settings directories
