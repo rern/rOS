@@ -263,7 +263,6 @@ sshRpi() {
   camilla='\Z1CamillaDSP\Z0 - Digital signal processor'
   browser='\Z1Firefox\Z0    - Browser on RPi screen'
   hostapd='\Z1hostapd\Z0    - RPi access point'
-      kid='\Z1Kid3\Z0       - Metadata tag editor'
     samba='\Z1Samba\Z0      - File sharing'
 shairport='\Z1Shairport\Z0  - AirPlay renderer'
  snapcast='\Z1Snapcast\Z0   - Synchronous multiroom player'
@@ -281,24 +280,22 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 2 "$camilla"   on \
 3 "$browser"   on \
 4 "$hostapd"   on \
-5 "$kid"       on \
-6 "$samba"     on \
-7 "$shairport" on \
-8 "$snapcast"  on \
-9 "$spotify"   on \
-10 "$upmpdcli" on )
+5 "$samba"     on \
+6 "$shairport" on \
+7 "$snapcast"  on \
+8 "$spotify"   on \
+9 "$upmpdcli" on )
 	
 	select=" $select "
 	[[ $select == *' 1 '* ]]  && list+="$bluealsa"$'\n'  && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests '
 	[[ $select == *' 2 '* ]]  && list+="$camilla"$'\n'   && features+='camilladsp python-pycamilladsp-plot python-websocket-client '
 	[[ $select == *' 3 '* ]]  && list+="$browser"$'\n'   && features+='firefox matchbox-window-manager plymouth-lite-rbp upower xf86-video-fbturbo '
 	[[ $select == *' 4 '* ]]  && list+="$hostapd"$'\n'   && features+='dnsmasq hostapd '
-	[[ $select == *' 5 '* ]]  && list+="$kid"$'\n'       && features+='kid3-common '
-	[[ $select == *' 6 '* ]]  && list+="$samba"$'\n'     && features+='samba '
-	[[ $select == *' 7 '* ]]  && list+="$shairport"$'\n' && features+='shairport-sync '
-	[[ $select == *' 8 '* ]]  && list+="$snapcast"$'\n'  && features+='snapcast '
-	[[ $select == *' 9 '* ]]  && list+="$spotify"$'\n'   && features+='spotifyd '
-	[[ $select == *' 10 '* ]] && list+="$upmpdcli"$'\n'  && features+='upmpdcli '
+	[[ $select == *' 5 '* ]]  && list+="$samba"$'\n'     && features+='samba '
+	[[ $select == *' 6 '* ]]  && list+="$shairport"$'\n' && features+='shairport-sync '
+	[[ $select == *' 7 '* ]]  && list+="$snapcast"$'\n'  && features+='snapcast '
+	[[ $select == *' 8 '* ]]  && list+="$spotify"$'\n'   && features+='spotifyd '
+	[[ $select == *' 9 '* ]] && list+="$upmpdcli"$'\n'   && features+='upmpdcli '
 }
 selectFeatures
 
