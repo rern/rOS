@@ -127,6 +127,7 @@ if [[ -e /usr/bin/firefox ]]; then
 	chmod 775 /etc/X11/xorg.conf.d                   # fix permission for rotate file
 	ln -sf $dirbash/xinitrc /etc/X11/xinit           # startx
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf # reorder
+	timeout 1 firefox --headless &> /dev/null        # init /root/.mozilla/firefox
 	systemctl disable getty@tty1                     # login prompt
 	systemctl enable bootsplash localbrowser
 else
