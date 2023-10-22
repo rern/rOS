@@ -42,7 +42,7 @@ banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils jq kid3-common mpc mpd nfs-utils nginx-mainline nss-mdns 
-parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 python-websockets raspberrypi-stop-initramfs sudo udevil wget wiringpi '
+parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets raspberrypi-stop-initramfs sudo udevil wget wiringpi '
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
