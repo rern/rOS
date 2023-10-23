@@ -295,7 +295,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 	[[ $select == *' 6 '* ]] && list+="$shairport"$'\n' && features+='shairport-sync '
 	[[ $select == *' 7 '* ]] && list+="$snapcast"$'\n'  && features+='snapcast '
 	[[ $select == *' 8 '* ]] && list+="$spotify"$'\n'   && features+='spotifyd '
-	[[ $select == *' 9 '* ]] && list+="$upmpdcli"$'\n'  && features+='upmpdcli '
+	[[ $select == *' 9 '* ]] && list+="$upmpdcli"$'\n'  && features+='upmpdcli python-upnpp '
 }
 selectFeatures
 
