@@ -202,6 +202,7 @@ rm /boot/{features,release} /root/create-ros.sh /var/cache/pacman/pkg/*
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 # expand partition
 touch /boot/expand
+[[ -e /boot/finish.sh ]] && . /boot/finish.sh
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --infobox "
 
