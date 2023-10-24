@@ -46,7 +46,7 @@ parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 python-websock
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
-	packages+='linux-rpi raspberrypi-firmware '
+	packages+='linux-rpi raspberrypi-utils '
 fi
 
 # add +R repo
