@@ -522,7 +522,7 @@ dialog "${optbox[@]}" --msgbox "
 
 " 13 55
 
-title='rAudio - Connect to Raspberry Pi'
+title='r  A  u  d  i  o - Connect to Raspberry Pi'
 opt=( --backtitle "$title" ${optbox[@]} )
 #----------------------------------------------------------------------------
 ( for (( i = 1; i < sboot; i++ )); do
