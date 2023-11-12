@@ -17,7 +17,7 @@ else
 	[[ $packages ]] && apt install -y $packages
 fi
 
-title='rAudio'
+title='r  A  u  d  i  o'
 optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
 #----------------------------------------------------------------------------
