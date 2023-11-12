@@ -25,7 +25,7 @@ rm -f /var/lib/pacman/db.lck  # in case of rerun
 # fill entropy pool (fix - Kernel entropy pool is not initialized)
 systemctl start systemd-random-seed
 
-title=rAudio
+title='r  A  u  d  i  o'
 optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
 #----------------------------------------------------------------------------
