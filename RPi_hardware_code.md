@@ -42,8 +42,8 @@
 	- `c` - 4GB
 - Example: `a22082` : 1GB - Embest - BCM2837 - Raspberry Pi 3B - revision 2
 - Single core (Zero and 1 - BCM2835): `[[ $C == 0 ]]`
-- On-board Audio: `[[ ! $BB =~ ^(09|0c|12)$ ]]`
-- On-board Wi-Fi and Bluetooth: `[[ $BB =~ ^(08|0c|0d|0e|11|12)$ ]]`
+- On-board Audio: `[[ ! $BB =~ ^(09|0c|12)$ ]]` (not zero, zero w, zero 2w)
+- On-board Wi-Fi and Bluetooth: `[[ ! $BB =~ ^(00|01|02|03|04|09)$ ]]` (not zero, 1, 2)
 - Ethernet:
 	- Model A - without ethernet
 	- Model B - on-board ethernet
