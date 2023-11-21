@@ -4,8 +4,6 @@ After=startup.service
 
 [Service]
 ExecStart=/srv/http/bash/rotaryencoder.sh
-ExecStop=/opt/vc/bin/dtoverlay -r gpio-key
-ExecStop=/opt/vc/bin/dtoverlay -r rotary-encoder
 
 [Install]
 WantedBy=default.target
