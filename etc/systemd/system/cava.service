@@ -3,6 +3,3 @@ Description=VU level for VU LED and VU meter
 
 [Service]
 ExecStart=/srv/http/bash/cava.sh
-
-[Install]
-WantedBy=default.target
