@@ -99,7 +99,7 @@ mkdir -p /tmp/config
 release=$( cat /boot/release )
 curl -skL https://github.com/rern/rAudio/archive/$release.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
 curl -skL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
-rm /tmp/config/*.* /tmp/config/.* /boot/{features,release} /var/cache/pacman/pkg/*
+rm /tmp/config/*.* /tmp/config/.* /boot/features /var/cache/pacman/pkg/*
 
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
