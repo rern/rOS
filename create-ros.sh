@@ -70,6 +70,12 @@ if [[ $? != 0 ]]; then
 		exit
 	fi
 fi
+
+if [[ -e /boot/cmdline.txt0 ]]; then
+	mv -f /boot/cmdline.txt{0,}
+	mv -f /boot/config.txt{0,}
+fi
+rm -f /boot/{cmdline,config}.txt.pacsave
 #----------------------------------------------------------------------------
 banner 'Install packages ...'
 
@@ -101,12 +107,6 @@ chown http:http /etc/fstab
 chown -R http:http /etc/netctl /etc/systemd/network
 dirbash=/srv/http/bash
 chmod -R 755 $dirbash
-
-if [[ -e /boot/cmdline.txt0 ]]; then
-	mv -f /boot/cmdline.txt{0,}
-	mv -f /boot/config.txt{0,}
-fi
-rm -f /boot/{cmdline,config}.txt.pacsave
 
 mkdir /srv/http/assets/img/guide
 curl -skL https://github.com/rern/_assets/raw/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
