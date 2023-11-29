@@ -19,8 +19,8 @@ banner 'Initialize Arch Linux Arm ...'
 
 pacman-key --init
 pacman-key --populate archlinuxarm
-
 systemctl restart systemd-timesyncd # force time sync
+
 rm -f /var/lib/pacman/db.lck  # in case of rerun
 
 # fill entropy pool (fix - Kernel entropy pool is not initialized)
@@ -199,7 +199,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 #---------------------------------------------------------------------------------
 # data - settings directories
 $dirbash/settings/system-datadefault.sh $release
-# expand partition
+# flag expand partition
 touch /boot/expand
 [[ -e /boot/finish.sh ]] && . /boot/finish.sh
 rm -f /boot/{features,finish.sh,release} /boot/{cmdline,config}.txt.pacsave /root/create-ros.sh
