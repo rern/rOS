@@ -20,6 +20,7 @@ banner 'Initialize Arch Linux Arm ...'
 pacman-key --init
 pacman-key --populate archlinuxarm
 
+systemctl restart systemd-timesyncd # force time sync
 rm -f /var/lib/pacman/db.lck  # in case of rerun
 
 # fill entropy pool (fix - Kernel entropy pool is not initialized)
