@@ -1,5 +1,5 @@
 ##!/bin/bash
-[[ ! -e /usr/bin/gh ]] && echo -e "\nPackage gh not yet installed.\n" && exit
+[[ ! -e /usr/bin/gh ]] && echo -e "\nPackage github-cli not yet installed.\n" && exit
 
 [[ $EUID == 0 ]] && echo -e "\nsu x and run again.\n" && exit
 
