@@ -202,7 +202,7 @@ $dirbash/settings/system-datadefault.sh $release
 # flag expand partition
 touch /boot/expand
 [[ -e /boot/finish.sh ]] && . /boot/finish.sh
-rm -f /boot/{features,finish.sh,release} /boot/{cmdline,config}.txt.pacsave /root/create-ros.sh
+rm -f /boot/{features,finish.sh,release} /boot/{cmdline,config}.txt.pacnew /root/create-ros.sh
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --infobox "
 
