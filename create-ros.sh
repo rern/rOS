@@ -198,7 +198,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 
 #---------------------------------------------------------------------------------
 # data - settings directories
-$dirbash/settings/system-datareset.sh release
+$dirbash/settings/system-datadefault.sh $release
 # expand partition
 touch /boot/expand
 [[ -e /boot/finish.sh ]] && . /boot/finish.sh
