@@ -75,7 +75,6 @@ if [[ -e /boot/cmdline.txt0 ]]; then
 	mv -f /boot/cmdline.txt{0,}
 	mv -f /boot/config.txt{0,}
 fi
-rm -f /boot/{cmdline,config}.txt.pacsave
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 #----------------------------------------------------------------------------
@@ -91,7 +90,6 @@ if [[ $? != 0 ]]; then
 		
 	fi
 fi
-rm /root/create-ros.sh
 #----------------------------------------------------------------------------
 banner 'Get configurations and user interface ...'
 
@@ -99,7 +97,10 @@ mkdir -p /tmp/config
 release=$( cat /boot/release )
 curl -skL https://github.com/rern/rAudio/archive/$release.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
 curl -skL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
-rm /tmp/config/*.* /tmp/config/.* /boot/features /var/cache/pacman/pkg/*
+rm /tmp/config/*.* \
+	/tmp/config/.* \
+	/var/cache/pacman/pkg/* \
+	
 
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
@@ -196,13 +197,11 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 
 #---------------------------------------------------------------------------------
 # data - settings directories
-$dirbash/settings/system-datareset.sh
+$dirbash/settings/system-datareset.sh release
 # expand partition
 touch /boot/expand
-if [[ -e /boot/finish.sh ]]; then
-	. /boot/finish.sh
- 	rm /boot/finish.sh
-fi
+[[ -e /boot/finish.sh ]] && . /boot/finish.sh
+rm -f /boot/{features,finish.sh,release} /boot/{cmdline,config}.txt.pacsave /root/create-ros.sh
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --infobox "
 
