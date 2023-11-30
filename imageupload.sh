@@ -20,8 +20,7 @@ done
 
 selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist "
  \Z1Select files to upload:\Z0
- $imgdir
-" $(( ${#imgfiles[@]} + 6 )) 0 0 \
+ $imgdir" $(( ${#imgfiles[@]} + 6 )) 0 0 \
 $filelist )
 
 release=$( echo ${selectfiles[0]/*-} | cut -d. -f1 )
