@@ -26,6 +26,7 @@
 | 3B+     | `0d`      |       |        | &#8593;   | &#8593;          | &#8593;  | &#8593;  |
 |         |           |       |        |           |                  |          |          |
 | 4B      | `11`      |       |        | BCM2711   | Cortex-A72 x 4   | 1.5      | `3`      |
+| 5       | `17`      |       |        | BCM2712   | Cortex-A76 x 4   | 2.4      | `4`      |
 
 - `A` - PCB revision
 - `BB` - Name - `BB=${EDCBBA: -3:2}` (Zero W: `19000c1` - 7 characters)
@@ -33,13 +34,14 @@
 - `D` - Manufacturer:
 	- `0` - Sony - UK
 	- `2` - Embest - China
-	- `3` - Stadium - China
-	- `5` - Sony - Japan
+	- `3` - Sony - Japan
+	- `5` - Stadium - China
 - `E` - RAM:
 	- `9` - 512KB
 	- `a` - 1GB
 	- `b` - 2GB
 	- `c` - 4GB
+	- `d` - 8GB
 - Example: `a22082` : 1GB - Embest - BCM2837 - Raspberry Pi 3B - revision 2
 - Single core (Zero and 1 - BCM2835): `[[ $C == 0 ]]`
 - On-board Audio: `[[ ! $BB =~ ^(09|0c|12)$ ]]` (not zero, zero w, zero 2w)
