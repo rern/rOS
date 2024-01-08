@@ -51,8 +51,7 @@ if [[ $select == *' 3 '* ]]; then
 fi
 if [[ $select == *' 4 '* ]]; then
 	banner 'Clear system log ...'
-	journalctl --rotate
-	journalctl --vacuum-time=1s
+	rm -rf /var/log/journal/*
 fi
 if [[ $select == *' 5 '* ]]; then
 	banner 'Clear Bluetooth and Wi-Fi connection ...'
