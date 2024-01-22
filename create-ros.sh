@@ -42,9 +42,9 @@ clear -x # needed: fix stdout not scroll
 banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools dtc evtest gifsicle 
-hdparm hfsprogs i2c-tools imagemagick inetutils jq kid3-common libgpiod mpc mpd nfs-utils nginx-mainline nss-mdns 
+hdparm hfsprogs i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mpc mpd nfs-utils nginx-mainline nss-mdns 
 parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets 
-raspberrypi-stop-initramfs sudo udevil websocat wget wiringpi '
+raspberrypi-stop-initramfs sudo udevil websocat wget '
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
@@ -152,8 +152,16 @@ fi
 echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
 echo VISUAL=nano >> /etc/environment
 
-# hostapd
-[[ ! -e /usr/bin/hostapd ]] && rm -rf /etc/{hostapd,dnsmasq.conf}
+# iwd
+mkdir -p /var/lib/iwd/ap
+echo "\
+[Security]
+Passphrase=raudioap
+
+[IPv4]
+Address=192.168.5.1
+" > /var/lib/iwd/ap/rAudio.ap
+
 # mpd
 chsh -s /bin/bash mpd
 # motd

@@ -262,7 +262,7 @@ sshRpi() {
  bluealsa='\Z1BlueALSA\Z0   - Bluetooth audio'
   camilla='\Z1CamillaDSP\Z0 - Digital signal processor'
   browser='\Z1Firefox\Z0    - Browser on RPi screen'
-  hostapd='\Z1hostapd\Z0    - RPi access point'
+      iwd='\Z1iwd\Z0        - RPi access point'
     samba='\Z1Samba\Z0      - File sharing'
 shairport='\Z1Shairport\Z0  - AirPlay renderer'
  snapcast='\Z1Snapcast\Z0   - Synchronous multiroom player'
@@ -279,7 +279,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 1 "$bluealsa"  on \
 2 "$camilla"   on \
 3 "$browser"   on \
-4 "$hostapd"   on \
+4 "$iwd"       on \
 5 "$samba"     on \
 6 "$shairport" on \
 7 "$snapcast"  on \
@@ -290,7 +290,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 	[[ $select == *' 1 '* ]] && list+="$bluealsa"$'\n'  && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests '
 	[[ $select == *' 2 '* ]] && list+="$camilla"$'\n'   && features+='camilladsp python-pycamilladsp-plot python-websocket-client '
 	[[ $select == *' 3 '* ]] && list+="$browser"$'\n'   && features+='firefox matchbox-window-manager plymouth-lite-rbp upower xf86-video-fbturbo '
-	[[ $select == *' 4 '* ]] && list+="$hostapd"$'\n'   && features+='dnsmasq hostapd '
+	[[ $select == *' 4 '* ]] && list+="$iwd"$'\n'       && features+='iwd '
 	[[ $select == *' 5 '* ]] && list+="$samba"$'\n'     && features+='samba '
 	[[ $select == *' 6 '* ]] && list+="$shairport"$'\n' && features+='shairport-sync '
 	[[ $select == *' 7 '* ]] && list+="$snapcast"$'\n'  && features+='snapcast '
