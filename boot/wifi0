@@ -7,4 +7,3 @@ IP=dhcp
 Security=wpa
 ESSID="NAME"
 Key="PASSWORD"
- 
