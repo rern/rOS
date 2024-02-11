@@ -42,7 +42,7 @@ clear -x # needed: fix stdout not scroll
 banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools dtc evtest gifsicle 
-hdparm hfsprogs i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mpc mpd nfs-utils nginx-mainline nss-mdns 
+hdparm hfsprogs i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd nfs-utils nginx-mainline nss-mdns 
 parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets 
 raspberrypi-stop-initramfs sudo udevil websocat wget '
 
