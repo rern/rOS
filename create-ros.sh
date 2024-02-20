@@ -126,19 +126,6 @@ else
 	rm -rf /etc/systemd/system/{bluealsa,bluetooth}.service.d
 	rm -f /etc/systemd/system/blue*
 fi
-# browser
-if [[ -e /usr/bin/firefox ]]; then
-	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
-	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
-	ln -sf $dirbash/xinitrc /etc/X11/xinit                       # startx
-	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
-	timeout 1 firefox --headless &> /dev/null                    # init /root/.mozilla/firefox
-	systemctl disable getty@tty1                                 # disable login prompt
-	systemctl enable bootsplash localbrowser
-else
-	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* \
-		/srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* $dirbash/xinitrc /usr/local/bin/ply-image 2> /dev/null
-fi
 # camilladsp
 if [[ -e /usr/bin/camilladsp ]]; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
@@ -151,7 +138,19 @@ fi
 # cron - for addons updates
 echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
 echo VISUAL=nano >> /etc/environment
-
+# firefox
+if [[ -e /usr/bin/firefox ]]; then
+	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
+	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
+	ln -sf $dirbash/xinitrc /etc/X11/xinit                       # startx
+	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
+	timeout 1 firefox --headless &> /dev/null                    # init /root/.mozilla/firefox
+	systemctl disable getty@tty1                                 # disable login prompt
+	systemctl enable bootsplash localbrowser
+else
+	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* \
+		/srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* $dirbash/xinitrc /usr/local/bin/ply-image 2> /dev/null
+fi
 # iwd
 mkdir -p /var/lib/iwd/ap
 echo "\
@@ -161,7 +160,6 @@ Passphrase=raudioap
 [IPv4]
 Address=192.168.5.1
 " > /var/lib/iwd/ap/rAudio.ap
-
 # mpd
 chsh -s /bin/bash mpd
 # motd
