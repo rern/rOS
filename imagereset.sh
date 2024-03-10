@@ -47,7 +47,7 @@ if [[ $select == *' 2 '* ]]; then
 fi
 if [[ $select == *' 3 '* ]]; then
 	banner 'Clear package cache ...'
-	rm -f /var/cache/pacman/pkg/*
+	pacman -Scc --noconfirm
 fi
 if [[ $select == *' 4 '* ]]; then
 	banner 'Clear system log ...'
