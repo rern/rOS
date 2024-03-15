@@ -43,8 +43,7 @@ banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools dtc evtest gifsicle 
 hdparm hfsprogs i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd nfs-utils nginx-mainline nss-mdns 
-parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets 
-raspberrypi-stop-initramfs sudo udevil websocat wget '
+parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets sudo udevil websocat wget '
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
@@ -151,6 +150,12 @@ else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* \
 		/srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* $dirbash/xinitrc /usr/local/bin/ply-image 2> /dev/null
 fi
+# initramfs disable
+dirhooks=/etc/pacman.d/hooks
+mkdir -p $dirhooks
+for file in linux-rpi mkinitcpio-install; do
+	ln -s /dev/null $dirhooks/90-$file.hook
+done
 # iwd
 mkdir -p /var/lib/iwd/ap
 echo "\
