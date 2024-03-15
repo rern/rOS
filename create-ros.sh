@@ -182,11 +182,12 @@ fi
 sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 ' -e 's/.*\(PrintLastLog \).*/\1no/
 ' /etc/ssh/sshd_config
-# user - set expire to none
+# user
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
-	chage -E -1 $user
+	chage -E -1 $user # set expire to none
 done
+groupadd netdev # fix: group for iwd
 # upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
