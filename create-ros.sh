@@ -98,10 +98,7 @@ mkdir -p /tmp/config
 release=$( cat /boot/release )
 curl -skL https://github.com/rern/rAudio/archive/$release.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
 curl -skL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
-rm /tmp/config/*.* \
-	/tmp/config/.* \
-	/var/cache/pacman/pkg/* \
-	
+rm -f /tmp/config/{.*,*}
 
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
@@ -133,6 +130,8 @@ if [[ -e /usr/bin/camilladsp ]]; then
 	sed -e '/  Volume:/,/type: Volume/ d
 ' -e '/- Volume/ d
 ' /etc/camilladsp/configs/camilladsp.yml > $dirconfigs/camilladsp.yml
+else
+	rm -f /srv/http/data/mpdconf/conf/camilladsp.conf
 fi
 # cron - for addons updates
 echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
@@ -149,10 +148,7 @@ if [[ -e /usr/bin/firefox ]]; then
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}* \
 		  /etc/X11/* \
-		  /etc/X11/xinit/rotateconf \
-		  /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* \
-		  $dirbash/xinitrc \
-		  /usr/local/bin/ply-image
+		  /etc/X11/xinit/rotateconf
 fi
 # initramfs disable
 dirhooks=/etc/pacman.d/hooks
@@ -161,14 +157,17 @@ for file in linux-rpi mkinitcpio-install; do
 	ln -s /dev/null $dirhooks/90-$file.hook
 done
 # iwd
-mkdir -p /var/lib/iwd/ap
-echo "\
+if [[ -e /usr/bin/iwctl ]]; then
+	mkdir -p /var/lib/iwd/ap
+	echo "\
 [Security]
 Passphrase=raudioap
 
 [IPv4]
 Address=192.168.5.1
 " > /var/lib/iwd/ap/rAudio.ap
+	groupadd netdev # fix: group for iwd
+fi
 # mpd
 chsh -s /bin/bash mpd
 # motd
@@ -196,7 +195,6 @@ users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
 	chage -E -1 $user # set expire to none
 done
-[[ -e /usr/bin/iwctl ]] && groupadd netdev # fix: group for iwd
 # upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
