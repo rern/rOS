@@ -147,8 +147,12 @@ if [[ -e /usr/bin/firefox ]]; then
 	systemctl disable getty@tty1                                 # disable login prompt
 	systemctl enable bootsplash localbrowser
 else
-	rm -f /etc/systemd/system/{bootsplash,localbrowser}* /etc/X11/* \
-		/srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* $dirbash/xinitrc /usr/local/bin/ply-image 2> /dev/null
+	rm -f /etc/systemd/system/{bootsplash,localbrowser}* \
+		  /etc/X11/* \
+		  /etc/X11/xinit/rotateconf \
+		  /srv/http/assets/img/{splah,CW,CCW,NORMAL,UD}* \
+		  $dirbash/xinitrc \
+		  /usr/local/bin/ply-image
 fi
 # initramfs disable
 dirhooks=/etc/pacman.d/hooks
@@ -192,7 +196,7 @@ users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
 	chage -E -1 $user # set expire to none
 done
-groupadd netdev # fix: group for iwd
+[[ -e /usr/bin/iwctl ]] && groupadd netdev # fix: group for iwd
 # upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
@@ -216,7 +220,9 @@ $dirbash/settings/system-datadefault.sh $release
 # flag expand partition
 touch /boot/expand
 [[ -e /boot/finish.sh ]] && . /boot/finish.sh
-rm -f /boot/{features,finish.sh,release} /boot/{cmdline,config}.txt.pacnew /root/create-ros.sh
+rm -f /boot/{features,finish.sh,release} \
+	  /boot/{cmdline,config}.txt.pacnew \
+	  /root/create-ros.sh
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --infobox "
 
