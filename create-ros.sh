@@ -115,6 +115,13 @@ banner 'Configure ...'
 
 # alsa
 alsactl store
+# prompt
+cat << 'EOF' >> /etc/bash.bashrc
+PS1='\[\e[38;5;242m\]'$HOSTNAME'\[\e[0m\]\
+:\
+\[\e[36m\]\w\[\e[0m\]\
+ \[\e[30m\e[46m\] \$ \[\e[0m\] '
+EOF
 # bluetooth
 if [[ -e /usr/bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
