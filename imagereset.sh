@@ -56,11 +56,11 @@ fi
 if [[ $select == *' 5 '* ]]; then
 	banner 'Clear Bluetooth and Wi-Fi connection ...'
 	rm -rf /var/lib/bluetooth/*
-	readarray -t profiles <<< $( ls -p /etc/netctl | grep -v / )
+	profiles=$( ls -1p /etc/netctl | grep -v / )
 	if [[ $profiles ]]; then
-		for profile in "${profiles[@]}"; do
+		while read profile; do
 			netctl disable "$profile"
-		done
+		done <<< $profiles
 		rm /etc/netctl/* 2> /dev/null
 	fi
 fi
