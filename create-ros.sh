@@ -43,7 +43,7 @@ banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils audio_spectrum_oled cava cronie cd-discid dosfstools dtc evtest gifsicle 
 hdparm hfsprogs i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd nfs-utils nginx-mainline nss-mdns 
-parted php-fpm sshpass python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets sudo udevil websocat wget '
+parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets sudo udevil websocat wget '
 
 if [[ -e /boot/kernel8.img ]]; then
 	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
