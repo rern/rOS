@@ -3,7 +3,7 @@ Description=Websocket server
 Before=startup.service
 
 [Service]
-ExecStart=/srv/http/bash/websocket-server.py
+ExecStart=/srv/http/bash/websocket.py
 
 [Install]
 WantedBy=multi-user.target
