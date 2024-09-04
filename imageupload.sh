@@ -32,8 +32,7 @@ for model in 64bit RPi2 RPi0-1; do
  	echo "MD5 $file ..."
  	image_md5_mirror+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
   					   | $( md5sum $dir/$file | cut -d' ' -f1 ) \
-                       | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
- 	md5+=( $( md5sum $dir/$file | cut -d' ' -f1 ) )
+                       | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
 done
 notes='
 | Raspberry Pi                 | Image File | MD5 | Mirror |
