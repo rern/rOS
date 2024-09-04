@@ -35,11 +35,11 @@ for model in 64bit RPi2 RPi0-1; do
                        | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
 done
 notes='
-| Raspberry Pi                 | Image File | MD5 | Mirror |
-|:-----------------------------|:-----------|:----|:-------|
-| `4` `3` `2 BCM2837` `Zero 2` | '${image_md5_mirror[0]}'  |
-| `2 BCM2836`                  | '${image_md5_mirror[1]}'  |
-| `1` `Zero`                   | '${image_md5_mirror[2]}'  |
+| Raspberry Pi             | Image File | MD5 | Mirror |
+|:-------------------------|:-----------|:----|:-------|
+| `4` `3` `2 1.2` `Zero2` | '${image_md5_mirror[0]}'  |
+| `2`                      | '${image_md5_mirror[1]}'  |
+| `1` `Zero`               | '${image_md5_mirror[2]}'  |
 '
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
