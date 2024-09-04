@@ -37,7 +37,7 @@ done
 notes='
 | Raspberry Pi             | Image File | MD5 | Mirror |
 |:-------------------------|:-----------|:----|:-------|
-| `4` `3` `2 1.2` `Zero2` | '${image_md5_mirror[0]}'  |
+| `4` `3` `2 1.2` `Zero2`  | '${image_md5_mirror[0]}'  |
 | `2`                      | '${image_md5_mirror[1]}'  |
 | `1` `Zero`               | '${image_md5_mirror[2]}'  |
 '
