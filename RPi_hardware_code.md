@@ -32,8 +32,8 @@
 revision=$( grep ^Revision /proc/cpuinfo )
 BB=${revision: -3:2}
 [[ $BB == 04 ]] && BB=${revision: -4:3} # 2B - ABB
-declare -A BB_model=( [02]=A+ [03]=B+ [104]=2B [204]=2B1.2 [06]=CM1 [08]=3B [09]=Zero [0a]=CM3 [0c]=ZeroW [0d]=3B+ [0e]=3A+ \
-                      [10]=CM3+ [11]=4B [12]=Zero2W [13]=400 [14]=CM4 [17]=5 )
+declare -A BB_model=( [02]=A+   [03]=B+ [104]=2B    [204]=2B1.2 [06]=CM  [08]=3B [09]=Zero [0a]=CM3 [0c]=ZeroW [0d]=3B+ [0e]=3A+ \
+                      [10]=CM3+ [11]=4B [12]=Zero2W [13]=400    [14]=CM4 [17]=5 )
 model=${BB_model[$BB]}
 ```
 
