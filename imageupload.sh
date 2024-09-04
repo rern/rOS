@@ -13,7 +13,7 @@ rm -f rAudio*img.xz
 ln -s ../BIG/*.xz .
 
 optbox=( --colors --no-shadow --no-collapse )
-imgfiles=( $( ls -1 rAudio*.img.xz 2> /dev/null ) )
+imgfiles=( $( ls rAudio*.img.xz 2> /dev/null ) )
 for file in "${imgfiles[@]}"; do
 	filelist+=" $file on"
 done
@@ -22,17 +22,23 @@ selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --check
  \Z1Select files to upload:\Z0
  $imgdir" $(( ${#imgfiles[@]} + 6 )) 0 0 \
 $filelist )
+(( ${#filelist[@]} != 3 )) && echo 'Image files count not 3.' && exit
 
-release=$( echo ${selectfiles[0]/*-} | cut -d. -f1 )
-version=$release.img.xz
-imagefile="[rAudio-64bit-$version](https://github.com/rern/rAudio/releases/download/i$release/rAudio-64bit-$version)"
-mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=rAudio-64bit-$version)"
+file0=${filelist[0]}
+dir=$( dirname $file0 )
+release=$( echo ${file0/*-} | cut -d. -f1 )
+for model in 64bit RPi2 RPi0-1; do
+	file=rAudio-$model-$release.img.xz
+	image+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)" )
+ 	mirror=+=( "[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
+ 	md5+=( $( md5sum $dir/$file ) )
+done
 notes='
-| Raspberry Pi                 | Image  File                  | Mirror                    |
-|:-----------------------------|:-----------------------------|:--------------------------|
-| `4` `3` `2 BCM2837` `Zero 2` | '$imagefile'                 | '$mirror'                 |
-| `2 BCM2836`                  | '${imagefile//64bit/RPi2}'   | '${mirror//64bit/RPi2}'   |
-| `1` `Zero`                   | '${imagefile//64bit/RPi0-1}' | '${mirror//64bit/RPi0-1}' |
+| Raspberry Pi                 | Image  File   | MD5         | Mirror         |
+|:-----------------------------|:--------------|:------------|:---------------|
+| `4` `3` `2 BCM2837` `Zero 2` | '${image[0]}' | '${md5[0]}' | '${mirror[0]}' |
+| `2 BCM2836`                  | '${image[0]}' | '${md5[0]}' | '${mirror[0]}' |
+| `1` `Zero`                   | '${image[0]}' | '${md5[0]}' | '${mirror[0]}' |
 '
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
