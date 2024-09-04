@@ -36,7 +36,7 @@ if [[ $BB == 00 ]]; then # 1 - BB[C]
 elif [[ $BB == 04 ]]; then # 2B - [A]BB
 	[[ ${revision: -4:1} == 1 ]] && model=2B || model=2B1.2
 else
-	declare -A BB_model=( [01]=CM   [02]=A+ [03]=B+     [06]=CM  [08]=3B  [09]=Zero [0a]=CM3 [0c]=ZeroW [0d]=3B+ [0e]=3A+ \
+	declare -A BB_model=( [01]=CM   [02]=A+ [03]=B+     [06]=CM1 [08]=3B  [09]=Zero [0a]=CM3 [0c]=ZeroW [0d]=3B+ [0e]=3A+ \
 	                      [10]=CM3+ [11]=4B [12]=Zero2W [13]=400 [14]=CM4 [15]=CM4S [16]=CM2 [17]=5 )
 	model=${BB_model[$BB]}
 fi
