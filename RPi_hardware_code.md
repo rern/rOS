@@ -29,6 +29,14 @@
 |         |           |       |        |           |                  |          |          |
 | **ARMv8.2-A** (64/32bit)                                                                  |
 | 5       | `17`      | ↑     | ↑      | BCM2712   | Cortex-A76 x 4   | 2.4      | `4`      |
+```sh
+#!/bin/bash
+revision=$( grep ^Revision /proc/cpuinfo )
+BB=${revision: -3:2}
+[[ $BB == 04 ]] && BB=${revision: -3}
+declare -A C_model=( [09]=Zero [0c]=ZeroW [02]=A+ [03]=B+ [041]=2B [042]=2B1.2 [08]=3B [0d]=3B+ [0e]=3A+ [12]=Zero2W [11]=4B [17]=5 )
+model=${C_model[$BB]}
+```
 
 - `A` - PCB revision
 - `BB` - Name - `BB=${EDCBBA: -3:2}` (Zero W: `19000c1` - 7 characters)
@@ -46,7 +54,6 @@
 	- `d` - 8GB
 - Example: `a22082` : 1GB - Embest - BCM2837 - Raspberry Pi 3B - revision 2
 - Single core (Zero and 1 - BCM2835): `[[ $C == 0 ]]`
-- On-board Audio: `[[ ! $BB =~ ^(09|0c|12)$ ]]` (not zero, zero w, zero 2w)
 - On-board Wi-Fi and Bluetooth: `[[ ! $BB =~ ^(00|01|02|03|04|09)$ ]]` (not zero, 1, 2)
 - Ethernet:
 	- Model A - without ethernet
