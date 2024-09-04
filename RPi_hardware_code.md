@@ -33,7 +33,7 @@
 #!/bin/bash
 revision=$( grep ^Revision /proc/cpuinfo )
 BB=${revision: -3:2}
-[[ $BB == 04 ]] && BB=${revision: -3} # BBA
+[[ $BB == 04 ]] && BB=${revision: -3} # 2B - BBA
 declare -A BB_model=( [09]=Zero [0c]=ZeroW [02]=A+ [03]=B+ [041]=2B [042]=2B1.2 [08]=3B [0d]=3B+ [0e]=3A+ [12]=Zero2W [11]=4B [17]=5 )
 model=${BB_model[$BB]}
 ```
