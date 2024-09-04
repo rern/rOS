@@ -9,10 +9,8 @@
 | **ARMv6Z** (32bit)                                                                        |
 | Zero    | `09`      | X     | X      | BCM2835   | ARM1176JZF-S x 1 | 1        | `0`      |
 | Zero W  | `0c`      |       | X      | ↑         | ↑                | ↑        | ↑        |
-| B       | `00`      | X     |        | ↑         | ↑                | 0.7      | ↑        |
-| A       | `00`      | X     | X      | ↑         | ↑                | ↑        | ↑        |
-| A+      | `01` `02` | X     | X      | ↑         | ↑                | ↑        | ↑        |
-| B+      | `01` `03` | X     |        | ↑         | ↑                | ↑        | ↑        |
+| A+      | `02`      | X     | X      | ↑         | ↑                | ↑        | ↑        |
+| B+      | `03`      | X     |        | ↑         | ↑                | ↑        | ↑        |
 |         |           |       |        |           |                  |          |          |
 | **ARMv7-A** (32bit)                                                                       |
 | 2B      | `04`      | X     |        | BCM2836   | Cortex-A7 x 4    | 0.9      | `1`      |
@@ -33,8 +31,8 @@
 #!/bin/bash
 revision=$( grep ^Revision /proc/cpuinfo )
 BB=${revision: -3:2}
-[[ $BB == 04 ]] && BB=${revision: -3} # 2B - BBA
-declare -A BB_model=( [09]=Zero [0c]=ZeroW [02]=A+ [03]=B+ [041]=2B [042]=2B1.2 [08]=3B [0d]=3B+ [0e]=3A+ [12]=Zero2W [11]=4B [17]=5 )
+[[ $BB == 04 ]] && BB=${revision: -4:3} # 2B - ABB
+declare -A BB_model=( [09]=Zero [0c]=ZeroW [02]=A+ [03]=B+ [104]=2B [204]=2B1.2 [08]=3B [0d]=3B+ [0e]=3A+ [12]=Zero2W [11]=4B [17]=5 )
 model=${BB_model[$BB]}
 ```
 
