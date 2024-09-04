@@ -30,8 +30,9 @@ release=$( echo ${file0/*-} | cut -d. -f1 )
 for model in 64bit RPi2 RPi0-1; do
 	file=rAudio-$model-$release.img.xz
 	image+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)" )
- 	mirror=+=( "[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
- 	md5+=( $( md5sum $dir/$file ) )
+ 	mirror+=( "[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
+  	echo -e "\nMD5 $file ...\n"
+ 	md5+=( $( md5sum $dir/$file | cut -d' ' -f1 ) )
 done
 notes='
 | Raspberry Pi                 | Image  File   | MD5         | Mirror         |
