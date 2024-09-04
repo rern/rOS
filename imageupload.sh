@@ -29,17 +29,18 @@ dir=$( dirname $file0 )
 release=$( echo ${file0/*-} | cut -d. -f1 )
 for model in 64bit RPi2 RPi0-1; do
 	file=rAudio-$model-$release.img.xz
-	image+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)" )
- 	mirror+=( "[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
-  	echo "MD5 $file ..."
+ 	echo "MD5 $file ..."
+ 	image_md5_mirror+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
+  					   | $( md5sum $dir/$file | cut -d' ' -f1 ) \
+                       | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
  	md5+=( $( md5sum $dir/$file | cut -d' ' -f1 ) )
 done
 notes='
-| Raspberry Pi                 | Image  File   | MD5         | Mirror         |
-|:-----------------------------|:--------------|:------------|:---------------|
-| `4` `3` `2 BCM2837` `Zero 2` | '${image[0]}' | '${md5[0]}' | '${mirror[0]}' |
-| `2 BCM2836`                  | '${image[0]}' | '${md5[0]}' | '${mirror[0]}' |
-| `1` `Zero`                   | '${image[0]}' | '${md5[0]}' | '${mirror[0]}' |
+| Raspberry Pi                 | Image File | MD5 | Mirror |
+|:-----------------------------|:-----------|:----|:-------|
+| `4` `3` `2 BCM2837` `Zero 2` | '${image_md5_mirror[0]}'  |
+| `2 BCM2836`                  | '${image_md5_mirror[1]}'  |
+| `1` `Zero`                   | '${image_md5_mirror[2]}'  |
 '
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
