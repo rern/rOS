@@ -106,13 +106,13 @@ ROOT: \Z1$ROOT\Z0
 
 	file=ArchLinuxARM-rpi-
 	if [[ $rpi == 1 ]]; then
-			file+=aarch64-
-			rpiname=64bit
-			sboot=45
+		file+=aarch64-
+		rpiname=64bit
+		sboot=45
 	else
-			file+=armv7-
-			rpiname=32bit
-			sboot=60
+		file+=armv7-
+		rpiname=32bit
+		sboot=60
 	fi
 	file+=latest.tar.gz
 	routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
