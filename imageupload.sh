@@ -1,10 +1,10 @@
-##!/bin/bash
+#!/bin/bash
 [[ ! -e /usr/bin/gh ]] && echo -e "\nPackage github-cli not yet installed.\n" && exit
 
 [[ $EUID == 0 ]] && echo -e "\nsu x and run again.\n" && exit
 
 [[ ! -d /home/x/rAudio ]] && git clone https://github.com/rern/rAudio/
-	
+
 cd /home/x/rAudio
 
 ! gh auth status &> /dev/null && gh auth login -p ssh -w
@@ -22,9 +22,10 @@ selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --check
  \Z1Select files to upload:\Z0
  $imgdir" $(( ${#imgfiles[@]} + 6 )) 0 0 \
 $filelist )
-(( ${#filelist[@]} != 3 )) && echo 'Image files count not 3.' && exit
+files=( $selectfiles )
+(( ${#files[@]} != 3 )) && echo 'Image files count not 3.' && exit
 
-file0=${filelist[0]}
+file0=${files[0]}
 dir=$( dirname $file0 )
 release=$( echo ${file0/*-} | cut -d. -f1 )
 for model in 64bit RPi2 RPi0-1; do
