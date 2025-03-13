@@ -193,7 +193,7 @@ bind_to_address = 0.0.0.0
 ' /etc/snapserver.conf
 # spotifyd
 if [[ -e /usr/bin/spotifyd ]]; then
-	mv /lib/systemd/{user,system}/spotifyd.service
+	ln -s /lib/systemd/{user,system}/spotifyd.service
 else
 	rm /etc/spotifyd.conf
 fi
