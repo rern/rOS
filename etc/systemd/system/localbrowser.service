@@ -4,7 +4,7 @@ After=startup.service
 
 [Service]
 Type=idle
-ExecStart=/usr/bin/sudo /usr/bin/startx
+ExecStart=/usr/bin/startx /srv/http/bash/startx.sh
 
 [Install]
 WantedBy=multi-user.target

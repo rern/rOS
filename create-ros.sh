@@ -147,9 +147,13 @@ echo VISUAL=nano >> /etc/environment
 if [[ -e /usr/bin/firefox ]]; then
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
-	ln -sf $dirbash/xinitrc /etc/X11/xinit                       # startx
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
 	timeout 1 firefox --headless &> /dev/null                    # init /root/.mozilla/firefox
+	profile=$( ls /root/.mozilla/firefox | grep release$ )
+	echo '
+user_pref("layout.css.prefers-color-scheme.content-override", 0);
+user_pref("browser.display.background_color.dark", "#000000");
+' > /root/.mozilla/firefox/$profile/user.js
 	systemctl disable getty@tty1                                 # disable login prompt
 	systemctl enable bootsplash localbrowser
 else
