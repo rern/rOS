@@ -188,7 +188,7 @@ sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
 # password
 echo root:ros | chpasswd
 # samba
-[[ -e /usr/bin/smbd ]] && ( echo ros; echo ros ) | smbpasswd -s -a root
+[[ -e /usr/bin/smbd ]] && ( echo ''; echo '' ) | smbpasswd -s -a root
 # shairport-sync - not installed
 [[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
 # snapcast
