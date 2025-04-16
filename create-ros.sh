@@ -140,6 +140,8 @@ if [[ -e /usr/bin/camilladsp ]]; then
 else
 	rm -f /srv/http/data/mpdconf/conf/camilladsp.conf
 fi
+# cava
+ln -s /etc/cava.conf /root/.config/cava
 # cron - for addons updates
 echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
 echo VISUAL=nano >> /etc/environment
