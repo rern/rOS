@@ -115,13 +115,6 @@ banner 'Configure ...'
 
 # alsa
 alsactl store
-# prompt
-cat << 'EOF' >> /etc/bash.bashrc
-PS1='\[\e[38;5;242m\]'$HOSTNAME'\[\e[0m\]\
-:\
-\[\e[36m\]\w\[\e[0m\]\
- \[\e[30m\e[46m\] \$ \[\e[0m\] '
-EOF
 # bluetooth
 if [[ -e /usr/bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
@@ -159,9 +152,8 @@ user_pref("browser.display.background_color.dark", "#000000");
 	systemctl disable getty@tty1                                 # disable login prompt
 	systemctl enable bootsplash localbrowser
 else
-	rm -f /etc/systemd/system/{bootsplash,localbrowser}* \
-		  /etc/X11/* \
-		  /etc/X11/xinit/rotateconf
+	rm -f /etc/systemd/system/{bootsplash,localbrowser}*
+	rm -rf /etc/X11
 fi
 # initramfs disable
 dirhooks=/etc/pacman.d/hooks
@@ -180,7 +172,11 @@ Passphrase=raudioap
 Address=192.168.5.1
 " > /var/lib/iwd/ap/rAudio.ap
 	groupadd netdev # fix: group for iwd
+else
+	rm -f /etc/iwd/main.conf
 fi
+# locale
+localectl set-locale LANG=C.utf8
 # mpd
 chsh -s /bin/bash mpd
 # motd
@@ -190,23 +186,38 @@ sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
 # password
 echo root:ros | chpasswd
 # samba
-[[ -e /usr/bin/smbd ]] && ( echo ros; echo ros ) | smbpasswd -s -a root
-# shairport-sync - not installed
-[[ ! -e /usr/bin/shairport-sync ]] && rm /etc/sudoers.d/shairport-sync /etc/systemd/system/shairport-meta.service
+if [[ -e /usr/bin/smbd ]]; then
+	( echo ros; echo ros ) | smbpasswd -s -a root
+else
+	rm -rf /etc/samba
+fi
+# shairport-sync
+if [[ ! -e /usr/bin/shairport-sync ]]; then
+	rm /etc/shairport-sync.conf /etc/systemd/system/shairport.service
+	rm -rf /etc/systemd/system/shairport-sync.service.d/
+fi
 # snapcast
-sed -i '/^#bind_to_address/ a\
+if [[ -e /usr/bin/snapserver ]]; then
+	sed -i '/^#bind_to_address/ a\
 bind_to_address = 0.0.0.0
 ' /etc/snapserver.conf
+fi
 # spotifyd
 if [[ -e /usr/bin/spotifyd ]]; then
 	ln -s /lib/systemd/{user,system}/spotifyd.service
 else
-	rm /etc/spotifyd.conf
+	rm /etc/spotifyd.conf /etc/systemd/system/spotifyd.service
 fi
 # sshd
 sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 ' -e 's/.*\(PrintLastLog \).*/\1no/
 ' /etc/ssh/sshd_config
+cat << 'EOF' >> /etc/bash.bashrc # prompt
+PS1='\[\e[38;5;242m\]'$HOSTNAME'\[\e[0m\]\
+:\
+\[\e[36m\]\w\[\e[0m\]\
+ \[\e[30m\e[46m\] \$ \[\e[0m\] '
+EOF
 # user
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
@@ -221,7 +232,7 @@ if [[ -e /usr/bin/upmpdcli ]]; then
 	openssl rsa -in $file -RSAPublicKey_out
 	chown upmpdcli:root $file
 else
-	rm -rf /etc/upmpdcli.conf /etc/systemd/system/upmpdcli.service.d
+	rm -rf /etc/upmpdcli.conf /etc/systemd/system/upmpdcli.service
 fi
 # wireless-regdom
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom

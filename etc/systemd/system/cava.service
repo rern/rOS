@@ -3,5 +3,5 @@ Description=VU level for VU LED and VU meter
 
 [Service]
 User=root
-ExecStart=/srv/http/bash/cava.sh
-ExecStop=/srv/http/bash/cava.sh stop
+ExecStart=/srv/http/bash/vu.sh
+ExecStop=/srv/http/bash/vu.sh stop
