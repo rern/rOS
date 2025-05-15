@@ -213,11 +213,12 @@ sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 ' -e 's/.*\(PrintLastLog \).*/\1no/
 ' /etc/ssh/sshd_config
 cat << 'EOF' >> /etc/bash.bashrc # prompt
+xterm=$( cat /dev/shm/xterm )
 PS1='\[\e[38;5;242m\]'$HOSTNAME'\[\e[0m\]\
 :\
-\[\e[36m\]\w\[\e[0m\]\
- \[\e[30m\e[46m\] \$ \[\e[0m\] '
- 
+\[\e[38;5;'$xterm'm\]\w\
+ \[\e[38;5;0m\e[48;5;'$xterm'm\] \$ \[\e[0m\] '
+
 alias grepr='grep --color --exclude-dir plugin -nr'
 EOF
 # user
