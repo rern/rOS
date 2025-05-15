@@ -217,6 +217,8 @@ PS1='\[\e[38;5;242m\]'$HOSTNAME'\[\e[0m\]\
 :\
 \[\e[36m\]\w\[\e[0m\]\
  \[\e[30m\e[46m\] \$ \[\e[0m\] '
+ 
+alias grepr='grep --color --exclude-dir plugin -nr'
 EOF
 # user
 users=$( cut -d: -f1 /etc/passwd )
