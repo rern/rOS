@@ -212,14 +212,7 @@ fi
 sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
 ' -e 's/.*\(PrintLastLog \).*/\1no/
 ' /etc/ssh/sshd_config
-cat << 'EOF' >> /etc/bash.bashrc # prompt
-PS1='\[\e[38;5;242m\]'$HOSTNAME'\[\e[0m\]\
-:\
-\[\e[36m\]\w\[\e[0m\]\
- \[\e[30m\e[46m\] \$ \[\e[0m\] '
-
-alias grepr='grep --color --exclude-dir plugin -nr'
-EOF
+echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 # user
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
