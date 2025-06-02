@@ -145,10 +145,6 @@ if [[ -e /usr/bin/firefox ]]; then
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
 	timeout 1 firefox --headless &> /dev/null                    # init /root/.mozilla/firefox
 	profile=$( ls /root/.mozilla/firefox | grep release$ )
-	echo '
-user_pref("layout.css.prefers-color-scheme.content-override", 0);
-user_pref("browser.display.background_color.dark", "#000000");
-' > /root/.mozilla/firefox/$profile/user.js
 	systemctl disable getty@tty1                                 # disable login prompt
 	systemctl enable bootsplash localbrowser
 else
