@@ -172,7 +172,11 @@ else
 	rm -f /etc/iwd/main.conf
 fi
 # locale
-localectl set-locale LANG=C.UTF-8
+if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
+	echo 'C.UTF-8 UTF-8' >> /etc/locale.gen
+	locale-gen
+	localectl set-locale LANG=C.UTF-8
+fi
 # mpd
 chsh -s /bin/bash mpd
 # motd
