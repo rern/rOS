@@ -172,7 +172,7 @@ else
 	rm -f /etc/iwd/main.conf
 fi
 # locale
-localectl set-locale LANG=C.utf8
+localectl set-locale LANG=C.UTF-8
 # mpd
 chsh -s /bin/bash mpd
 # motd
