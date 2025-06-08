@@ -173,8 +173,10 @@ else
 fi
 # locale
 if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
-	echo 'C.UTF-8 UTF-8' >> /etc/locale.gen
-	locale-gen
+	if ! grep -q ^C.UTF-8 /etc/locale.gen; then
+		echo 'C.UTF-8 UTF-8' >> /etc/locale.gen
+		locale-gen
+	fi
 	localectl set-locale LANG=C.UTF-8
 fi
 # mpd
