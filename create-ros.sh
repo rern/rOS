@@ -43,12 +43,21 @@ banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle 
 hdparm hfsprogs i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns 
-parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets sudo udevil websocat wget '
+parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets sudo udevil websocat wget'
 
 if [[ -e /boot/kernel8.img ]]; then
-	pacman -R --noconfirm linux-aarch64 uboot-raspberrypi
-	packages+='linux-rpi raspberrypi-utils '
+	remove='linux-aarch64 uboot-raspberrypi'
+	packages+=' linux-rpi raspberrypi-utils'
 fi
+
+pacman -Q linux-firmware &> /dev/null && remove+=' linux-firmware'
+if pacman -Q linux-firmware-broadcom &> /dev/null; then
+	remove+=' linux-firmware-broadcom linux-firmware-intel  linux-firmware-liquidio linux-firmware-marvell linux-firmware-mellanox
+			  linux-firmware-nfp      linux-firmware-nvidia linux-firmware-qcom     linux-firmware-qlogic  linux-firmware-radeon'
+else
+	packages+=' linux-firmware-atheros linux-firmware-cirrus linux-firmware-mediatek linux-firmware-other linux-firmware-realtek'
+fi
+[[ $remove ]] && pacman -Rdd --noconfirm $remove
 
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
