@@ -153,12 +153,10 @@ if [[ -e /usr/bin/firefox ]]; then
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
 	timeout 1 firefox --headless &> /dev/null                    # init /root/.mozilla/firefox
-	profile=$( ls /root/.mozilla/firefox | grep release$ )
 	systemctl disable getty@tty1                                 # disable login prompt
 	systemctl enable bootsplash localbrowser
 else
 	rm -f /etc/systemd/system/{bootsplash,localbrowser}*
-	rm -rf /etc/X11
 fi
 # initramfs disable
 dirhooks=/etc/pacman.d/hooks
