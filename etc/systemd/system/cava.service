@@ -2,6 +2,7 @@
 Description=VU level for VU LED and VU meter
 
 [Service]
+Environment=HOME=/tmp
 User=root
 ExecStart=/srv/http/bash/vu.sh
 ExecStop=/srv/http/bash/vu.sh stop
