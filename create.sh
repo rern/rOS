@@ -69,10 +69,10 @@ clear -x
 umount $partboot $partroot 2> /dev/null
 
 wipefs -a $dev
-# setup partitions - create partitions with gparted > get parameters: sfdisk -d /dev/mmcblk0 | grep ^/dev
+# setup partitions - create partitions with gparted > get parameters: sfdisk -d /dev/sdX | grep ^/dev
 echo "\
-$partboot : start=        2048, size=      409600, type=b
-$partroot : start=      411648, size=    13107200, type=83
+$partboot : start=        2048, size=      819200, type=b
+$partroot : start=      821248, size=    13107200, type=83
 " | sfdisk $dev
 
 umount $partboot $partroot 2> /dev/null
