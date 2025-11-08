@@ -39,6 +39,17 @@ sleep 2
 
 clear -x # needed: fix stdout not scroll
 #----------------------------------------------------------------------------
+# add +R repo
+if ! grep -q '^\[+R\]' /etc/pacman.conf; then
+	sed -i -e '/community/,/^$/ d
+' -e '/aur/,/^$/ d
+' -e '/core/ i\
+[+R]\
+SigLevel = Optional TrustAll\
+Server = https://rern.github.io/$arch\
+' /etc/pacman.conf
+fi
+
 banner 'Upgrade system and default packages ...'
 
 remove='linux-firmware linux-firmware-broadcom linux-firmware-intel linux-firmware-nvidia linux-firmware-radeon'
@@ -53,19 +64,7 @@ if [[ -e /boot/kernel8.img ]]; then
 	packages+=' linux-rpi raspberrypi-utils'
 fi
 
-[[ $remove ]] && pacman -Rdd --noconfirm $remove
-
-# add +R repo
-if ! grep -q '^\[+R\]' /etc/pacman.conf; then
-	sed -i -e '/community/,/^$/ d
-' -e '/aur/,/^$/ d
-' -e '/core/ i\
-[+R]\
-SigLevel = Optional TrustAll\
-Server = https://rern.github.io/$arch\
-' /etc/pacman.conf
-fi
-
+pacman -Rdd --noconfirm $remove
 pacman -Syu --noconfirm
 if [[ $? != 0 ]]; then
 	echo -e "\e[38;5;0m\e[48;5;3m ! \e[0m Retry upgrade system ..."
