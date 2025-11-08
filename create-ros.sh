@@ -52,8 +52,7 @@ fi
 
 pacman -Q linux-firmware &> /dev/null && remove+=' linux-firmware'
 if pacman -Q linux-firmware-broadcom &> /dev/null; then
-	remove+=' linux-firmware-broadcom linux-firmware-intel  linux-firmware-liquidio linux-firmware-marvell linux-firmware-mellanox
-			  linux-firmware-nfp      linux-firmware-nvidia linux-firmware-qcom     linux-firmware-qlogic  linux-firmware-radeon'
+	remove+=' linux-firmware-broadcom linux-firmware-intel linux-firmware-nvidia linux-firmware-radeon'
 else
 	packages+=' linux-firmware-atheros linux-firmware-cirrus linux-firmware-mediatek linux-firmware-other linux-firmware-realtek'
 fi
