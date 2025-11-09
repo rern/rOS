@@ -397,7 +397,7 @@ rm $file.md5
 # expand
 #----------------------------------------------------------------------------
 ( pv -n $file \
-	| bsdtar -C $ROOT -xpf - ) 2>&1 \
+	| bsdtar -C $ROOT -xpf - --exclude=boot/initramfs-linux-fallback.img ) 2>&1 \
 	| dialog "${opt[@]}" --gauge "
   Decompress
   \Z1$file\Z0 ...
