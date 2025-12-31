@@ -47,8 +47,10 @@ i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mp
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets raspberrypi-utils sudo udevil websocat wget'
 
 if [[ -e /boot/kernel8.img ]]; then
-	remove+=' linux-aarch64 uboot-raspberrypi'
-	packages+=' linux-rpi'
+	pkgs=$( pacman -Q )
+	grep -q linux-aarch64 <<< $pkgs && remove+=' linux-aarch64'
+	grep -q uboot-raspberrypi <<< $pkgs && remove+=' uboot-raspberrypi'
+	! grep -q linux-rpi <<< $pkgs && packages+=' linux-rpi'
 fi
 
 pacman -Rdd --noconfirm $remove
