@@ -50,8 +50,7 @@ if [[ -e /boot/kernel8.img ]]; then
 	pkgs=$( pacman -Q )
 	grep -q linux-aarch64 <<< $pkgs && remove+=' linux-aarch64'
 	grep -q uboot-raspberrypi <<< $pkgs && remove+=' uboot-raspberrypi'
-	# temp ############################################################################
-	sed -i -E 's/.*(IgnorePkg   =)/\1 linux-rpi/' /etc/pacman.conf
+	! grep -q linux-rpi <<< $pkgs && packages+=' linux-rpi'
 fi
 
 pacman -Rdd --noconfirm $remove
