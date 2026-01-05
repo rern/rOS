@@ -43,7 +43,7 @@ banner 'Upgrade system and default packages ...'
 
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns 
-parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets raspberrypi-utils sudo udevil websocat wget'
+parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets raspberrypi-utils sudo udevil websocat wget xorg-xset'
 pkgs=$( pacman -Q )
 grep -q 'linux-firmware ' <<< $pkgs &&
 	remove='linux-firmware linux-firmware-amdgpu linux-firmware-broadcom linux-firmware-intel linux-firmware-nvidia linux-firmware-radeon'
