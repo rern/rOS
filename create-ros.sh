@@ -41,13 +41,13 @@ clear -x # needed: fix stdout not scroll
 #----------------------------------------------------------------------------
 banner 'Upgrade system and default packages ...'
 
-remove='linux-firmware linux-firmware-amdgpu linux-firmware-broadcom linux-firmware-intel linux-firmware-nvidia linux-firmware-radeon'
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns 
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets raspberrypi-utils sudo udevil websocat wget'
-
+pkgs=$( pacman -Q )
+grep -q 'linux-firmware ' <<< $pkgs &&
+	remove='linux-firmware linux-firmware-amdgpu linux-firmware-broadcom linux-firmware-intel linux-firmware-nvidia linux-firmware-radeon'
 if [[ -e /boot/kernel8.img ]]; then
-	pkgs=$( pacman -Q )
 	grep -q linux-aarch64 <<< $pkgs && remove+=' linux-aarch64'
 	grep -q uboot-raspberrypi <<< $pkgs && remove+=' uboot-raspberrypi'
 	! grep -q linux-rpi <<< $pkgs && packages+=' linux-rpi'
