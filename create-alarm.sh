@@ -421,14 +421,13 @@ done ) \
 sync
 
 # fstab
-partuuidBOOT=$( blkid | awk '/LABEL="BOOT"/ {print $NF}' | tr -d '"' )
-partuuidROOT=${partuuidBOOT:0:-1}2
+partuuid=( $( blkid | awk '/LABEL="BOOT"|LABEL="ROOT"/ {print $NF}' | tr -d '"' ) )
 echo "\
-$partuuidBOOT  /boot  vfat  defaults,noatime  0  0
-$partuuidROOT  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
+${partuuid[0]}  /boot  vfat  defaults,noatime  0  0
+${partuuid[1]}  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
 
 # cmdline.txt, config.txt
-cmdline="root=$partuuidROOT rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
+cmdline="root=${partuuid[1]} rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
 [[ $features != *matchbox* ]] && cmdline+='tty1' || cmdline+='tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0'
 config="\
 disable_overscan=1
@@ -510,7 +509,7 @@ $( date -d@$SECONDS -u +%M:%S )
 umount -l $BOOT
 umount -l $ROOT
 
-[[ ${partuuidBOOT:0:-3} != ${partuuidROOT:0:-3} ]] && usb=' and USB drive'
+[[ ${partuuid[0]:0:-3} != ${partuuid[1]:0:-3} ]] && usb=' and USB drive'
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --msgbox "
 \Z1Arch Linux Arm\Z0 is ready.
