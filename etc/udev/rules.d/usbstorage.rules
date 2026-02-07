@@ -1,3 +1,7 @@
 KERNEL=="sd[a-z]" \
 ACTION=="add", \
-RUN+="/srv/http/bash/settings/system.sh usbconnect"
+RUN+="/srv/http/bash/settings/system.sh usbadd"
+
+KERNEL=="sd[a-z]" \
+ACTION=="remove", \
+RUN+="/srv/http/bash/settings/system.sh usbremove"
