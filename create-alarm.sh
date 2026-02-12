@@ -337,10 +337,11 @@ for line in "${lines[@]}"; do
 		codelist+=( $line )
 	fi
 done
+(( i++ ))
 #----------------------------------------------------------------------------
 code=$( dialog "${opt[@]}" --output-fd 1 --nocancel --menu "
 \Z1Package mirror server:\Z0
-" 0 0 0 \
+" 0 0 $i \
 "${clist[@]}" )
 mirror=${codelist[$code]}
 [[ $mirror == 0 ]] && url=http://os.archlinuxarm.org/os || url=http://$mirror.mirror.archlinuxarm.org/os
