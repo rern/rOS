@@ -101,7 +101,7 @@ mkdir -p /tmp/config
 release=$( cat /boot/release )
 curl -skL https://github.com/rern/rAudio/archive/$release.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
 curl -skL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
-rm -f /tmp/config/{.*,*}
+rm -f /tmp/config/{.*,*} 2> /dev/null
 
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
