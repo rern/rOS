@@ -210,6 +210,9 @@ $ping
 			;;
 	esac
 }
+partUUID() {
+	blkid | sed -n '/LABEL="'$1'"/ {s/.* //; s/"//g; p}'
+}
 pingIP() {
 	wait=$1
 	ip=$2
@@ -422,9 +425,8 @@ done ) \
 sync
 
 # fstab
-for l in B R; do # partuuidB and partuuidR
-	printf -v partuuid$l '%s' $( blkid | sed -n '/LABEL="'${l}OOT'"/ {s/.* //; s/"//g; p}' )
-done
+partuuidB=$( partUUID BOOT )
+partuuidR=$( partUUID ROOT )
 echo "\
 $partuuidB  /boot  vfat  defaults,noatime  0  0
 $partuuidR  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
