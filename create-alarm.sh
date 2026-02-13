@@ -422,13 +422,14 @@ done ) \
 sync
 
 # fstab
-partuuid=( $( blkid | awk '/LABEL="BOOT"|LABEL="ROOT"/ {print $NF}' | tr -d '"' ) )
+partuuidB=$( blkid | sed -n -E '/LABEL="BOOT"/ {s/.*="(.*)"/\1/;p}' )
+partuuidR=${partuuidB:0:-1}2
 echo "\
-${partuuid[0]}  /boot  vfat  defaults,noatime  0  0
-${partuuid[1]}  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
+$partuuidB  /boot  vfat  defaults,noatime  0  0
+$partuuidR  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
 
 # cmdline.txt, config.txt
-cmdline="root=${partuuid[1]} rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
+cmdline="root=$partuuidR rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
 config="\
 disable_overscan=1
 disable_splash=1
