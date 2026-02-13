@@ -1,4 +1,11 @@
 {
+  "imager": {
+    "latest_version": "2.0.6",
+    "url": "https://www.raspberrypi.com/software/",
+    "devices": [
+      /* Device objects go here */
+    ]
+  },
   "os_list": [
     {
       "name": "rAudio 64bit",
@@ -23,5 +30,11 @@
         "spi"
       ]
     }
+  ],
+  "init_format": "systemd",
+  "architecture": "armv8",
+  "capabilities": [
+    "i2c",
+    "spi"
   ]
 }
