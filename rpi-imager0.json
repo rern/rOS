@@ -14,7 +14,7 @@
       "devices": [
         "pi5-64bit",
         "pi4-64bit",
-        "pi3-64bit",
+        "pi3-64bit"
       ]
     }
   ]
