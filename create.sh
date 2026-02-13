@@ -1,5 +1,16 @@
 #!/bin/bash
 
+if mount | grep -q '/dev.*BOOT\|/dev.*ROOT'; then
+	dialog --colors --infobox "
+Partition label exist: \Z1BOOT\Z0 or \Z1ROOT\Z0
+
+Unable to continue.
+
+" 0 0
+	exit
+#-------------------------------------------------------------
+fi
+
 trap exit INT
 
 optbox=( --colors --no-shadow --no-collapse )
@@ -34,6 +45,7 @@ if [[ ! $devline ]]; then
 
 " 0 0
 	exit
+#-------------------------------------------------------------
 fi
 
 if [[ $devline == *\[sd?\]* ]]; then
@@ -63,7 +75,7 @@ $( echo "$list" | grep '\\Z1' )
 " 0 0
 
 [[ $? != 0 ]] && exit
-
+#-------------------------------------------------------------
 clear -x
 
 umount $partB $partR 2> /dev/null
