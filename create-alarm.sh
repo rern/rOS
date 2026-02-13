@@ -429,13 +429,17 @@ ${partuuid[1]}  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
 
 # cmdline.txt, config.txt
 cmdline="root=${partuuid[1]} rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
-[[ $features != *matchbox* ]] && cmdline+='tty1' || cmdline+='tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0'
 config="\
 disable_overscan=1
 disable_splash=1
-dtparam=audio=on
-hdmi_force_hotplug=1"
-[[ $features != *firefox* ]] && config=$( sed '/^hdmi/ d' <<< $config )
+dtparam=audio=on"
+if [[ $features != *firefox* ]]; then
+	cmdline+='tty1'
+else
+	cmdline+='tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0'
+	config+='
+hdmi_force_hotplug=1'
+fi
 mv $ROOT/boot/* $BOOT
 echo $cmdline > $BOOT/cmdline.txt0
 echo "$config" > $BOOT/config.txt0
