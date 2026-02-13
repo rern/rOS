@@ -53,10 +53,13 @@ for model in 64bit RPi2 RPi0-1; do
 	file=rAudio-$model-$release.img.xz
  	echo "SHA256 $file ..."
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
-	size=( $( xz -l $file | tail -1 | awk '{print $3" "$5}' | tr -d ',' ) )
- 	image_md5_mirror+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
-  					   | $sha256 \
-                       | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
+	size=( $( xz -l $file \
+				| tail -1 \
+				| awk '{print $3" "$5}' \
+				| tr -d ',' ) )
+ 	image_sha256_mirror+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
+  					  			| $sha256 \
+		                    	| [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
 	if [[ $model == 64bit ]]; then
 		list=$( sed '/-32bit/ d' <<< $common_list )
 	elif [[ $model == RPi2 ]]; then
