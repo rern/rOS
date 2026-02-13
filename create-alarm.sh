@@ -422,9 +422,9 @@ done ) \
 sync
 
 # fstab
-partuuidB=$( blkid | sed -n -E '/LABEL="BOOT"/ {s/.*="(.*)"/\1/;p}' )
-partuuidR=${partuuidB:0:-1}2
-echo "\
+for lbl in BOOT ROOT; do # partuuidB and partuuidR
+	printf -v partuuid${lbl:0:1} '%s' $( blkid | sed -n -E '/LABEL="'$lbl'"/ {s/.*="(.*)"/\1/;p}' )
+done
 $partuuidB  /boot  vfat  defaults,noatime  0  0
 $partuuidR  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
 
