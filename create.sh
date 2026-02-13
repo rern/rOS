@@ -73,10 +73,10 @@ mb_boot=300
 mb_root=6400
 size_boot=$(( mb_boot * 2048 ))
 size_root=$(( mb_root * 2048 ))
-start=$(( 2048 + size_boot ))
+start_boot=$(( 2048 + size_boot ))
 echo "\
-$partboot : start= $start, size= $size_boot, type=c
-$partroot : start= 616448, size= $size_root, type=83
+$partboot : start=        2048, size= $size_boot, type=c
+$partroot : start= $start_boot, size= $size_root, type=83
 " | sfdisk $dev # list: fdisk -d /dev/sdX
 
 umount $partboot $partroot 2> /dev/null
