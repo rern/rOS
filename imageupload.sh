@@ -14,7 +14,8 @@ cd /home/x/rAudio
 ! gh auth status &> /dev/null && gh auth login -p ssh -w
 
 rm -f rAudio*img.xz
-ln -s ../BIG/*.xz .
+ln -s ../BIG/rAudio*.xz .
+ln -s ../BIG/rAudio-sha256_img .
 
 optbox=( --colors --no-shadow --no-collapse )
 imgfiles=( $( ls rAudio*.img.xz 2> /dev/null ) )
@@ -30,8 +31,8 @@ files=( $selectfiles )
 (( ${#files[@]} != 3 )) && echo 'Image files count not 3.' && exit
 #---------------------------------------------------------------
 file0=${files[0]}
-dir=$( dirname $file0 )
 release=$( echo ${file0/*-} | cut -d. -f1 )
+. <( < rAudio-sha256_img )
 common_list=',
 {
 	"devices": [
@@ -71,7 +72,7 @@ for model in 64bit RPi2 RPi0-1; do
 	os_list+='
 	"release_date": "'${release:0:4}-${release:5:2}-${release: -2}'",
 	"extract_size": '$( mib2b ${size[1]} )',
-	"extract_sha256": "'$sha256'",
+	"extract_sha256": "'$sha256_img_$model'",
 	"image_download_size": '$( mib2b ${size[0]} )',
 	"image_download_sha256": "'$sha256'"
 }'
@@ -86,6 +87,7 @@ notes='
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
 gh release create i$release --title i$release --notes "$notes" $selectfiles
+rm /home/x/rAudio/rAudio*
 
 echo '{ "os_list": [ '${os_list:1}' ] }' | jq > /home/x/BIG/RPi/Git/rAudio/rpi-imager.json
 echo -e "\nNew rpi-imager.json in rAudio repo.\n"
