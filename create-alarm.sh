@@ -515,7 +515,7 @@ $( date -d@$SECONDS -u +%M:%S )
 umount -l $BOOT
 umount -l $ROOT
 
-[[ ${partuuid[0]:0:-3} != ${partuuid[1]:0:-3} ]] && usb=' and USB drive'
+[[ ${partuuidB:0:-3} != ${partuuidR:0:-3} ]] && usb=' and USB drive'
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --msgbox "
 \Z1Arch Linux Arm\Z0 is ready.
