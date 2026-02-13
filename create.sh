@@ -39,13 +39,13 @@ fi
 if [[ $devline == *\[sd?\]* ]]; then
 	name=$( echo $devline | sed -E 's|.*\[(.*)\].*|\1|' )
 	dev=/dev/$name
-	partboot=${dev}1
-	partroot=${dev}2
+	partB=${dev}1
+	partR=${dev}2
 else
 	name=$( echo $devline | sed -E 's/.*] (.*): .*/\1/' )
 	dev=/dev/$name
-	partboot=${dev}p1
-	partroot=${dev}p2
+	partB=${dev}p1
+	partR=${dev}p2
 fi
 
 list=$( lsblk -o name,size,mountpoint | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
@@ -66,32 +66,32 @@ $( echo "$list" | grep '\\Z1' )
 
 clear -x
 
-umount $partboot $partroot 2> /dev/null
+umount $partB $partR 2> /dev/null
 
 wipefs -a $dev
-mb_boot=300
-mb_root=6400
-size_boot=$(( mb_boot * 2048 ))
-size_root=$(( mb_root * 2048 ))
-start_root=$(( 2048 + size_boot ))
+mbB=300
+mbR=6400
+sizeB=$(( mbB * 2048 ))
+sizeR=$(( mbR * 2048 ))
+startR=$(( 2048 + sizeB ))
 echo "\
-$partboot : start=        2048, size= $size_boot, type=c
-$partroot : start= $start_root, size= $size_root, type=83
+$partB : start=    2048, size= $sizeB, type=c
+$partR : start= $startR, size= $sizeR, type=83
 " | sfdisk $dev # list: fdisk -d /dev/sdX
 
-umount $partboot $partroot 2> /dev/null
+umount $partB $partR 2> /dev/null
 
-mkfs.fat -F 32 $partboot
-mkfs.ext4 -F $partroot
+mkfs.fat -F 32 $partB
+mkfs.ext4 -F $partR
 
-fsck.fat -a $partboot
-e2fsck -p $partroot
+fsck.fat -a $partB
+e2fsck -p $partR
 
-fatlabel $partboot BOOT
-e2label $partroot ROOT
+fatlabel $partB BOOT
+e2label $partR ROOT
 
 mkdir -p /mnt/{BOOT,ROOT}
-mount $partboot /mnt/BOOT
-mount $partroot /mnt/ROOT
+mount $partB /mnt/BOOT
+mount $partR /mnt/ROOT
 
 bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh ) nopathcheck
