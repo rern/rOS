@@ -425,6 +425,7 @@ sync
 for l in B R; do # partuuidB and partuuidR
 	printf -v partuuid$l '%s' $( blkid | sed -n '/LABEL="'${l}OOT'"/ {s/.* //; s/"//g; p}' )
 done
+echo "\
 $partuuidB  /boot  vfat  defaults,noatime  0  0
 $partuuidR  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
 
