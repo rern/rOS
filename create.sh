@@ -69,11 +69,15 @@ clear -x
 umount $partboot $partroot 2> /dev/null
 
 wipefs -a $dev
-# setup partitions - create partitions with gparted > get parameters: sfdisk -d /dev/sdX | grep ^/dev
+mb_boot=300
+mb_root=6400
+size_boot=$(( mb_boot * 2048 ))
+size_root=$(( mb_root * 2048 ))
+start=$(( 2048 + size_boot ))
 echo "\
-$partboot : start=        2048, size=      409600, type=b
-$partroot : start=      411648, size=    13107200, type=83
-" | sfdisk $dev
+$partboot : start= $start, size= $size_boot, type=c
+$partroot : start= 616448, size= $size_root, type=83
+" | sfdisk $dev # list: fdisk -d /dev/sdX
 
 umount $partboot $partroot 2> /dev/null
 
