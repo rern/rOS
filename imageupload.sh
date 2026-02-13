@@ -80,7 +80,9 @@ notes='
 | `3` `2`                           | '${image_sha256_mirror[1]}'  |
 | `1` `Zero`                        | '${image_sha256_mirror[2]}'  |
 '
-echo '{ "os_list": [ '${os_list:1}' ] }' | jq > rpi-imager.json
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
 gh release create i$release --title i$release --notes "$notes" $selectfiles
+
+echo '{ "os_list": [ '${os_list:1}' ] }' | jq > RPi/Git/rAudio/rpi-imager.json
+echo -e "\nNew rpi-imager.json in rAudio repo.\n"
