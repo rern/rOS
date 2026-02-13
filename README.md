@@ -78,6 +78,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 
 ### Prepare partitions
 - On Linux PC
+- Make sure no partitions labelled as `BOOT` or `ROOT`
 - Open **GParted** app (Manjaro root password: `manjaro`)
 - 3 Alternatives:
 	- Micro SD card only
