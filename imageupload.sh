@@ -3,10 +3,6 @@
 #---------------------------------------------------------------
 [[ $EUID == 0 ]] && echo -e "\nsu x and run again.\n" && exit
 #---------------------------------------------------------------
-mib2b() {
-	bc <<< "scale=0; $1*1048576/1"
-}
-
 [[ ! -d /home/x/rAudio ]] && git clone https://github.com/rern/rAudio/
 
 cd /home/x/rAudio
@@ -29,6 +25,8 @@ $filelist )
 files=( $selectfiles )
 (( ${#files[@]} != 3 )) && echo 'Image files count not 3.' && exit
 #---------------------------------------------------------------
+
+
 file0=${files[0]}
 dir=$( dirname $file0 )
 release=$( echo ${file0/*-} | cut -d. -f1 )
@@ -51,12 +49,10 @@ common_list=',
 	"url": "https://github.com/rern/rAudio/releases/download/iRELEASE/rAudio-MODEL-RELEASE.img.xz",'
 for model in 64bit RPi2 RPi0-1; do
 	file=rAudio-$model-$release.img.xz
- 	echo "SHA256 $file ..."
-	sha256=$( sha256sum $file | cut -d' ' -f1 )
-	size=( $( xz -l $file \
-				| tail -1 \
-				| awk '{print $3" "$5}' \
-				| tr -d ',' ) )
+ 	echo "SHA256: $file ..."
+	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
+	echo "Extract | SHA256: ${file:0:-3} ..."
+	sha256_img=xz -dc $file | cut -d' ' -f1 )
  	image_sha256_mirror+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
   					  			| $sha256 \
 		                    	| [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
@@ -70,10 +66,10 @@ for model in 64bit RPi2 RPi0-1; do
 	os_list+=$( sed 's|MODEL|'$model'|g; s|RELEASE|'$release'|g' <<< $list )
 	os_list+='
 	"release_date": "'${release:0:4}-${release:5:2}-${release: -2}'",
-	"extract_size": '$( mib2b ${size[1]} )',
-	"extract_sha256": "'$sha256'",
-	"image_download_size": '$( mib2b ${size[0]} )',
-	"image_download_sha256": "'$sha256'"
+	"extract_size": '$( stat --printf="%s" ${file:0:-3} )',
+	"extract_sha256": "'$sha256_img'",
+	"image_download_size": '$( stat --printf="%s" $file )',
+	"image_download_sha256": "'$sha256_xz'"
 }'
 done
 notes='
