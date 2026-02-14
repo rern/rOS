@@ -25,6 +25,9 @@ $filelist )
 models=$( tr ' ' '\n' <<< $selectfiles | cut -d- -f2 )
 [[ $models != '64bit RPi0-1 RPi2' ]] && echo -e "\nImages missing - selected: $models\n" && exit
 #---------------------------------------------------------------
+notes='
+| Raspberry Pi | Image File | SHA256 | Mirror |
+|:-------------|:-----------|:-------|:-------|'
 for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	m_r=${file:7:-7}
 	model=${m_r/*-}   # 64bit RPi2 RPi0-1
@@ -37,10 +40,9 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
 	echo "SHA256 *.img: xz -dc $file | sha256sum ..."
 	sha256_img=$( xz -dc $file | sha256sum | cut -d' ' -f1 )
-	
- 	image_sha256_mirror+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
-  					  			| $sha256 \
-		                    	| [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
+	img="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
+	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
+	image_sha256_mirror="$img | $sha256 | $mirror"
 	list+=',
 {
 	"devices": ['
@@ -55,6 +57,8 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	],
 	"name": "rAudio 64bit",
 	"description": "For: RPi 5, 4, 3, 2 (BCM2837), Zero 2",'
+			notes+='
+| `5` `4` `3` `2 (BCM2837)` `Zero2` | '$image_sha256_mirror'  |'
 			;;
 		RPi2 )
 			list+='
@@ -63,6 +67,8 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	],
 	"name": "rAudio 32bit",
 	"description": "For: RPi 3, 2",'
+			notes+='
+| `3` `2` | '$image_sha256_mirror'  |'
 			;;
 		* )
 			list+='
@@ -71,6 +77,8 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	],
 	"name": "rAudio Legacy",
 	"description": "For: RPi 1, Zero",'
+			notes+='
+| `1` `Zero` | '$image_sha256_mirror'  |'
 			;;
 	esac
 	list+='
@@ -79,7 +87,7 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	"extract_size": '$size_img',
 	"extract_sha256": "'$sha256_img'",
 	"image_download_size": '$size_xz',
-	"image_download_sha256": "'$sha256_xz',"
+	"image_download_sha256": "'$sha256_xz'",
 	"icon": "https://github.com/rern/rAudio/raw/refs/heads/main/srv/http/assets/img/icon.png",
 	"website": "https://github.com/rern/rAudio"
 }'
