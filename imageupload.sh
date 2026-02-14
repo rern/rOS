@@ -23,7 +23,7 @@ selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --check
 " $(( ${#imgfiles[@]} + 3 )) 0 0 \
 $filelist )
 models=$( sed -E 's/rAudio-|-[0-9]{8}.img.xz//g' <<< $selectfiles ) # rAudio-64bit-YYYMMDD.img.xz rAudio-RPi0-1-YYYMMDD.img.xz rAudio-RPi2-YYYMMDD.img.xz
-[[ $models != '64bit RPi0-1 RPi2' ]] && echo -e "\nImages missing - selected: $models\n" && exit
+[[ $models != '64bit RPi0-1 RPi2' ]] && echo Images missing - selected: $models && exit
 #---------------------------------------------------------------
 notes='
 | Raspberry Pi | Image File | SHA256 | Mirror |
@@ -36,9 +36,9 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	mib=$( xz -l $file | tail -1 | awk '{print $5}' | tr -d , )
 	size_img=$( bc <<< "scale=0; $mib*1048576/1" )
 	size_xz=$( stat -L --printf="%s" $file )
- 	echo "SHA256 *.xz: sha256sum $file ..."
+ 	echo "Checksum *.xz : sha256sum $file ..."
 	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
-	echo "SHA256 *.img: xz -dc $file | sha256sum ..."
+	echo "Checksum *.img: xz -dc $file | sha256sum ..."
 	sha256_img=$( xz -dc $file | sha256sum | cut -d' ' -f1 )
 	img="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
 	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
@@ -48,7 +48,6 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	"devices": ['
 	case $model in
 		64bit )
-			list=$( sed '/-32bit/ d' <<< $common_list )
 			list+='
 		"pi5-64bit",
 		"pi4-64bit",
