@@ -23,9 +23,14 @@ selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --check
  $imgdir" $(( ${#imgfiles[@]} + 6 )) 0 0 \
 $filelist )
 files=( $selectfiles )
-(( ${#files[@]} != 3 )) && echo 'Image files count not 3.' && exit
+models='64bit RPi2 RPi0-1 '
+for file in ${files[@]}; do
+	m=${file:7:-16}
+	models=${models/$m }
+done
+[[ ! $models ]] && echo -e "\nImages missing: $models\n" && exit
 #---------------------------------------------------------------
-for file in ${files[@]}; do # rAudio-MODEL-RELEASE.img.xz - MODEL: 64bit RPi2 RPi0-1 RELEASE: YYYMMDD
+for file in ${files[@]}; do # rAudio-MODEL-RELEASE.img.xz - MODEL: 64bit RPi2 RPi0-1 RELEASE: YYYYMMDD
 	m_r=${file:7:-7}
 	model=${m_r/*-}
 	release=${m_r/-*}
