@@ -35,7 +35,7 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	date_rel=${release:0:4}-${release:5:2}-${release: -2}
 	mib=$( xz -l $file | tail -1 | awk '{print $5}' | tr -d , )
 	size_img=$( bc <<< "scale=0; $mib*1048576/1" )
-	size_xz=$( stat --printf="%s" $file )
+	size_xz=$( stat -L --printf="%s" $file )
  	echo "SHA256 *.xz: sha256sum $file ..."
 	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
 	echo "SHA256 *.img: xz -dc $file | sha256sum ..."
