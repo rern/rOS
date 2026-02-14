@@ -23,7 +23,7 @@ selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --check
 " $(( ${#imgfiles[@]} + 3 )) 0 0 \
 $filelist )
 models=$( sed -E 's/rAudio-|-[0-9]{8}.img.xz//g' <<< $selectfiles ) # rAudio-64bit-YYYMMDD.img.xz rAudio-RPi0-1-YYYMMDD.img.xz rAudio-RPi2-YYYMMDD.img.xz
-[[ $models != '64bit RPi0-1 RPi2' ]] && echo Images missing - selected: $models && exit
+[[ $models != '64bit RPi0-1 RPi2' ]] && echo Images not correct: $models && exit
 #---------------------------------------------------------------
 notes='
 | Raspberry Pi | Image File | SHA256 | Mirror |
