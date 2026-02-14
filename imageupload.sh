@@ -99,5 +99,5 @@ if [[ $? != 0 ]]; then
 fi
 echo '{ "os_list": [ '${list:1}' ] }' | jq > rpi-imager.json
 git add rpi-imager.json
-git commit -m 'Update rpi-imager.json'
+git commit -m "Update rpi-imager.json i$release"
 git push
