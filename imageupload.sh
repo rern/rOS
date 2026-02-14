@@ -25,10 +25,10 @@ $filelist )
 models=$( tr ' ' '\n' <<< $selectfiles | cut -d- -f2 )
 [[ $models != '64bit RPi0 RPi2' ]] && echo -e "\nImages missing - selected: $models\n" && exit
 #---------------------------------------------------------------
-for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz - MODEL: 64bit RPi2 RPi0-1 RELEASE: YYYYMMDD
+for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	m_r=${file:7:-7}
-	model=${m_r/*-}
-	release=${m_r/-*}
+	model=${m_r/*-}   # 64bit RPi2 RPi0-1
+	release=${m_r/-*} # YYYYMMDD
  	echo "SHA256 *.xz: sha256sum $file ..."
 	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
 	echo "SHA256 *.img: xz -dc $file | sha256sum ..."
