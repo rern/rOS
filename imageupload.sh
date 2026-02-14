@@ -9,9 +9,7 @@ cd /home/x/rAudio
 
 ! gh auth status &> /dev/null && gh auth login -p ssh -w
 
-rm -f rAudio*img.xz
 ln -s ../BIG/rAudio*.xz .
-ln -s ../BIG/rAudio-sha256_img .
 
 optbox=( --colors --no-shadow --no-collapse )
 imgfiles=( $( ls rAudio*.img.xz 2> /dev/null ) )
@@ -26,8 +24,6 @@ $filelist )
 files=( $selectfiles )
 (( ${#files[@]} != 3 )) && echo 'Image files count not 3.' && exit
 #---------------------------------------------------------------
-
-
 file0=${files[0]}
 release=$( echo ${file0/*-} | cut -d. -f1 )
 . <( < rAudio-sha256_img )
@@ -83,7 +79,13 @@ notes='
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
 gh release create i$release --title i$release --notes "$notes" $selectfiles
-rm /home/x/rAudio/rAudio*
-
-echo '{ "os_list": [ '${os_list:1}' ] }' | jq > /home/x/BIG/RPi/Git/rAudio/rpi-imager.json
-echo -e "\nNew rpi-imager.json in rAudio repo.\n"
+rm /home/x/rAudio/rAudio*.xz
+if [[ $? != 0 ]]; then
+	echo -e "\nUpload FAILED!\n"
+	exit
+#---------------------------------------------------------------
+fi
+echo '{ "os_list": [ '${os_list:1}' ] }' | jq > rpi-imager.json
+git add rpi-imager.json
+git commit -m 'Update rpi-imager.json'
+git push
