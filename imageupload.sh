@@ -49,10 +49,10 @@ common_list=',
 	"url": "https://github.com/rern/rAudio/releases/download/iRELEASE/rAudio-MODEL-RELEASE.img.xz",'
 for model in 64bit RPi2 RPi0-1; do
 	file=rAudio-$model-$release.img.xz
- 	echo "SHA256: $file ..."
+ 	echo "SHA256 *.xz: sha256sum $file ..."
 	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
-	echo "Extract | SHA256: ${file:0:-3} ..."
-	sha256_img=xz -dc $file | cut -d' ' -f1 )
+	echo "SHA256 *.img: xz -dc $file | sha256sum ..."
+	sha256_img=$( xz -dc $file | sha256sum | cut -d' ' -f1 )
  	image_sha256_mirror+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
   					  			| $sha256 \
 		                    	| [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
