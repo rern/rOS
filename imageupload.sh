@@ -23,7 +23,7 @@ selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --check
 " $(( ${#imgfiles[@]} + 3 )) 0 0 \
 $filelist )
 models=$( tr ' ' '\n' <<< $selectfiles | cut -d- -f2 )
-[[ $models != '64bit RPi0 RPi2' ]] && echo -e "\nImages missing - selected: $models\n" && exit
+[[ $models != '64bit RPi0-1 RPi2' ]] && echo -e "\nImages missing - selected: $models\n" && exit
 #---------------------------------------------------------------
 for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	m_r=${file:7:-7}
