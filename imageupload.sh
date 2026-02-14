@@ -92,15 +92,7 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	"website": "https://github.com/rern/rAudio"
 }'
 done
-notes='
-| Raspberry Pi                      | Image File | SHA256 | Mirror |
-|:----------------------------------|:-----------|:-------|:-------|
-| `5` `4` `3` `2 (BCM2837)` `Zero2` | '${image_sha256_mirror[0]}'  |
-| `3` `2`                           | '${image_sha256_mirror[1]}'  |
-| `1` `Zero`                        | '${image_sha256_mirror[2]}'  |
-'
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
-
 gh release create i$release --title i$release --notes "$notes" $selectfiles
 if [[ $? != 0 ]]; then
 	echo -e "\nUpload FAILED!\n"
