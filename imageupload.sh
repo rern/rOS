@@ -38,8 +38,6 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	size_xz=$( stat -L --printf="%s" $file )
  	echo "Checksum *.xz : sha256sum $file ..."
 	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
-	echo "Checksum *.img: xz -dc $file | sha256sum ..."
-	sha256_img=$( xz -dc $file | sha256sum | cut -d' ' -f1 )
 	img="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
 	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
 	list+=',
@@ -83,7 +81,6 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	"url": "https://github.com/rern/rAudio/releases/download/i'$release'/'$file'",
 	"release_date": "'$date_rel'",
 	"extract_size": '$size_img',
-	"extract_sha256": "'$sha256_img'",
 	"image_download_size": '$size_xz',
 	"image_download_sha256": "'$sha256_xz'",
 	"icon": "https://github.com/rern/rAudio/raw/refs/heads/main/srv/http/assets/img/icon.png",
