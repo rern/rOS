@@ -20,17 +20,12 @@ done
 
 selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist "
  \Z1Select files to upload:\Z0
- $imgdir" $(( ${#imgfiles[@]} + 6 )) 0 0 \
+" $(( ${#imgfiles[@]} + 3 )) 0 0 \
 $filelist )
-files=( $selectfiles )
-models='64bit RPi2 RPi0-1 '
-for file in ${files[@]}; do
-	m=${file:7:-16}
-	models=${models/$m }
-done
-[[ ! $models ]] && echo -e "\nImages missing: $models\n" && exit
+models=$( tr ' ' '\n' <<< $selectfiles | cut -d- -f2 )
+[[ $models != '64bit RPi0 RPi2' ]] && echo -e "\nImages missing - selected: $models\n" && exit
 #---------------------------------------------------------------
-for file in ${files[@]}; do # rAudio-MODEL-RELEASE.img.xz - MODEL: 64bit RPi2 RPi0-1 RELEASE: YYYYMMDD
+for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz - MODEL: 64bit RPi2 RPi0-1 RELEASE: YYYYMMDD
 	m_r=${file:7:-7}
 	model=${m_r/*-}
 	release=${m_r/-*}
