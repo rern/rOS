@@ -42,7 +42,7 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	sha256_img=$( xz -dc $file | sha256sum | cut -d' ' -f1 )
 	img="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
 	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
-	image_sha256_mirror="$img | $sha256 | $mirror"
+	image_sha256_mirror="$img | $sha256_xz | $mirror"
 	list+=',
 {
 	"devices": ['
