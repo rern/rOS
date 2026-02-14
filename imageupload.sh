@@ -22,7 +22,7 @@ selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --check
  \Z1Select files to upload:\Z0
 " $(( ${#imgfiles[@]} + 3 )) 0 0 \
 $filelist )
-models=$( tr ' ' '\n' <<< $selectfiles | cut -d- -f2 )
+models=$( sed -E 's/rAudio-|-[0-9]{8}.img.xz//g' <<< $selectfiles ) # rAudio-64bit-YYYMMDD.img.xz rAudio-RPi0-1-YYYMMDD.img.xz rAudio-RPi2-YYYMMDD.img.xz
 [[ $models != '64bit RPi0-1 RPi2' ]] && echo -e "\nImages missing - selected: $models\n" && exit
 #---------------------------------------------------------------
 notes='
@@ -30,8 +30,8 @@ notes='
 |:-------------|:-----------|:-------|:-------|'
 for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	m_r=${file:7:-7}
-	model=${m_r/*-}   # 64bit RPi2 RPi0-1
-	release=${m_r/-*} # YYYYMMDD
+	model=${m_r/-*}   # 64bit RPi2 RPi0-1
+	release=${m_r/*-} # YYYYMMDD
 	date_rel=${release:0:4}-${release:5:2}-${release: -2}
 	mib=$( xz -l $file | tail -1 | awk '{print $5}' | tr -d , )
 	size_img=$( bc <<< "scale=0; $mib*1048576/1" )
