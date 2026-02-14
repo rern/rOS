@@ -25,28 +25,10 @@ $filelist )
 files=( $selectfiles )
 (( ${#files[@]} != 3 )) && echo 'Image files count not 3.' && exit
 #---------------------------------------------------------------
-file0=${files[0]}
-release=$( echo ${file0/*-} | cut -d. -f1 )
-. <( < rAudio-sha256_img )
-common_list=',
-{
-	"devices": [
-		"pi5-64bit",
-		"pi4-64bit",
-		"pi3-64bit",
-		"pi2-64bit"
-		"pi3-32bit",
-		"pi2-32bit"
-		"pi1-32bit",
-		"pi0-32bit"
-	],
-	"name": "rAudio MODEL",
-	"description": "Raspberry Pi audio player",
-	"icon": "https://github.com/rern/rAudio/raw/refs/heads/main/srv/http/assets/img/icon.png",
-	"website": "https://github.com/rern/rAudio",
-	"url": "https://github.com/rern/rAudio/releases/download/iRELEASE/rAudio-MODEL-RELEASE.img.xz",'
-for model in 64bit RPi2 RPi0-1; do
-	file=rAudio-$model-$release.img.xz
+for file in ${files[@]}; do # rAudio-MODEL-RELEASE.img.xz - MODEL: 64bit RPi2 RPi0-1 RELEASE: YYYMMDD
+	m_r=${file:7:-7}
+	model=${m_r/*-}
+	release=${m_r/-*}
  	echo "SHA256 *.xz: sha256sum $file ..."
 	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
 	echo "SHA256 *.img: xz -dc $file | sha256sum ..."
@@ -54,20 +36,47 @@ for model in 64bit RPi2 RPi0-1; do
  	image_sha256_mirror+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
   					  			| $sha256 \
 		                    	| [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
-	if [[ $model == 64bit ]]; then
-		list=$( sed '/-32bit/ d' <<< $common_list )
-	elif [[ $model == RPi2 ]]; then
-		list=$( sed -E '/-64bit|pi1-|pi0-/ d' <<< $common_list )
-	else
-		list=$( sed -E '/-64bit|pi3-|pi2-/ d' <<< $common_list )
-	fi
-	os_list+=$( sed 's|MODEL|'$model'|g; s|RELEASE|'$release'|g' <<< $list )
-	os_list+='
+	list+=',
+{
+	"devices": ['
+	case $model in
+		64bit )
+			list=$( sed '/-32bit/ d' <<< $common_list )
+			list+='
+		"pi5-64bit",
+		"pi4-64bit",
+		"pi3-64bit",
+		"pi2-64bit"
+	],
+	"name": "rAudio 64bit",
+	"description": "For: RPi 5, 4, 3, 2 (BCM2837), Zero 2",'
+			;;
+		RPi2 )
+			list+='
+		"pi3-32bit",
+		"pi2-32bit"
+	],
+	"name": "rAudio 32bit",
+	"description": "For: RPi 3, 2",'
+			;;
+		* )
+			list+='
+		"pi1-32bit",
+		"pi0-32bit"
+	],
+	"name": "rAudio Legacy",
+	"description": "For: RPi 1, Zero",'
+			;;
+	esac
+	list+='
+	"url": "https://github.com/rern/rAudio/releases/download/i'$release'/'$file'",
 	"release_date": "'${release:0:4}-${release:5:2}-${release: -2}'",
 	"extract_size": '$( stat --printf="%s" ${file:0:-3} )',
 	"extract_sha256": "'$sha256_img'",
 	"image_download_size": '$( stat --printf="%s" $file )',
-	"image_download_sha256": "'$sha256_xz'"
+	"image_download_sha256": "'$sha256_xz',"
+	"icon": "https://github.com/rern/rAudio/raw/refs/heads/main/srv/http/assets/img/icon.png",
+	"website": "https://github.com/rern/rAudio"
 }'
 done
 notes='
@@ -85,7 +94,7 @@ if [[ $? != 0 ]]; then
 	exit
 #---------------------------------------------------------------
 fi
-echo '{ "os_list": [ '${os_list:1}' ] }' | jq > rpi-imager.json
+echo '{ "os_list": [ '${list:1}' ] }' | jq > rpi-imager.json
 git add rpi-imager.json
 git commit -m 'Update rpi-imager.json'
 git push
