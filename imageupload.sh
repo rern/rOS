@@ -9,6 +9,7 @@ cd /home/x/rAudio
 
 ! gh auth status &> /dev/null && gh auth login -p ssh -w
 
+rm /home/x/rAudio/rAudio*.xz
 ln -s ../BIG/rAudio*.xz .
 
 optbox=( --colors --no-shadow --no-collapse )
@@ -79,7 +80,6 @@ notes='
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 
 gh release create i$release --title i$release --notes "$notes" $selectfiles
-rm /home/x/rAudio/rAudio*.xz
 if [[ $? != 0 ]]; then
 	echo -e "\nUpload FAILED!\n"
 	exit
