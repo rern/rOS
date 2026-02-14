@@ -29,10 +29,15 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	m_r=${file:7:-7}
 	model=${m_r/*-}   # 64bit RPi2 RPi0-1
 	release=${m_r/-*} # YYYYMMDD
+	date_rel=${release:0:4}-${release:5:2}-${release: -2}
+	mib=$( xz -l $file | tail -1 | awk '{print $5}' | tr -d , )
+	size_img=$( bc <<< "scale=0; $mib*1048576/1" )
+	size_xz=$( stat --printf="%s" $file )
  	echo "SHA256 *.xz: sha256sum $file ..."
 	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
 	echo "SHA256 *.img: xz -dc $file | sha256sum ..."
 	sha256_img=$( xz -dc $file | sha256sum | cut -d' ' -f1 )
+	
  	image_sha256_mirror+=( "[$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
   					  			| $sha256 \
 		                    	| [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)" )
@@ -70,10 +75,10 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	esac
 	list+='
 	"url": "https://github.com/rern/rAudio/releases/download/i'$release'/'$file'",
-	"release_date": "'${release:0:4}-${release:5:2}-${release: -2}'",
-	"extract_size": '$( stat --printf="%s" ${file:0:-3} )',
+	"release_date": "'$date_rel'",
+	"extract_size": '$size_img',
 	"extract_sha256": "'$sha256_img'",
-	"image_download_size": '$( stat --printf="%s" $file )',
+	"image_download_size": '$size_xz',
 	"image_download_sha256": "'$sha256_xz',"
 	"icon": "https://github.com/rern/rAudio/raw/refs/heads/main/srv/http/assets/img/icon.png",
 	"website": "https://github.com/rern/rAudio"
