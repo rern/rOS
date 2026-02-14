@@ -32,7 +32,7 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 	m_r=${file:7:-7}
 	model=${m_r/-*}   # 64bit RPi2 RPi0-1
 	release=${m_r/*-} # YYYYMMDD
-	date_rel=${release:0:4}-${release:5:2}-${release: -2}
+	date_rel=${release:0:4}-${release:4:2}-${release: -2}
 	mib=$( xz -l $file | tail -1 | awk '{print $5}' | tr -d , )
 	size_img=$( bc <<< "scale=0; $mib*1048576/1" )
 	size_xz=$( stat -L --printf="%s" $file )
