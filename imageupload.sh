@@ -43,8 +43,9 @@ for model in 64bit 32bit Legacy; do
 	file=rAudio-$model-$release.img.xz
  	echo "Checksum: sha256sum $file ..."
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
-	img="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
+	image="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
 	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
+	image_sha256_mirror="| $imgage | $sha256 | $mirror |"
 	list+=',
 {
 	"devices": ['
@@ -58,7 +59,6 @@ for model in 64bit 32bit Legacy; do
 	],
 	"name": "rAudio 64bit",
 	"description": "For: RPi 5, 4, 3, 2 (BCM2837), Zero 2",'
-			image_sha256_mirror="| $img | $sha256 | $mirror |"
 			notes+='
 | `5` `4` `3` `2 (BCM2837)` `Zero2` '$image_sha256_mirror
 			;;
