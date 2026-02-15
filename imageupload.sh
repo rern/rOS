@@ -41,8 +41,6 @@ notes='
 |:-------------|:-----------|:-------|:-------|'
 for file in $selectfiles; do
 	model=${file:7:-16} # rAudio-MODEL-YYYYMMDD.img.xz
-	size_img=$( xz -l --robot $file | awk '/^file/ {print $5}' )
-	size_xz=$( stat -L --printf="%s" $file )
  	echo "Checksum *.xz : sha256sum $file ..."
 	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
 	img="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
@@ -84,11 +82,12 @@ for file in $selectfiles; do
 | `1` `Zero` | '$image_sha256_mirror'  |'
 			;;
 	esac
+	xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
 	list+='
 	"url": "https://github.com/rern/rAudio/releases/download/i'$release'/'$file'",
 	"release_date": "'$date_rel'",
-	"extract_size": '$size_img',
-	"image_download_size": '$size_xz',
+	"extract_size": '${xz_img/* }',
+	"image_download_size": '${xz_img/ *}',
 	"image_download_sha256": "'$sha256_xz'",
 	"icon": "https://github.com/rern/rAudio/raw/refs/heads/main/srv/http/assets/img/icon.png",
 	"website": "https://github.com/rern/rAudio"
