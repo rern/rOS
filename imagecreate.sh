@@ -108,9 +108,9 @@ release=$( cat $ROOT/srv/http/data/addons/r1 )
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
 elif [[ -e $BOOT/kernel7.img ]]; then
-	model=RPi2
+	model=32bit
 else # $BOOT/kernel.img
-	model=RPi0_1
+	model=Legacy
 fi
 
 imagefile=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
