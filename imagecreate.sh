@@ -4,6 +4,7 @@ cleanup() {
 	umount -l $partboot $partroot 2> /dev/null
 	rmdir /home/$USER/{BOOT,ROOT} 2> /dev/null
 	exit
+#---------------------------------------------------------------
 }
 trap cleanup INT
 
@@ -58,8 +59,8 @@ if [[ ! $devline ]]; then
 \Z1No SD card found.\Z0
 " 0 0
 	exit
+#---------------------------------------------------------------
 fi
-
 if [[ $devline == *\[sd?\]* ]]; then
 	name=$( echo $devline | sed -E 's|.*\[(.*)\].*|\1|' )
 	dev=/dev/$name
@@ -81,7 +82,7 @@ Confirm SD card:
 $( echo "$list" | grep '\\Z1' )
 " 0 0
 [[ $? != 0 ]] && exit
-
+#---------------------------------------------------------------
 umount -l $partboot $partroot 2> /dev/null
 
 BOOT=/mnt/BOOT
@@ -91,7 +92,7 @@ $BOOT not empty."
 [[ $( ls -A $ROOT 2> /dev/null ) ]] && warnings+="
 $ROOT not empty."
 [[ $warnings ]] && dialog "${optbox[@]}" --infobox "$warnings" 0 0 && exit
-
+#---------------------------------------------------------------
 mkdir -p /mnt/{BOOT,ROOT}
 mount $partboot $BOOT
 mount $partroot $ROOT
@@ -101,15 +102,15 @@ if [[ ! -e $BOOT/config.txt ]]; then
 \Z1$dev\Z0 is not \Z1r\Z0Audio.
 " 0 0
 	exit
+#---------------------------------------------------------------
 fi
-
 release=$( cat $ROOT/srv/http/data/addons/r1 )
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
 elif [[ -e $BOOT/kernel7.img ]]; then
 	model=RPi2
 else # $BOOT/kernel.img
-	model=RPi0-1
+	model=RPi0_1
 fi
 
 imagefile=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
@@ -182,13 +183,10 @@ echo
 threads=$(( $( nproc ) - 2 ))
 dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$imagepath"
 
-byte=$( stat --printf="%s" "$imagepath" )
-mb=$( awk "BEGIN { printf \"%.1f\n\", $byte / 1024 / 1024 }" )
-
+size=$( xz -l --robot $imagepath | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
 dialog "${optbox[@]}" --infobox "
 Image file created:
 \Z1$imagepath\Z0
-$mb MiB
+$size
 
-\Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
-" 10 58
+" 9 58

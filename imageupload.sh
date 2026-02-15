@@ -1,7 +1,13 @@
 #!/bin/bash
-[[ ! -e /usr/bin/gh ]] && echo -e "\nPackage github-cli not yet installed.\n" && exit
-#---------------------------------------------------------------
-[[ $EUID == 0 ]] && echo -e "\nsu x and run again.\n" && exit
+
+errorExit() {
+	echo -e "\n\e[41m ! \e[0m $error"
+	exit
+}
+
+[[ ! -e /usr/bin/gh ]] && error='Package github-cli not yet installed.\n'
+[[ $EUID == 0 ]] && error='su x and run again.\n'
+[[ $error ]] && errorExit "$error"
 #---------------------------------------------------------------
 [[ ! -d /home/x/rAudio ]] && git clone https://github.com/rern/rAudio/
 
@@ -21,20 +27,21 @@ done
 selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist "
  \Z1Select files to upload:\Z0
 " $(( ${#imgfiles[@]} + 3 )) 0 0 \
-$filelist )
-models=$( sed -E 's/rAudio-|-[0-9]{8}.img.xz//g' <<< $selectfiles ) # rAudio-64bit-YYYMMDD.img.xz rAudio-RPi0-1-YYYMMDD.img.xz rAudio-RPi2-YYYMMDD.img.xz
-[[ $models != '64bit RPi0-1 RPi2' ]] && echo Images not correct: $models && exit
+$filelist ) # rAudio-MODEL-YYYYMMDD.img.xz
+mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $selectfiles | tr ' ' '\n' )
+mdl=$( cut -d- -f1 <<< $mdl_rel )
+[[ $( echo $mdl ) == '64bit RPi0_1 RPi2' ]] && error="Models not 3: $mdl\n"
+release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
+(( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same: $release\n"
+[[ $error ]] && errorExit "$error"
 #---------------------------------------------------------------
+date_rel=${release:0:4}-${release:4:2}-${release: -2}
 notes='
 | Raspberry Pi | Image File | SHA256 | Mirror |
 |:-------------|:-----------|:-------|:-------|'
-for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
-	m_r=${file:7:-7}
-	model=${m_r/-*}   # 64bit RPi2 RPi0-1
-	release=${m_r/*-} # YYYYMMDD
-	date_rel=${release:0:4}-${release:4:2}-${release: -2}
-	mib=$( xz -l $file | tail -1 | awk '{print $5}' | tr -d , )
-	size_img=$(( $( bc <<< "scale=0; $mib*1048576/512" ) * 512 ))
+for file in $selectfiles; do
+	model=${file:7:-16} # rAudio-MODEL-YYYYMMDD.img.xz
+	size_img=$( xz -l --robot $file | awk '/^file/ {print $5}' )
 	size_xz=$( stat -L --printf="%s" $file )
  	echo "Checksum *.xz : sha256sum $file ..."
 	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
@@ -89,11 +96,8 @@ for file in $selectfiles; do # rAudio-MODEL-RELEASE.img.xz
 done
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 gh release create i$release --title i$release --notes "$notes" $selectfiles
-if [[ $? != 0 ]]; then
-	echo -e "\nUpload FAILED!\n"
-	exit
+[[ $? != 0 ]] && exitError "Upload to GitHub FAILED!\n"
 #---------------------------------------------------------------
-fi
 echo '{ "os_list": [ '${list:1}' ] }' | jq > rpi-imager.json
 git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
