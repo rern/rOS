@@ -30,9 +30,9 @@ selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --check
 $filelist ) # rAudio-MODEL-YYYYMMDD.img.xz
 mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $selectfiles | tr ' ' '\n' )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
-[[ $( echo $mdl ) == '64bit 32bit Legacy' ]] && error="Models not 3: $mdl\n"
+[[ $( echo $mdl ) != '64bit 32bit Legacy' ]] && error="Models not 3:\n$mdl\n"
 release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
-(( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same: $release\n"
+(( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
 [[ $error ]] && errorExit "$error"
 #---------------------------------------------------------------
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
