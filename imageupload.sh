@@ -41,8 +41,8 @@ notes='
 |:-------------|:-----------|:-------|:-------|'
 for model in 64bit 32bit Legacy; do
 	file=rAudio-$model-$release.img.xz
- 	echo "Checksum *.xz : sha256sum $file ..."
-	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
+ 	echo "Checksum: sha256sum $file ..."
+	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	img="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
 	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
 	list+=',
@@ -58,8 +58,9 @@ for model in 64bit 32bit Legacy; do
 	],
 	"name": "rAudio 64bit",
 	"description": "For: RPi 5, 4, 3, 2 (BCM2837), Zero 2",'
+			image_sha256_mirror="| $img | $sha256 | $mirror |"
 			notes+='
-| `5` `4` `3` `2 (BCM2837)` `Zero2` | '$img' | '$sha256_xz' | '$mirror'  |'
+| `5` `4` `3` `2 (BCM2837)` `Zero2` '$image_sha256_mirror
 			;;
 		32bit )
 			list+='
@@ -69,7 +70,7 @@ for model in 64bit 32bit Legacy; do
 	"name": "rAudio 32bit",
 	"description": "For: RPi 3, 2",'
 			notes+='
-| `3` `2` | '$image_sha256_mirror'  |'
+| `3` `2` '$image_sha256_mirror
 			;;
 		Legacy )
 			list+='
@@ -79,16 +80,16 @@ for model in 64bit 32bit Legacy; do
 	"name": "rAudio Legacy",
 	"description": "For: RPi 1, Zero",'
 			notes+='
-| `1` `Zero` | '$image_sha256_mirror'  |'
+| `1` `Zero` '$image_sha256_mirror
 			;;
 	esac
-	xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
+	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
 	list+='
 	"url": "https://github.com/rern/rAudio/releases/download/i'$release'/'$file'",
 	"release_date": "'$date_rel'",
-	"extract_size": '${xz_img/* }',
-	"image_download_size": '${xz_img/ *}',
-	"image_download_sha256": "'$sha256_xz'",
+	"extract_size": '${size_xz_img/* }',
+	"image_download_size": '${size_xz_img/ *}',
+	"image_download_sha256": "'$sha256'",
 	"icon": "https://github.com/rern/rAudio/raw/refs/heads/main/srv/http/assets/img/icon.png",
 	"website": "https://github.com/rern/rAudio"
 }'
