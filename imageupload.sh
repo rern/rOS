@@ -30,7 +30,7 @@ selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --check
 $filelist ) # rAudio-MODEL-YYYYMMDD.img.xz
 mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $selectfiles | tr ' ' '\n' )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
-[[ $( echo $mdl ) == '64bit RPi0_1 RPi2' ]] && error="Models not 3: $mdl\n"
+[[ $( echo $mdl ) == '64bit 32bit Legacy' ]] && error="Models not 3: $mdl\n"
 release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same: $release\n"
 [[ $error ]] && errorExit "$error"
@@ -39,8 +39,8 @@ date_rel=${release:0:4}-${release:4:2}-${release: -2}
 notes='
 | Raspberry Pi | Image File | SHA256 | Mirror |
 |:-------------|:-----------|:-------|:-------|'
-for file in $selectfiles; do
-	model=${file:7:-16} # rAudio-MODEL-YYYYMMDD.img.xz
+for model in 64bit 32bit Legacy; do
+	file=rAudio-$model-$release.img.xz
  	echo "Checksum *.xz : sha256sum $file ..."
 	sha256_xz=$( sha256sum $file | cut -d' ' -f1 )
 	img="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
@@ -61,7 +61,7 @@ for file in $selectfiles; do
 			notes+='
 | `5` `4` `3` `2 (BCM2837)` `Zero2` | '$img' | '$sha256_xz' | '$mirror'  |'
 			;;
-		RPi2 )
+		32bit )
 			list+='
 		"pi3-32bit",
 		"pi2-32bit"
@@ -71,7 +71,7 @@ for file in $selectfiles; do
 			notes+='
 | `3` `2` | '$image_sha256_mirror'  |'
 			;;
-		* )
+		Legacy )
 			list+='
 		"pi1-32bit",
 		"pi0-32bit"
