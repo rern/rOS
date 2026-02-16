@@ -26,7 +26,7 @@ done
 
 selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist "
  \Z1Select files to upload:\Z0
-" $(( ${#imgfiles[@]} + 3 )) 0 0 \
+" $(( ${#imgfiles[@]} + 5 )) 0 0 \
 $filelist ) # rAudio-MODEL-YYYYMMDD.img.xz
 mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $selectfiles | tr ' ' '\n' )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
