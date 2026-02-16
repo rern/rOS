@@ -129,7 +129,7 @@ rmdir /home/$USER/{BOOT,ROOT} 2> /dev/null
 
 banner 'Check filesystems ...'
 fsck.fat -taw $partboot
-e2fsck -fy $partroot
+e2fsck -p $partroot
 
 banner "Image: $imagefile"
 
