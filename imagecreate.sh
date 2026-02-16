@@ -128,7 +128,7 @@ umount -l -v $partboot $partroot
 rmdir /home/$USER/{BOOT,ROOT} 2> /dev/null
 
 banner 'Check filesystems ...'
-fsck.vfat -trawl $partboot
+fsck.vfat -taw $partboot
 e2fsck -fy $partroot
 
 banner "Image: $imagefile"
