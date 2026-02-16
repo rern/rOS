@@ -96,7 +96,7 @@ umount $partB $partR 2> /dev/null
 mkfs.fat -F 32 $partB
 mkfs.ext4 -F $partR
 
-fsck.fat -a $partB
+fsck.fat -taw $partB
 e2fsck -p $partR
 
 fatlabel $partB BOOT
