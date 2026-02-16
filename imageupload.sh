@@ -99,6 +99,7 @@ gh release create i$release --title i$release --notes "$notes" $selectfiles
 [[ $? != 0 ]] && exitError "Upload to GitHub FAILED!\n"
 #---------------------------------------------------------------
 echo '{ "os_list": [ '${list:1}' ] }' | jq > rpi-imager.json
+git pull
 git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
 git push
