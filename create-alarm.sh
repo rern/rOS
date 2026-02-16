@@ -287,7 +287,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 6 "$shairport" on \
 7 "$snapcast"  on \
 8 "$spotify"   on \
-9 "$upmpdcli" on )
+9 "$upmpdcli"  on )
 	
 	select=" $select "
 	[[ $select == *' 1 '* ]] && list+="$bluealsa"$'\n'  && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests '
