@@ -62,12 +62,12 @@ if [[ ! $devline ]]; then
 #---------------------------------------------------------------
 fi
 if [[ $devline == *\[sd?\]* ]]; then
-	name=$( echo $devline | sed -E 's|.*\[(.*)\].*|\1|' )
+	name=$( sed -E 's|.*\[(.*)\].*|\1|' <<< $devline )
 	dev=/dev/$name
 	partboot=${dev}1
 	partroot=${dev}2
 else
-	name=$( echo $devline | sed -E 's/.*] (.*): .*/\1/' )
+	name=$( sed -E 's/.*] (.*): .*/\1/' <<< $devline )
 	dev=/dev/$name
 	partboot=${dev}p1
 	partroot=${dev}p2
@@ -126,6 +126,9 @@ clear -x
 touch $BOOT/expand # auto expand root partition
 umount -l -v $partboot $partroot
 rmdir /home/$USER/{BOOT,ROOT} 2> /dev/null
+
+banner 'Check filesystems ...'
+fsck.vfat -trawl $partboot
 e2fsck -fy $partroot
 
 banner "Image: $imagefile"
