@@ -15,7 +15,7 @@ cd /home/x/rAudio
 
 ! gh auth status &> /dev/null && gh auth login -p ssh -w
 
-rm /home/x/rAudio/rAudio*.xz
+rm rAudio*.xz
 ln -s ../BIG/rAudio*.xz .
 
 optbox=( --colors --no-shadow --no-collapse )
@@ -37,15 +37,17 @@ release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
 #---------------------------------------------------------------
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
 notes='
-| Raspberry Pi | Image File | SHA256 | Mirror |
-|:-------------|:-----------|:-------|:-------|'
+| Raspberry Pi | Image File | MD5 | Mirror |
+|:-------------|:-----------|:----|:-------|'
+echo Checksum:
 for model in 64bit 32bit Legacy; do
 	file=rAudio-$model-$release.img.xz
- 	echo "Checksum: sha256sum $file ..."
+ 	echo $file ...
+	md5=$( md5sum $file | cut -d' ' -f1 )
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	image="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
 	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
-	image_sha256_mirror="| $imgage | $sha256 | $mirror |"
+	image_md5_mirror="| $image | $md5 | $mirror |"
 	list+=',
 {
 	"devices": ['
@@ -60,7 +62,7 @@ for model in 64bit 32bit Legacy; do
 	"name": "rAudio 64bit",
 	"description": "For: RPi 5, 4, 3, 2 (BCM2837), Zero 2",'
 			notes+='
-| `5` `4` `3` `2 (BCM2837)` `Zero2` '$image_sha256_mirror
+| `5` `4` `3` `2 (BCM2837)` `Zero2` '$image_md5_mirror
 			;;
 		32bit )
 			list+='
@@ -70,7 +72,7 @@ for model in 64bit 32bit Legacy; do
 	"name": "rAudio 32bit",
 	"description": "For: RPi 3, 2",'
 			notes+='
-| `3` `2` '$image_sha256_mirror
+| `3` `2` '$image_md5_mirror
 			;;
 		Legacy )
 			list+='
@@ -80,7 +82,7 @@ for model in 64bit 32bit Legacy; do
 	"name": "rAudio Legacy",
 	"description": "For: RPi 1, Zero",'
 			notes+='
-| `1` `Zero` '$image_sha256_mirror
+| `1` `Zero` '$image_md5_mirror
 			;;
 	esac
 	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
@@ -98,8 +100,10 @@ echo -e "\nUpload rAudio Image Files: i$release ...\n"
 gh release create i$release --title i$release --notes "$notes" $selectfiles
 [[ $? != 0 ]] && exitError "Upload to GitHub FAILED!\n"
 #---------------------------------------------------------------
-echo '{ "os_list": [ '${list:1}' ] }' | jq > rpi-imager.json
+rm rAudio*.xz
 git pull
+echo '{ "os_list": [ '${list:1}' ] }' | jq > rpi-imager.json
 git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
 git push
+
