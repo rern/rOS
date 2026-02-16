@@ -211,11 +211,8 @@ if [[ -e /usr/bin/spotifyd ]]; then
 else
 	rm /etc/spotifyd.conf /etc/systemd/system/spotifyd.service
 fi
-# sshd
-sed -i -e 's/\(PermitEmptyPasswords \).*/#\1no/
-' -e 's/.*\(PrintLastLog \).*/\1no/
-' /etc/ssh/sshd_config
-echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
+# command promt
+echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc
 # user
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
