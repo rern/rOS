@@ -191,5 +191,4 @@ dialog "${optbox[@]}" --infobox "
 Image file created:
 \Z1$imagepath\Z0
 $size
-
-" 9 58
+" 8 58
