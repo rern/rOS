@@ -403,8 +403,8 @@ rm $file.md5
 ( pv -n $file \
 	| bsdtar -C $ROOT -xpf - --exclude=boot/initramfs-linux-fallback.img ) 2>&1 \
 	| dialog "${opt[@]}" --gauge "
-  Decompress
-  \Z1$file\Z0 ...
+  Decompress ...
+  \Z1$file\Z0
 " 9 50
 
 sync &
@@ -418,8 +418,8 @@ dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
 	sleep 2
 done ) \
 	| dialog "${opt[@]}" --gauge "
-  Write to SD card
-  \Z1$file\Z0 ...
+  Write to SD card ...
+  \Z1$file\Z0
 " 9 50
 
 sync
