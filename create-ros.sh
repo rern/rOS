@@ -211,8 +211,9 @@ if [[ -e /usr/bin/spotifyd ]]; then
 else
 	rm /etc/spotifyd.conf /etc/systemd/system/spotifyd.service
 fi
-# command promt
-echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc
+# ssh
+sed -i 's/\(PermitEmptyPasswords \).*/#\1no/' /etc/ssh/sshd_config # connect faster
+echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 # user
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
