@@ -38,8 +38,7 @@ fi
 if [[ $select == *' 2 '* ]]; then
 	banner 'Reset user data directory ...'
 	rm -rf /root/.cache/*
-	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists,webradios}/*
-	curl -skL https://github.com/rern/rAudio-addons/raw/main/webradio/radioparadise.tar.xz | bsdtar xvf - -C $dirdata/webradio
+	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists}/*
 	echo '{
   "playlists" : 0
 , "webradio"  : '$( find -L $dirdata/webradio -type f ! -path '*/img/*' | wc -l )'
