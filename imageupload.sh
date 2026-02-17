@@ -48,12 +48,12 @@ for model in 64bit 32bit Legacy; do
 	image="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
 	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
 	image_md5_mirror="| $image | $md5 | $mirror |"
-	list+=',
+	os_list+=',
 {
 	"devices": ['
 	case $model in
 		64bit )
-			list+='
+			os_list+='
 		"pi5-64bit",
 		"pi4-64bit",
 		"pi3-64bit",
@@ -65,7 +65,7 @@ for model in 64bit 32bit Legacy; do
 | `5` `4` `3` `2 (BCM2837)` `Zero2` '$image_md5_mirror
 			;;
 		32bit )
-			list+='
+			os_list+='
 		"pi3-32bit",
 		"pi2-32bit"
 	],
@@ -75,7 +75,7 @@ for model in 64bit 32bit Legacy; do
 | `3` `2` '$image_md5_mirror
 			;;
 		Legacy )
-			list+='
+			os_list+='
 		"pi1-32bit",
 		"pi0-32bit"
 	],
@@ -86,7 +86,7 @@ for model in 64bit 32bit Legacy; do
 			;;
 	esac
 	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
-	list+='
+	os_list+='
 	"url": "https://github.com/rern/rAudio/releases/download/i'$release'/'$file'",
 	"release_date": "'$date_rel'",
 	"extract_size": '${size_xz_img/* }',
@@ -102,7 +102,11 @@ gh release create i$release --title i$release --notes "$notes" $selectfiles
 #---------------------------------------------------------------
 rm rAudio*.xz
 git pull
-echo '{ "os_list": [ '${list:1}' ] }' | jq > rpi-imager.json
+imager=$( curl -L https://github.com/rern/rAudio/raw/refs/heads/main/rpi-imager.json | jq .imager )
+echo '{
+  "imager"  : '$imager'
+, "os_list" : [ '${os_list:1}' ]
+}' | jq > rpi-imager.json
 git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
 git push
