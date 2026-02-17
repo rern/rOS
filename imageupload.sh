@@ -104,8 +104,8 @@ rm rAudio*.xz
 git pull
 imager=$( curl -L https://github.com/rern/rAudio/raw/refs/heads/main/rpi-imager.json | jq .imager )
 echo '{
-  "imager"  : '$imager'
-, "os_list" : [ '${os_list:1}' ]
+  "os_list" : [ '${os_list:1}' ]
+, "imager"  : '$imager'
 }' | jq > rpi-imager.json
 git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
