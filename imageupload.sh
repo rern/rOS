@@ -92,7 +92,7 @@ for model in 64bit 32bit Legacy; do
 	"extract_size": '${size_xz_img/* }',
 	"image_download_size": '${size_xz_img/ *}',
 	"image_download_sha256": "'$sha256'",
-	"icon": "https://github.com/rern/rAudio/raw/refs/heads/main/srv/http/assets/img/icon'$model'.png",
+	"icon": "https://raw.githubusercontent.com/rern/_assets/refs/heads/master/rpi-imager/icon'$model'.png",
 	"website": "https://github.com/rern/rAudio"
 }'
 done
