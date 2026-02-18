@@ -59,17 +59,17 @@ for model in 64bit 32bit Legacy; do
 		"pi3-64bit",
 		"pi2-64bit"
 	],
-	"name": "rAudio 64bit",
-	"description": "For: RPi 5, 4, 3, 2 (BCM2837), Zero 2",'
+	"name": "rAudio '$model'",
+	"description": "For: RPi 5, 4, 3, 2 (64bit), Zero 2",'
 			notes+='
-| `5` `4` `3` `2 (BCM2837)` `Zero2` '$image_md5_mirror
+| `5` `4` `3` `2 (64bit)` `Zero2` '$image_md5_mirror
 			;;
 		32bit )
 			os_list+='
 		"pi3-32bit",
 		"pi2-32bit"
 	],
-	"name": "rAudio 32bit",
+	"name": "rAudio '$model'",
 	"description": "For: RPi 3, 2",'
 			notes+='
 | `3` `2` '$image_md5_mirror
@@ -79,7 +79,7 @@ for model in 64bit 32bit Legacy; do
 		"pi1-32bit",
 		"pi0-32bit"
 	],
-	"name": "rAudio Legacy",
+	"name": "rAudio '$model'",
 	"description": "For: RPi 1, Zero",'
 			notes+='
 | `1` `Zero` '$image_md5_mirror
