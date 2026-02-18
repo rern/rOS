@@ -48,8 +48,8 @@ for model in 64bit 32bit Legacy; do
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	image="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
 	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
-	os_list+='
-, {
+	os_list+=',
+{
   "devices": ['
 	case $model in
 		64bit )
