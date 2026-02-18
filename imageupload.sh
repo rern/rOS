@@ -102,10 +102,9 @@ gh release create i$release --title i$release --notes "$notes" $selectfiles
 #---------------------------------------------------------------
 rm rAudio*.xz
 git pull
-imager=$( jq .imager < rpi-imager.json )
 echo '{
   "os_list" : [ '${os_list:1}' ]
-, "imager"  : '$imager'
+, "imager"  : '$( jq .imager < rpi-imager.json )'
 }' | jq > rpi-imager.json
 git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
