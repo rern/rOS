@@ -102,7 +102,7 @@ gh release create i$release --title i$release --notes "$notes" $selectfiles
 #---------------------------------------------------------------
 rm rAudio*.xz
 git pull
-imager=$( curl -L https://github.com/rern/rAudio/raw/refs/heads/main/rpi-imager.json | jq .imager )
+imager=$( jq .imager < rpi-imager.json )
 echo '{
   "os_list" : [ '${os_list:1}' ]
 , "imager"  : '$imager'
