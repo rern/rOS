@@ -43,9 +43,10 @@ echo Checksum:
 for model in 64bit 32bit Legacy; do
 	file=rAudio-$model-$release.img.xz
  	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
-	echo $file ...
+	printf "$file \e[5m...\e[0m"
 	md5=$( md5sum $file | cut -d' ' -f1 )
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
+	printf "\r$file ...\n"
 	image="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
 	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
 	os_list+='
