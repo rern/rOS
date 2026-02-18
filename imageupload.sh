@@ -42,7 +42,8 @@ notes='
 echo Checksum:
 for model in 64bit 32bit Legacy; do
 	file=rAudio-$model-$release.img.xz
- 	echo $file ...
+ 	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
+	echo $file ...
 	md5=$( md5sum $file | cut -d' ' -f1 )
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	image="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
@@ -85,7 +86,6 @@ for model in 64bit 32bit Legacy; do
 | `1` `Zero` '$image_md5_mirror
 			;;
 	esac
-	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
 	os_list+='
 	"url": "https://github.com/rern/rAudio/releases/download/i'$release'/'$file'",
 	"release_date": "'$date_rel'",
