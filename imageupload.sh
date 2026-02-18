@@ -15,7 +15,7 @@ cd /home/x/rAudio
 
 ! gh auth status &> /dev/null && gh auth login -p ssh -w
 
-rm rAudio*.xz
+rm -f rAudio*.xz
 ln -s ../BIG/rAudio*.xz .
 
 optbox=( --colors --no-shadow --no-collapse )
