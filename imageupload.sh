@@ -48,51 +48,51 @@ for model in 64bit 32bit Legacy; do
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	image="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
 	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
-	os_list+=',
-{
-	"devices": ['
+	os_list+='
+, {
+  "devices": ['
 	case $model in
 		64bit )
 			os_list+='
-		"pi5-64bit",
-		"pi4-64bit",
-		"pi3-64bit",
-		"pi2-64bit"
-	],
-	"name": "rAudio '$model'",
-	"description": "For: RPi 5, 4, 3, 2 (64bit), Zero 2",'
+	  "pi5-64bit"
+	, "pi4-64bit"
+	, "pi3-64bit"
+	, "pi2-64bit"
+]
+, "name": "rAudio '$model'"
+, "description": "For: RPi 5, 4, 3, 2 (64bit), Zero 2"'
 			notes+='
 | `5` `4` `3` `2 (64bit)` `Zero2` '
 			;;
 		32bit )
 			os_list+='
-		"pi3-32bit",
-		"pi2-32bit"
-	],
-	"name": "rAudio '$model'",
-	"description": "For: RPi 3, 2",'
+	  "pi3-32bit"
+	, "pi2-32bit"
+]
+, "name": "rAudio '$model'"
+, "description": "For: RPi 3, 2"'
 			notes+='
 | `3` `2` '
 			;;
 		Legacy )
 			os_list+='
-		"pi1-32bit",
-		"pi0-32bit"
-	],
-	"name": "rAudio '$model'",
-	"description": "For: RPi 1, Zero",'
+	  "pi1-32bit"
+	, "pi0-32bit"
+]
+, "name": "rAudio '$model'"
+, "description": "For: RPi 1, Zero"'
 			notes+='
 | `1` `Zero` '
 			;;
 	esac
 	os_list+='
-	"url": "https://github.com/rern/rAudio/releases/download/i'$release'/'$file'",
-	"release_date": "'$date_rel'",
-	"extract_size": '${size_xz_img/* }',
-	"image_download_size": '${size_xz_img/ *}',
-	"image_download_sha256": "'$sha256'",
-	"icon": "https://raw.githubusercontent.com/rern/_assets/refs/heads/master/rpi-imager/icon'$model'.png",
-	"website": "https://github.com/rern/rAudio"
+, "url": "https://github.com/rern/rAudio/releases/download/i'$release'/'$file'"
+, "release_date": "'$date_rel'"
+, "extract_size": '${size_xz_img/* }'
+, "image_download_size": '${size_xz_img/ *}'
+, "image_download_sha256": "'$sha256'"
+, "icon": "https://raw.githubusercontent.com/rern/_assets/refs/heads/master/rpi-imager/icon'$model'.png"
+, "website": "https://github.com/rern/rAudio"
 }'
 	notes+="| $image | $md5 | $mirror |"
 done
