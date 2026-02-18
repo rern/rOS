@@ -1,6 +1,15 @@
 #!/bin/bash
 
+banner() {
+	echo
+	def='\e[0m'
+	bg='\e[44m'
+    printf "$bg%*s$def\n" $COLUMNS
+    printf "$bg%-${COLUMNS}s$def\n" "  $1"
+    printf "$bg%*s$def\n" $COLUMNS
+}
 errorExit() {
+	banner 'E r r o r'
 	echo -e "\n\e[41m ! \e[0m $error"
 	exit
 }
@@ -23,7 +32,7 @@ imgfiles=( $( ls rAudio*.img.xz 2> /dev/null ) )
 for file in "${imgfiles[@]}"; do
 	filelist+=" $file on"
 done
-
+#................................................................
 selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist "
  \Z1Select files to upload:\Z0
 " $(( ${#imgfiles[@]} + 5 )) 0 0 \
@@ -39,7 +48,7 @@ date_rel=${release:0:4}-${release:4:2}-${release: -2}
 notes='
 | Raspberry Pi | Image File | MD5 | Mirror |
 |:-------------|:-----------|:----|:-------|'
-echo Checksum:
+banner 'C h e c k s u m'
 for model in 64bit 32bit Legacy; do
 	file=rAudio-$model-$release.img.xz
  	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
@@ -97,7 +106,8 @@ for model in 64bit 32bit Legacy; do
 }'
 	notes+="| $image | $md5 | $mirror |"
 done
-echo -e "\nUpload rAudio Image Files: i$release ...\n"
+banner 'U p l o a d'
+echo -e "rAudio Image Files: i$release\n"
 gh release create i$release --title i$release --notes "$notes" $selectfiles
 [[ $? != 0 ]] && exitError "Upload to GitHub FAILED!\n"
 #---------------------------------------------------------------
@@ -110,4 +120,9 @@ echo '{
 git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
 git push
+#................................................................
+dialog "${optbox[@]}" --infobox "
 
+                      \Z1r\Z0Audio images 
+                  Uploaded successfully
+" 8 58
