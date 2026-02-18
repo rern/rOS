@@ -48,7 +48,6 @@ for model in 64bit 32bit Legacy; do
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	image="[$file](https://github.com/rern/rAudio/releases/download/i$release/$file)"
 	mirror="[< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file)"
-	image_md5_mirror="| $image | $md5 | $mirror |"
 	os_list+=',
 {
 	"devices": ['
@@ -63,7 +62,7 @@ for model in 64bit 32bit Legacy; do
 	"name": "rAudio '$model'",
 	"description": "For: RPi 5, 4, 3, 2 (64bit), Zero 2",'
 			notes+='
-| `5` `4` `3` `2 (64bit)` `Zero2` '$image_md5_mirror
+| `5` `4` `3` `2 (64bit)` `Zero2` '
 			;;
 		32bit )
 			os_list+='
@@ -73,7 +72,7 @@ for model in 64bit 32bit Legacy; do
 	"name": "rAudio '$model'",
 	"description": "For: RPi 3, 2",'
 			notes+='
-| `3` `2` '$image_md5_mirror
+| `3` `2` '
 			;;
 		Legacy )
 			os_list+='
@@ -83,7 +82,7 @@ for model in 64bit 32bit Legacy; do
 	"name": "rAudio '$model'",
 	"description": "For: RPi 1, Zero",'
 			notes+='
-| `1` `Zero` '$image_md5_mirror
+| `1` `Zero` '
 			;;
 	esac
 	os_list+='
@@ -95,6 +94,7 @@ for model in 64bit 32bit Legacy; do
 	"icon": "https://raw.githubusercontent.com/rern/_assets/refs/heads/master/rpi-imager/icon'$model'.png",
 	"website": "https://github.com/rern/rAudio"
 }'
+	notes+="| $image | $md5 | $mirror |"
 done
 echo -e "\nUpload rAudio Image Files: i$release ...\n"
 gh release create i$release --title i$release --notes "$notes" $selectfiles
