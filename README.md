@@ -60,15 +60,10 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- Wired LAN
 	- Optional: Wi-Fi (if necessary)
 - Media:
-	- Micro SD card shoule be high-speed, at least class 10 or U1.
-	- **Option 1**: Micro SD card: 4GB+ for `BOOT` + `ROOT` partitions
-	- **Option 2**: Micro SD card + USB drive (`ROOT` partition on USB drive)
-		- Micro SD card: 300MB+ for `BOOT` partition only
-		- USB drive: 4GB+ for `ROOT` partition (or USB hard drive with existing data)
-	- **Option 3**: USB drive only - no SD card (Boot from USB drive)
-		- Not for Raspberry Pi Zero, 1
-		- USB drive: 4GB+ for `BOOT` + `ROOT` partition
-		
+	- Micro SD card
+		- Optional: Micro SD card + USB drive
+		- Optional: USB drive only
+
 ---
 
 ### Prepare partitions
@@ -81,7 +76,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- USB drive only
 	
 **Option 1: Micro SD card only**
-- 4GB+
+- 4GB+ (shoule be at least class 10 or U1)
 - `Unmount` > `Delete` all partitions (make sure it's the micro SD card)
 - Create partitions:
 	| No.| Size        | Type    | Format | Label |
