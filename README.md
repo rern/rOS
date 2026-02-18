@@ -61,74 +61,71 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- Optional: Wi-Fi (if necessary)
 - Media:
 	- Micro SD card shoule be high-speed, at least class 10 or U1.
-	- Option 1: Micro SD card: 4GB+ for `BOOT` + `ROOT` partitions
-	- Option 2: Micro SD card + USB drive (`ROOT` partition on USB drive)
-		- Micro SD card: 100MB+ for `BOOT` partition only
+	- **Option 1**: Micro SD card: 4GB+ for `BOOT` + `ROOT` partitions
+	- **Option 2**: Micro SD card + USB drive (`ROOT` partition on USB drive)
+		- Micro SD card: 300MB+ for `BOOT` partition only
 		- USB drive: 4GB+ for `ROOT` partition (or USB hard drive with existing data)
-	- Option 3: USB drive only - no SD card (Boot from USB drive)
+	- **Option 3**: USB drive only - no SD card (Boot from USB drive)
 		- Not for Raspberry Pi Zero, 1
 		- USB drive: 4GB+ for `BOOT` + `ROOT` partition
-		- Suitable for faster-than-SD-card drives.
-		- Normal hard drive needs external power, e.g., powered USB hub, to have it spin up 5+ seconds before boot.
-		- Boot takes 10+ seconds longer (detect no sd card > read boot loader into memory > boot)
+		
 ---
 
 ### Prepare partitions
 - On Linux PC
 - Make sure no partitions labelled as `BOOT` or `ROOT`
 - Open **GParted** app (Manjaro root password: `manjaro`)
-- 3 Alternatives:
+- 3 options:
 	- Micro SD card only
 	- Micro SD card + USB drive
 	- USB drive only
 	
-**Alternative 1: Micro SD card only**
+**Option 1: Micro SD card only**
+- 4GB+
 - `Unmount` > `Delete` all partitions (make sure it's the micro SD card)
 - Create partitions:
-
-| No. | Size        | Type    | Format | Label |
-|-----|-------------|---------|--------|-------|
-| #1  | 200MiB      | primary | fat32  | BOOT  |
-| #2  | (the rest)  | primary | ext4   | ROOT  |
+	| No.| Size        | Type    | Format | Label |
+	|----|-------------|---------|--------|-------|
+	| 1  | 300MiB      | primary | fat32  | BOOT  |
+	| 2  | (the rest)  | primary | ext4   | ROOT  |
 	
-**Alternative 2: Micro SD card + USB drive**
-- Micro SD card
+**Option 2: Micro SD card + USB drive**
+- Micro SD card - 300MB+
 	- `Unmount` > `Delete` all partitions (Caution: make sure it's the SD card)
 	- Create a partition:
-
-| No. | Size        | Type    | Format | Label |
-|-----|-------------|---------|--------|-------|
-| #1  | 200MiB      | primary | fat32  | BOOT  |
-
-- USB drive - Blank:
-	- `Unmount` > `Delete` all partitions (Caution: make sure it's the USB drive)
-	- Create partitions:
-	
-| No. | Size        | Type    | Format | Label |
-|-----|-------------|---------|--------|-------|
-| #1  | 5000MiB     | primary | ext4   | ROOT  |
-| #2  | (the rest)  | primary | ext4   | (any) |
-	
-- or USB drive - with existing data:
-	- No need to reformat or change format of existing partition
-	- Resize the existing to get 5000MiB unallocated space (anywhere - at the end, middle or start of the disk)
-	- Create a partition in the space:
-		
-| No.   | Size        | Type    | Format | Label |
-|-------|-------------|---------|--------|-------|
-| (any) | (existing)  | primary | (any)  | (any) |
-| (any) | 5000MiB     | primary | ext4   | ROOT  |
+		| No.| Size        | Type    | Format | Label |
+		|----|-------------|---------|--------|-------|
+		| 1  | 300MiB      | primary | fat32  | BOOT  |
+- USB drive - 4GB+
+	- Blank:
+		- `Unmount` > `Delete` all partitions (Caution: make sure it's the USB drive)
+		- Create partitions:
+			| No.| Size        | Type    | Format | Label |
+			|----|-------------|---------|--------|-------|
+			| 1  | 4000MiB     | primary | ext4   | ROOT  |
+			| 2  | (the rest)  | primary | ext4   | (any) |
+	- Not blabk:
+		- No need to reformat or change format of existing partition
+		- Resize the existing to get 5000MiB unallocated space (anywhere - at the end, middle or start of the disk)
+		- Create a partition in the space:
+			| No.   | Size        | Type    | Format | Label |
+			|-------|-------------|---------|--------|-------|
+			| (any) | (existing)  | primary | (any)  | (any) |
+			| (any) | 4000MiB     | primary | ext4   | ROOT  |
 			
-**Alternative 3: USB drive only**
+**Option 3: USB drive only**
 
-- Enable boot from USB: [Set boot bit](https://www.raspberrypi.org/documentation/hardware/raspberrypi/bootmodes/msd.md) (Micro SD card can still be used as usual if inserted.)
+- Not for Raspberry Pi Zero, 1
+- Suitable for faster-than-SD-card drives.
+- Normal hard drive needs external power, e.g., powered USB hub, to have it spin up 5+ seconds before boot.
+- Boot takes 10+ seconds longer (detect no sd card > read boot loader into memory > boot)
+- Enable [USB mass storage boot](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot)
 - Create partitions: (Drive with existing data must be resized and rearranged respectively.)
-
-| No. | Size        | Type    | Format | Label |
-|-----|-------------|---------|--------|-------|
-| #1  | 200MiB      | primary | fat32  | BOOT  |
-| #2  | 5000MiB     | primary | ext4   | ROOT  |
-| #3  | (the rest)  | primary | ext4   | (any) |
+	| No.| Size        | Type    | Format | Label |
+	|----|-------------|---------|--------|-------|
+	| 1  | 300MiB      | primary | fat32  | BOOT  |
+	| 2  | 4000MiB     | primary | ext4   | ROOT  |
+	| 3  | (the rest)  | primary | ext4   | (any) |
 
 ---
 	
