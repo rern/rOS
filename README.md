@@ -15,13 +15,13 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 - Options:
 	- Run `ROOT` partition on USB drive
 	- Run on USB only - no SD card ([boot from USB](https://www.raspberrypi.org/documentation/hardware/raspberrypi/bootmodes/msd.md))
-	- Pre-configure Wi-Fi connection (headless mode)
+	- Pre-configure Wi-Fi connection
 	- Exclude features (can be as light as possible in terms of build time and disk space)
 - Take less than 15 minutes for the whole process with a decent download speed.
 
 **Procedure**
 - [Prepare partitions](#prepare-partitions)
-	- Create `BOOT` and `ROOT` partitions
+	- Create `BOOT` and `ROOT`
 - [Create Arch Linux Arm + rAudio](#create-arch-linux-arm--raudio)
 	- Use wired LAN connection if possible
 		- Use router assigned IP address if possible
