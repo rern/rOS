@@ -2,7 +2,8 @@
 
 banner() {
 	cols=$( tput cols )
-    printf "\n\e[44m%${cols}s\n  $( echo $@ )\n%${cols}s\e[0m\n"
+	text=$( printf "  $( echo $@ )%120s" )
+    printf "\n\e[44m%${cols}s\n${text:0:$cols}\n%${cols}s\e[0m\n"
 }
 errorExit() {
 	banner E r r o r
