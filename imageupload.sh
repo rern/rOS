@@ -125,6 +125,7 @@ git push
 #........................
 dialog "${optbox[@]}" --infobox "
 
-                      \Z1r\Z0Audio images 
-                  Uploaded successfully
-" 8 58
+                    \Z1r\Z0Audio images
+
+                Uploaded successfully
+" 9 58
