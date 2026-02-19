@@ -46,6 +46,7 @@ date_rel=${release:0:4}-${release:4:2}-${release: -2}
 notes='
 | Raspberry Pi | Image File | MD5 | Mirror |
 |:-------------|:-----------|:----|:-------|'
+clear -x
 #........................
 banner C h e c k s u m
 for model in 64bit 32bit Legacy; do
