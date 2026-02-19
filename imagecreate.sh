@@ -2,9 +2,7 @@
 
 banner() {
 	cols=$( tput cols )
-    printf "\n\e[44m%*s" $cols
-    printf "\n%-${cols}s" "  $( echo $@ )"
-    printf "\n%*s\e[0m\n" $cols
+	printf "\n\e[44m%${cols}s\n  $( echo $@ )\n%${cols}s\e[0m\n"
 }
 cleanup() {
 	umount -l $partboot $partroot 2> /dev/null
