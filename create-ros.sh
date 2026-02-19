@@ -2,13 +2,12 @@
 
 trap exit INT
 
-SECONDS=0
-
-features=$( cat /boot/features )
-
 banner() {
-	echo -e "\e[44m\n\n  $@\n\e[0m"
+	printf "\e[44m%*s\n%s\n%*s\e[0m\n" $COLUMNS '' "  $( echo $@ )" $COLUMNS ''
 }
+
+SECONDS=0
+features=$( cat /boot/features )
 #........................
 banner Initialize Arch Linux Arm ...
 
