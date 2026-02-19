@@ -14,7 +14,7 @@ else
 fi
 
 optbox=( --colors --no-shadow --no-collapse )
-
+#........................
 dialog "${optbox[@]}" --infobox "
 
                        \Z1r\Z0Audio
@@ -22,16 +22,7 @@ dialog "${optbox[@]}" --infobox "
                   \Z1Write\Z0 Image File
 " 9 58
 sleep 2
-
-banner() {
-	echo
-	def='\e[0m'
-	bg='\e[44m'
-    printf "$bg%*s$def\n" $COLUMNS
-    printf "$bg%-${COLUMNS}s$def\n" "  $1"
-    printf "$bg%*s$def\n" $COLUMNS
-}
-
+#........................
 dialog "${optbox[@]}" --msgbox "
 \Z1Insert micro SD card\Z0
 If already inserted:
@@ -43,24 +34,25 @@ sd=$( dmesg -T | tail | grep ' sd .*GB' )
 [[ -z $sd ]] && sleep 2 && sd=$( dmesg -T | tail | grep ' sd .* logical blocks' )
 
 if [[ -z $sd ]]; then
+#........................
 	dialog "${optbox[@]}" --infobox "
 \Z1No SD card found.\Z0
 " 0 0
 	exit
+#---------------------------------------------------------------
 fi
 
 dev=/dev/$( echo $sd | awk -F'[][]' '{print $4}' )
 detail=$( echo $sd | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
-
+#........................
 dialog "${optbox[@]}" --yesno "
 Confirm micro SD card: \Z1$dev\Z0
 Detail:
 $detail
 
 " 0 0
-
 [[ $? != 0 ]] && exit
-
+#---------------------------------------------------------------
 rpi=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 \Z1Target:\Z0
 " 8 0 0 \
@@ -77,17 +69,18 @@ case $rpi in
 	2 | 3 ) file=rAudio-1-RPi2-3.img.xz ;;
 	4 )     file=rAudio-1-RPi4.img.xz ;;
 	5 )     file=rAudio-1-RPi64.img.xz ;;
+#........................
 	6 )		file=$( basename $( dialog "${optbox[@]}" --title 'Image file' --stdout --fselect $PWD/ 30 70 ) );;
 esac
 
 [[ ! -e $file ]] && echo Image file not found. && exit
-
+#---------------------------------------------------------------
 clear -x
-
-banner 'Write ...'
+#........................
+echo -e "\e[44m\n\n  Write ...\n\e[0m"
 echo SD card: $dev
 echo File   : $file
-
+#........................
 ( pv -n $file \
 	| xz -dc - \
 	| dd of=$dev bs=4M conv=fsync ) 2>&1 \
@@ -97,7 +90,7 @@ echo File   : $file
 " 9 58
 
 sync
-
+#........................
 dialog "${optbox[@]}" --infobox "
  \Z1$file\Z0
  

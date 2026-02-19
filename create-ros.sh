@@ -7,15 +7,10 @@ SECONDS=0
 features=$( cat /boot/features )
 
 banner() {
-	echo
-	def='\e[0m'
-	bg='\e[44m'
-    printf "$bg%*s$def\n" $COLUMNS
-    printf "$bg%-${COLUMNS}s$def\n" "  $1"
-    printf "$bg%*s$def\n" $COLUMNS
+	echo -e "\e[44m\n\n  $@\n\e[0m"
 }
-#----------------------------------------------------------------------------
-banner 'Initialize Arch Linux Arm ...'
+#........................
+banner Initialize Arch Linux Arm ...
 
 pacman-key --init
 pacman-key --populate archlinuxarm
@@ -29,7 +24,7 @@ systemctl start systemd-random-seed
 title='r  A  u  d  i  o'
 optbox=( --colors --no-shadow --no-collapse )
 opt=( --backtitle "$title" ${optbox[@]} )
-#----------------------------------------------------------------------------
+#........................
 dialog "${optbox[@]}" --infobox "
 
 
@@ -38,8 +33,8 @@ dialog "${optbox[@]}" --infobox "
 sleep 2
 
 clear -x # needed: fix stdout not scroll
-#----------------------------------------------------------------------------
-banner 'Upgrade system and default packages ...'
+#........................
+banner Upgrade system and default packages ...
 
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns 
@@ -81,8 +76,8 @@ if [[ -e /boot/cmdline.txt0 ]]; then
 fi
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
-#----------------------------------------------------------------------------
-banner 'Install packages ...'
+#........................
+banner Install packages ...
 
 pacman -S --noconfirm --needed $packages $features
 if [[ $? != 0 ]]; then
@@ -94,8 +89,8 @@ if [[ $? != 0 ]]; then
 		
 	fi
 fi
-#----------------------------------------------------------------------------
-banner 'Get configurations and user interface ...'
+#........................
+banner Get configurations and user interface ...
 
 mkdir -p /tmp/config
 release=$( cat /boot/release )
@@ -113,8 +108,8 @@ chmod -R 755 $dirbash
 
 mkdir /srv/http/assets/img/guide
 curl -skL https://github.com/rern/_assets/raw/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
-#---------------------------------------------------------------------------------
-banner 'Configure ...'
+#........................
+banner Configure ...
 
 # alsa
 alsactl store
@@ -235,8 +230,6 @@ echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
 # default startup services
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
-
-#---------------------------------------------------------------------------------
 # data - settings directories
 $dirbash/settings/system-datadefault.sh $release
 # flag expand partition
@@ -245,7 +238,7 @@ touch /boot/expand
 rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
 	  /root/create-ros.sh
-#----------------------------------------------------------------------------
+#........................
 dialog "${optbox[@]}" --infobox "
 
             \Z1r\Z0Audio created successfully.

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if mount | grep -q '/dev.*BOOT\|/dev.*ROOT'; then
+#........................
 	dialog --colors --infobox "
 Partition label exist: \Z1BOOT\Z0 or \Z1ROOT\Z0
 
@@ -11,10 +12,17 @@ Unable to continue.
 #-------------------------------------------------------------
 fi
 
+deviceLine() {
+	devline=$( dmesg \
+				| tail -15 \
+				| grep ' sd.* GiB\|mmcblk.* GiB' \
+				| tail -1 )
+}
+
 trap exit INT
 
 optbox=( --colors --no-shadow --no-collapse )
-
+#........................
 dialog "${optbox[@]}" --infobox "
 
                \Z1Partition Micro SD Card\Z0
@@ -22,7 +30,7 @@ dialog "${optbox[@]}" --infobox "
                     Arch Linux Arm
 " 9 58
 sleep 2
-
+#........................
 dialog "${optbox[@]}" --msgbox "
 \Z1Insert micro SD card\Z0
 
@@ -30,16 +38,10 @@ If already inserted:
 For proper detection, remove and reinsert again.
 
 " 0 0
-
-deviceLine() {
-	devline=$( dmesg \
-				| tail -15 \
-				| grep ' sd.* GiB\|mmcblk.* GiB' \
-				| tail -1 )
-}
 deviceLine
 [[ ! $devline ]] && sleep 2 && deviceLine
 if [[ ! $devline ]]; then
+#........................
 	dialog "${optbox[@]}" --infobox "
 \Z1No SD card found.\Z0
 
@@ -61,6 +63,7 @@ else
 fi
 
 list=$( lsblk -o name,size,mountpoint | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
+#........................
 dialog "${optbox[@]}" --yesno "
 Device list:
 $list

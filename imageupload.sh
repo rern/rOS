@@ -1,15 +1,10 @@
 #!/bin/bash
 
 banner() {
-	echo
-	def='\e[0m'
-	bg='\e[44m'
-    printf "$bg%*s$def\n" $COLUMNS
-    printf "$bg%-${COLUMNS}s$def\n" "  $1"
-    printf "$bg%*s$def\n" $COLUMNS
+	echo -e "\e[44m\n\n  $@\n\e[0m"
 }
 errorExit() {
-	banner 'E r r o r'
+	banner E r r o r
 	echo -e "\n\e[41m ! \e[0m $error"
 	exit
 }
@@ -49,7 +44,7 @@ notes='
 | Raspberry Pi | Image File | MD5 | Mirror |
 |:-------------|:-----------|:----|:-------|'
 #........................
-banner 'C h e c k s u m'
+banner C h e c k s u m
 for model in 64bit 32bit Legacy; do
 	file=rAudio-$model-$release.img.xz
  	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
@@ -108,7 +103,7 @@ for model in 64bit 32bit Legacy; do
 	notes+="| $image | $md5 | $mirror |"
 done
 #........................
-banner 'U p l o a d'
+banner U p l o a d
 gh release create i$release --title i$release --notes "$notes" $selectfiles
 [[ $? != 0 ]] && errorExit "Upload to GitHub FAILED!\n"
 #---------------------------------------------------------------

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+banner() {
+	echo -e "\e[44m\n\n  $@\n\e[0m"
+}
 cleanup() {
 	umount -l $partboot $partroot 2> /dev/null
 	rmdir /home/$USER/{BOOT,ROOT} 2> /dev/null
@@ -20,7 +23,7 @@ else
 fi
 
 optbox=( --colors --no-shadow --no-collapse --nocancel )
-
+#........................
 dialog "${optbox[@]}" --infobox "
 
                        \Z1r\Z0Audio
@@ -28,16 +31,7 @@ dialog "${optbox[@]}" --infobox "
                   \Z1Create\Z0 Image File
 " 9 58
 sleep 2
-
-banner() {
-	echo
-	def='\e[0m'
-	bg='\e[44m'
-    printf "$bg%*s$def\n" $COLUMNS
-    printf "$bg%-${COLUMNS}s$def\n" "  $1"
-    printf "$bg%*s$def\n" $COLUMNS
-}
-
+#........................
 dialog "${optbox[@]}" --msgbox "
 \Z1Insert micro SD card\Z0
 If already inserted:
@@ -55,6 +49,7 @@ deviceLine
 [[ ! $devline ]] && sleep 2 && deviceLine
 
 if [[ ! $devline ]]; then
+#........................
 	dialog "${optbox[@]}" --infobox "
 \Z1No SD card found.\Z0
 " 0 0
@@ -74,6 +69,7 @@ else
 fi
 
 list=$( lsblk -o name,size,mountpoint | grep -v ^loop | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
+#........................
 dialog "${optbox[@]}" --yesno "
 Device list:
 $list
@@ -91,6 +87,7 @@ ROOT=/mnt/ROOT
 $BOOT not empty."
 [[ $( ls -A $ROOT 2> /dev/null ) ]] && warnings+="
 $ROOT not empty."
+#........................
 [[ $warnings ]] && dialog "${optbox[@]}" --infobox "$warnings" 0 0 && exit
 #---------------------------------------------------------------
 mkdir -p /mnt/{BOOT,ROOT}
@@ -98,6 +95,7 @@ mount $partboot $BOOT
 mount $partroot $ROOT
 
 if [[ ! -e $BOOT/config.txt ]]; then
+#........................
 	dialog "${optbox[@]}" --infobox "
 \Z1$dev\Z0 is not \Z1r\Z0Audio.
 " 0 0
@@ -112,13 +110,14 @@ elif [[ -e $BOOT/kernel7.img ]]; then
 else # $BOOT/kernel.img
 	model=Legacy
 fi
-
+#........................
 imagefile=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
 Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 
 selectdir=$PWD/
 [[ -e $PWD/BIG ]] && selectdir+=BIG
+#........................
 imagedir=$( dialog "${optbox[@]}" --title 'Save to: ([space]=select)' --stdout --dselect $selectdir 20 40 )
 imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 
@@ -127,13 +126,13 @@ touch $BOOT/expand # auto expand root partition
 umount -l -v $partboot $partroot
 rmdir /home/$USER/{BOOT,ROOT} 2> /dev/null
 
-banner 'Check filesystems ...'
+banner Check filesystems ...
 fsck.fat -taw $partboot
 e2fsck -p $partroot
 
-banner "Image: $imagefile"
+banner Image: $imagefile
 
-banner 'Shrink ROOT partition ...'
+banner Shrink ROOT partition ...
 echo
 
 bar='\e[44m  \e[0m'
@@ -179,7 +178,7 @@ shrink 1
 
 shrink 2
 
-banner 'Compressed to image file ...'
+banner Compressed to image file ...
 echo
 echo -e "$bar $imagepath"
 echo
@@ -187,6 +186,7 @@ threads=$(( $( nproc ) - 2 ))
 dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$imagepath"
 
 size=$( xz -l --robot $imagepath | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
+#........................
 dialog "${optbox[@]}" --infobox "
 Image file created:
 \Z1$imagepath\Z0

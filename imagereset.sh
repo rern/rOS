@@ -1,17 +1,12 @@
 #!/bin/bash
 
-dirdata=/srv/http/data
-optbox=( --colors --no-shadow --no-collapse )
-
 banner() {
-	echo
-	def='\e[0m'
-	bg='\e[44m'
-	printf "$bg%*s$def\n" $COLUMNS
-	printf "$bg%-${COLUMNS}s$def\n" "  $1"
-	printf "$bg%*s$def\n" $COLUMNS
+	echo -e "\e[44m\n\n  $@\n\e[0m"
 }
 
+dirdata=/srv/http/data
+optbox=( --colors --no-shadow --no-collapse )
+#........................
 select=$( dialog "${optbox[@]}" \
 	   --output-fd 1 \
 	   --checklist '\n\Z1Select tasks:\n
@@ -21,22 +16,22 @@ select=$( dialog "${optbox[@]}" \
 			3 "Clear package cache" on \
 			4 "Clear system log" on \
 			5 "Clear Wi-Fi connection" on )
-
-clear
 [[ $? == 1 ]] && exit
-
+clear
+#---------------------------------------------------------------
 select=" $select "
-
 systemctl stop mpd
 mount | grep /mnt/MPD/NAS && umount -l "/mnt/MPD/NAS/"*
 mount | grep /mnt/MPD/USB && udevil umount -l "/mnt/MPD/USB/"*
 
 if [[ $select == *' 1 '* ]]; then
-	banner 'Reset MPD database ...'
+#........................
+	banner Reset MPD database ...
 	rm -f $dirdata/mpd/*
 fi
 if [[ $select == *' 2 '* ]]; then
-	banner 'Reset user data directory ...'
+#........................
+	banner Reset user data directory ...
 	rm -rf /root/.cache/*
 	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists}/*
 	echo '{
@@ -45,15 +40,18 @@ if [[ $select == *' 2 '* ]]; then
 }' > $dirdata/mpd/counts
 fi
 if [[ $select == *' 3 '* ]]; then
-	banner 'Clear package cache ...'
+#........................
+	banner Clear package cache ...
 	rm -f /var/cache/pacman/pkg/*
 fi
 if [[ $select == *' 4 '* ]]; then
-	banner 'Clear system log ...'
+#........................
+	banner Clear system log ...
 	rm -rf /var/log/journal/*
 fi
 if [[ $select == *' 5 '* ]]; then
-	banner 'Clear Bluetooth and Wi-Fi connection ...'
+#........................
+	banner Clear Bluetooth and Wi-Fi connection ...
 	rm -rf /var/lib/bluetooth/*
 	profiles=$( ls -1p /etc/netctl | grep -v / )
 	if [[ $profiles ]]; then
@@ -69,11 +67,11 @@ if [[ ! -e /boot/kernel.img ]]; then # skip on rpi 0, 1
 fi
 
 rm -rf /root/.config/chromium
-
-banner 'Check disk ...'
+#........................
+banner Check disk ...
 fsck.fat -traw /dev/mmcblk0p1
 rm -f /boot/FSCK*
-
+#........................
 dialog "${optbox[@]}" --infobox "
                     \Z1r\Z0Audio reset finished.
 
