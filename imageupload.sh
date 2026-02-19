@@ -2,13 +2,11 @@
 
 banner() {
 	cols=$( tput cols )
-    printf "\n\e[44m%*s" $cols
-    printf "\n%-${cols}s" "  $( echo $@ )"
-    printf "\n%*s\e[0m\n" $cols
+    printf "\n\e[44m%${cols}s\n  $( echo $@ )\n%${cols}s\e[0m\n"
 }
 errorExit() {
 	banner E r r o r
-	echo -e "\n\e[41m ! \e[0m $error"
+	echo -e "\n\e[41m ! \e[0m $@"
 	exit
 }
 
