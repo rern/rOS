@@ -1,7 +1,7 @@
 #!/bin/bash
 
 banner() {
-	echo -e "\e[44m\n\n  $@\n\e[0m"
+	printf "\e[44m%*s\n%s\n%*s\e[0m\n" $COLUMNS '' "  $( echo $@ )" $COLUMNS ''
 }
 
 dirdata=/srv/http/data
