@@ -1,7 +1,10 @@
 #!/bin/bash
 
 banner() {
-	printf "\e[44m%*s\n%s\n%*s\e[0m\n" $COLUMNS '' "  $( echo $@ )" $COLUMNS ''
+	cols=$( tput cols )
+    printf "\n\e[44m%*s" $cols
+    printf "\n%-${cols}s" "  $( echo $@ )"
+    printf "\n%*s\e[0m\n" $cols
 }
 cleanup() {
 	umount -l $partboot $partroot 2> /dev/null
