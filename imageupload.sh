@@ -32,7 +32,7 @@ imgfiles=( $( ls rAudio*.img.xz 2> /dev/null ) )
 for file in "${imgfiles[@]}"; do
 	filelist+=" $file on"
 done
-#................................................................
+#........................
 selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist "
  \Z1Select files to upload:\Z0
 " $(( ${#imgfiles[@]} + 5 )) 0 0 \
@@ -48,6 +48,7 @@ date_rel=${release:0:4}-${release:4:2}-${release: -2}
 notes='
 | Raspberry Pi | Image File | MD5 | Mirror |
 |:-------------|:-----------|:----|:-------|'
+#........................
 banner 'C h e c k s u m'
 for model in 64bit 32bit Legacy; do
 	file=rAudio-$model-$release.img.xz
@@ -106,10 +107,10 @@ for model in 64bit 32bit Legacy; do
 }'
 	notes+="| $image | $md5 | $mirror |"
 done
+#........................
 banner 'U p l o a d'
-echo -e "rAudio Image Files: i$release\n"
 gh release create i$release --title i$release --notes "$notes" $selectfiles
-[[ $? != 0 ]] && exitError "Upload to GitHub FAILED!\n"
+[[ $? != 0 ]] && errorExit "Upload to GitHub FAILED!\n"
 #---------------------------------------------------------------
 rm rAudio*.xz
 git pull
@@ -120,7 +121,7 @@ echo '{
 git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
 git push
-#................................................................
+#........................
 dialog "${optbox[@]}" --infobox "
 
                       \Z1r\Z0Audio images 
