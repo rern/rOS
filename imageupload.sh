@@ -13,7 +13,7 @@ for file in "${imgfiles[@]}"; do
 	filelist+=" $file on"
 done
 #........................
-selectfiles=$( dialog "${optbox[@]}" --output-fd 1 --nocancel --no-items --checklist "
+selectfiles=$( dialog $opt_check --no-items "
  \Z1Select files to upload:\Z0
 " $(( ${#imgfiles[@]} + 5 )) 0 0 \
 $filelist ) # rAudio-MODEL-YYYYMMDD.img.xz
@@ -112,7 +112,7 @@ git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
 git push
 #........................
-dialog "${optbox[@]}" --infobox "
+dialog $opt_info "
 
                     \Z1r\Z0Audio images
 

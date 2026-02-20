@@ -10,9 +10,7 @@ banner() {
 
 dirdata=/srv/http/data
 #........................
-select=$( dialog "${optbox[@]}" \
-	   --output-fd 1 \
-	   --checklist '\n\Z1Select tasks:\n
+select=$( dialog $opt_check '\n\Z1Select tasks:\n
 \Z4[space] = Select / Deselect\Z0' 9 50 0 \
 			1 "Reset MPD database" on \
 			2 "Reset user data directory" on \
@@ -74,7 +72,7 @@ banner Check disk ...
 fsck.fat -traw /dev/mmcblk0p1
 rm -f /boot/FSCK*
 #........................
-dialog "${optbox[@]}" --infobox "
+dialog $opt_info "
                     \Z1r\Z0Audio reset finished.
 
                          \Z1Shutdown\Z0 ...

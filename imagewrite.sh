@@ -16,7 +16,7 @@ else
 fi
 
 #........................
-dialog "${optbox[@]}" --infobox "
+dialog $opt_info "
 
                        \Z1r\Z0Audio
 
@@ -24,7 +24,7 @@ dialog "${optbox[@]}" --infobox "
 " 9 58
 sleep 2
 #........................
-dialog "${optbox[@]}" --msgbox "
+dialog $opt_msg "
 \Z1Insert micro SD card\Z0
 If already inserted:
 For proper detection, remove and reinsert again.
@@ -36,7 +36,7 @@ sd=$( dmesg -T | tail | grep ' sd .*GB' )
 
 if [[ -z $sd ]]; then
 #........................
-	dialog "${optbox[@]}" --infobox "
+	dialog $opt_info "
 \Z1No SD card found.\Z0
 " 0 0
 	exit
@@ -46,7 +46,7 @@ fi
 dev=/dev/$( echo $sd | awk -F'[][]' '{print $4}' )
 detail=$( echo $sd | sed 's/ sd /\nsd /; s/\(\[sd.\]\) /\1\n/; s/\(blocks\): (\(.*\))/\1\n\\Z1\2\\Z0/' )
 #........................
-dialog "${optbox[@]}" --yesno "
+dialog $opt_yesno "
 Confirm micro SD card: \Z1$dev\Z0
 Detail:
 $detail
@@ -54,7 +54,7 @@ $detail
 " 0 0
 [[ $? != 0 ]] && exit
 #---------------------------------------------------------------
-rpi=$( dialog "${optbox[@]}" --output-fd 1 --menu "
+rpi=$( dialog $opt_menu "
 \Z1Target:\Z0
 " 8 0 0 \
 0 'Raspberry Pi Zero' \
@@ -71,7 +71,7 @@ case $rpi in
 	4 )     file=rAudio-1-RPi4.img.xz ;;
 	5 )     file=rAudio-1-RPi64.img.xz ;;
 #........................
-	6 )		file=$( basename $( dialog "${optbox[@]}" --title 'Image file' --stdout --fselect $PWD/ 30 70 ) );;
+	6 )		file=$( basename $( dialog $option --title 'Image file' --stdout --fselect $PWD/ 30 70 ) );;
 esac
 
 [[ ! -e $file ]] && echo Image file not found. && exit
@@ -85,14 +85,14 @@ echo File   : $file
 ( pv -n $file \
 	| xz -dc - \
 	| dd of=$dev bs=4M conv=fsync ) 2>&1 \
-	| dialog "${optbox[@]}" --gauge "
+	| dialog $opt_gauge "
   Write to SD card
   \Z1$file\Z0 ...
 " 9 58
 
 sync
 #........................
-dialog "${optbox[@]}" --infobox "
+dialog $opt_info "
  \Z1$file\Z0
  
  Image file written successfully.

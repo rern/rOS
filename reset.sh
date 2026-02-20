@@ -3,7 +3,7 @@
 . common.sh
 
 #........................
-dialog "${optbox[@]}" --infobox "
+dialog $opt_info "
 
                        \Z1r\Z0Audio
 
@@ -13,7 +13,7 @@ sleep 2
 routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 subip=${routerip%.*}.
 #........................
-rpiip=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
+rpiip=$( dialog $opt_input "
  \Z1Raspberry Pi IP:\Z0
 " 0 0 $subip )
 sed -i "/$rpiip/ d" ~/.ssh/known_hosts

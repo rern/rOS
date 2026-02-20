@@ -19,7 +19,7 @@ rm -f /var/lib/pacman/db.lck  # in case of rerun
 systemctl start systemd-random-seed
 
 #........................
-dialog "${optbox[@]}" --infobox "
+dialog $opt_info "
 
 
                         \Z1r\Z0Audio
@@ -233,7 +233,7 @@ rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
 	  /root/create-ros.sh
 #........................
-dialog "${optbox[@]}" --infobox "
+dialog $opt_info "
 
             \Z1r\Z0Audio created successfully.
 

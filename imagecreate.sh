@@ -61,7 +61,7 @@ else
 	[[ $packages ]] && apt install -y $packages
 fi
 #........................
-dialog "${optbox[@]}" --infobox "
+dialog $opt_info "
 
                        \Z1r\Z0Audio
 
@@ -69,7 +69,7 @@ dialog "${optbox[@]}" --infobox "
 " 9 58
 sleep 2
 #........................
-dialog "${optbox[@]}" --msgbox "
+dialog $opt_msg "
 \Z1Insert micro SD card\Z0
 If already inserted:
 For proper detection, remove and reinsert again.
@@ -79,7 +79,7 @@ deviceLine
 [[ ! $devline ]] && sleep 2 && deviceLine
 if [[ ! $devline ]]; then
 #........................
-	dialog "${optbox[@]}" --infobox "
+	dialog $opt_info "
 \Z1No SD card found.\Z0
 " 0 0
 	exit
@@ -98,7 +98,7 @@ else
 fi
 list=$( lsblk -o name,size,mountpoint | grep -v ^loop | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
 #........................
-dialog "${optbox[@]}" --yesno "
+dialog $opt_yesno "
 Device list:
 $list
 
@@ -115,14 +115,14 @@ $BOOT not empty."
 [[ $( ls -A $ROOT 2> /dev/null ) ]] && warnings+="
 $ROOT not empty."
 #........................
-[[ $warnings ]] && dialog "${optbox[@]}" --infobox "$warnings" 0 0 && exit
+[[ $warnings ]] && dialog $opt_info "$warnings" 0 0 && exit
 #---------------------------------------------------------------
 mkdir -p /mnt/{BOOT,ROOT}
 mount $partboot $BOOT
 mount $partroot $ROOT
 if [[ ! -e $BOOT/config.txt ]]; then
 #........................
-	dialog "${optbox[@]}" --infobox "
+	dialog $opt_info "
 \Z1$dev\Z0 is not \Z1r\Z0Audio.
 " 0 0
 	exit
@@ -137,13 +137,13 @@ else # $BOOT/kernel.img
 	model=Legacy
 fi
 #........................
-imagefile=$( dialog "${optbox[@]}" --output-fd 1 --inputbox "
+imagefile=$( dialog $opt_input "
 Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 selectdir=$PWD/
 [[ -e $PWD/BIG ]] && selectdir+=BIG
 #........................
-imagedir=$( dialog "${optbox[@]}" --title 'Save to: ([space]=select)' --stdout --dselect $selectdir 20 40 )
+imagedir=$( dialog $option --title 'Save to: ([space]=select)' --stdout --dselect $selectdir 20 40 )
 imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 clear -x
 touch $BOOT/expand # auto expand root partition
@@ -173,7 +173,7 @@ dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $thread
 
 size=$( xz -l --robot $imagepath | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
 #........................
-dialog "${optbox[@]}" --infobox "
+dialog $opt_info "
 Image file created:
 \Z1$imagepath\Z0
 $size

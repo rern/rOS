@@ -4,7 +4,7 @@ trap exit INT
 
 if mount | grep -q '/dev.*BOOT\|/dev.*ROOT'; then
 #........................
-	dialog --colors --infobox "
+	dialog $opt_info "
 Partition label exist: \Z1BOOT\Z0 or \Z1ROOT\Z0
 
 Unable to continue.
@@ -24,7 +24,7 @@ deviceLine() {
 }
 
 #........................
-dialog "${optbox[@]}" --infobox "
+dialog $opt_info "
 
                \Z1Partition Micro SD Card\Z0
                           for
@@ -32,7 +32,7 @@ dialog "${optbox[@]}" --infobox "
 " 9 58
 sleep 2
 #........................
-dialog "${optbox[@]}" --msgbox "
+dialog $opt_msg "
 \Z1Insert micro SD card\Z0
 
 If already inserted:
@@ -43,7 +43,7 @@ deviceLine
 [[ ! $devline ]] && sleep 2 && deviceLine
 if [[ ! $devline ]]; then
 #........................
-	dialog "${optbox[@]}" --infobox "
+	dialog $opt_info "
 \Z1No SD card found.\Z0
 
 " 0 0
@@ -65,7 +65,7 @@ fi
 
 list=$( lsblk -o name,size,mountpoint | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
 #........................
-dialog "${optbox[@]}" --yesno "
+dialog $opt_yesno "
 Device list:
 $list
 
