@@ -97,7 +97,7 @@ gh release create i$release --title i$release --notes "$notes" $selectfiles
 [[ $? != 0 ]] && errorExit "Upload to GitHub FAILED!\n"
 #---------------------------------------------------------------
 cd /home/x/BIG/RPi/Git/rAudio
-git switch main
+[[ $( git branch --show-current ) != main ]] && git switch main
 git pull
 echo '{
   "os_list" : [ '${os_list/,}' ]
