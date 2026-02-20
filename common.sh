@@ -14,5 +14,5 @@ errorExit() {
 }
 
 bar='\e[44m  \e[0m'
-optbox=( --colors --no-shadow --no-collapse )
-opt=( --backtitle 'r  A  u  d  i  o' ${optbox[@]} )
+optbox='--colors --no-shadow --no-collapse'
+opt="--backtitle 'r  A  u  d  i  o' $optbox"
