@@ -7,7 +7,7 @@
 [[ $EUID == 0 ]] && error='su x : and run again\n'
 [[ $error ]] && errorExit "$error"
 #---------------------------------------------------------------
-cd /home/x/BIG
+cd BIG
 imgfiles=( $( ls rAudio*.img.xz 2> /dev/null ) )
 for file in "${imgfiles[@]}"; do
 	filelist+=" $file on"
