@@ -100,7 +100,7 @@ gh release create i$release --title i$release --notes "$notes" $selectfiles
 echo -e "$bar rpi-imager.json"
 cd /home/x/BIG/RPi/Git/rAudio
 [[ $( git branch --show-current ) != main ]] && git switch main
-git pull
+! git status | grep -q '^Your branch is up to date' && git pull
 echo '{
   "os_list" : [ '${os_list/,}' ]
 , "imager"  : '$( jq .imager < rpi-imager.json )'
