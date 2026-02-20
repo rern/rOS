@@ -1,11 +1,5 @@
 ```sh
-su
 pacman -Sy github-cli
-
-su x
-cd
-gh auth status
-# login if not yet
 gh auth login
 	# ? What account do you want to log into? 
 	#   > GitHub.com
@@ -22,7 +16,6 @@ gh auth login
 	#     > enter CODE-CODE
 	#	  > verify with Authenticator app
 	# ✓ Authentication complete.
-# setup
 git config --global user.email EMAIL
 git config --global user.name NAME
 ```
