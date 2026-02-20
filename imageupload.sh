@@ -93,12 +93,14 @@ for model in 64bit 32bit Legacy; do
 done
 #........................
 banner U p l o a d
+cd rAudio
+ln -s ../rAudio-*.img.xz .
 echo -e "$bar *.img.xz"
 gh release create i$release --title i$release --notes "$notes" $selectfiles
+rm rAudio-*.img.xz
 [[ $? != 0 ]] && errorExit "Upload to GitHub FAILED!\n"
 #---------------------------------------------------------------
 echo -e "$bar rpi-imager.json"
-cd /home/x/BIG/RPi/Git/rAudio
 [[ $( git branch --show-current ) != main ]] && git switch main
 ! git status | grep -q '^Your branch is up to date' && git pull
 echo '{
