@@ -93,8 +93,9 @@ for model in 64bit 32bit Legacy; do
 done
 #........................
 banner U p l o a d
-cd rAudio
-ln -s ../rAudio-*.img.xz .
+dir=RPi/Git/rAudio
+ln -s rAudio-*.img.xz $dir
+cd $dir
 echo -e "$bar *.img.xz"
 gh release create i$release --title i$release --notes "$notes" $selectfiles
 rm rAudio-*.img.xz
