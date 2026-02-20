@@ -7,11 +7,7 @@
 [[ $EUID == 0 ]] && error='su x : and run again\n'
 [[ $error ]] && errorExit "$error"
 #---------------------------------------------------------------
-dirhome=/home/x
-ln -sf $dirhome/BIG/RPi/Git/rAudio .
-cd $dirhome/rAudio
-unlink rAudio*.xz &> /dev/null
-ln -s $dirhome/BIG/rAudio*.xz .
+cd /home/x/BIG
 imgfiles=( $( ls rAudio*.img.xz 2> /dev/null ) )
 for file in "${imgfiles[@]}"; do
 	filelist+=" $file on"
@@ -98,9 +94,9 @@ done
 #........................
 banner U p l o a d
 gh release create i$release --title i$release --notes "$notes" $selectfiles
-unlink rAudio*.xz
 [[ $? != 0 ]] && errorExit "Upload to GitHub FAILED!\n"
 #---------------------------------------------------------------
+cd /home/x/BIG/RPi/Git/rAudio
 git switch main
 git pull
 echo '{
@@ -111,7 +107,6 @@ git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
 git push
 cd ..
-unlink rAudio
 #........................
 dialog "${optbox[@]}" --infobox "
 
