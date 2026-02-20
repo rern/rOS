@@ -27,15 +27,10 @@ gh auth login
 #     > enter CODE-CODE
 #	  > verify with Authenticator app
 # ✓ Authentication complete.
-# git config --global user.email EMAIL
-# git config --global user.name NAME
+git config --global user.email EMAIL
+git config --global user.name NAME
+git config --global --add safe.directory /home/x/BIG
 ```
-
-- Clone repo
-	```sh
-	gh repo clone rern/rAudio
-	```
-
 - Upload
 	```sh
 	cd rAudio
