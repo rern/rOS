@@ -2,19 +2,16 @@
 
 . common.sh
 
-[[ ! -e /usr/bin/gh ]] && error='Package github-cli not yet installed.\n'
-[[ $EUID == 0 ]] && error='su x and run again.\n'
+[[ ! -e /usr/bin/gh ]] && error='github-cli : not yet installed\n'
+! gh auth status &> /dev/null && error='gh auth : not yet set\n'
+[[ $EUID == 0 ]] && error='su x : and run again\n'
 [[ $error ]] && errorExit "$error"
 #---------------------------------------------------------------
-[[ ! -d /home/x/rAudio ]] && git clone https://github.com/rern/rAudio/
-
-cd /home/x/rAudio
-
-! gh auth status &> /dev/null && gh auth login -p ssh -w
-
-rm -f rAudio*.xz
-ln -s ../BIG/rAudio*.xz .
-
+dirhome=/home/x
+ln -sf $dirhome/BIG/RPi/Git/rAudio .
+cd $dirhome/rAudio
+unlink rAudio*.xz &> /dev/null
+ln -s $dirhome/BIG/rAudio*.xz .
 imgfiles=( $( ls rAudio*.img.xz 2> /dev/null ) )
 for file in "${imgfiles[@]}"; do
 	filelist+=" $file on"
@@ -101,9 +98,10 @@ done
 #........................
 banner U p l o a d
 gh release create i$release --title i$release --notes "$notes" $selectfiles
+unlink rAudio*.xz
 [[ $? != 0 ]] && errorExit "Upload to GitHub FAILED!\n"
 #---------------------------------------------------------------
-rm rAudio*.xz
+git switch main
 git pull
 echo '{
   "os_list" : [ '${os_list/,}' ]
@@ -112,6 +110,8 @@ echo '{
 git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
 git push
+cd ..
+unlink rAudio
 #........................
 dialog "${optbox[@]}" --infobox "
 
