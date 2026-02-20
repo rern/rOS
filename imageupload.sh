@@ -106,7 +106,6 @@ echo '{
 git add rpi-imager.json
 git commit -m "Update rpi-imager.json i$release"
 git push
-cd ..
 #........................
 dialog "${optbox[@]}" --infobox "
 
