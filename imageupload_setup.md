@@ -1,5 +1,3 @@
-Setup
----
 ```sh
 su
 pacman -Sy github-cli
