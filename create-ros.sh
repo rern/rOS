@@ -2,11 +2,7 @@
 
 trap exit INT
 
-banner() {
-	cols=$( tput cols )
-	text=$( printf "  $( echo $@ )%120s" )
-    printf "\n\e[44m%${cols}s\n${text:0:$cols}\n%${cols}s\e[0m\n"
-}
+. common.sh
 
 SECONDS=0
 features=$( cat /boot/features )
@@ -22,9 +18,6 @@ rm -f /var/lib/pacman/db.lck  # in case of rerun
 # fill entropy pool (fix - Kernel entropy pool is not initialized)
 systemctl start systemd-random-seed
 
-title='r  A  u  d  i  o'
-optbox=( --colors --no-shadow --no-collapse )
-opt=( --backtitle "$title" ${optbox[@]} )
 #........................
 dialog "${optbox[@]}" --infobox "
 

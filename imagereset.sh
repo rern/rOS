@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. common.sh
+
 banner() {
 	cols=$( tput cols )
 	text=$( printf "  $( echo $@ )%120s" )
@@ -7,7 +9,6 @@ banner() {
 }
 
 dirdata=/srv/http/data
-optbox=( --colors --no-shadow --no-collapse )
 #........................
 select=$( dialog "${optbox[@]}" \
 	   --output-fd 1 \
@@ -18,8 +19,7 @@ select=$( dialog "${optbox[@]}" \
 			3 "Clear package cache" on \
 			4 "Clear system log" on \
 			5 "Clear Wi-Fi connection" on )
-[[ $? == 1 ]] && exit
-clear
+[[ $? == 1 ]] && clear -x && exit
 #---------------------------------------------------------------
 select=" $select "
 systemctl stop mpd

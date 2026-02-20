@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. common.sh
+
 # required packages
 if [[ -e /usr/bin/pacman ]]; then
 	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
@@ -13,7 +15,6 @@ else
 	[[ $packages ]] && apt install -y $packages
 fi
 
-optbox=( --colors --no-shadow --no-collapse )
 #........................
 dialog "${optbox[@]}" --infobox "
 
@@ -77,7 +78,7 @@ esac
 #---------------------------------------------------------------
 clear -x
 #........................
-echo -e "\e[44m\n\n  Write ...\n\e[0m"
+banner Write ...
 echo SD card: $dev
 echo File   : $file
 #........................

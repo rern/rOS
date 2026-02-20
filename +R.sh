@@ -1,6 +1,8 @@
 #!/bin/bash
 
-optbox=( --colors --no-shadow --no-collapse )
+[[ ! -e common.sh ]] && wget https://github.com/rern/rOS/raw/refs/heads/main/common.sh
+
+. common.sh
 
 dialog "${optbox[@]}" --infobox "
 

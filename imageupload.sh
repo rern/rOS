@@ -1,17 +1,6 @@
 #!/bin/bash
 
-banner() {
-	local cols col_s
-	cols=$( tput cols )
-	col_s=%${cols}s
-	text=$( printf "  $( echo $@ )$col_s" )
-    printf "\n\e[44m$col_s\n${text:0:$cols}\n$col_s\e[0m\n"
-}
-errorExit() {
-	banner E r r o r
-	echo -e "\n\e[41m ! \e[0m $@"
-	exit
-}
+. common.sh
 
 [[ ! -e /usr/bin/gh ]] && error='Package github-cli not yet installed.\n'
 [[ $EUID == 0 ]] && error='su x and run again.\n'
@@ -26,7 +15,6 @@ cd /home/x/rAudio
 rm -f rAudio*.xz
 ln -s ../BIG/rAudio*.xz .
 
-optbox=( --colors --no-shadow --no-collapse )
 imgfiles=( $( ls rAudio*.img.xz 2> /dev/null ) )
 for file in "${imgfiles[@]}"; do
 	filelist+=" $file on"
@@ -53,7 +41,7 @@ banner C h e c k s u m
 for model in 64bit 32bit Legacy; do
 	file=rAudio-$model-$release.img.xz
  	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
-	echo -e "\e[47m \e[0m $file"
+	echo -e "$bar $file"
 	printf 'md5sum \e[5m...\e[0m'
 	md5=$( md5sum $file | cut -d' ' -f1 )
 	printf "\rMD5     : $md5\n"

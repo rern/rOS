@@ -2,6 +2,8 @@
 
 trap exit INT
 
+. common.sh
+
 # required packages
 if [[ -e /usr/bin/pacman ]]; then
 	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar '
@@ -17,9 +19,6 @@ else
 	[[ $packages ]] && apt install -y $packages
 fi
 
-title='r  A  u  d  i  o'
-optbox=( --colors --no-shadow --no-collapse )
-opt=( --backtitle "$title" ${optbox[@]} )
 #----------------------------------------------------------------------------
 dialog "${optbox[@]}" --infobox "
 
@@ -530,8 +529,7 @@ dialog "${optbox[@]}" --msgbox "
 
 " 13 55
 
-title='r  A  u  d  i  o - Connect to Raspberry Pi'
-opt=( --backtitle "$title" ${optbox[@]} )
+opt=( --backtitle 'r  A  u  d  i  o - Connect to Raspberry Pi' ${optbox[@]} )
 #----------------------------------------------------------------------------
 ( for (( i = 1; i < sboot; i++ )); do
 	echo $(( i * 100 / sboot ))

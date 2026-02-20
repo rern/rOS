@@ -1,6 +1,7 @@
 #!/bin/bash
 
-optbox=( --colors --no-shadow --no-collapse )
+. common.sh
+
 #........................
 dialog "${optbox[@]}" --infobox "
 

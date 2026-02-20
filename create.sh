@@ -1,5 +1,7 @@
 #!/bin/bash
 
+trap exit INT
+
 if mount | grep -q '/dev.*BOOT\|/dev.*ROOT'; then
 #........................
 	dialog --colors --infobox "
@@ -12,6 +14,8 @@ Unable to continue.
 #-------------------------------------------------------------
 fi
 
+. common.sh
+
 deviceLine() {
 	devline=$( dmesg \
 				| tail -15 \
@@ -19,9 +23,6 @@ deviceLine() {
 				| tail -1 )
 }
 
-trap exit INT
-
-optbox=( --colors --no-shadow --no-collapse )
 #........................
 dialog "${optbox[@]}" --infobox "
 
