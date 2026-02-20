@@ -1,6 +1,7 @@
 #!/bin/bash
 
 banner() {
+	local cols
 	cols=$( tput cols )
     printf "\n\e[44m%*s" $cols
     printf "\n%-${cols}s" "  $( echo $@ )"
