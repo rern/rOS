@@ -26,8 +26,3 @@ git config --global user.email EMAIL
 git config --global user.name NAME
 git config --global --add safe.directory /home/x/BIG # for symlink
 ```
-- Upload
-	```sh
-	cd rAudio
-	gh release create <VERSION> /<PATH>/*.img.xz
-	```
