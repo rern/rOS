@@ -4,7 +4,7 @@ banner() {
 	cols=$( tput cols )
     printf "\n\e[44m%*s" $cols
     printf "\n%-${cols}s" "  $( echo $@ )"
-    printf "\n%*s\e[0m\n" $cols
+    printf "\n%*s\e[0m\n\n" $cols
 }
 errorExit() {
 	banner E r r o r
