@@ -1,17 +1,12 @@
-Image Files Upload
+Setup
 ---
-- Install `github-cli`
 ```sh
 su
 pacman -Sy github-cli
-```
 
-- Login
-```sh
-su USER
+su x
 cd
 gh auth login
-
 # ? What account do you want to log into? 
 #   > GitHub.com
 # ? What is your preferred protocol for Git operations on this host?
@@ -29,7 +24,7 @@ gh auth login
 # ✓ Authentication complete.
 git config --global user.email EMAIL
 git config --global user.name NAME
-git config --global --add safe.directory /home/x/BIG
+git config --global --add safe.directory /home/x/BIG # for symlink
 ```
 - Upload
 	```sh
