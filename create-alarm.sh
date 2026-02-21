@@ -36,17 +36,17 @@ else
 	boot='\e[36BOOT\e[0m'
 	root='\e[36ROOT\e[0m'
 	# check mounts
-	[[ ! $BOOT ]] && warnings+="$boot not mounted or found\n"
-	[[ ! $ROOT ]] && warnings+="$root not mounted or found\n"
-	if [[ ! $warnings  ]]; then
+	[[ ! $BOOT ]] && error+="$boot not mounted or found\n"
+	[[ ! $ROOT ]] && error+="$root not mounted or found\n"
+	if [[ ! $error  ]]; then
 		# check empty to prevent wrong partitions
-		[[ $( ls ${BOOT[1]} ) ]] && warnings+="$boot not empty\n"
-		[[ $( ls ${ROOT[1]} ) ]] && warnings+="$root not empty\n"
+		[[ $( ls ${BOOT[1]} ) ]] && error+="$boot not empty\n"
+		[[ $( ls ${ROOT[1]} ) ]] && error+="$root not empty\n"
 		# check fstype
-		[[ ${BOOT[2]} != vfat ]] && warnings+="$boot not fat32\n"
-		[[ ${ROOT[2]} != ext4 ]] && warnings+="$root not ext4\n"
+		[[ ${BOOT[2]} != vfat ]] && error+="$boot not fat32\n"
+		[[ ${ROOT[2]} != ext4 ]] && error+="$root not ext4\n"
 	fi
-	[[ $warnings ]] && errorExit "Parttition:\n$warnings"
+	[[ $error ]] && errorExit "Parttition:\n$error"
 #----------------------------------------------------------------------------
 fi
 # get build data
@@ -63,7 +63,7 @@ ROOT: \Z1$ROOT\Z0
 		[[ $? == 1 ]] && exit
 #----------------------------------------------------------------------------
 	fi
-	latest=$( curl -sL https://github.com/rern/rAudio-addons/raw/main/addonslist.json | sed -E -n '/"rAudio"/ {n;s/.*: *"(.*)"/\1/; p}' )
+	latest=$( curl -sL https://github.com/rern/rAudio-addons/raw/main/addonslist.json | jq .r1.version )
 #........................
 	release=$( dialog $opt_input "
  \Z1r\Z0Audio release:

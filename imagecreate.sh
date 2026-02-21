@@ -2,6 +2,7 @@
 
 BOOT=/mnt/BOOT
 ROOT=/mnt/ROOT
+
 cleanup() {
 	unMount
 	exit

@@ -2,9 +2,10 @@
 
 . common.sh
 
-[[ ! -e /usr/bin/gh ]] && error='github-cli : not yet installed\n'
-! gh auth status &> /dev/null && error='gh auth : not yet set\n'
-[[ $EUID == 0 ]] && error='su x : and run again\n'
+[[ ! -e /usr/bin/gh ]] && error+='- Not yet installed: github-cli\n'
+! gh auth status &> /dev/null && error+='- Not yet set: gh auth\n'
+[[ $EUID == 0 ]] && error+='- Switch user: su x\n'
+[[ ! -d BIG ]] && error+='- No image directory: BIG\n'
 [[ $error ]] && errorExit "$error"
 #---------------------------------------------------------------
 cd BIG
@@ -19,7 +20,7 @@ selectfiles=$( dialog $opt_check --no-items "
 $filelist ) # rAudio-MODEL-YYYYMMDD.img.xz
 mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $selectfiles | tr ' ' '\n' )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
-[[ $( echo $mdl ) != '32bit 64bit Legacy' ]] && error="Models not 3:\n$mdl\n"
+[[ $( echo $mdl ) != '32bit 64bit Legacy' ]] && error="Not all models:\n$mdl\n"
 release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
 [[ $error ]] && errorExit "$error"
@@ -99,7 +100,7 @@ cd $dir
 echo -e "$bar *.img.xz"
 gh release create i$release --title i$release --notes "$notes" $selectfiles
 rm rAudio-*.img.xz
-[[ $? != 0 ]] && errorExit "Upload to GitHub failed."
+[[ $? != 0 ]] && errorExit Upload to GitHub failed
 #---------------------------------------------------------------
 echo -e "$bar rpi-imager.json"
 [[ $( git branch --show-current ) != main ]] && git switch main

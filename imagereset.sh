@@ -1,8 +1,6 @@
 #!/bin/bash
 
-wget -q https://github.com/rern/rOS/raw/refs/heads/main/common.sh
-. common.sh
-rm common.sh
+. <( curl -sL https://github.com/rern/rOS/raw/refs/heads/main/common.sh )
 
 dirdata=/srv/http/data
 #........................
