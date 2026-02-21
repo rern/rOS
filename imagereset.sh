@@ -12,8 +12,12 @@ select=$( dialog $opt_check '\n\Z1Select tasks:\n
 			3 "Clear package cache" on \
 			4 "Clear system log" on \
 			5 "Clear Wi-Fi connection" on )
-[[ $? == 1 ]] && clear -x && exit
+if [[ $? == 1 ]]; then
+	rm common.sh
+	clear -x
+	exit
 #---------------------------------------------------------------
+fi
 select=" $select "
 systemctl stop mpd
 mount | grep /mnt/MPD/NAS && umount -l "/mnt/MPD/NAS/"*
