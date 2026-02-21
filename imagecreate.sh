@@ -1,7 +1,10 @@
 #!/bin/bash
 
+BOOT=/mnt/BOOT
+ROOT=/mnt/ROOT
 cleanup() {
 	umount -l $partboot $partroot 2> /dev/null
+	rmdir $BOOT $ROOT
 	exit
 #---------------------------------------------------------------
 }
@@ -9,6 +12,8 @@ trap cleanup INT
 
 . common.sh
 
+[[ -d $BOOT || -d $ROOT ]] && errorExit Directory exist: BOOT or ROOT
+#---------------------------------------------------------------
 deviceLine() {
 	dmesg \
 		| tail \
@@ -100,8 +105,9 @@ $( echo "$list" | grep '\\Z1' )
 " 0 0
 [[ $? != 0 ]] && exit
 #---------------------------------------------------------------
-BOOT=$( findmnt -no TARGET $partboot )
-ROOT=$( findmnt -no TARGET $partroot )
+mkdir -p /mnt/{BOOT,ROOT}
+mount $partboot $BOOT
+mount $partroot $ROOT
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
 [[ ! $release ]] && errorExit SD card $dev is not rAudio.
 #---------------------------------------------------------------
@@ -124,6 +130,7 @@ imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 clear -x
 touch $BOOT/expand # auto expand root partition
 umount -l -v $partboot $partroot
+rmdir $BOOT $ROOT
 #........................
 banner Check filesystems ...
 fsck.fat -taw $partboot
