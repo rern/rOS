@@ -24,8 +24,8 @@ cmd=$( dialog $opt_menu "
 names=( '' create reset imagecreate imageupload repoupdate distcc-client docker )
 name=${names[$cmd]}
 if [[ $name ]]; then
-	(( $cmd > 4 )) && repo=rOS || repo=rern.github.io
-	bash <( curl -sL https://github.com/rern/$repo/raw/main/$name )
+	(( $cmd < 5 )) && repo=rOS || repo=rern.github.io
+	bash <( curl -sL "https://github.com/rern/$repo/raw/main/$name.sh" )
 else # 8
 	rpiip=$( dialog $opt_input "
  IP:
