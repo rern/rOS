@@ -8,16 +8,11 @@ SECONDS=0
 features=$( cat /boot/features )
 #........................
 banner Initialize Arch Linux Arm ...
-
 pacman-key --init
 pacman-key --populate archlinuxarm
 systemctl restart systemd-timesyncd # force time sync
-
 rm -f /var/lib/pacman/db.lck  # in case of rerun
-
-# fill entropy pool (fix - Kernel entropy pool is not initialized)
-systemctl start systemd-random-seed
-
+systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy pool is not initialized)
 #........................
 dialog $opt_info "
 
@@ -25,11 +20,9 @@ dialog $opt_info "
                         \Z1r\Z0Audio
 " 9 58
 sleep 2
-
 clear -x # needed: fix stdout not scroll
 #........................
 banner Upgrade system and default packages ...
-
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns 
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets raspberrypi-utils sudo udevil websocat wget xorg-xset'
@@ -41,7 +34,6 @@ if [[ -e /boot/kernel8.img ]]; then
 	grep -q uboot-raspberrypi <<< $pkgs && remove+=' uboot-raspberrypi'
 	! grep -q linux-rpi <<< $pkgs && packages+=' linux-rpi'
 fi
-
 pacman -Rdd --noconfirm $remove
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
@@ -58,12 +50,9 @@ if [[ $? != 0 ]]; then
 	echo -e "\e[38;5;0m\e[48;5;3m ! \e[0m Retry upgrade system ..."
 	sleep 3
 	pacman -Syu --noconfirm
-	if [[ $? != 0 ]]; then
-		echo -e "\e[38;5;7m\e[48;5;1m ! \e[0m System upgrade incomplete."
-		exit
-	fi
+	[[ $? != 0 ]] && errorExit System upgrade incomplete
+#----------------------------------------------------------------------------
 fi
-
 if [[ -e /boot/cmdline.txt0 ]]; then
 	mv -f /boot/cmdline.txt{0,}
 	mv -f /boot/config.txt{0,}
@@ -72,26 +61,20 @@ fi
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 #........................
 banner Install packages ...
-
 pacman -S --noconfirm --needed $packages $features
 if [[ $? != 0 ]]; then
 	echo -e "\e[38;5;0m\e[48;5;3m ! \e[0m Retry download packages ..."
 	pacman -S --noconfirm --needed $packages $features
-	if [[ $? != 0 ]]; then
-		echo -e "\e[38;5;7m\e[48;5;1m ! \e[0m Packages download incomplete."
-		exit
-		
-	fi
+	[[ $? != 0 ]] && errorExit Packages download incomplete
+#----------------------------------------------------------------------------
 fi
 #........................
 banner Get configurations and user interface ...
-
 mkdir -p /tmp/config
 release=$( cat /boot/release )
 curl -skL https://github.com/rern/rAudio/archive/$release.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
 curl -skL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
 rm -f /tmp/config/{.*,*} 2> /dev/null
-
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
 cp -r /tmp/config/* /
@@ -99,12 +82,10 @@ chown http:http /etc/fstab
 chown -R http:http /etc/netctl /etc/systemd/network
 dirbash=/srv/http/bash
 chmod -R 755 $dirbash
-
 mkdir /srv/http/assets/img/guide
 curl -skL https://github.com/rern/_assets/raw/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
 #........................
 banner Configure ...
-
 # alsa
 alsactl store
 # bluetooth
@@ -241,5 +222,4 @@ dialog $opt_info "
 
 $( date -d@$SECONDS -u +%M:%S )
 " 9 58
-
 shutdown -r now

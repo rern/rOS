@@ -2,20 +2,11 @@
 
 trap exit INT
 
-if mount | grep -q '/dev.*BOOT\|/dev.*ROOT'; then
-#........................
-	dialog $opt_info "
-Partition label exist: \Z1BOOT\Z0 or \Z1ROOT\Z0
-
-Unable to continue.
-
-" 0 0
-	exit
-#-------------------------------------------------------------
-fi
-
 . common.sh
 
+label=$( mount | grep -E '/dev.*BOOT |/dev.*ROOT ' )
+[[ $label ]] && errorExit "Partition label exist:\n$label"
+#-------------------------------------------------------------
 deviceLine() {
 	devline=$( dmesg \
 				| tail -15 \
@@ -41,16 +32,8 @@ For proper detection, remove and reinsert again.
 " 0 0
 deviceLine
 [[ ! $devline ]] && sleep 2 && deviceLine
-if [[ ! $devline ]]; then
-#........................
-	dialog $opt_info "
-\Z1No SD card found.\Z0
-
-" 0 0
-	exit
+[[ ! $devline ]] && errorExit No SD card found.
 #-------------------------------------------------------------
-fi
-
 if [[ $devline == *\[sd?\]* ]]; then
 	name=$( echo $devline | sed -E 's|.*\[(.*)\].*|\1|' )
 	dev=/dev/$name
@@ -62,7 +45,6 @@ else
 	partB=${dev}p1
 	partR=${dev}p2
 fi
-
 list=$( lsblk -o name,size,mountpoint | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
 #........................
 dialog $opt_yesno "
@@ -77,13 +59,10 @@ Continue formatting:
 $( echo "$list" | grep '\\Z1' )
 
 " 0 0
-
 [[ $? != 0 ]] && exit
 #-------------------------------------------------------------
 clear -x
-
 umount $partB $partR 2> /dev/null
-
 wipefs -a $dev
 mbB=300
 mbR=6400
@@ -94,20 +73,14 @@ echo "\
 $partB : start=    2048, size= $sizeB, type=c
 $partR : start= $startR, size= $sizeR, type=83
 " | sfdisk $dev # list: fdisk -d /dev/sdX
-
 umount $partB $partR 2> /dev/null
-
 mkfs.fat -F 32 $partB
 mkfs.ext4 -F $partR
-
 fsck.fat -taw $partB
 e2fsck -p $partR
-
 fatlabel $partB BOOT
 e2label $partR ROOT
-
 mkdir -p /mnt/{BOOT,ROOT}
 mount $partB /mnt/BOOT
 mount $partR /mnt/ROOT
-
 bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh ) nopathcheck

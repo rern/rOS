@@ -9,17 +9,17 @@ banner() {
 }
 errorExit() {
 	banner E r r o r
-	echo -e "\n\e[41m ! \e[0m $@"
+	echo -e "\n\e[41m ! \e[0m $@\n"
 	exit
 }
 
 bar='\e[44m  \e[0m'
-option='--colors --no-shadow --no-collapse --backtitle "r  A  u  d  i  o"'
+option='--colors --no-shadow --no-collapse --backtitle rAudio'
 opt_guage="$option --guage"
  opt_info="$option --infobox"
+  opt_msg="$option --msgbox"
+opt_yesno="$option --yesno"
 opt_outfd="$option --output-fd 1 --nocancel"
 opt_check="$opt_outfd --checklist"
 opt_input="$opt_outfd --inputbox"
  opt_menu="$opt_outfd --menu"
-  opt_msg="$option --msgbox"
-opt_yesno="$option --yesno"

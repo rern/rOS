@@ -2,7 +2,6 @@
 
 cleanup() {
 	umount -l $partboot $partroot 2> /dev/null
-	rmdir /home/$USER/{BOOT,ROOT} 2> /dev/null
 	exit
 #---------------------------------------------------------------
 }
@@ -107,28 +106,11 @@ $( echo "$list" | grep '\\Z1' )
 " 0 0
 [[ $? != 0 ]] && exit
 #---------------------------------------------------------------
-umount -l $partboot $partroot 2> /dev/null
-BOOT=/mnt/BOOT
-ROOT=/mnt/ROOT
-[[ $( ls -A $BOOT 2> /dev/null ) ]] && warnings="
-$BOOT not empty."
-[[ $( ls -A $ROOT 2> /dev/null ) ]] && warnings+="
-$ROOT not empty."
-#........................
-[[ $warnings ]] && dialog $opt_info "$warnings" 0 0 && exit
+BOOT=$( findmnt -no TARGET $partboot )
+ROOT=$( findmnt -no TARGET $partroot )
+release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
+[[ ! $release ]] && errorExit SD card $dev is not rAudio.
 #---------------------------------------------------------------
-mkdir -p /mnt/{BOOT,ROOT}
-mount $partboot $BOOT
-mount $partroot $ROOT
-if [[ ! -e $BOOT/config.txt ]]; then
-#........................
-	dialog $opt_info "
-\Z1$dev\Z0 is not \Z1r\Z0Audio.
-" 0 0
-	exit
-#---------------------------------------------------------------
-fi
-release=$( cat $ROOT/srv/http/data/addons/r1 )
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
 elif [[ -e $BOOT/kernel7.img ]]; then
@@ -148,7 +130,6 @@ imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 clear -x
 touch $BOOT/expand # auto expand root partition
 umount -l -v $partboot $partroot
-rmdir /home/$USER/{BOOT,ROOT} 2> /dev/null
 #........................
 banner Check filesystems ...
 fsck.fat -taw $partboot
@@ -170,7 +151,6 @@ echo -e "$bar $imagepath"
 echo
 threads=$(( $( nproc ) - 2 ))
 dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$imagepath"
-
 size=$( xz -l --robot $imagepath | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
 #........................
 dialog $opt_info "

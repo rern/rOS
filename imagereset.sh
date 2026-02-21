@@ -23,7 +23,6 @@ select=" $select "
 systemctl stop mpd
 mount | grep /mnt/MPD/NAS && umount -l "/mnt/MPD/NAS/"*
 mount | grep /mnt/MPD/USB && udevil umount -l "/mnt/MPD/USB/"*
-
 if [[ $select == *' 1 '* ]]; then
 #........................
 	banner Reset MPD database ...
@@ -61,11 +60,9 @@ if [[ $select == *' 5 '* ]]; then
 		rm /etc/netctl/* 2> /dev/null
 	fi
 fi
-
 if [[ ! -e /boot/kernel.img ]]; then # skip on rpi 0, 1
 	curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
 fi
-
 rm -rf /root/.config/chromium
 #........................
 banner Check disk ...

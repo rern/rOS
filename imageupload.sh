@@ -99,7 +99,7 @@ cd $dir
 echo -e "$bar *.img.xz"
 gh release create i$release --title i$release --notes "$notes" $selectfiles
 rm rAudio-*.img.xz
-[[ $? != 0 ]] && errorExit "Upload to GitHub FAILED!\n"
+[[ $? != 0 ]] && errorExit "Upload to GitHub failed."
 #---------------------------------------------------------------
 echo -e "$bar rpi-imager.json"
 [[ $( git branch --show-current ) != main ]] && git switch main
