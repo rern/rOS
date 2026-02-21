@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wget https://github.com/rern/rOS/raw/refs/heads/main/common.sh
+wget -q https://github.com/rern/rOS/raw/refs/heads/main/common.sh
 . common.sh
 
 dirdata=/srv/http/data
