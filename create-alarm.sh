@@ -163,6 +163,7 @@ foundIP() {
 4 'No' )
 	case $ans in
 		1 )
+#........................
 			rpiip=$( dialog $opt_input "
  RPi IP:
 " 0 0 $subip )
@@ -170,8 +171,9 @@ foundIP() {
 #----------------------------------------------------------------------------
 			;;
 		2 ) scanIP;;
+		3 )
 #........................
-		3 ) ipping=$( dialog $opt_input "
+			ipping=$( dialog $opt_input "
  Ping RPi at IP:
 " 0 0 $subip )
 			pingIP 5 $ipping
@@ -243,7 +245,7 @@ shairport='\Z1Shairport\Z0  - AirPlay renderer'
  upmpdcli='\Z1upmpdcli\Z0   - UPnP renderer'
 
 selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
-#----------------------------------------------------------------------------
+#........................
 	select=$( dialog $opt_check "
 \Z1Select features to install:
 \Z4[space] = Select / Deselect\Z0
@@ -257,7 +259,6 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 7 "$snapcast"  on \
 8 "$spotify"   on \
 9 "$upmpdcli"  on )
-	
 	select=" $select "
 	[[ $select == *' 1 '* ]] && list+="$bluealsa"$'\n'  && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests '
 	[[ $select == *' 2 '* ]] && list+="$camilla"$'\n'   && features+='camilladsp python-websocket-client '
