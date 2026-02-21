@@ -19,6 +19,7 @@ select=" $select "
 systemctl stop mpd
 mount | grep /mnt/MPD/NAS && umount -l "/mnt/MPD/NAS/"*
 mount | grep /mnt/MPD/USB && udevil umount -l "/mnt/MPD/USB/"*
+clear -x
 if [[ $select == *' 1 '* ]]; then
 #........................
 	banner Reset MPD database ...
