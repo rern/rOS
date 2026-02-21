@@ -2,6 +2,7 @@
 
 wget -q https://github.com/rern/rOS/raw/refs/heads/main/common.sh
 . common.sh
+rm common.sh
 
 dirdata=/srv/http/data
 #........................
@@ -12,12 +13,8 @@ select=$( dialog $opt_check '\n\Z1Select tasks:\n
 			3 "Clear package cache" on \
 			4 "Clear system log" on \
 			5 "Clear Wi-Fi connection" on )
-if [[ $? == 1 ]]; then
-	rm common.sh
-	clear -x
-	exit
+[[ $? == 1 ]] && clear -x && exit
 #---------------------------------------------------------------
-fi
 select=" $select "
 systemctl stop mpd
 mount | grep /mnt/MPD/NAS && umount -l "/mnt/MPD/NAS/"*
@@ -66,7 +63,7 @@ rm -rf /root/.config/chromium
 #........................
 banner Check disk ...
 fsck.fat -traw /dev/mmcblk0p1
-rm -f /boot/FSCK* common.sh
+rm -f /boot/FSCK*
 #........................
 dialog $opt_info "
                     \Z1r\Z0Audio reset finished.
