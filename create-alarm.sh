@@ -445,6 +445,8 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 createrosfile=$ROOT/root/create-ros.sh
 curl -skL https://github.com/rern/rOS/raw/main/create-ros.sh -o $createrosfile
 chmod 755 $createrosfile
+umount -l $BOOT
+umount -l $ROOT
 #........................
 dialog $opt_msg "
 
@@ -455,8 +457,6 @@ dialog $opt_msg "
 				
 $( date -d@$SECONDS -u +%M:%S )
 " 12 58
-umount -l $BOOT
-umount -l $ROOT
 [[ ${partuuidB:0:-3} != ${partuuidR:0:-3} ]] && usb=' and USB drive'
 #........................
 dialog $opt_msg "
