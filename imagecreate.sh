@@ -10,10 +10,10 @@ trap cleanup INT
 . common.sh
 
 deviceLine() {
-	devline=$( dmesg \
-				| tail \
-				| grep ' sd.* GiB\|mmcblk.* GiB' \
-				| tail -1 )
+	dmesg \
+		| tail \
+		| grep ' sd.* GiB\|mmcblk.* GiB' \
+		| tail -1
 }
 shrink() {
 	echo -e "$bar Shrink Pass #$1 ...\n"
@@ -74,16 +74,10 @@ If already inserted:
 For proper detection, remove and reinsert again.
 
 " 0 0
-deviceLine
-[[ ! $devline ]] && sleep 2 && deviceLine
-if [[ ! $devline ]]; then
-#........................
-	dialog $opt_info "
-\Z1No SD card found.\Z0
-" 0 0
-	exit
+devline=$( deviceLine )
+[[ ! $devline ]] && sleep 2 && devline=$( deviceLine )
+[[ ! $devline ]] && errorExit No SD card found
 #---------------------------------------------------------------
-fi
 if [[ $devline == *\[sd?\]* ]]; then
 	name=$( sed -E 's|.*\[(.*)\].*|\1|' <<< $devline )
 	dev=/dev/$name
