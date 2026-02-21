@@ -214,7 +214,7 @@ scanIP() {
 				| tac )
 #........................
 	dialog $opt_msg "
-\Z1Find IP address of Raspberry Pi:\Z0
+\Z1Note IP address of Raspberry Pi:\Z0
 (If Raspberri Pi not listed, ping may find it.)
 \Z4[arrowdown] = scrolldown\Z0
 
