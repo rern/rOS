@@ -145,9 +145,7 @@ shrink 1
 shrink 2
 #........................
 banner Compressed to image file ...
-echo
-echo -e "$bar $imagepath"
-echo
+echo -e "$bar $imagepath\n"
 threads=$(( $( nproc ) - 2 ))
 dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$imagepath"
 size=$( xz -l --robot $imagepath | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
