@@ -212,7 +212,7 @@ touch /boot/expand
 [[ -e /boot/finish.sh ]] && . /boot/finish.sh
 rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
-	  /root/create-ros.sh
+	  /root/{common,create-ros}.sh
 #........................
 dialog $opt_info "
 
