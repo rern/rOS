@@ -4,13 +4,17 @@
 
 . common.sh
 
-dialog "${optbox[@]}" --infobox "
+runScript() {
+	[[ $1 = [dr]* ]] && repo=rOS || repo=rern.github.io
+	bash <( curl -sL https://github.com/rern/$repo/raw/main/$1 )
+}
+
+dialog $opt_info "
 
 
                         \Z1r\Z0Audio
 " 9 58
 sleep 1
-
 cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
  \Z1r\Z0Audio:
 " 8 0 0 \
@@ -22,18 +26,14 @@ cmd=$( dialog "${optbox[@]}" --output-fd 1 --menu "
 6 'Distcc client' \
 7 'Docker' \
 8 'SSH to RPi' )
-
-url=https://github.com/rern/rOS/raw/main
-urlio=https://github.com/rern/rern.github.io/raw/main
-
 case $cmd in
-	1 ) bash <( curl -sL $url/create.sh );;
-	2 ) bash <( curl -sL $url/reset.sh );;
-	3 ) bash <( curl -sL $url/imagecreate.sh );;
-	4 ) bash <( curl -sL $url/imageupload.sh );;
-	5 ) bash <( curl -sL $urlio/repoupdate.sh );;
-	6 ) bash <( curl -sL $urlio/distcc-client.sh );;
-	7 ) bash <( curl -sL $urlio/docker.sh );;
+	1 ) runScript create;;
+	2 ) runScript reset;;
+	3 ) runScript imagecreate;;
+	4 ) runScript imageupload;;
+	5 ) runScript repoupdate;;
+	6 ) runScript distcc-client;;
+	7 ) runScript docker;;
 	8 ) rpiip=$( dialog "${opt[@]}" --output-fd 1 --inputbox "
  IP:
 " 0 0 192.168.1. )
