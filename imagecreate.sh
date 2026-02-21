@@ -3,10 +3,13 @@
 BOOT=/mnt/BOOT
 ROOT=/mnt/ROOT
 cleanup() {
-	umount -l $partboot $partroot 2> /dev/null
-	rmdir $BOOT $ROOT
+	unMount
 	exit
 #---------------------------------------------------------------
+}
+unMount() {
+	umount -l $partboot $partroot 2> /dev/null
+	rmdir $BOOT $ROOT
 }
 trap cleanup INT
 
@@ -109,7 +112,7 @@ mkdir -p /mnt/{BOOT,ROOT}
 mount $partboot $BOOT
 mount $partroot $ROOT
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
-[[ ! $release ]] && cleanup && errorExit SD card $dev is not rAudio.
+[[ ! $release ]] && unMount && errorExit SD card $dev is not rAudio.
 #---------------------------------------------------------------
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
@@ -129,8 +132,7 @@ imagedir=$( dialog $option --title 'Save to: ([space]=select)' --stdout --dselec
 imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 clear -x
 touch $BOOT/expand # auto expand root partition
-umount -l -v $partboot $partroot
-rmdir $BOOT $ROOT
+unMount
 #........................
 banner Check filesystems ...
 fsck.fat -taw $partboot
