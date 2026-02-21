@@ -162,6 +162,13 @@ foundIP() {
 3 'Ping assigned IP' \
 4 'No' )
 	case $ans in
+		1 )
+			rpiip=$( dialog $opt_input "
+ RPi IP:
+" 0 0 $subip )
+			sshRpi $rpiip
+#----------------------------------------------------------------------------
+			;;
 		2 ) scanIP;;
 #........................
 		3 ) ipping=$( dialog $opt_input "
