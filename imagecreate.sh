@@ -12,7 +12,7 @@ trap cleanup INT
 
 . common.sh
 
-[[ -d $BOOT || -d $ROOT ]] && errorExit Directory exist: BOOT or ROOT
+[[ -d $BOOT || -d $ROOT ]] && errorExit Directory exist: $BOOT or $ROOT
 #---------------------------------------------------------------
 deviceLine() {
 	dmesg \
@@ -109,7 +109,7 @@ mkdir -p /mnt/{BOOT,ROOT}
 mount $partboot $BOOT
 mount $partroot $ROOT
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
-[[ ! $release ]] && errorExit SD card $dev is not rAudio.
+[[ ! $release ]] && cleanup && errorExit SD card $dev is not rAudio.
 #---------------------------------------------------------------
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
@@ -137,12 +137,8 @@ fsck.fat -taw $partboot
 e2fsck -p $partroot
 #........................
 banner Image: $imagefile
-#........................
-banner Shrink ROOT partition ...
-echo
 partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $partroot | awk '{print $3}' )
-echo
 shrink 1
 shrink 2
 #........................
@@ -159,3 +155,4 @@ Image file created:
 \Z1$imagepath\Z0
 $size
 " 8 58
+
