@@ -63,7 +63,7 @@ ROOT: \Z1$ROOT\Z0
 		[[ $? == 1 ]] && exit
 #----------------------------------------------------------------------------
 	fi
-	latest=$( curl -sL https://github.com/rern/rAudio-addons/raw/main/addonslist.json | jq .r1.version )
+	latest=$( curl -sL https://github.com/rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
 #........................
 	release=$( dialog $opt_input "
  \Z1r\Z0Audio release:
