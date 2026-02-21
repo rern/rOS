@@ -1,12 +1,7 @@
 #!/bin/bash
 
+wget https://github.com/rern/rOS/raw/refs/heads/main/common.sh
 . common.sh
-
-banner() {
-	cols=$( tput cols )
-	text=$( printf "  $( echo $@ )%120s" )
-    printf "\n\e[44m%${cols}s\n${text:0:$cols}\n%${cols}s\e[0m\n"
-}
 
 dirdata=/srv/http/data
 #........................
@@ -67,7 +62,7 @@ rm -rf /root/.config/chromium
 #........................
 banner Check disk ...
 fsck.fat -traw /dev/mmcblk0p1
-rm -f /boot/FSCK*
+rm -f /boot/FSCK* common.sh
 #........................
 dialog $opt_info "
                     \Z1r\Z0Audio reset finished.
