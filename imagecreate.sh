@@ -8,7 +8,7 @@ cleanup() {
 #---------------------------------------------------------------
 }
 unMount() {
-	umount -l $partboot $partroot 2> /dev/null
+	umount -l $BOOT $ROOT 2> /dev/null
 	rmdir $BOOT $ROOT
 }
 trap cleanup INT
