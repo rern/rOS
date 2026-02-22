@@ -3,28 +3,50 @@
 # repo path: BIG/RPi/Git/rAudio
 . common.sh
 
+dir_base=BIG
+dir_raudio=RPi/Git/rAudio
+file_json=$dir_raudio/rpi-imager.json
+
 uploadImage() {
 #........................
 	banner U p l o a d
 	echo -e "$bar *.img.xz"
+	ln -s $img_files $dir_raudio
+	cd $dir_raudio
 	gh release create i$release --title i$release --notes "$notes" $img_files
-	[[ $? != 0 ]] && echo "$notes" > notes && errorExit Upload to GitHub failed
-#---------------------------------------------------------------
-	rm -f notes
-	echo -e "
+	rm $img_files
+	if [[ $? != 0 ]]; then
+		dialog $opt_yesno "
+Upload \Z1failed\Z0.
+
+Retry?
+
+" 0 0 && uploadImage
+	else
+		echo -e "
 rAudio images uploaded successfully
 \e[44m rpi-imager.json \e[0m must be pushed to main branch"
+	fi
 }
 
-cd BIG
+cd $dir_base
 if [[ -e notes ]]; then # from failed upload
-	echo -e "\n$bar Re-upload\n"
-	notes=$( < notes )
-	release=$( jq -r .os_list[0].release_date <<< $json | tr -d - )
-	img_files=$( ls rAudio-*$release.img.xz )
-	uploadImage
-	exit
+	dialog $opt_yesno "
+Retry failed previous upload?
+
+" 0 0
+	if [[ $? == 0 ]]; then
+		echo -e "\n$bar Re-upload\n"
+		notes=$( < notes )
+		release=$( sed -n -E '/64bit/ {s/.*-(.*).img.*/\1/;p}' <<< $notes )
+		img_files=$( ls rAudio-*$release.img.xz )
+		rm notes
+		uploadImage
+		exit
 #---------------------------------------------------------------
+	else
+		rm notes
+	fi
 fi
 files=$( ls rAudio*.img.xz 2> /dev/null )
 for f in $files; do
@@ -43,10 +65,9 @@ release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
 [[ $error ]] && errorExit "$error"
 #---------------------------------------------------------------
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
-imager_json=RPi/Git/rAudio/rpi-imager.json
 json=$( sed -E -e "s|i[0-9]*/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
 " -e 's/(release_date": ").*/\1'$date_rel'",/
-' $imager_json )
+' $file_json )
 models=$( jq -r .os_list[].name <<< $json | cut -d' ' -f2 )
 i=0
 notes='
@@ -76,5 +97,5 @@ for model in $models; do
 | [$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
 | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file) |"
 done
-echo "$json" > $imager_json
+echo "$json" > $file_json
 uploadImage
