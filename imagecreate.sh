@@ -106,8 +106,7 @@ $list
 
 Confirm SD card:
 $( echo "$list" | grep '\\Z1' )
-" 0 0
-[[ $? != 0 ]] && exit
+" 0 0 || exit
 #---------------------------------------------------------------
 mkdir -p /mnt/{BOOT,ROOT}
 mount $partboot $BOOT
