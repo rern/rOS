@@ -11,7 +11,7 @@ select=$( dialog $opt_check '\n\Z1Select tasks:\n
 			3 "Clear package cache" on \
 			4 "Clear system log" on \
 			5 "Clear Wi-Fi connection" on )
-[[ $? == 1 ]] && clear -x && exit
+[[ ! $select ]] && clear -x && exit
 #---------------------------------------------------------------
 select=" $select "
 systemctl stop mpd
