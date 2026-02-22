@@ -3,18 +3,16 @@
 # repo path: BIG/RPi/Git/rAudio
 . common.sh
 
-dir_base=BIG
-dir_raudio=RPi/Git/rAudio
+dir_base=$PWD/BIG
+dir_raudio=$dir_base/RPi/Git/rAudio
 file_json=$dir_raudio/rpi-imager.json
 
 uploadImage() {
 #........................
 	banner U p l o a d
 	echo -e "$bar *.img.xz"
-	ln -s $img_files $dir_raudio
 	cd $dir_raudio
-	gh release create i$release --title i$release --notes "$notes" $img_files
-	rm $img_files
+	gh release create i$release --title i$release --notes "$notes" $files_path
 	if [[ $? != 0 ]]; then
 		dialog $opt_yesno "
 Upload \Z1failed\Z0.
@@ -30,34 +28,13 @@ rAudio images uploaded successfully
 }
 
 cd $dir_base
-if [[ -e notes ]]; then # from failed upload
-	dialog $opt_yesno "
-Retry failed previous upload?
-
-" 0 0
-	if [[ $? == 0 ]]; then
-		echo -e "\n$bar Re-upload\n"
-		notes=$( < notes )
-		release=$( sed -n -E '/64bit/ {s/.*-(.*).img.*/\1/;p}' <<< $notes )
-		img_files=$( ls rAudio-*$release.img.xz )
-		rm notes
-		uploadImage
-		exit
-#---------------------------------------------------------------
-	else
-		rm notes
-	fi
-fi
-files=$( ls rAudio*.img.xz 2> /dev/null )
-for f in $files; do
-	filelist+=" $f on"
-done
+files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 #........................
-img_files=$( dialog $opt_outfd --no-items --checklist "
+files_img=$( dialog $opt_outfd --no-items --checklist "
  \Z1Select files to upload:\Z0
 " 9 0 0 \
-$filelist ) # rAudio-MODEL-YYYYMMDD.img.xz
-mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $img_files | tr ' ' '\n' )
+$files_list ) # rAudio-MODEL-YYYYMMDD.img.xz
+mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $files_img | tr ' ' '\n' )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
 [[ $( echo $mdl ) != '32bit 64bit Legacy' ]] && error="Not all models:\n$mdl\n"
 release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
@@ -98,4 +75,5 @@ for model in $models; do
 | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file) |"
 done
 echo "$json" > $file_json
+files_path=$( tr ' ' '\n' <<< $files_img | sed "s|^|$dir_base|" )
 uploadImage
