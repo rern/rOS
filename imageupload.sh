@@ -3,7 +3,7 @@
 # repo path: BIG/RPi/Git/rAudio
 . common.sh
 
-[[ ! -d BIG ]] && errorExit Wrong directory
+[[ ! -d BIG ]] && errorExit Not directory: /root
 #---------------------------------------------------------------
 dir_base=/root/BIG
 dir_raudio=$dir_base/RPi/Git/rAudio
