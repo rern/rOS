@@ -27,7 +27,8 @@ if [[ -e notes ]]; then # from failed upload
 	exit
 #---------------------------------------------------------------
 fi
-files=( $( ls rAudio*.img.xz 2> /dev/null ) )
+files=$( ls rAudio*.img.xz 2> /dev/null )
+[[ ! $files ]] && errorExit No image files found
 for f in $files; do
 	filelist+=" $f on"
 done
