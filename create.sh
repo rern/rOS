@@ -58,8 +58,7 @@ Make sure this is the target SD card.
 Continue formatting:
 $( echo "$list" | grep '\\Z1' )
 
-" 0 0
-[[ $? != 0 ]] && exit
+" 0 0 || exit
 #-------------------------------------------------------------
 clear -x
 umount $partB $partR 2> /dev/null
