@@ -27,14 +27,14 @@ if [[ -e notes ]]; then # from failed upload
 	exit
 #---------------------------------------------------------------
 fi
-imgfiles=( $( ls rAudio*.img.xz 2> /dev/null ) )
-for file in "${imgfiles[@]}"; do
-	filelist+=" $file on"
+files=( $( ls rAudio*.img.xz 2> /dev/null ) )
+for f in $files; do
+	filelist+=" $f on"
 done
 #........................
 img_files=$( dialog $opt_check --no-items "
  \Z1Select files to upload:\Z0
-" $(( ${#imgfiles[@]} + 5 )) 0 0 \
+" $(( ${#files[@]} + 5 )) 0 0 \
 $filelist ) # rAudio-MODEL-YYYYMMDD.img.xz
 mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $img_files | tr ' ' '\n' )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
