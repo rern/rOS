@@ -1,12 +1,9 @@
 #!/bin/bash
 
-# repo path: BIG/RPi/Git/rAudio
 . common.sh
 
-[[ ! -d BIG ]] && errorExit Not directory: /root
-#---------------------------------------------------------------
-dir_base=/root/BIG
-dir_raudio=$dir_base/RPi/Git/rAudio
+dir_img=/root/BIG
+dir_raudio=$dir_img/RPi/Git/rAudio
 file_json=$dir_raudio/rpi-imager.json
 
 uploadImage() {
@@ -29,7 +26,7 @@ rAudio images uploaded successfully
 	fi
 }
 
-cd $dir_base
+cd $dir_img
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 #........................
 files_img=$( dialog $opt_outfd --no-items --checklist "
@@ -77,5 +74,5 @@ for model in $models; do
 | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file) |"
 done
 echo "$json" > $file_json
-files_path=$( tr ' ' '\n' <<< $files_img | sed "s|^|$dir_base|" )
+files_path=$( tr ' ' '\n' <<< $files_img | sed "s|^|$dir_img|" )
 uploadImage
