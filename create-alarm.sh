@@ -59,8 +59,7 @@ Confirm \Z1SD card\Z0 path:
 BOOT: \Z1$BOOT\Z0
 ROOT: \Z1$ROOT\Z0
 
-" 0 0
-		[[ $? == 1 ]] && exit
+" 0 0 || exit
 #----------------------------------------------------------------------------
 	fi
 	latest=$( curl -sL https://github.com/rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
