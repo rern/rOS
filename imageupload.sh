@@ -10,7 +10,6 @@ uploadImage() {
 	gh release create i$release --title i$release --notes "$notes" $img_files
 	[[ $? != 0 ]] && echo "$notes" > notes && errorExit Upload to GitHub failed
 #---------------------------------------------------------------
-	fi
 	rm -f notes
 	echo -e "
 rAudio images uploaded successfully
@@ -26,6 +25,7 @@ if [[ -e notes ]]; then # from failed upload
 	uploadImage
 	exit
 #---------------------------------------------------------------
+fi
 files=$( ls rAudio*.img.xz 2> /dev/null )
 for f in $files; do
 	filelist+=" $f on"
