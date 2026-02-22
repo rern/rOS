@@ -12,7 +12,7 @@ uploadImage() {
 	banner U p l o a d
 	echo -e "$bar *.img.xz"
 	cd $dir_raudio
-	gh release create i$release --title i$release --notes "$notes" $files_path
+	gh release create i$release --latest=false --title i$release --notes "$notes" $files_path
 	if [[ $? != 0 ]]; then
 		dialog $opt_yesno "
 Upload \Z1failed\Z0.
