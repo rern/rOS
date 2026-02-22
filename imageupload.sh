@@ -3,7 +3,9 @@
 # repo path: BIG/RPi/Git/rAudio
 . common.sh
 
-dir_base=$PWD/BIG
+[[ ! -d BIG ]] && errorExit Wrong directory
+#---------------------------------------------------------------
+dir_base=/root/BIG
 dir_raudio=$dir_base/RPi/Git/rAudio
 file_json=$dir_raudio/rpi-imager.json
 
