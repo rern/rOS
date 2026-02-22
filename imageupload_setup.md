@@ -3,22 +3,21 @@
 pacman -Sy github-cli
 gh auth login
 	# ? What account do you want to log into? 
-	#   > GitHub.com
+	#   » GitHub.com
 	# ? What is your preferred protocol for Git operations on this host?
-	#   > HTTPS
+	#   » HTTPS
 	# ? Authenticate Git with your GitHub credentials?
-	#   > Y
+	#   » Y
 	# ? How would you like to authenticate GitHub CLI?
-	#   > Login with a web browser
+	#   » Login with a web browser
 	# ! First copy your one-time code: CODE-CODE
 	# Press Enter to open https://github.com/login/device in your browser...
-	#   > DO NOT 'Press Enter' yet
+	#   » DO NOT 'Press Enter' yet
 ```
 Manually open browser: https://github.com/login/device
-- Select user *(Login if not already)*
-- Copy-paste the one-time code *(from terminal)*
-- Enter verifying code *(by Authenticator app)*
-- Success: ✓ Your device is now connected.
+- » Select user *(login if not already)*
+- » Copy-paste the one-time code *(from terminal)* » `Authorize`
+- » Enter verifying code *(by Authenticator app - if prompt)*
 
 *Continue the terminal*
 ```sh
