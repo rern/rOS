@@ -26,13 +26,12 @@ if [[ -e notes ]]; then # from failed upload
 	uploadImage
 	exit
 #---------------------------------------------------------------
-fi
 files=$( ls rAudio*.img.xz 2> /dev/null )
 for f in $files; do
 	filelist+=" $f on"
 done
 #........................
-img_files=$( dialog $opt_check --no-items "
+img_files=$( dialog $opt_outfd --no-items --checklist "
  \Z1Select files to upload:\Z0
 " 9 0 0 \
 $filelist ) # rAudio-MODEL-YYYYMMDD.img.xz
