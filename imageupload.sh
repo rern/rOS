@@ -3,12 +3,6 @@
 # repo path: BIG/RPi/Git/rAudio
 . common.sh
 
-[[ ! -e /usr/bin/gh ]] && error+='- Not yet installed: github-cli\n'
-! gh auth status &> /dev/null && error+='- Not yet set: gh auth\n'
-[[ $EUID == 0 ]] && error+='- Switch user: su x\n'
-[[ ! -d BIG ]] && error+='- No image directory: BIG\n'
-[[ $error ]] && errorExit "$error"
-#---------------------------------------------------------------
 uploadImage() {
 #........................
 	banner U p l o a d
@@ -25,7 +19,7 @@ rAudio images uploaded successfully
 
 cd BIG
 if [[ -e notes ]]; then # from failed upload
-	echo -e "$bar Re-upload"
+	echo -e "\n$bar Re-upload\n"
 	notes=$( < notes )
 	release=$( jq -r .os_list[0].release_date <<< $json | tr -d - )
 	img_files=$( ls rAudio-*$release.img.xz )
