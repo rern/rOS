@@ -44,9 +44,10 @@ release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
 [[ $error ]] && errorExit "$error"
 #---------------------------------------------------------------
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
+imager_json=RPi/Git/rAudio/rpi-imager.json
 json=$( sed -E -e "s|i[0-9]*/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
 " -e 's/(release_date": ").*/\1'$date_rel'",/
-' rpi-imager.json )
+' $imager_json )
 models=$( jq -r .os_list[].name <<< $json | cut -d' ' -f2 )
 i=0
 notes='
@@ -76,5 +77,5 @@ for model in $models; do
 | [$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
 | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file) |"
 done
-echo "$json" > RPi/Git/rAudio/rpi-imager.json
+echo "$json" > $imager_json
 uploadImage
