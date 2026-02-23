@@ -27,4 +27,3 @@ opt_input="$opt_outfd --inputbox"
  opt_menu="$opt_outfd --menu"
   opt_msg="$option --msgbox"
 opt_yesno="$option --yesno"
-text_select='\Z4[space] : select +-'

@@ -29,8 +29,7 @@ cd $dir_img
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 #........................
 files_img=$( dialog $opt_check "
- \Z1Images to upload:
- $text_select\Z0
+ \Z1Images to upload:\Z0
 " 9 0 0 \
 	$files_list ) # rAudio-MODEL-YYYYMMDD.img.xz
 mdl_rel=$( sed -E 's/rAudio-|.img.xz//' <<< $files_img )

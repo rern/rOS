@@ -246,8 +246,7 @@ shairport='\Z1Shairport\Z0  - AirPlay renderer'
 selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
 #........................
 	select=$( dialog $opt_check "
- \Z1Features to install:
- $text_select\Z0
+ \Z1Features to install:\Z0
 " 9 0 0 \
 	"$bluealsa"  on \
 	"$camilla"   on \
