@@ -5,26 +5,6 @@
 dir_raudio=$dir_img/RPi/Git/rAudio
 file_json=$dir_raudio/rpi-imager.json
 
-uploadImage() {
-#........................
-	banner U p l o a d
-	echo -e "$bar *.img.xz"
-	cd $dir_raudio
-	gh release create i$release --latest=false --title i$release --notes "$notes" $files_path
-	if [[ $? != 0 ]]; then
-		dialog $opt_yesno "
-Upload \Z1failed\Z0.
-
-Retry?
-
-" 0 0 && uploadImage
-	else
-		echo -e "
-rAudio images uploaded successfully
-\e[44m rpi-imager.json \e[0m must be pushed to main branch"
-	fi
-}
-
 cd $dir_img
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 #........................
@@ -32,7 +12,7 @@ files_img=$( dialog $opt_check '
  \Z1Images to upload:\Z0
 ' 9 0 0 \
 	$files_list ) # rAudio-MODEL-YYYYMMDD.img.xz
-mdl_rel=$( sed -E 's/rAudio-|.img.xz//' <<< $files_img )
+mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $files_img )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
 [[ $( echo $mdl ) != '32bit 64bit Legacy' ]] && error="Not all models:\n$mdl\n"
 release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
@@ -73,5 +53,14 @@ for model in $models; do
 | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file) |"
 done
 echo "$json" > $file_json
-files_path=$( sed "s|^|$dir_img|" <<< $files_img )
-uploadImage
+files_path=$( sed "s|^|$dir_img/|" <<< $files_img )
+#........................
+banner U p l o a d
+echo -e "$bar *.img.xz"
+cd $dir_raudio
+gh release create i$release --latest=false --title i$release --notes "$notes" $files_path
+branch=$( git branch --show-current )
+echo -e "
+$bar rAudio images uploaded successfully
+
+\e[44m rpi-imager.json \e[0m in branch \e[44m $branch \e[0m"
