@@ -4,13 +4,15 @@
 
 dirdata=/srv/http/data
 #........................
-select=$( dialog $opt_check '\n\Z1Tasks:\n
-\Z4[space] = Select / Deselect\Z0' 9 50 0 \
-			1 "Reset MPD database" on \
-			2 "Reset user data directory" on \
-			3 "Clear package cache" on \
-			4 "Clear system log" on \
-			5 "Clear Wi-Fi connection" on )
+select=$( dialog $opt_check "
+ \Z1Tasks:
+ $text_select\Z0
+" 9 50 0 \
+	"Reset MPD database" on \
+	"Reset user data directory" on \
+	"Clear package cache" on \
+	"Clear system log" on \
+	"Clear Wi-Fi connection" on )
 [[ ! $select ]] && clear -x && exit
 #---------------------------------------------------------------
 select=" $select "

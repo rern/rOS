@@ -246,18 +246,18 @@ shairport='\Z1Shairport\Z0  - AirPlay renderer'
 selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
 #........................
 	select=$( dialog $opt_check "
-\Z1Select features to install:
-\Z4[space] = Select / Deselect\Z0
+ \Z1Features to install:
+ $text_select\Z0
 " 9 0 0 \
-1 "$bluealsa"  on \
-2 "$camilla"   on \
-3 "$browser"   on \
-4 "$iwd"       on \
-5 "$samba"     on \
-6 "$shairport" on \
-7 "$snapcast"  on \
-8 "$spotify"   on \
-9 "$upmpdcli"  on )
+	"$bluealsa"  on \
+	"$camilla"   on \
+	"$browser"   on \
+	"$iwd"       on \
+	"$samba"     on \
+	"$shairport" on \
+	"$snapcast"  on \
+	"$spotify"   on \
+	"$upmpdcli"  on )
 	select=" $select "
 	[[ $select == *' 1 '* ]] && list+="$bluealsa"$'\n'  && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests '
 	[[ $select == *' 2 '* ]] && list+="$camilla"$'\n'   && features+='camilladsp python-websocket-client '

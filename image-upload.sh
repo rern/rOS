@@ -28,10 +28,11 @@ rAudio images uploaded successfully
 cd $dir_img
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 #........................
-files_img=$( dialog $opt_outfd --no-items --checklist "
- \Z1Select files to upload:\Z0
+files_img=$( dialog $opt_check "
+ \Z1Images to upload:
+ $text_select\Z0
 " 9 0 0 \
-$files_list ) # rAudio-MODEL-YYYYMMDD.img.xz
+	$files_list ) # rAudio-MODEL-YYYYMMDD.img.xz
 mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $files_img | tr ' ' '\n' )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
 [[ $( echo $mdl ) != '32bit 64bit Legacy' ]] && error="Not all models:\n$mdl\n"
