@@ -10,7 +10,9 @@ dialog $opt_info "
                         \Z1r\Z0Audio
 " 9 58
 sleep 1
-cmd=$( dialog $opt_menu ' ' 8 0 0 \
+cmd=$( dialog $opt_menu '
+Tasks:
+' 8 0 0 \
 1 'Create rAudio' \
 2 'Reset to default' \
 3 'Compress to image file' \
