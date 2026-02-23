@@ -14,11 +14,11 @@ sleep 1
 cmd=$( dialog $opt_menu '
 Tasks:
 ' 8 0 0 \
-1 'Create rAudio' \
-2 'Reset to default' \
-3 'Compress to image file' \
-4 'Upload image files' \
-5 'Update package repository' \
+1 'OS - Create' \
+2 'OS - Reset to default' \
+3 'Image - Create' \
+4 'Images - Upload' \
+5 'Repository - Update packages' \
 6 'Distcc client' \
 7 'Docker' \
 8 'SSH to RPi' )
