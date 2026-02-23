@@ -13,6 +13,7 @@ errorExit() {
 	exit
 }
 
+dir_img=$( awk '/BIG/ {print $2}' /etc/fstab )
 bar='\e[44m  \e[0m'
 option='--colors --no-shadow --no-collapse --backtitle rAudio'
 opt_guage="$option --guage"

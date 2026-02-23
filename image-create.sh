@@ -1,6 +1,7 @@
 #!/bin/bash
 
-dir_img=$( awk '/BIG/ {print $2}' /etc/fstab )
+. common.sh
+
 BOOT=/mnt/BOOT
 ROOT=/mnt/ROOT
 

@@ -2,7 +2,6 @@
 
 . common.sh
 
-dir_img=$( awk '/BIG/ {print $2}' /etc/fstab )
 dir_raudio=$dir_img/RPi/Git/rAudio
 file_json=$dir_raudio/rpi-imager.json
 
