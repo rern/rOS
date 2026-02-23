@@ -4,7 +4,7 @@
 
 dirdata=/srv/http/data
 #........................
-select=$( dialog $opt_check '\n\Z1Select tasks:\n
+select=$( dialog $opt_check '\n\Z1Tasks:\n
 \Z4[space] = Select / Deselect\Z0' 9 50 0 \
 			1 "Reset MPD database" on \
 			2 "Reset user data directory" on \
