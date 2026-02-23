@@ -1,5 +1,6 @@
 #!/bin/bash
 
+dir_img=/home/x/BIG
 BOOT=/mnt/BOOT
 ROOT=/mnt/ROOT
 
@@ -126,7 +127,7 @@ imagefile=$( dialog $opt_input "
 Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 #........................
-imagedir=$( dialog $option --title 'Save to: ([space]=select)' --stdout --dselect /root/BIG 20 40 )
+imagedir=$( dialog $option --title 'Save to: ([space]=select)' --stdout --dselect $dir_img 20 40 )
 imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 clear -x
 touch $BOOT/expand # auto expand root partition
