@@ -61,6 +61,5 @@ cd $dir_raudio
 gh release create i$release --latest=false --title i$release --notes "$notes" $files_path
 branch=$( git branch --show-current )
 echo -e "
-$bar rAudio images uploaded successfully
-
-\e[44m rpi-imager.json \e[0m in branch \e[44m $branch \e[0m"
+$bar rAudio images uploaded successfully\n
+\e[44m rpi-imager.json \e[0m in branch \e[44m $branch \e[0m\n"
