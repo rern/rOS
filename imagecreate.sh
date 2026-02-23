@@ -125,10 +125,8 @@ fi
 imagefile=$( dialog $opt_input "
 Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
-selectdir=$PWD/
-[[ -e $PWD/BIG ]] && selectdir+=BIG
 #........................
-imagedir=$( dialog $option --title 'Save to: ([space]=select)' --stdout --dselect $selectdir 20 40 )
+imagedir=$( dialog $option --title 'Save to: ([space]=select)' --stdout --dselect /root/BIG 20 40 )
 imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 clear -x
 touch $BOOT/expand # auto expand root partition
