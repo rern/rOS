@@ -1,6 +1,7 @@
 #!/bin/bash
 
-[[ ! -e common.sh ]] && curl -sLO https://github.com/rern/rOS/raw/refs/heads/main/common.sh --output-dir /usr/local/bin
+file_common=/usr/local/bin/common.sh
+[[ ! -e $file_common ]] && curl -sL https://github.com/rern/rOS/raw/refs/heads/main/common.sh -o $file_common
 
 . common.sh
 
