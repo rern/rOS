@@ -33,7 +33,7 @@ files_img=$( dialog $opt_check "
  $text_select\Z0
 " 9 0 0 \
 	$files_list ) # rAudio-MODEL-YYYYMMDD.img.xz
-mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $files_img | tr ' ' '\n' )
+mdl_rel=$( sed -E 's/rAudio-|.img.xz//' <<< $files_img )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
 [[ $( echo $mdl ) != '32bit 64bit Legacy' ]] && error="Not all models:\n$mdl\n"
 release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
@@ -74,5 +74,5 @@ for model in $models; do
 | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file) |"
 done
 echo "$json" > $file_json
-files_path=$( tr ' ' '\n' <<< $files_img | sed "s|^|$dir_img|" )
+files_path=$( sed "s|^|$dir_img|" <<< $files_img )
 uploadImage

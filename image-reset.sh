@@ -13,19 +13,16 @@ select=$( dialog $opt_check "
 	"Clear package cache" on \
 	"Clear system log" on \
 	"Clear Wi-Fi connection" on )
-[[ ! $select ]] && clear -x && exit
-#---------------------------------------------------------------
-select=" $select "
 systemctl stop mpd
 mount | grep /mnt/MPD/NAS && umount -l "/mnt/MPD/NAS/"*
 mount | grep /mnt/MPD/USB && udevil umount -l "/mnt/MPD/USB/"*
 clear -x
-if [[ $select == *' 1 '* ]]; then
+if selected database; then
 #........................
 	banner Reset MPD database ...
 	rm -f $dirdata/mpd/*
 fi
-if [[ $select == *' 2 '* ]]; then
+if selected user; then
 #........................
 	banner Reset user data directory ...
 	rm -rf /root/.cache/*
@@ -35,17 +32,17 @@ if [[ $select == *' 2 '* ]]; then
 , "webradio"  : '$( find -L $dirdata/webradio -type f ! -path '*/img/*' | wc -l )'
 }' > $dirdata/mpd/counts
 fi
-if [[ $select == *' 3 '* ]]; then
+if selected cache; then
 #........................
 	banner Clear package cache ...
 	rm -f /var/cache/pacman/pkg/*
 fi
-if [[ $select == *' 4 '* ]]; then
+if selected log; then
 #........................
 	banner Clear system log ...
 	rm -rf /var/log/journal/*
 fi
-if [[ $select == *' 5 '* ]]; then
+if selected Wi-Fi; then
 #........................
 	banner Clear Bluetooth and Wi-Fi connection ...
 	rm -rf /var/lib/bluetooth/*

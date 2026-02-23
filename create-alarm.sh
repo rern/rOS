@@ -258,16 +258,15 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 	"$snapcast"  on \
 	"$spotify"   on \
 	"$upmpdcli"  on )
-	select=" $select "
-	[[ $select == *' 1 '* ]] && list+="$bluealsa"$'\n'  && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests '
-	[[ $select == *' 2 '* ]] && list+="$camilla"$'\n'   && features+='camilladsp python-websocket-client '
-	[[ $select == *' 3 '* ]] && list+="$browser"$'\n'   && features+='firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo '
-	[[ $select == *' 4 '* ]] && list+="$iwd"$'\n'       && features+='iwd '
-	[[ $select == *' 5 '* ]] && list+="$samba"$'\n'     && features+='samba '
-	[[ $select == *' 6 '* ]] && list+="$shairport"$'\n' && features+='shairport-sync '
-	[[ $select == *' 7 '* ]] && list+="$snapcast"$'\n'  && features+='snapcast '
-	[[ $select == *' 8 '* ]] && list+="$spotify"$'\n'   && features+='spotifyd '
-	[[ $select == *' 9 '* ]] && list+="$upmpdcli"$'\n'  && features+='upmpdcli python-upnpp '
+	selected BlueALSA  && list+="$bluealsa"$'\n'  && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests '
+	selected Camilla   && list+="$camilla"$'\n'   && features+='camilladsp python-websocket-client '
+	selected Firefox   && list+="$browser"$'\n'   && features+='firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo '
+	selected iwd       && list+="$iwd"$'\n'       && features+='iwd '
+	selected Samba     && list+="$samba"$'\n'     && features+='samba '
+	selected Shairport && list+="$shairport"$'\n' && features+='shairport-sync '
+	selected Snapcast  && list+="$snapcast"$'\n'  && features+='snapcast '
+	selected Spotifyd  && list+="$spotify"$'\n'   && features+='spotifyd '
+	selected upmpdcli  && list+="$upmpdcli"$'\n'  && features+='upmpdcli python-upnpp '
 }
 
 selectFeatures
