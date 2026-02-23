@@ -19,4 +19,4 @@ rpiip=$( dialog $opt_input "
 [[ ! $rpiip ]] && exit
 #----------------------------------------------------------------------------
 sed -i "/$rpiip/ d" ~/.ssh/known_hosts
-sshpass -p ros ssh -t -o StrictHostKeyChecking=no root@$rpiip 'bash <( curl -sL https://github.com/rern/rOS/raw/main/imagereset.sh )'
+sshpass -p ros ssh -t -o StrictHostKeyChecking=no root@$rpiip 'bash <( curl -sL https://github.com/rern/rOS/raw/main/image-reset.sh )'
