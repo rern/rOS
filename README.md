@@ -173,7 +173,7 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/reset.sh )
 - Move micro SD card to Linux
 - Create compressed image file
 ```sh
-bash <( wget -qO - https://github.com/rern/rOS/raw/main/imagecreate.sh )
+bash <( wget -qO - https://github.com/rern/rOS/raw/main/image-create.sh )
 ```
 
 **LED flashes - errors**  
