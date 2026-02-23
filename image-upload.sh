@@ -14,7 +14,7 @@ files_img=$( dialog $opt_check '
 	$files_list ) # rAudio-MODEL-YYYYMMDD.img.xz
 mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $files_img )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
-[[ $( echo $mdl ) != '32bit 64bit Legacy' ]] && error="Not all models:\n$mdl\n"
+[[ $( echo $mdl ) != '32bit 64bit Legacy' ]] && error="Not all 3 models:\n$mdl\n"
 release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
 [[ $error ]] && errorExit "$error"
@@ -34,14 +34,14 @@ declare -A mdl_rpi=(
 	[Legacy]='`1` `Zero`' )
 clear -x
 #........................
-banner C h e c k s u m
+banner S H A - 2 5 6
 for model in $models; do
 	file=rAudio-$model-$release.img.xz
  	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
 	echo -e "$bar $file"
 	printf 'sha256sum \e[5m...\e[0m'
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
-	printf "\rSHA-256 : $sha256\n"
+	printf "\r$sha256\n"
 	osi=os_list[$i]
 	json=$( jq ".$osi.extract_size = ${size_xz_img/* }
 				| .$osi.image_download_size = ${size_xz_img/ *}
