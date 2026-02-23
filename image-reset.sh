@@ -4,9 +4,9 @@
 
 dirdata=/srv/http/data
 #........................
-select=$( dialog $opt_check "
+select=$( dialog $opt_check '
  \Z1Tasks:\Z0
-" 9 50 0 \
+' 9 50 0 \
 	"Reset MPD database" on \
 	"Reset user data directory" on \
 	"Clear package cache" on \
