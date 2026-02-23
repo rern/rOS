@@ -19,7 +19,7 @@ cmd=$( dialog $opt_menu ' ' 8 0 0 \
 6 'Distcc client' \
 7 'Docker' \
 8 'SSH to RPi' )
-names=( '' create reset imagecreate imageupload repoupdate distcc-client docker )
+names=( '' create reset image-create image-upload repoupdate distcc-client docker )
 name=${names[$cmd]}
 if [[ $name ]]; then
 	(( $cmd < 5 )) && repo=rOS || repo=rern.github.io
