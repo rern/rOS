@@ -4,12 +4,13 @@ trap exit INT
 
 . common.sh
 
+mount | grep -q $dir_img.*ro, && errorExit Read only: $dir_img
+#---------------------------------------------------------------
 BOOT=/mnt/BOOT
 ROOT=/mnt/ROOT
 
 . common.sh
 
-#---------------------------------------------------------------
 deviceLine() {
 	dmesg \
 		| tail \
