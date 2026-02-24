@@ -248,15 +248,15 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 	select=$( dialog $opt_check '
  \Z1Features to install:\Zn
 ' 9 0 0 \
-	"$bluealsa"  on \
-	"$camilla"   on \
-	"$browser"   on \
-	"$iwd"       on \
-	"$samba"     on \
-	"$shairport" on \
-	"$snapcast"  on \
-	"$spotify"   on \
-	"$upmpdcli"  on )
+		"$bluealsa"  on \
+		"$camilla"   on \
+		"$browser"   on \
+		"$iwd"       on \
+		"$samba"     on \
+		"$shairport" on \
+		"$snapcast"  on \
+		"$spotify"   on \
+		"$upmpdcli"  on )
 	selected BlueALSA  && list+="$bluealsa"$'\n'  && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests '
 	selected Camilla   && list+="$camilla"$'\n'   && features+='camilladsp python-websocket-client '
 	selected Firefox   && list+="$browser"$'\n'   && features+='firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo '
