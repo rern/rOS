@@ -1,7 +1,15 @@
 #!/bin/bash
 
+# download to: /root/ArchLinuxArm-*.tar.gz
 trap exit INT
+#........................
+[[ ! $( ls ArchLinuxArm-*.tar.gz ) ]] && dialog $opt_yesno "
+No ArchLinuxArm-*.tar.gz in $PWD
 
+Continue?
+
+" 0 0 || exit
+#----------------------------------------------------------------------------
 . common.sh
 
 # required packages
@@ -461,7 +469,7 @@ dialog $opt_msg "
 
 \Z1BOOT\Zn and \Z1ROOT\Zn have been unmounted.
 
-- Move micro SD card$usb to RPi > Power on
+- Move SD card$usb to RPi > Power on
 - Press \Z1Enter\Zn to start boot timer > IP scan
 
 " 13 55

@@ -1,12 +1,12 @@
 #!/bin/bash
 
+# image files: /root/rAudio-*.img.xz
 . common.sh
 
-dir_raudio=$dir_img/RPi/Git/rAudio
-file_json=$dir_raudio/rpi-imager.json
-
-cd $dir_img
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
+[[ ! $files_list ]] && errorExit No image files in $PWD
+#---------------------------------------------------------------
+dir_raudio=/mnt/BIG/RPi/Git/rAudio
 #........................
 files_img=$( dialog $opt_check '
  \Z1Images to upload:\Zn
@@ -22,7 +22,7 @@ release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
 json=$( sed -E -e "s|i[0-9]*/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
 " -e 's/(release_date": ").*/\1'$date_rel'",/
-' $file_json )
+' $dir_raudio/rpi-imager.json )
 models=$( jq -r .os_list[].name <<< $json | cut -d' ' -f2 )
 i=0
 notes='
@@ -52,14 +52,22 @@ for model in $models; do
 | [$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
 | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file) |"
 done
-echo "$json" > $file_json
-files_path=$( sed "s|^|$dir_img/|" <<< $files_img )
 #........................
 banner U p l o a d
 echo -e "$bar *.img.xz"
+files_img=$( sed "s|^|$PWD/|" <<< $files_img )
 cd $dir_raudio
-gh release create i$release --latest=false --title i$release --notes "$notes" $files_path
+echo "$json" > rpi-imager.json
 branch=$( git branch --show-current )
-echo -e "
-$bar rAudio images uploaded successfully\n
-\e[44m rpi-imager.json \e[0m in branch \e[44m $branch \e[0m\n"
+gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
+[[ $? != 0 ]] && errorExit Upload failed.
+#---------------------------------------------------------------
+dialog $opt_yesno "
+\Z1rpi-imager.json\Zn in branch \Z1$branch\Zn
+
+\Z1Image files\Zn uploaded successfully
+Please verify remote rAudio repo
+
+        \Z1Delete image files?\Zn
+
+" 0 0 && rm $files_img

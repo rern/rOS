@@ -1,11 +1,10 @@
 #!/bin/bash
 
+# write to: /root/rAudio-*.img.xz
 trap exit INT
 
 . common.sh
 
-mount | grep -q $dir_img.*ro, && errorExit Read only: $dir_img
-#---------------------------------------------------------------
 BOOT=/mnt/BOOT
 ROOT=/mnt/ROOT
 
@@ -71,7 +70,7 @@ dialog $opt_info "
 sleep 2
 #........................
 dialog $opt_msg "
-\Z1Insert micro SD card\Zn
+\Z1Insert SD card\Zn
 If already inserted:
 For proper detection, remove and reinsert again.
 
@@ -107,12 +106,9 @@ else # $BOOT/kernel.img
 	model=Legacy
 fi
 #........................
-imagefile=$( dialog $opt_input "
+file_img=$( dialog $opt_input "
 Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
-#........................
-imagedir=$( dialog $option --title 'Save to: ([space]=select)' --stdout --dselect $dir_img 20 40 )
-imagepath="${imagedir%/}/$imagefile" # %/ - remove trailing /
 clear -x
 touch $BOOT/expand # auto expand root partition
 umount -l $BOOT $ROOT
@@ -120,22 +116,20 @@ umount -l $BOOT $ROOT
 banner Check filesystems ...
 fsck.fat -taw $partboot
 e2fsck -p $partroot
-#........................
-banner Image: $imagefile
 partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $partroot | awk '{print $3}' )
 shrink 1
 shrink 2
 #........................
 banner Compressed to image file ...
-echo -e "$bar $imagepath\n"
+echo -e "$bar $file_img\n"
 threads=$(( $( nproc ) - 2 ))
-dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$imagepath"
-size=$( xz -l --robot $imagepath | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
+dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$file_img"
+size=$( xz -l --robot $file_img | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
 #........................
 dialog $opt_info "
 Image file created:
-\Z1$imagepath\Zn
+\Z1$file_img\Zn
 $size
 " 8 58
 

@@ -17,14 +17,14 @@ deviceLine() {
 #........................
 dialog $opt_info "
 
-               \Z1Partition Micro SD Card\Zn
+                \Z1Partition SD Card\Zn
                           for
                     Arch Linux Arm
 " 9 58
 sleep 2
 #........................
 dialog $opt_msg "
-\Z1Insert micro SD card\Zn
+\Z1Insert SD card\Zn
 
 If already inserted:
 For proper detection, remove and reinsert again.
