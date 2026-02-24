@@ -76,7 +76,7 @@ ROOT: \Z1$ROOT\Zn
 	rpi=$( dialog $opt_menu "
 \Z1Raspberry Pi:\Zn
 " 8 0 0 \
-1 '64bit  : 4, 3, 2, Zero 2' \
+1 '64bit  : 5, 4, 3, 2, Zero 2' \
 2 '32bit  : 2 (BCM2836)' )
 	file=ArchLinuxARM-rpi-
 	if [[ $rpi == 1 ]]; then
@@ -106,7 +106,7 @@ ROOT: \Z1$ROOT\Zn
 Assigned IP  : $assignedip"
 	fi
 #........................
-	dialog $opt_yesno --defaultno "
+	dialog $option --defaultno --yesno "
 Connect \Z1Wi-Fi\Zn on boot?
 
 " 0 0
