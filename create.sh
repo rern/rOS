@@ -50,7 +50,7 @@ list=$( lsblk -o name,label,size,mountpoint \
 					' -e "/^$name/ {s/^/\\\Z1/; s/$/\\\Zn/}
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' )
 #........................
-dialog $opt_yesno ) "
+dialog $opt_yesno "
 $list
 
 \Z1\Zr Delete » Partition \ZR\Zn
