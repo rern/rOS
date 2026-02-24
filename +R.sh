@@ -8,7 +8,7 @@ file_common=/usr/local/bin/common.sh
 dialog $opt_info "
 
 
-                        \Z1r\Z0Audio
+                        \Z1r\ZnAudio
 " 9 58
 sleep 1
 cmd=$( dialog $opt_menu '

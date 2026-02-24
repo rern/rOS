@@ -73,14 +73,14 @@ fi
 #........................
 dialog $opt_info "
 
-                       \Z1r\Z0Audio
+                       \Z1r\ZnAudio
 
-                  \Z1Create\Z0 Image File
+                  \Z1Create\Zn Image File
 " 9 58
 sleep 2
 #........................
 dialog $opt_msg "
-\Z1Insert micro SD card\Z0
+\Z1Insert micro SD card\Zn
 If already inserted:
 For proper detection, remove and reinsert again.
 
@@ -100,7 +100,7 @@ else
 	partboot=${dev}p1
 	partroot=${dev}p2
 fi
-list=$( lsblk -o name,size,mountpoint | grep -v ^loop | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
+list=$( lsblk -o name,size,mountpoint | grep -v ^loop | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Zn/}" )
 #........................
 dialog $opt_yesno "
 Device list:
@@ -152,7 +152,7 @@ size=$( xz -l --robot $imagepath | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $
 #........................
 dialog $opt_info "
 Image file created:
-\Z1$imagepath\Z0
+\Z1$imagepath\Zn
 $size
 " 8 58
 

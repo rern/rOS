@@ -17,7 +17,7 @@ systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy po
 dialog $opt_info "
 
 
-                        \Z1r\Z0Audio
+                        \Z1r\ZnAudio
 " 9 58
 sleep 2
 clear -x # needed: fix stdout not scroll
@@ -216,9 +216,9 @@ rm -f /boot/{features,finish.sh,release} \
 #........................
 dialog $opt_info "
 
-            \Z1r\Z0Audio created successfully.
+            \Z1r\ZnAudio created successfully.
 
-                       \Z1Reboot\Z0 ...
+                       \Z1Reboot\Zn ...
 
 $( date -d@$SECONDS -u +%M:%S )
 " 9 58

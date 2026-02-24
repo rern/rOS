@@ -5,7 +5,7 @@
 dirdata=/srv/http/data
 #........................
 select=$( dialog $opt_check '
- \Z1Tasks:\Z0
+ \Z1Tasks:\Zn
 ' 9 50 0 \
 	"Reset MPD database" on \
 	"Reset user data directory" on \
@@ -63,11 +63,11 @@ fsck.fat -traw /dev/mmcblk0p1
 rm -f /boot/FSCK*
 #........................
 dialog $opt_info "
-                    \Z1r\Z0Audio reset finished.
+                    \Z1r\ZnAudio reset finished.
 
-                         \Z1Shutdown\Z0 ...
+                         \Z1Shutdown\Zn ...
 
-       Before disconnecting power, observe \Z2\Zr  \ZR\Z0 LED:
+       Before disconnecting power, observe \Z2\Zr  \ZR\Zn LED:
          - Stop all services - Blips
          - Shutdown - 10 steady flashes to completely off
 " 11 65

@@ -21,7 +21,7 @@ fi
 #----------------------------------------------------------------------------
 dialog $opt_info "
 
-                    \Z1Arch Linux Arm\Z0
+                    \Z1Arch Linux Arm\Zn
                           for
                      Raspberry Pi
 " 9 58
@@ -54,10 +54,10 @@ getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=auto
 	if [[ ! $nopathcheck ]]; then # not from create.sh
 #----------------------------------------------------------------------------
 		dialog $opt_yesno "
-Confirm \Z1SD card\Z0 path:
+Confirm \Z1SD card\Zn path:
 
-BOOT: \Z1$BOOT\Z0
-ROOT: \Z1$ROOT\Z0
+BOOT: \Z1$BOOT\Zn
+ROOT: \Z1$ROOT\Zn
 
 " 0 0 || exit
 #----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ ROOT: \Z1$ROOT\Z0
 	latest=$( curl -sL https://github.com/rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
 #........................
 	release=$( dialog $opt_input "
- \Z1r\Z0Audio release:
+ \Z1r\ZnAudio release:
 " 0 0 $latest )
 	if ! curl -sIfo /dev/null 'https://github.com/rern/rAudio/releases/tag/'$release; then
 		errorExit rAudio $release not found
@@ -74,7 +74,7 @@ ROOT: \Z1$ROOT\Z0
 	echo $release > $BOOT/release
 #........................
 	rpi=$( dialog $opt_menu "
-\Z1Raspberry Pi:\Z0
+\Z1Raspberry Pi:\Zn
 " 8 0 0 \
 1 '64bit  : 4, 3, 2, Zero 2' \
 2 '32bit  : 2 (BCM2836)' )
@@ -93,13 +93,13 @@ ROOT: \Z1$ROOT\Z0
 	subip=${routerip%.*}.
 #........................
 	dialog $opt_yesno "
- RPi with \Z1pre-assigned\Z0 IP?
+ RPi with \Z1pre-assigned\Zn IP?
 
 " 0 0
 	if [[ $? == 0 ]]; then
 #........................
 		assignedip=$( dialog $opt_input "
- \Z1Pre-assigned\Z0 IP:
+ \Z1Pre-assigned\Zn IP:
 " 0 0 $subip )
 		[[ $rpi == 1 ]] && sboot=30 || sboot=40
 		confirmassignedip="
@@ -107,21 +107,21 @@ Assigned IP  : $assignedip"
 	fi
 #........................
 	dialog $opt_yesno --defaultno "
-Connect \Z1Wi-Fi\Z0 on boot?
+Connect \Z1Wi-Fi\Zn on boot?
 
 " 0 0
 	if [[ $? == 0 ]]; then
 #........................
 		ssid=$( dialog $opt_input "
-\Z1Wi-Fi\Z0 - SSID:
+\Z1Wi-Fi\Zn - SSID:
 " 0 0 $ssid )
 #........................
 		password=$( dialog $opt_input "
-\Z1Wi-Fi\Z0 - Password:
+\Z1Wi-Fi\Zn - Password:
 " 0 0 $password )
 #........................
 		wpa=$( dialog $opt_menu "
-\Z1Wi-Fi\Z0 -Security:
+\Z1Wi-Fi\Zn -Security:
 " 8 0 0 \
 1 WPA \
 2 WEP \
@@ -131,20 +131,20 @@ Connect \Z1Wi-Fi\Z0 on boot?
 			2 ) wpa=wep;;
 		esac
 		confirmwifi="
-SSID         : \Z1$ssid\Z0
-Password     : \Z1$password\Z0
-Security     : \Z1${wpa^^}\Z0"
+SSID         : \Z1$ssid\Zn
+Password     : \Z1$password\Zn
+Security     : \Z1${wpa^^}\Zn"
 	fi
 #........................
 	dialog $opt_yesno "
-\Z1Confirm data:\Z0
+\Z1Confirm data:\Zn
 
-\Z1r\Z0Audio
+\Z1r\ZnAudio
 Release      : $release
-Raspberry Pi : \Z1$rpiname\Z0
+Raspberry Pi : \Z1$rpiname\Zn
 
-BOOT path    : \Z1$BOOT\Z0
-ROOT path    : \Z1$ROOT\Z0
+BOOT path    : \Z1$BOOT\Zn
+ROOT path    : \Z1$ROOT\Zn
 $confirmwifi
 $confirmassignedip
 " 0 0
@@ -154,7 +154,7 @@ getData
 foundIP() {
 #........................
 	ans=$( dialog $opt_menu "
-\Z1Found IP address of RPi?\Z0
+\Z1Found IP address of RPi?\Zn
 " 8 30 0 \
 1 'Yes' \
 2 'Rescan' \
@@ -192,11 +192,11 @@ partUUID() {
 pingIP() {
 	wait=$1
 	ip=$2
-	ping=$( ping -4 -c 1 -w $wait $ip | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Z0/" )
+	ping=$( ping -4 -c 1 -w $wait $ip | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Zn/" )
 	if grep -q '100% packet loss' <<< "$ping"; then
-		ping+=$'\n\n'"$ip \Z1NOT\Z0 found."
+		ping+=$'\n\n'"$ip \Z1NOT\Zn found."
 	else
-		ping+=$'\n\n'"$ip \Z1found\Z0."
+		ping+=$'\n\n'"$ip \Z1found\Zn."
 	fi
 }
 scanIP() {
@@ -209,13 +209,13 @@ scanIP() {
 				| grep '^Nmap scan\|^MAC' \
 				| paste -sd ' \n' \
 				| grep 'MAC Address' \
-				| sed -e 's/Nmap.*for \|MAC Address//g' -e '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Z0/}' \
+				| sed -e 's/Nmap.*for \|MAC Address//g' -e '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Zn/}' \
 				| tac )
 #........................
 	dialog $opt_msg "
-\Z1Note IP address of Raspberry Pi:\Z0
+\Z1Note IP address of Raspberry Pi:\Zn
 (If Raspberri Pi not listed, ping may find it.)
-\Z4[arrowdown] = scrolldown\Z0
+\Z4[arrowdown] = scrolldown\Zn
 
 $lines
 
@@ -233,20 +233,20 @@ sshRpi() {
 	scanIP
 }
 # features
- bluealsa='\Z1BlueALSA\Z0   - Bluetooth audio'
-  camilla='\Z1CamillaDSP\Z0 - Digital signal processor'
-  browser='\Z1Firefox\Z0    - Browser on RPi screen'
-      iwd='\Z1iwd\Z0        - RPi access point'
-    samba='\Z1Samba\Z0      - File sharing'
-shairport='\Z1Shairport\Z0  - AirPlay renderer'
- snapcast='\Z1Snapcast\Z0   - Synchronous multiroom player'
-  spotify='\Z1Spotifyd\Z0   - Spotify renderer'
- upmpdcli='\Z1upmpdcli\Z0   - UPnP renderer'
+ bluealsa='\Z1BlueALSA\Zn   - Bluetooth audio'
+  camilla='\Z1CamillaDSP\Zn - Digital signal processor'
+  browser='\Z1Firefox\Zn    - Browser on RPi screen'
+      iwd='\Z1iwd\Zn        - RPi access point'
+    samba='\Z1Samba\Zn      - File sharing'
+shairport='\Z1Shairport\Zn  - AirPlay renderer'
+ snapcast='\Z1Snapcast\Zn   - Synchronous multiroom player'
+  spotify='\Z1Spotifyd\Zn   - Spotify renderer'
+ upmpdcli='\Z1upmpdcli\Zn   - UPnP renderer'
 
 selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
 #........................
 	select=$( dialog $opt_check '
- \Z1Features to install:\Z0
+ \Z1Features to install:\Zn
 ' 9 0 0 \
 	"$bluealsa"  on \
 	"$camilla"   on \
@@ -307,7 +307,7 @@ done
 (( i++ ))
 #........................
 code=$( dialog $opt_menu "
-\Z1Package mirror server:\Z0
+\Z1Package mirror server:\Zn
 " 0 0 $i \
 "${clist[@]}" )
 mirror=${codelist[$code]}
@@ -326,7 +326,7 @@ if [[ -e $file ]]; then
 #........................
 	dialog $opt_info "
  Existing is the latest:
- \Z1$file\Z0
+ \Z1$file\Zn
  
  No download required.
  
@@ -338,7 +338,7 @@ else
 		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
 			print "XXX\n "substr($0,63,3)
 			print "\\n Download"
-			print "\\n \\Z1'$file'\\Z0"
+			print "\\n \\Z1'$file'\\Zn"
 			print "\\n Time left: "substr($0,74,5)"\nXXX" }' ) \
 		| dialog $opt_guage "
  Connecting ...
@@ -358,7 +358,7 @@ rm $file.md5
 	| bsdtar -C $ROOT -xpf - --exclude=boot/initramfs-linux-fallback.img ) 2>&1 \
 	| dialog $opt_guage "
   Decompress ...
-  \Z1$file\Z0
+  \Z1$file\Zn
 " 9 50
 sync &
 Sstart=$( date +%s )
@@ -371,7 +371,7 @@ dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
 done ) \
 	| dialog $opt_guage "
   Write to SD card ...
-  \Z1$file\Z0
+  \Z1$file\Zn
 " 9 50
 sync
 # fstab
@@ -448,7 +448,7 @@ dialog $opt_msg "
 
                    Arch Linux Arm
                          for
-                 \Z1Raspberry Pi $rpiname\Z0
+                 \Z1Raspberry Pi $rpiname\Zn
                 Created successfully.
 				
 $( date -d@$SECONDS -u +%M:%S )
@@ -456,12 +456,12 @@ $( date -d@$SECONDS -u +%M:%S )
 [[ ${partuuidB:0:-3} != ${partuuidR:0:-3} ]] && usb=' and USB drive'
 #........................
 dialog $opt_msg "
-\Z1Arch Linux Arm\Z0 is ready.
+\Z1Arch Linux Arm\Zn is ready.
 
-\Z1BOOT\Z0 and \Z1ROOT\Z0 have been unmounted.
+\Z1BOOT\Zn and \Z1ROOT\Zn have been unmounted.
 
 - Move micro SD card$usb to RPi > Power on
-- Press \Z1Enter\Z0 to start boot timer > IP scan
+- Press \Z1Enter\Zn to start boot timer > IP scan
 
 " 13 55
 #........................
@@ -471,7 +471,7 @@ dialog $opt_msg "
 done ) \
 	| dialog $opt_guage "
   Boot ...
-  \Z1Arch Linux Arm\Z0
+  \Z1Arch Linux Arm\Zn
 " 9 50
 
 if [[ $assignedip ]]; then
@@ -480,7 +480,7 @@ if [[ $assignedip ]]; then
 		cat <<EOF
 XXX
 $(( i * 10 ))
-\n  Ping \Z1$assignedip\Z0 ...
+\n  Ping \Z1$assignedip\Zn ...
 \n  #$i
 XXX
 EOF
@@ -491,7 +491,7 @@ EOF
 	if ping -4 -c 1 -w 1 $assignedip &> /dev/null; then
 		dialog $opt_info "
   SSH Arch Linux Arm ...
-  @ \Z1$assignedip\Z0
+  @ \Z1$assignedip\Zn
 " 9 50
 		sleep 3
 		sshRpi $assignedip
@@ -504,7 +504,7 @@ fi
 # connect RPi
 #........................
 rpiip=$( dialog $opt_input --cancel-label Rescan "
-\Z1Raspberry Pi IP:\Z0
+\Z1Raspberry Pi IP:\Zn
 
 " 0 0 $subip )
 [[ $? == 1 ]] && scanIP

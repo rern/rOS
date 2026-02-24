@@ -17,14 +17,14 @@ deviceLine() {
 #........................
 dialog $opt_info "
 
-               \Z1Partition Micro SD Card\Z0
+               \Z1Partition Micro SD Card\Zn
                           for
                     Arch Linux Arm
 " 9 58
 sleep 2
 #........................
 dialog $opt_msg "
-\Z1Insert micro SD card\Z0
+\Z1Insert micro SD card\Zn
 
 If already inserted:
 For proper detection, remove and reinsert again.
@@ -45,18 +45,16 @@ else
 	partB=${dev}p1
 	partR=${dev}p2
 fi
-list=$( lsblk -o name,size,mountpoint | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Z0/}" )
+list=$( lsblk -o name,label,size,mountpoint \
+			| sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
+					' -e "/^$name/ {s/^/\\\Z1/; s/$/\\\Zn/}
+					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' )
 #........................
 dialog $opt_yesno "
-Device list:
 $list
 
-Warning:
-Make sure this is the target SD card.
-\Z1All data on this device will be deleted.\Z0
-
-Continue formatting:
-$( echo "$list" | grep '\\Z1' )
+\Z1\Zr Delete » Partition \ZR\Zn
+$( grep '^\\Z1' <<< $list )
 
 " 0 0 || exit
 #-------------------------------------------------------------
