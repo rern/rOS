@@ -106,7 +106,7 @@ ROOT: \Z1$ROOT\Zn
 Assigned IP  : $assignedip"
 	fi
 #........................
-	dialog $option --defaultno --yesno "
+	dialog $opt_yesno "
 Connect \Z1Wi-Fi\Zn on boot?
 
 " 0 0
