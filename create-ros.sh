@@ -11,7 +11,6 @@ banner Initialize Arch Linux Arm ...
 pacman-key --init
 pacman-key --populate archlinuxarm
 systemctl restart systemd-timesyncd # force time sync
-rm -f /var/lib/pacman/db.lck  # in case of rerun
 systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy pool is not initialized)
 #........................
 dialog $opt_info "
@@ -34,6 +33,7 @@ if [[ -e /boot/kernel8.img ]]; then
 	grep -q uboot-raspberrypi <<< $pkgs && remove+=' uboot-raspberrypi'
 	! grep -q linux-rpi <<< $pkgs && packages+=' linux-rpi'
 fi
+rm -f /var/lib/pacman/db.lck  # in case of rerun
 pacman -Rdd --noconfirm $remove
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then

@@ -18,7 +18,7 @@ else
 	[[ ! -e /usr/bin/pv ]] && packages+='pv '
 	[[ $packages ]] && apt install -y $packages
 fi
-#----------------------------------------------------------------------------
+#........................
 dialog $opt_info "
 
                     \Z1Arch Linux Arm\Zn
@@ -53,6 +53,7 @@ fi
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
 	if [[ ! $nopathcheck ]]; then # not from create.sh
 #----------------------------------------------------------------------------
+#........................
 		dialog $opt_yesno "
 Confirm \Z1SD card\Zn path:
 
@@ -272,7 +273,7 @@ selectFeatures
 [[ ! $list ]] && list=(none)
 #........................
 dialog $opt_yesno "
-Confirm features to install:
+\Z1Confirm features to install:\Zn
 
 $list
 
@@ -337,7 +338,7 @@ else
 	( wget -O $file $url/$file 2>&1 \
 		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
 			print "XXX\n "substr($0,63,3)
-			print "\\n Download"
+			print "\\n Download ..."
 			print "\\n \\Z1'$file'\\Zn"
 			print "\\n Time left: "substr($0,74,5)"\nXXX" }' ) \
 		| dialog $opt_guage "
