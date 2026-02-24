@@ -233,15 +233,15 @@ sshRpi() {
 	scanIP
 }
 # features
- bluealsa='\Z1BlueALSA\Zn   - Bluetooth audio'
-  camilla='\Z1CamillaDSP\Zn - Digital signal processor'
-  browser='\Z1Firefox\Zn    - Browser on RPi screen'
-      iwd='\Z1iwd\Zn        - RPi access point'
-    samba='\Z1Samba\Zn      - File sharing'
-shairport='\Z1Shairport\Zn  - AirPlay renderer'
- snapcast='\Z1Snapcast\Zn   - Synchronous multiroom player'
-  spotify='\Z1Spotifyd\Zn   - Spotify renderer'
- upmpdcli='\Z1upmpdcli\Zn   - UPnP renderer'
+ bluealsa='BlueALSA   - Bluetooth audio'
+  camilla='CamillaDSP - Digital signal processor'
+  browser='Firefox    - Browser on RPi screen'
+      iwd='iwd        - RPi access point'
+    samba='Samba      - File sharing'
+shairport='Shairport  - AirPlay renderer'
+ snapcast='Snapcast   - Synchronous multiroom player'
+  spotify='Spotifyd   - Spotify renderer'
+ upmpdcli='upmpdcli   - UPnP renderer'
 
 selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
 #........................
