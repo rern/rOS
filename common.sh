@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# on rpi: . <( curl -sL https://github.com/rern/rOS/raw/refs/heads/main/common.sh )
+
 banner() {
 	local cols
 	cols=$( tput cols )
@@ -11,6 +13,20 @@ errorExit() {
 	banner E r r o r
 	echo -e "\n\e[41m ! \e[0m $@\n"
 	exit
+}
+dialogDevice() { # $1=sdx; $2=confirm text
+	list=$( lsblk -o name,label,size,mountpoint \
+			| sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
+					' -e "/^$1/ {s/^/\\\Z1/; s/$/\\\Zn/}
+					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' )
+#........................
+	dialog $opt_yesno "
+$list
+
+\Zr $2 \ZR
+$( grep '^\\Z1' <<< $list )
+
+" 0 0 || exit
 }
 selected() {
 	grep -q -m1 "$1" <<< $select && return 0

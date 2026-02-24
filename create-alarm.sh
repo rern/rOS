@@ -440,7 +440,7 @@ sed -i -e 's/#\(PermitRootLogin \).*/\1yes/
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # get create-ros.sh
-wget -q https://github.com/rern/rOS/raw/refs/heads/main/{common,create-ros}.sh -P $ROOT/root
+wget -q https://github.com/rern/rOS/raw/refs/heads/main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
 umount -l $BOOT
 umount -l $ROOT

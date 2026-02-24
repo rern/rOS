@@ -2,7 +2,7 @@
 
 trap exit INT
 
-. common.sh
+. <( curl -sL https://github.com/rern/rOS/raw/refs/heads/main/common.sh )
 
 SECONDS=0
 features=$( cat /boot/features )
@@ -212,7 +212,7 @@ touch /boot/expand
 [[ -e /boot/finish.sh ]] && . /boot/finish.sh
 rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
-	  /root/{common,create-ros}.sh
+	  /root/create-ros.sh
 #........................
 dialog $opt_info "
 

@@ -90,16 +90,8 @@ else
 	partboot=${dev}p1
 	partroot=${dev}p2
 fi
-list=$( lsblk -o name,size,mountpoint | grep -v ^loop | sed "/^$name/ {s/^/\\\Z1/; s/$/\\\Zn/}" )
 #........................
-dialog $opt_yesno "
-Device list:
-$list
-
-Confirm SD card:
-$( echo "$list" | grep '\\Z1' )
-" 0 0 || exit
-#---------------------------------------------------------------
+dialogDevice $name 'rAudio to image'
 mkdir -p /mnt/{BOOT,ROOT}
 mount $partboot $BOOT
 mount $partroot $ROOT

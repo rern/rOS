@@ -45,19 +45,8 @@ else
 	partB=${dev}p1
 	partR=${dev}p2
 fi
-list=$( lsblk -o name,label,size,mountpoint \
-			| sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
-					' -e "/^$name/ {s/^/\\\Z1/; s/$/\\\Zn/}
-					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' )
 #........................
-dialog $opt_yesno "
-$list
-
-\Z1\Zr Delete » Partition \ZR\Zn
-$( grep '^\\Z1' <<< $list )
-
-" 0 0 || exit
-#-------------------------------------------------------------
+dialogDevice $name 'Delete » Partition'
 clear -x
 umount $partB $partR 2> /dev/null
 wipefs -a $dev
