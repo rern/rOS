@@ -66,9 +66,9 @@ $bar rAudio reset finished.
 
 Shutdown ...
 
-Before disconnecting power, observe \Z2\Zr  \ZR\Zn LED:
-	- Stop all services - Blips
-	- Shutdown - 10 steady flashes to completely off
+Before disconnecting power, observe \e[32;5m■\e[0m LED:
+  - Stop services - Blips
+  - Shutdown      - 10 steady flashes » off
 "
 poweroff
 exit
