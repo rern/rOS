@@ -6,6 +6,7 @@
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 [[ ! $files_list ]] && errorExit No image files in $PWD
 #---------------------------------------------------------------
+splash 'Upload Image File'
 dir_raudio=/mnt/BIG/RPi/Git/rAudio
 #........................
 files_img=$( dialog $opt_check '

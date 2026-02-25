@@ -15,6 +15,7 @@ errorExit() {
 	exit
 }
 dialogDevice() { # $1=sdx; $2=confirm text
+	local list
 	list=$( lsblk -o name,label,size,mountpoint \
 			| sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
 					' -e "/^$1/ {s/^/\\\Z1/; s/$/\\\Zn/}
@@ -30,6 +31,27 @@ $( grep '^\\Z1' <<< $list )
 }
 selected() {
 	grep -q -m1 "$1" <<< $select && return 0
+}
+splash() {
+	local h i l line pad H splash W w
+	H=9
+	W=58
+	h=$( wc -l <<< $1 )
+	pad=$(( ( H - h ) / 2 ))
+	for (( i=0; i < $pad; i++ )); do
+		splash+='\n'
+	done
+	while read -r line; do
+		l=$( sed 's/\\Z.//g' <<< $line )
+		w=$(( ( W - ${#line} ) / 2 ))
+		splash+="$( printf '%*s' $w )$line"
+	done <<< $1
+#........................
+	dialog $opt_info "
+$splash
+" $(( pad + h + pad + 1 )) $W
+	sleep 2
+	clear -x # needed: fix stdout not scroll
 }
 
 bar='\e[44m  \e[0m'

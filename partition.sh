@@ -15,13 +15,7 @@ deviceLine() {
 }
 
 #........................
-dialog $opt_info "
-
-                \Z1Partition SD Card\Zn
-                          for
-                    Arch Linux Arm
-" 9 58
-sleep 2
+splash 'Partition SD Card'
 #........................
 dialog $opt_msg "
 \Z1Insert SD card\Zn

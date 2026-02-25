@@ -2,6 +2,9 @@
 
 # download to: /root/ArchLinuxArm-*.tar.gz
 trap exit INT
+
+. common.sh
+
 #........................
 [[ ! $( ls ArchLinuxArm-*.tar.gz ) ]] && dialog $opt_yesno "
 No ArchLinuxArm-*.tar.gz in $PWD
@@ -10,8 +13,8 @@ Continue?
 
 " 0 0 || exit
 #----------------------------------------------------------------------------
-. common.sh
-
+#........................
+splash 'Write \Z1Arch Linux Arm\Zn'
 # required packages
 if [[ -e /usr/bin/pacman ]]; then
 	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar '
@@ -26,14 +29,6 @@ else
 	[[ ! -e /usr/bin/pv ]] && packages+='pv '
 	[[ $packages ]] && apt install -y $packages
 fi
-#........................
-dialog $opt_info "
-
-                    \Z1Arch Linux Arm\Zn
-                          for
-                     Raspberry Pi
-" 9 58
-sleep 2
 nopathcheck=$1
 if [[ $nopathcheck ]]; then
 	BOOT=/mnt/BOOT
@@ -59,7 +54,7 @@ else
 fi
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
-	if [[ ! $nopathcheck ]]; then # not from create.sh
+	if [[ ! $nopathcheck ]]; then # not from partition.sh
 #----------------------------------------------------------------------------
 #........................
 		dialog $opt_yesno "

@@ -3,13 +3,7 @@
 . common.sh
 
 #........................
-dialog $opt_info "
-
-                       \Z1r\ZnAudio
-
-                 \Z1Reset\Zn for Image File
-" 9 58
-sleep 2
+splash 'Reset for Image'
 routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 subip=${routerip%.*}.
 #........................

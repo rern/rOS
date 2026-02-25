@@ -43,7 +43,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- For those who know how to read and confirm syntax of SD card partitions.
 	- For Alternative 1: Micro SD card only
 	```sh
-	bash <( wget -qO - https://github.com/rern/rOS/raw/main/create.sh )
+	bash <( wget -qO - https://github.com/rern/rOS/raw/main/partition.sh )
 	```
 	- If the SD card was not recognized, use GParted to wipe all partitions.
 

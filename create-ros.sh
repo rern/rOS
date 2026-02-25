@@ -13,13 +13,7 @@ pacman-key --populate archlinuxarm
 systemctl restart systemd-timesyncd # force time sync
 systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy pool is not initialized)
 #........................
-dialog $opt_info "
-
-
-                        \Z1r\ZnAudio
-" 9 58
-sleep 2
-clear -x # needed: fix stdout not scroll
+splash 'Create \Z1r\ZnAudio'
 #........................
 banner Upgrade system and default packages ...
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs 
