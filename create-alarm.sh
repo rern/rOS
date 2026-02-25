@@ -512,9 +512,8 @@ else
 fi
 # connect RPi
 #........................
-rpiip=$( dialog $opt_input --cancel-label Rescan "
+rpiip=$( dialog $opt_outfd --cancel-label Rescan --inputbox "
 \Z1Raspberry Pi IP:\Zn
 
 " 0 0 $subip )
-[[ $? == 1 ]] && scanIP
-sshRpi $rpiip
+[[ $? == 1 || ${rpiip: -1} == . ]] && scanIP || sshRpi $rpiip
