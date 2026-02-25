@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. <( curl -sL https://github.com/rern/rOS/raw/refs/heads/main/common.sh )
+. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 #........................
 splash 'Image Utilities'
 #........................
@@ -27,4 +27,4 @@ fi
 names=( '' partition reset image-create image-upload distcc-client docker )
 name=${names[$cmd]}
 (( $cmd < 5 )) && repo=rOS || repo=rern.github.io
-bash <( curl -sL "https://github.com/rern/$repo/raw/main/$name.sh" )
+. <( curl -sL "https://github.com/rern/$repo/raw/main/$name.sh" )

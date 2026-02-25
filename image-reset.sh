@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. <( curl -sL https://github.com/rern/rOS/raw/refs/heads/main/common.sh )
+. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
 dirdata=/srv/http/data
 #........................

@@ -2,7 +2,7 @@
 
 trap exit INT
 
-. <( curl -sL https://github.com/rern/rOS/raw/refs/heads/main/common.sh )
+. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
 SECONDS=0
 features=$( cat /boot/features )

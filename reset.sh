@@ -1,7 +1,5 @@
 #!/bin/bash
 
-. common.sh
-
 #........................
 splash 'Reset for Image'
 routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )

@@ -3,8 +3,6 @@
 # write to: /root/rAudio-*.img.xz
 trap exit INT
 
-. common.sh
-
 BOOT=/mnt/BOOT
 ROOT=/mnt/ROOT
 

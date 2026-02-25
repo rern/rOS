@@ -2,8 +2,6 @@
 
 trap exit INT
 
-. common.sh
-
 label=$( mount | grep -E '/dev.*BOOT |/dev.*ROOT ' )
 [[ $label ]] && errorExit "Partition label exist:\n$label"
 #-------------------------------------------------------------
@@ -63,4 +61,4 @@ e2label $partR ROOT
 mkdir -p /mnt/{BOOT,ROOT}
 mount $partB /mnt/BOOT
 mount $partR /mnt/ROOT
-bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh ) nopathcheck
+. <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh ) nopathcheck

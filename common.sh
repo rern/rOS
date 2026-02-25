@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# on rpi: . <( curl -sL https://github.com/rern/rOS/raw/refs/heads/main/common.sh )
+# on rpi - create-ros.sh, image-reset.h: . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
 banner() {
 	local cols

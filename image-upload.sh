@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # image files: /root/rAudio-*.img.xz
-. common.sh
-
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 [[ ! $files_list ]] && errorExit No image files in $PWD
 #---------------------------------------------------------------
