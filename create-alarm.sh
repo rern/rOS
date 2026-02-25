@@ -1,20 +1,25 @@
 #!/bin/bash
 
-# download to: /root/ArchLinuxArm-*.tar.gz
+# default download to: /root
 trap exit INT
 
 . common.sh
 
+nopathcheck=$1
+alarm_rpi=ArchLinuxARM-rpi-
 #........................
-[[ ! $( ls ArchLinuxArm-*.tar.gz ) ]] && dialog $opt_yesno "
-No ArchLinuxArm-*.tar.gz in $PWD
+if [[ $nopathcheck ]]; then
+	files_alarm=$alarm_rpi*.tar.gz
+	[[ ! $( ls $files_alarm ) ]] && dialog $opt_yesno "
+No $files_alarm in \Z1$PWD\Zn
 
-Continue?
+Continue in $PWD?
 
 " 0 0 || exit
 #----------------------------------------------------------------------------
+fi
 #........................
-splash 'Write \Z1Arch Linux Arm\Zn'
+splash 'Write \Z1Arch Linux ARM\Zn'
 # required packages
 if [[ -e /usr/bin/pacman ]]; then
 	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar '
@@ -29,7 +34,6 @@ else
 	[[ ! -e /usr/bin/pv ]] && packages+='pv '
 	[[ $packages ]] && apt install -y $packages
 fi
-nopathcheck=$1
 if [[ $nopathcheck ]]; then
 	BOOT=/mnt/BOOT
 	ROOT=/mnt/ROOT
@@ -82,7 +86,7 @@ ROOT: \Z1$ROOT\Zn
 " 8 0 0 \
 1 '64bit  : 5, 4, 3, 2, Zero 2' \
 2 '32bit  : 2 (BCM2836)' )
-	file=ArchLinuxARM-rpi-
+	file=$alarm_rpi
 	if [[ $rpi == 1 ]]; then
 		file+=aarch64-
 		rpiname=64bit
