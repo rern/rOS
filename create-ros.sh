@@ -208,10 +208,7 @@ rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
 	  /root/create-ros.sh
 #........................
-splash "\
-\Z1r\ZnAudio created successfully.
+echo -e "$bar rAudio created successfully. ( $( date -d@$SECONDS -u +%M:%S ) )
 
-\Z1Reboot\Zn ...
-
-$( date -d@$SECONDS -u +%M:%S )"
-shutdown -r now
+Reboot ..."
+reboot
