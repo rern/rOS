@@ -1,10 +1,6 @@
 #!/bin/bash
 
-file_common=/usr/local/bin/common.sh
-[[ ! -e $file_common ]] && curl -sL https://github.com/rern/rOS/raw/refs/heads/main/common.sh -o $file_common
-
-. common.sh
-
+. <( curl -sL https://github.com/rern/rOS/raw/refs/heads/main/common.sh )
 #........................
 splash 'Image Utilities'
 #........................
