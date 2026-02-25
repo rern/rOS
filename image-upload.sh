@@ -65,8 +65,9 @@ dialog $opt_yesno "
 \Z1rpi-imager.json\Zn in branch \Z1$branch\Zn
 
 \Z1Image files\Zn uploaded successfully
-Please verify remote rAudio repo
 
-        \Z1Delete image files?\Zn
+Confirm:
+  - Release \Z1i$release\Zn appears on GitHub
+  - \Z1Delete image files\Zn
 
 " 0 0 && rm $files_img
