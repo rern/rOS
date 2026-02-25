@@ -176,7 +176,7 @@ else
 	rm /etc/spotifyd.conf /etc/systemd/system/spotifyd.service
 fi
 # ssh
-sed -i 's/\(PermitEmptyPasswords \).*/#\1no/' /etc/ssh/sshd_config # connect faster
+sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # connect faster
 echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 # user
 users=$( cut -d: -f1 /etc/passwd )
