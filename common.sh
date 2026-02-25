@@ -33,25 +33,26 @@ selected() {
 	grep -q -m1 "$1" <<< $select && return 0
 }
 splash() {
-	local h i l line pad H splash W w
+	local H h i line pad txt W w
 	H=9
 	W=58
 	h=$( wc -l <<< $1 )
 	pad=$(( ( H - h ) / 2 ))
-	for (( i=0; i < $pad; i++ )); do
-		splash+='\n'
+	for (( i=1; i < $pad; i++ )); do # i=1: after top border
+		txt+='\n'
 	done
 	while read -r line; do
-		l=$( sed 's/\\Z.//g' <<< $line )
-		w=$(( ( W - ${#line} ) / 2 ))
-		splash+="$( printf '%*s' $w )$line"
+		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
+		
+		w=$(( ( W - ${#line} ) / 2 - 2 )) # -2: l/r border
+		txt+="$( printf '%*s' $w )$line\n"
 	done <<< $1
 #........................
 	dialog $opt_info "
-$splash
-" $(( pad + h + pad + 1 )) $W
+$txt
+" $H $W
 	sleep 2
-	clear -x # needed: fix stdout not scroll
+	clear -x
 }
 
 bar='\e[44m  \e[0m'

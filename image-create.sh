@@ -126,4 +126,3 @@ Image file created:
 \Z1$file_img\Zn
 $size
 " 8 58
-

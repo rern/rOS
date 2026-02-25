@@ -208,12 +208,10 @@ rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
 	  /root/create-ros.sh
 #........................
-dialog $opt_info "
+splash "\
+\Z1r\ZnAudio created successfully.
 
-            \Z1r\ZnAudio created successfully.
+\Z1Reboot\Zn ...
 
-                       \Z1Reboot\Zn ...
-
-$( date -d@$SECONDS -u +%M:%S )
-" 9 58
+$( date -d@$SECONDS -u +%M:%S )"
 shutdown -r now
