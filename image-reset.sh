@@ -61,7 +61,6 @@ rm -rf /root/.config/chromium
 banner Check Filesystems ...
 fsck.fat -taw /dev/mmcblk0p1
 e2fsck -p /dev/mmcblk0p2
-#........................
 echo -e "
 $bar rAudio reset finished.
 

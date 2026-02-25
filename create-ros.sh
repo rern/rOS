@@ -207,7 +207,6 @@ touch /boot/expand
 rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
 	  /root/create-ros.sh
-#........................
 echo -e "
 $bar rAudio created successfully. ( $( date -d@$SECONDS -u +%M:%S ) )
 

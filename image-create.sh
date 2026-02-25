@@ -116,9 +116,8 @@ echo -e "$bar $file_img\n"
 threads=$(( $( nproc ) - 2 ))
 dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$file_img"
 size=$( xz -l --robot $file_img | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
-#........................
-dialog $opt_info "
-Image file created:
-\Z1$file_img\Zn
+echo -e "
+$bar Image file created:
+$file_img
 $size
-" 8 58
+"
