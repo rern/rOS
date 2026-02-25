@@ -502,6 +502,7 @@ EOF
   @ \Z1$assignedip\Zn
 " 9 50
 		sleep 3
+		clear -x
 		sshRpi $assignedip
 	else
 		scanIP
