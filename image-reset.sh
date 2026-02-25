@@ -62,14 +62,14 @@ banner Check disk ...
 fsck.fat -traw /dev/mmcblk0p1
 rm -f /boot/FSCK*
 #........................
-dialog $opt_info "
-                    \Z1r\ZnAudio reset finished.
+echo -e "
+$bar rAudio reset finished.
 
-                         \Z1Shutdown\Zn ...
+Shutdown ...
 
-       Before disconnecting power, observe \Z2\Zr  \ZR\Zn LED:
-         - Stop all services - Blips
-         - Shutdown - 10 steady flashes to completely off
-" 11 65
-shutdown -h now
+Before disconnecting power, observe \Z2\Zr  \ZR\Zn LED:
+	- Stop all services - Blips
+	- Shutdown - 10 steady flashes to completely off
+"
+poweroff
 exit
