@@ -51,7 +51,7 @@ splash() {
 	dialog $opt_info "
 $txt
 " $H $W
-	sleep 2
+	sleep 1
 	clear -x
 }
 
