@@ -106,10 +106,6 @@ Image filename:
 clear -x
 touch $BOOT/expand # auto expand root partition
 umount -l $BOOT $ROOT
-#........................
-banner Check filesystems ...
-fsck.fat -taw $partboot
-e2fsck -p $partroot
 partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $partroot | awk '{print $3}' )
 shrink 1
