@@ -193,7 +193,8 @@ $ping
 	esac
 }
 ipValid() {
-	[[ ${1%.*}. == $ip_sub && ${1/$ip_sub} =~ [0-9]+ ]] && return 0
+	[[ ${1%.*}. == $ip_sub ]] && ip_last=${1/$ip_sub}
+	[[ $ip_last == [0-9]* ]] && (( $ip_last > 0 && $ip_last < 255 )) && return 0
 
 	errorExit Invalid IP address
 #----------------------------------------------------------------------------
