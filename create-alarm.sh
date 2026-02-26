@@ -99,9 +99,7 @@ ROOT: \Z1$ROOT\Zn
 " 0 0
 	if [[ $? == 0 ]]; then
 #........................
-		ip_assigned=$( dialog $opt_input "
- \Z1Pre-assigned\Zn IP:
-" 0 0 $ip_base )
+		ip_assigned=$( dialogIP 'Pre-assigned IP' )
 		[[ $rpi == 1 ]] && sboot=30 || sboot=40
 		ip_confirm="
 Assigned IP  : $ip_assigned"
@@ -162,19 +160,13 @@ foundIP() {
 	case $ans in
 		1 )
 #........................
-			ip_rpi=$( dialog $opt_input "
-\Z1Raspberry Pi IP:\Zn
-
-" 0 0 $ip_base )
-			ipValid $ip_rpi && sshRpi $ip_rpi
-			fi
+			ip_rpi=$( dialogIP 'Raspberry Pi IP' ) 
+			sshRpi $ip_rpi
 			;;
 		2 )
 #........................
-			ip_ping=$( dialog $opt_input "
- Ping Z1Raspberry Pi at IP:
-" 0 0 $ip_base )
-			ipValid $ip_ping && pingIP 5 $ip_ping
+			ip_ping=$( dialogIP 'Ping Raspberry Pi at IP' )
+			pingIP 5 $ip_ping
 #........................
 			dialog $opt_msg "
 $ping
@@ -185,12 +177,20 @@ $ping
 #----------------------------------------------------------------------------
 	esac
 }
-ipValid() {
-	[[ ${1%.*}. == $ip_base ]] && ip_oct4=${1/$ip_base}
-	[[ $ip_oct4 && $ip_oct4 == [0-9]* ]] && (( $ip_oct4 > 0 && $ip_oct4 < 255 )) && return 0
+dialogIP() {
+	ip=$( dialog $opt_input "
+\Z1$1:\Zn
 
-	errorExit Invalid IP address
-#----------------------------------------------------------------------------
+" 0 0 $ip_base )
+	[[ ${ip%.*}. == $ip_base ]] && ip_oct4=${ip/$ip_base}
+	if [[ $ip_oct4 && $ip_oct4 == [0-9]* ]] && (( $ip_oct4 > 0 && $ip_oct4 < 255 )); then
+		echo $ip
+	else
+		dialog $opt_msg "
+Invalid IP: \Z1$ip\Zn
+
+" 0 0 && dialogIP "$1"
+	fi
 }
 partUUID() {
 	blkid | sed -n '/LABEL="'$1'"/ {s/.* //; s/"//g; p}'
