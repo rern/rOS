@@ -58,7 +58,7 @@ $txt
 bar='\e[44m  \e[0m'
 option='--colors --no-shadow --no-collapse --backtitle rAudio'
 opt_outfd="$option --output-fd 1 --nocancel"
-opt_check="$opt_outfd  --no-items --separate-output --checklist" # no leading N, multiline output
+opt_check="$opt_outfd --no-items --separate-output --checklist" # no leading N, multiline output
 opt_guage="$option --guage"
  opt_info="$option --infobox"
 opt_input="$opt_outfd --inputbox"
