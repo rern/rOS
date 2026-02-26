@@ -56,18 +56,17 @@ banner U p l o a d
 echo -e "$bar *.img.xz"
 files_img=$( sed "s|^|$PWD/|" <<< $files_img )
 cd $dir_raudio
-echo "$json" > rpi-imager.json
-branch=$( git branch --show-current )
 gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
 [[ $? != 0 ]] && errorExit Upload failed.
 #---------------------------------------------------------------
-dialog $opt_yesno "
-\Z1rpi-imager.json\Zn in branch \Z1$branch\Zn
-
-\Z1Image files\Zn uploaded successfully
-
-Confirm:
-  - Release \Z1i$release\Zn appears on GitHub
-  - \Z1Delete image files\Zn
-
-" 0 0 && rm $files_img
+if [[ $( git branch --show-current ) != main ]]; then
+	git diff-index --quiet HEAD && git commit -m U
+	git switch main
+fi
+echo "$json" > rpi-imager.json
+git add rpi-imager.json
+git commit -m u
+git push
+echo -e "
+$bar Images uploaded successfully.
+"
