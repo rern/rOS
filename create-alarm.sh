@@ -21,18 +21,11 @@ fi
 #........................
 splash 'Write \Z1Arch Linux ARM\Zn'
 # required packages
-if [[ -e /usr/bin/pacman ]]; then
-	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar '
-	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
-	[[ ! -e /usr/bin/nmap ]] && packages+='nmap '
-	[[ ! -e /usr/bin/pv ]] && packages+='pv '
-	[[ $packages ]] && pacman -Sy --noconfirm $packages
-else
-	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar libarchive-tools '
-	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
-	[[ ! -e /usr/bin/nmap ]] && packages+='nmap '
-	[[ ! -e /usr/bin/pv ]] && packages+='pv '
-	[[ $packages ]] && apt install -y $packages
+for cmd in bsdtar dialog nmap pv;do
+	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
+done
+if [[ $packages ]]; then
+	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
 if [[ $nopathcheck ]]; then
 	BOOT=/mnt/BOOT
@@ -98,7 +91,7 @@ ROOT: \Z1$ROOT\Zn
 	fi
 	file+=latest.tar.gz
 	ip_router=$( ip r get 1 | head -1 | cut -d' ' -f3 )
-	ip_sub=${ip_router%.*}.
+	ip_oct123=${ip_router%.*}.
 #........................
 	dialog $opt_yesno "
  RPi with \Z1pre-assigned\Zn IP?
@@ -108,7 +101,7 @@ ROOT: \Z1$ROOT\Zn
 #........................
 		ip_assigned=$( dialog $opt_input "
  \Z1Pre-assigned\Zn IP:
-" 0 0 $ip_sub )
+" 0 0 $ip_oct123 )
 		[[ $rpi == 1 ]] && sboot=30 || sboot=40
 		ip_confirm="
 Assigned IP  : $ip_assigned"
@@ -172,7 +165,7 @@ foundIP() {
 			ip_rpi=$( dialog $opt_input "
 \Z1Raspberry Pi IP:\Zn
 
-" 0 0 $ip_sub )
+" 0 0 $ip_oct123 )
 			ipValid $ip_rpi && sshRpi $ip_rpi
 			fi
 			;;
@@ -180,7 +173,7 @@ foundIP() {
 #........................
 			ip_ping=$( dialog $opt_input "
  Ping Z1Raspberry Pi at IP:
-" 0 0 $ip_sub )
+" 0 0 $ip_oct123 )
 			ipValid $ip_ping && pingIP 5 $ip_ping
 #........................
 			dialog $opt_msg "
@@ -193,8 +186,8 @@ $ping
 	esac
 }
 ipValid() {
-	[[ ${1%.*}. == $ip_sub ]] && ip_last=${1/$ip_sub}
-	[[ $ip_last == [0-9]* ]] && (( $ip_last > 0 && $ip_last < 255 )) && return 0
+	[[ ${1%.*}. == $ip_oct123 ]] && ip_oct4=${1/$ip_oct123}
+	[[ $ip_oct4 == [0-9]* ]] && (( $ip_oct4 > 0 && $ip_oct4 < 255 )) && return 0
 
 	errorExit Invalid IP address
 #----------------------------------------------------------------------------
@@ -217,7 +210,7 @@ scanIP() {
 	dialog $opt_info "
   Scan hosts in network ...
 " 5 50
-	lines=$( nmap -sn $ip_sub* \
+	lines=$( nmap -sn $ip_oct123* \
 				| grep '^Nmap scan\|^MAC' \
 				| paste -sd ' \n' \
 				| grep 'MAC Address' \
