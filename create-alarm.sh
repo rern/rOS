@@ -512,7 +512,7 @@ else
 fi
 # connect RPi
 #........................
-rpiip=$( dialog $opt_outfd --cancel-label Rescan --inputbox "
+rpiip=$( dialog $option --output-fd 1 --cancel-label Rescan --inputbox "
 \Z1Raspberry Pi IP:\Zn
 
 " 0 0 $subip )
