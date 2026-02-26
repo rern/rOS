@@ -11,7 +11,7 @@ banner() {
 }
 errorExit() {
 	banner E r r o r
-	echo -e "\n\e[41m ! \e[0m $@\n"
+	echo -e "\e[41m ! \e[0m $@\n"
 	exit
 }
 dialogDevice() { # $1=sdx; $2=confirm text

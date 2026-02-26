@@ -29,13 +29,36 @@ done
 if [[ $packages ]]; then
 	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
+blk=$( lsblk -npo name,size,label | sed -n '/^..\// {s/^..//; s/\s*$//; p}' )
+while read l; do dev_lbl+=( "$l" off ); done <<< $blk
+selectPartition() {
+	local boot_root
+	boot_root=$( dialog $opt_check '
+Select \Z1BOOT\Zn and \Z1ROOT\Zn partitions:
+([space] = select)
+' $(( ${#dev_lbl[@]} / 2 + 2 )) 40 0 "${dev_lbl[@]}" | sed 's/ .*//' )
+	if (( $( wc -l <<< $boot_root ) != 2 )); then
+		dialog $opt_msg '
+Selected partitions not 2:
+\Z1$boot_root\Zn
+
+Please select again.
+' 0 0
+		selectPartition
+	else
+		echo $boot_root
+	fi
+}
+partitions=$( selectPartition )
+part_B=${partitions/ *}
+part_R=${partitions/* }
 if ! mount | grep -q '/dev.*BOOT '; then
 	mkdir -p BOOT ROOT
-	mount $partB $PWD/BOOT
-	mount $partR $PWD/ROOT
+	mount $part_B $PWD/BOOT
+	mount $part_R $PWD/ROOT
 fi
-BOOT=( $( mount | awk '/dev.*BOOT / {print $1" "$3" "$5}' ) ) # source mountpoint fstype
-ROOT=( $( mount | awk '/dev.*ROOT / {print $1" "$3" "$5}' ) )
+BOOT=( $( mount | awk '/^'$part_B'/ {print $1" "$3" "$5}' ) ) # source mountpoint fstype
+ROOT=( $( mount | awk '/^'$part_R'/ {print $1" "$3" "$5}' ) )
 # check empty to prevent wrong partitions
 [[ $( ls ${BOOT[1]} ) ]] && error+="${BOOT[0]} not empty\n"
 [[ $( ls ${ROOT[1]} | grep -v lost+found ) ]] && error+="${ROOT[0]} not empty\n"
@@ -50,10 +73,9 @@ getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=auto
 #----------------------------------------------------------------------------
 #........................
 		dialog $opt_yesno "
-Confirm \Z1SD card\Zn path:
+Confirm \Z1SD card\Zn:
 
-BOOT: \Z1$BOOT\Zn
-ROOT: \Z1$ROOT\Zn
+$( df -h --output=source,fstype,size,target /dev/sde1 /dev/sde2 )
 
 " 0 0 || exit
 #----------------------------------------------------------------------------
