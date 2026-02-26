@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# image files: /root/rAudio-*.img.xz
+# default images path: /root/rAudio-*.img.xz
+imager_json=rpi-imager.json
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 [[ ! $files_list ]] && errorExit No image files in $PWD
 #---------------------------------------------------------------
-splash 'Upload Image File'
+splash 'Upload Image Files'
 dir_raudio=/mnt/BIG/RPi/Git/rAudio
 #........................
 files_img=$( dialog $opt_check '
@@ -21,7 +22,7 @@ release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
 json=$( sed -E -e "s|i[0-9]*/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
 " -e 's/(release_date": ").*/\1'$date_rel'",/
-' $dir_raudio/rpi-imager.json )
+' $dir_raudio/$imager_json )
 models=$( jq -r .os_list[].name <<< $json | cut -d' ' -f2 )
 i=0
 notes='
@@ -59,14 +60,16 @@ cd $dir_raudio
 gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
 [[ $? != 0 ]] && errorExit Upload failed.
 #---------------------------------------------------------------
-if [[ $( git branch --show-current ) != main ]]; then
+branch=$( git branch --show-current )
+if [[ $branch != main ]]; then
 	git diff-index --quiet HEAD && git commit -m U
 	git switch main
 fi
-echo "$json" > rpi-imager.json
-git add rpi-imager.json
+echo "$json" > $imager_json
+git add $imager_json
 git commit -m u
 git push
+[[ $branch != UPDATE ]] && git switch UPDATE
 echo -e "
-$bar Images uploaded successfully.
+$bar Image files uploaded successfully.
 "

@@ -2,10 +2,6 @@
 
 # write to: /root/rAudio-*.img.xz
 trap exit INT
-
-BOOT=/mnt/BOOT
-ROOT=/mnt/ROOT
-
 deviceLine() {
 	dmesg \
 		| tail \
@@ -45,6 +41,10 @@ quit
 EOF
 	fi
 }
+unMount() {
+	umount -l $BOOT $ROOT
+	rmdir $BOOT $ROOT
+}
 
 # required packages
 if [[ -e /usr/bin/pacman ]]; then
@@ -82,11 +82,13 @@ else
 fi
 #........................
 dialogDevice $name 'rAudio to image'
-mkdir -p /mnt/{BOOT,ROOT}
+mkdir -p BOOT ROOT
+BOOT=$PWD/BOOT
+ROOT=$PWD/ROOT
 mount $partboot $BOOT
 mount $partroot $ROOT
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
-[[ ! $release ]] && umount -l $BOOT $ROOT && errorExit SD card $dev is not rAudio.
+[[ ! $release ]] && unMount && errorExit SD card $dev is not rAudio.
 #---------------------------------------------------------------
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
@@ -101,7 +103,7 @@ Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 clear -x
 touch $BOOT/expand # auto expand root partition
-umount -l $BOOT $ROOT
+unMount
 partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $partroot | awk '{print $3}' )
 shrink 1
