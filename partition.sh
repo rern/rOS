@@ -58,7 +58,4 @@ fsck.fat -taw $partB
 e2fsck -p $partR
 fatlabel $partB BOOT
 e2label $partR ROOT
-mkdir -p /mnt/{BOOT,ROOT}
-mount $partB /mnt/BOOT
-mount $partR /mnt/ROOT
-. <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh ) nopathcheck
+. <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )

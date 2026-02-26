@@ -29,28 +29,21 @@ done
 if [[ $packages ]]; then
 	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
-if [[ $partition_sh ]]; then
-	BOOT=/mnt/BOOT
-	ROOT=/mnt/ROOT
-else
-	BOOT=( $( mount | awk '/dev.*BOOT / {print $1" "$3" "$5}' ) ) # source mountpoint fstype
-	ROOT=( $( mount | awk '/dev.*ROOT / {print $1" "$3" "$5}' ) )
-	boot='\e[36BOOT\e[0m'
-	root='\e[36ROOT\e[0m'
-	# check mounts
-	[[ ! $BOOT ]] && error+="$boot not mounted or found\n"
-	[[ ! $ROOT ]] && error+="$root not mounted or found\n"
-	if [[ ! $error  ]]; then
-		# check empty to prevent wrong partitions
-		[[ $( ls ${BOOT[1]} ) ]] && error+="$boot not empty\n"
-		[[ $( ls ${ROOT[1]} ) ]] && error+="$root not empty\n"
-		# check fstype
-		[[ ${BOOT[2]} != vfat ]] && error+="$boot not fat32\n"
-		[[ ${ROOT[2]} != ext4 ]] && error+="$root not ext4\n"
-	fi
-	[[ $error ]] && errorExit "Parttition:\n$error"
-#----------------------------------------------------------------------------
+if ! mount | grep -q '/dev.*BOOT '; then
+	mkdir -p BOOT ROOT
+	mount $partB $PWD/BOOT
+	mount $partR $PWD/ROOT
 fi
+BOOT=( $( mount | awk '/dev.*BOOT / {print $1" "$3" "$5}' ) ) # source mountpoint fstype
+ROOT=( $( mount | awk '/dev.*ROOT / {print $1" "$3" "$5}' ) )
+# check empty to prevent wrong partitions
+[[ $( ls ${BOOT[1]} ) ]] && error+="${BOOT[0]} not empty\n"
+[[ $( ls ${ROOT[1]} | grep -v lost+found ) ]] && error+="${ROOT[0]} not empty\n"
+# check fstype
+[[ ${BOOT[2]} != vfat ]] && error+="${BOOT[0]} not fat32\n"
+[[ ${ROOT[2]} != ext4 ]] && error+="${ROOT[0]} not ext4\n"
+[[ $error ]] && errorExit "Parttition:\n$error"
+#----------------------------------------------------------------------------
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
 	if [[ ! $partition_sh ]]; then # not from partition.sh

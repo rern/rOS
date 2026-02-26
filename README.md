@@ -9,8 +9,8 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- 32bit:
 		- `2 (BCM2836)`
 	- Legacy:
-		- `1` and `Zero` : Arch Linux Arm [ended ARMv6 CPU support](https://archlinuxarm.org/forum/viewtopic.php?f=3&t=15721). Use pre-built [image file](https://github.com/rern/rAudio-1#image-files) instead.
-- Create **rAudio** from latest releases of [**Arch Linux Arm**](https://archlinuxarm.org/about/downloads)
+		- `1` and `Zero` : Arch LinuxARM [ended ARMv6 CPU support](https://archlinuxarm.org/forum/viewtopic.php?f=3&t=15721). Use pre-built [image file](https://github.com/rern/rAudio-1#image-files) instead.
+- Create **rAudio** from latest releases of [**Arch Linux ARM**](https://archlinuxarm.org/about/downloads)
 - Interactive interface
 - Options:
 	- Run `ROOT` partition on USB drive
@@ -22,13 +22,13 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 **Procedure**
 - [Prepare partitions](#prepare-partitions)
 	- Create `BOOT` and `ROOT`
-- [Create Arch Linux Arm + rAudio](#create-arch-linux-arm--raudio)
+- [Create Arch Linux ARM + rAudio](#create-arch-linux-arm--raudio)
 	- Use wired LAN connection if possible
 		- Use router assigned IP address if possible
 			- Router may take some time to broadcast hostname of DHCP Raspberry Pi
 		- Optional - Pre-configure Wi-Fi connection
 	- Select features
-	- Download Arch Linux Arm
+	- Download Arch Linux ARM
 	- Write `BOOT` and `ROOT`
 	- SSH connect PC to Raspberry Pi
 	- Upgrade kernel and default packages
@@ -43,7 +43,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- For those who know how to read and confirm syntax of SD card partitions.
 	- For Alternative 1: Micro SD card only
 	```sh
-	bash <( wget -qO - https://github.com/rern/rOS/raw/main/partition.sh )
+	bash <( curl -sL https://github.com/rern/rOS/raw/main/partition.sh )
 	```
 	- If the SD card was not recognized, use GParted to wipe all partitions.
 
@@ -124,21 +124,15 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 
 ---
 	
-### Create Arch Linux Arm + rAudio
-- Open **Files** app (**File Manager** on Manjaro)
-- Click `BOOT` and `ROOT` to mount
-- Note each path in location bar or hover mouse over `BOOT` and `ROOT` for confirmation
-- Switch user to root
+### Create Arch Linux ARM + rAudio
+- Run write Arch Linux ARM script
 ```sh
 su
-```
-- Create script
-```sh
-bash <( wget -qO - https://github.com/rern/rOS/raw/main/create-alarm.sh )
+bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
 ```
 - RPi 2 and 3 get the same `ArchLinuxARM-rpi-2-latest.tar.gz` 
-- Errors or too slow download: press `Ctrl+C` and run `./create-alarm.sh` again (while in `Create Arch Linux Arm` mode only)
-- If there're other applications running and "Create Arch Linux Arm" progress was stalled, open another terminal and run `sync` command.
+- Errors or too slow download: press `Ctrl+C` and run `./create-alarm.sh` again (while in `Create Arch Linux ARM` mode only)
+- If there're other applications running and "Create Arch Linux ARM" progress was stalled, open another terminal and run `sync` command.
 
 ---
 
@@ -167,13 +161,13 @@ bash <( wget -qO - https://github.com/rern/rOS/raw/main/create-alarm.sh )
 - Reset for image
 ```sh
 ssh root@<RPI IP>
-bash <( wget -qO - https://github.com/rern/rOS/raw/main/reset.sh )
+bash <( curl -sL https://github.com/rern/rOS/raw/main/reset.sh )
 ```
 - Shutdown
 - Move micro SD card to Linux
 - Create compressed image file
 ```sh
-bash <( wget -qO - https://github.com/rern/rOS/raw/main/image-create.sh )
+bash <( curl -sL https://github.com/rern/rOS/raw/main/image-create.sh )
 ```
 
 **LED flashes - errors**  
