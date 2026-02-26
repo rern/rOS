@@ -97,8 +97,8 @@ ROOT: \Z1$ROOT\Zn
 		sboot=60
 	fi
 	file+=latest.tar.gz
-	routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
-	subip=${routerip%.*}.
+	ip_router=$( ip r get 1 | head -1 | cut -d' ' -f3 )
+	ip_sub=${ip_router%.*}.
 #........................
 	dialog $opt_yesno "
  RPi with \Z1pre-assigned\Zn IP?
@@ -106,12 +106,12 @@ ROOT: \Z1$ROOT\Zn
 " 0 0
 	if [[ $? == 0 ]]; then
 #........................
-		assignedip=$( dialog $opt_input "
+		ip_assigned=$( dialog $opt_input "
  \Z1Pre-assigned\Zn IP:
-" 0 0 $subip )
+" 0 0 $ip_sub )
 		[[ $rpi == 1 ]] && sboot=30 || sboot=40
-		confirmassignedip="
-Assigned IP  : $assignedip"
+		ip_confirm="
+Assigned IP  : $ip_assigned"
 	fi
 #........................
 	dialog $opt_yesno "
@@ -154,45 +154,49 @@ Raspberry Pi : \Z1$rpiname\Zn
 BOOT path    : \Z1$BOOT\Zn
 ROOT path    : \Z1$ROOT\Zn
 $confirmwifi
-$confirmassignedip
+$ip_confirm
 " 0 0
 	[[ $? == 1 ]] && getData
 }
-getData
 foundIP() {
 #........................
 	ans=$( dialog $opt_menu "
-\Z1Found IP address of RPi?\Zn
+\Z1Found IP address of Raspberry Pi?\Zn
 " 8 30 0 \
 1 'Yes' \
-2 'Rescan' \
-3 'Ping assigned IP' \
-4 'No' )
+2 'Ping IP' \
+3 'No' )
 	case $ans in
 		1 )
 #........................
-			rpiip=$( dialog $opt_input "
- RPi IP:
-" 0 0 $subip )
-			sshRpi $rpiip
-#----------------------------------------------------------------------------
+			ip_rpi=$( dialog $opt_input "
+\Z1Raspberry Pi IP:\Zn
+
+" 0 0 $ip_sub )
+			ipValid $ip_rpi && sshRpi $ip_rpi
+			fi
 			;;
-		2 ) scanIP;;
-		3 )
+		2 )
 #........................
-			ipping=$( dialog $opt_input "
- Ping RPi at IP:
-" 0 0 $subip )
-			pingIP 5 $ipping
+			ip_ping=$( dialog $opt_input "
+ Ping Z1Raspberry Pi at IP:
+" 0 0 $ip_sub )
+			ipValid $ip_ping && pingIP 5 $ip_ping
 #........................
 			dialog $opt_msg "
 $ping
 " 15 90
 			foundIP
 			;;
-		4 ) errorExit 'RPi IP cannot be found.\nTry starting over again.';;
+		3 ) errorExit Try starting over again;;
 #----------------------------------------------------------------------------
 	esac
+}
+ipValid() {
+	[[ ${1%.*}. == $ip_sub && ${1/$ip_sub} =~ [0-9]+ ]] && return 0
+
+	errorExit Invalid IP address
+#----------------------------------------------------------------------------
 }
 partUUID() {
 	blkid | sed -n '/LABEL="'$1'"/ {s/.* //; s/"//g; p}'
@@ -211,24 +215,21 @@ scanIP() {
 #........................
 	dialog $opt_info "
   Scan hosts in network ...
-  
 " 5 50
-	lines=$( nmap -sn $subip* \
+	lines=$( nmap -sn $ip_sub* \
 				| grep '^Nmap scan\|^MAC' \
 				| paste -sd ' \n' \
 				| grep 'MAC Address' \
 				| sed -e 's/Nmap.*for \|MAC Address//g' -e '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Zn/}' \
 				| tac )
 #........................
-	dialog $opt_msg "
+	dialog $option --output-fd 1 --cancel-label Rescan --inputbox "
 \Z1Note IP address of Raspberry Pi:\Zn
 (If Raspberri Pi not listed, ping may find it.)
 \Z4[arrowdown] = scrolldown\Zn
 
 $lines
-
-" 25 80
-	foundIP
+" 25 80 && foundIP || scanIP
 }
 sshRpi() {
 	ip=$1
@@ -240,7 +241,6 @@ sshRpi() {
 	done
 	scanIP
 }
-# features
  bluealsa='BlueALSA   - Bluetooth audio'
   camilla='CamillaDSP - Digital signal processor'
   browser='Firefox    - Browser on RPi screen'
@@ -250,7 +250,6 @@ shairport='Shairport  - AirPlay renderer'
  snapcast='Snapcast   - Synchronous multiroom player'
   spotify='Spotifyd   - Spotify renderer'
  upmpdcli='upmpdcli   - UPnP renderer'
-
 selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
 #........................
 	select=$( dialog $opt_check '
@@ -276,6 +275,7 @@ selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=auto
 	selected upmpdcli  && list+="$upmpdcli"$'\n'  && features+='upmpdcli python-upnpp '
 }
 
+getData
 selectFeatures
 [[ ! $list ]] && list=(none)
 #........................
@@ -482,38 +482,31 @@ done ) \
   \Z1Arch Linux Arm\Zn
 " 9 50
 
-if [[ $assignedip ]]; then
+if [[ $ip_assigned ]]; then
 #........................
 	( for i in {1..10}; do
 		cat <<EOF
 XXX
 $(( i * 10 ))
-\n  Ping \Z1$assignedip\Zn ...
+\n  Ping \Z1$ip_assigned\Zn ...
 \n  #$i
 XXX
 EOF
-		ping -4 -c 1 -w 1 $assignedip &> /dev/null && break
+		ping -4 -c 1 -w 1 $ip_assigned &> /dev/null && break
 		sleep 3
 	done ) \
 		| dialog $opt_guage '' 9 50
-	if ping -4 -c 1 -w 1 $assignedip &> /dev/null; then
+	if ping -4 -c 1 -w 1 $ip_assigned &> /dev/null; then
 		dialog $opt_info "
   SSH Arch Linux Arm ...
-  @ \Z1$assignedip\Zn
+  @ \Z1$ip_assigned\Zn
 " 9 50
 		sleep 3
 		clear -x
-		sshRpi $assignedip
+		sshRpi $ip_assigned
 	else
 		scanIP
 	fi
 else
 	scanIP
 fi
-# connect RPi
-#........................
-rpiip=$( dialog $option --output-fd 1 --cancel-label Rescan --inputbox "
-\Z1Raspberry Pi IP:\Zn
-
-" 0 0 $subip )
-[[ $? == 1 || ${rpiip: -1} == . ]] && scanIP || sshRpi $rpiip
