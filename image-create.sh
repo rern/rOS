@@ -41,7 +41,11 @@ quit
 EOF
 	fi
 }
-unMount() {
+boot_rootMount() {
+	mount ${1}1 $BOOT
+	mount ${1}2 $ROOT
+}
+boot_rootUnmount() {
 	umount -l $BOOT $ROOT
 	rmdir $BOOT $ROOT
 }
@@ -69,26 +73,20 @@ devline=$( deviceLine )
 [[ ! $devline ]] && sleep 2 && devline=$( deviceLine )
 [[ ! $devline ]] && errorExit No SD card found
 #---------------------------------------------------------------
-if [[ $devline == *\[sd?\]* ]]; then
-	name=$( sed -E 's|.*\[(.*)\].*|\1|' <<< $devline )
-	dev=/dev/$name
-	partboot=${dev}1
-	partroot=${dev}2
-else
-	name=$( sed -E 's/.*] (.*): .*/\1/' <<< $devline )
-	dev=/dev/$name
-	partboot=${dev}p1
-	partroot=${dev}p2
-fi
-#........................
-dialogDevice $name 'rAudio to image'
-mkdir -p BOOT ROOT
 BOOT=$PWD/BOOT
 ROOT=$PWD/ROOT
-mount $partboot $BOOT
-mount $partroot $ROOT
+mkdir -p BOOT ROOT
+if [[ $devline == *\[sd?\]* ]]; then
+	name=$( sed -E 's|.*\[(.*)\].*|\1|' <<< $devline )
+else
+	name=$( sed -E 's/.*] (.*): .*/\1/' <<< $devline )
+fi
+dev=/dev/$name
+boot_rootMount $dev
+#........................
+dialogDevice $name 'rAudio to image'
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
-[[ ! $release ]] && unMount && errorExit SD card $dev is not rAudio.
+[[ ! $release ]] && boot_rootUnmount && errorExit SD card $dev is not rAudio.
 #---------------------------------------------------------------
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
@@ -103,7 +101,7 @@ Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 clear -x
 touch $BOOT/expand # auto expand root partition
-unMount
+boot_rootUnmount
 partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $partroot | awk '{print $3}' )
 shrink 1
