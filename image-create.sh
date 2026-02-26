@@ -6,8 +6,6 @@ trap exit INT
 BOOT=/mnt/BOOT
 ROOT=/mnt/ROOT
 
-. common.sh
-
 deviceLine() {
 	dmesg \
 		| tail \

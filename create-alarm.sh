@@ -3,6 +3,8 @@
 # default download to: /root
 trap exit INT
 
+[[ ! $bar ]] && . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
+
 nopathcheck=$1
 alarm_rpi=ArchLinuxARM-rpi-
 #........................
