@@ -91,7 +91,7 @@ ROOT: \Z1$ROOT\Zn
 	fi
 	file+=latest.tar.gz
 	ip_router=$( ip r get 1 | head -1 | cut -d' ' -f3 )
-	ip_oct123=${ip_router%.*}.
+	ip_base=${ip_router%.*}.
 #........................
 	dialog $opt_yesno "
  RPi with \Z1pre-assigned\Zn IP?
@@ -101,7 +101,7 @@ ROOT: \Z1$ROOT\Zn
 #........................
 		ip_assigned=$( dialog $opt_input "
  \Z1Pre-assigned\Zn IP:
-" 0 0 $ip_oct123 )
+" 0 0 $ip_base )
 		[[ $rpi == 1 ]] && sboot=30 || sboot=40
 		ip_confirm="
 Assigned IP  : $ip_assigned"
@@ -165,7 +165,7 @@ foundIP() {
 			ip_rpi=$( dialog $opt_input "
 \Z1Raspberry Pi IP:\Zn
 
-" 0 0 $ip_oct123 )
+" 0 0 $ip_base )
 			ipValid $ip_rpi && sshRpi $ip_rpi
 			fi
 			;;
@@ -173,7 +173,7 @@ foundIP() {
 #........................
 			ip_ping=$( dialog $opt_input "
  Ping Z1Raspberry Pi at IP:
-" 0 0 $ip_oct123 )
+" 0 0 $ip_base )
 			ipValid $ip_ping && pingIP 5 $ip_ping
 #........................
 			dialog $opt_msg "
@@ -186,8 +186,8 @@ $ping
 	esac
 }
 ipValid() {
-	[[ ${1%.*}. == $ip_oct123 ]] && ip_oct4=${1/$ip_oct123}
-	[[ $ip_oct4 == [0-9]* ]] && (( $ip_oct4 > 0 && $ip_oct4 < 255 )) && return 0
+	[[ ${1%.*}. == $ip_base ]] && ip_oct4=${1/$ip_base}
+	[[ $ip_oct4 && $ip_oct4 == [0-9]* ]] && (( $ip_oct4 > 0 && $ip_oct4 < 255 )) && return 0
 
 	errorExit Invalid IP address
 #----------------------------------------------------------------------------
@@ -210,7 +210,7 @@ scanIP() {
 	dialog $opt_info "
   Scan hosts in network ...
 " 5 50
-	lines=$( nmap -sn $ip_oct123* \
+	lines=$( nmap -sn $ip_base* \
 				| grep '^Nmap scan\|^MAC' \
 				| paste -sd ' \n' \
 				| grep 'MAC Address' \
