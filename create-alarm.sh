@@ -3,12 +3,14 @@
 # default download to: /root
 trap exit INT
 
-[[ ! $bar ]] && . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
-
-nopathcheck=$1
+if [[ $bar ]] ; then
+	partition_sh=$1
+else
+	. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
+fi
 alarm_rpi=ArchLinuxARM-rpi-
 #........................
-if [[ $nopathcheck ]]; then
+if [[ $partition_sh ]]; then
 	files_alarm=$alarm_rpi*.tar.gz
 	[[ ! $( ls $files_alarm ) ]] && dialog $opt_yesno "
 No $files_alarm in \Z1$PWD\Zn
@@ -27,7 +29,7 @@ done
 if [[ $packages ]]; then
 	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
-if [[ $nopathcheck ]]; then
+if [[ $partition_sh ]]; then
 	BOOT=/mnt/BOOT
 	ROOT=/mnt/ROOT
 else
@@ -51,7 +53,7 @@ else
 fi
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
-	if [[ ! $nopathcheck ]]; then # not from partition.sh
+	if [[ ! $partition_sh ]]; then # not from partition.sh
 #----------------------------------------------------------------------------
 #........................
 		dialog $opt_yesno "

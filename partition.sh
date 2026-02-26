@@ -38,7 +38,7 @@ else
 	partR=${dev}p2
 fi
 #........................
-dialogDevice $name 'Delete » Partition'
+dialogDevice $name 'Wipe »» New partitions on:'
 clear -x
 umount $partB $partR 2> /dev/null
 wipefs -a $dev
