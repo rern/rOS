@@ -31,7 +31,7 @@ if [[ $packages ]]; then
 fi
 if [[ ! $part_B ]]; then
 #........................
-	partitions=( $( dialogSDcard partition ) )
+	dialogSDcard # set var: partitions=( /dev/sdX1 /dev/sdX2 )
 	part_B=${partitions[0]}
 	part_R=${partitions[1]}
 fi

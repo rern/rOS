@@ -42,7 +42,7 @@ $txt
 	clear -x
 }
 dialogSDcard() { # $1=confirm text
-	local dev devline error H l list list_BR list_check list_colored selected sL text
+	local devline error H l list list_BR list_check list_colored selected sL text
 #........................
 	dialog $opt_msg "
 \Z1Insert USB reader and/or SD card\Zn
@@ -64,18 +64,18 @@ Remove and reinsert again for proper detection.
 	list_colored=$( sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
 					' -e "/^.dev.$dev/ {s/^/\\\Z1/; s/$/\\\Zn/}
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $list )
-	if [[ $1 ]]; then # partition
+	if [[ $1 ]]; then # for $dev
+		text='SD card'
+		list_check+=( "$( grep ^/dev/$dev <<< $list )" off )
+	else
 		text='BOOT\Zn and \Z1ROOT'
 		list_BR=$( grep -E ' BOOT | ROOT ' <<< $list | sed -n '/^..\// {s/^..//; s/\s*$//; p}' )
 		while read l; do
 			list_check+=( "$l" off )
 		done <<< $list_BR
-	else
-		text='SD card'
-		list_check+=( "$( grep ^/dev/$dev <<< $list )" off )
 	fi
 	H=$(( $( wc -l <<< $list_colored ) + ${#list_check[@]} + 5 ))
-	[[ ! $1 ]] && (( H++ ))
+	[[ $1 ]] && (( H++ ))
 #........................
 	selected=$( dialog $opt_check "
 $list_colored
@@ -87,25 +87,21 @@ Select/Click \Z1$text\Zn to comfirm:
 		error=None
 	else
 		if [[ $1 ]]; then
+			(( $sL > 1 )) && error='More than 1' || dev=$selected
+		else
 			case $sL in
 				1 ) error='Only 1';;
-				2 ) ;;
+				2 ) partitions=( $selected );;
 				* ) error='More than 2';;
 			esac
-		else
-			(( $sL > 1 )) && error='More than 1'
 		fi
 	fi
-	if [[ $error ]]; then
 #........................
-		dialog $opt_msg "
+	[[ $error ]] && dialog $opt_msg "
 \Z1Select $text error\Zn
 
 $error selected: $selected
 " 0 0 && dialogSDcard $1
-	else
-		echo $selected
-	fi
 }
 dmesgSDcard() {
 	dmesg \
