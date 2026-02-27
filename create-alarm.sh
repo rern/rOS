@@ -36,8 +36,8 @@ if [[ ! $part_B ]]; then
 	part_R=${partitions[1]}
 fi
 ! mount | grep -q '/dev.*BOOT ' && boot_rootMount $partitions
-src_mp_fsB=( $( mount | awk '/^'$part_B'/ {print $1" "$3" "$5}' ) ) # source mountpoint fstype
-src_mp_fsR=( $( mount | awk '/^'$part_R'/ {print $1" "$3" "$5}' ) )
+src_mp_fsB=( $( mount | awk '/^'${part_B//\//\\/}'/ {print $1" "$3" "$5}' ) ) # source mountpoint fstype
+src_mp_fsR=( $( mount | awk '/^'${part_R//\//\\/}'/ {print $1" "$3" "$5}' ) )
 # check empty to prevent wrong partitions
 [[ $( ls ${src_mp_fsB[1]} ) ]] && error+="${src_mp_fsB[0]} not empty\n"
 [[ $( ls ${src_mp_fsR[1]} | grep -v lost+found ) ]] && error+="${Rsrc_mp_fsRT[0]} not empty\n"
