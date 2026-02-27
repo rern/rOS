@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # write to: /root/rAudio-*.img.xz
-trap 'boot_rootMmount unmount' exit
+trap 'boot_rootMount unmount' exit
 
 shrink() {
 	echo -e "$bar Shrink Pass #$1 ...\n"
@@ -56,7 +56,7 @@ dialogSDcard # set var: partitions=( /dev/sdX1 /dev/sdX2 )
 boot_rootMount $partitions
 dev=${partitions[0]:0:-1}
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
-[[ ! $release ]] && boot_rootMmount unmount && errorExit SD card $dev is not rAudio.
+[[ ! $release ]] && boot_rootMount unmount && errorExit SD card $dev is not rAudio.
 #---------------------------------------------------------------
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
@@ -71,7 +71,7 @@ Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 clear -x
 touch $BOOT/expand # auto expand root partition
-boot_rootMmount unmount
+boot_rootMount unmount
 partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $partroot | awk '{print $3}' )
 shrink 1

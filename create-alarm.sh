@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # default download to: /root
-trap 'boot_rootMmount unmount' exit
+trap 'boot_rootMount unmount' exit
 
 alarm_rpi=ArchLinuxARM-rpi-
 if [[ $part_B ]] ; then
@@ -416,7 +416,7 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # get create-ros.sh
 wget -q https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
-boot_rootMmount unmount
+boot_rootMount unmount
 #........................
 dialog $opt_msg "
 
