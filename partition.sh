@@ -5,42 +5,14 @@ trap exit INT
 label=$( mount | grep -E '/dev.*BOOT |/dev.*ROOT ' )
 [[ $label ]] && errorExit "Partition label exist:\n$label"
 #-------------------------------------------------------------
-deviceLine() {
-	devline=$( dmesg \
-				| tail -15 \
-				| grep ' sd.* GiB\|mmcblk.* GiB' \
-				| tail -1 )
-}
-
 #........................
-splash 'Partition SD Card'
+dialogSplash 'Partition SD Card'
 #........................
-dialog $opt_msg "
-\Z1Insert SD card\Zn
-
-If already inserted:
-For proper detection, remove and reinsert again.
-
-" 0 0
-deviceLine
-[[ ! $devline ]] && sleep 2 && deviceLine
-[[ ! $devline ]] && errorExit No SD card found.
-#-------------------------------------------------------------
-if [[ $devline == *\[sd?\]* ]]; then
-	name=$( echo $devline | sed -E 's|.*\[(.*)\].*|\1|' )
-	dev=/dev/$name
-	partB=${dev}1
-	partR=${dev}2
-else
-	name=$( echo $devline | sed -E 's/.*] (.*): .*/\1/' )
-	dev=/dev/$name
-	partB=${dev}p1
-	partR=${dev}p2
-fi
-#........................
-dialogDevice $name 'Wipe »» New partitions on:'
+dev=$( dialogSDcard )
+part_B=${dev}1
+part_R=${dev}2
 clear -x
-umount $partB $partR 2> /dev/null
+umount $part_B $part_R 2> /dev/null
 wipefs -a $dev
 mbB=300
 mbR=6400
@@ -48,14 +20,14 @@ sizeB=$(( mbB * 2048 ))
 sizeR=$(( mbR * 2048 ))
 startR=$(( 2048 + sizeB ))
 echo "\
-$partB : start=    2048, size= $sizeB, type=c
-$partR : start= $startR, size= $sizeR, type=83
+$part_B : start=    2048, size= $sizeB, type=c
+$part_R : start= $startR, size= $sizeR, type=83
 " | sfdisk $dev # list: fdisk -d /dev/sdX
-umount $partB $partR 2> /dev/null
-mkfs.fat -F 32 $partB
-mkfs.ext4 -F $partR
-fsck.fat -taw $partB
-e2fsck -p $partR
-fatlabel $partB BOOT
-e2label $partR ROOT
+umount $part_B $part_R 2> /dev/null
+mkfs.fat -F 32 $part_B
+mkfs.ext4 -F $part_R
+fsck.fat -taw $part_B
+e2fsck -p $part_R
+fatlabel $part_B BOOT
+e2label $part_R ROOT
 . <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )

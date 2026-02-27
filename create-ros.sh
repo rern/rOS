@@ -4,6 +4,8 @@ trap exit INT
 
 . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
+#........................
+dialogSplash 'Create \Z1r\ZnAudio'
 SECONDS=0
 features=$( cat /boot/features )
 #........................
@@ -12,8 +14,6 @@ pacman-key --init
 pacman-key --populate archlinuxarm
 systemctl restart systemd-timesyncd # force time sync
 systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy pool is not initialized)
-#........................
-splash 'Create \Z1r\ZnAudio'
 #........................
 banner Upgrade system and default packages ...
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs 

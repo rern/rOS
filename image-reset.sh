@@ -4,6 +4,8 @@
 
 dirdata=/srv/http/data
 #........................
+dialogSplash 'Reset \Z1rZnAudio for Image'
+#........................
 select=$( dialog $opt_check '
  \Z1Tasks:\Zn
 ' 9 50 0 \
@@ -13,8 +15,10 @@ select=$( dialog $opt_check '
 	"Clear system log" on \
 	"Clear Wi-Fi connection" on )
 systemctl stop mpd
-mount | grep /mnt/MPD/NAS && umount -l "/mnt/MPD/NAS/"*
-mount | grep /mnt/MPD/USB && udevil umount -l "/mnt/MPD/USB/"*
+dirnas=/mnt/MPD/NAS
+dirusb=/mnt/MPD/USB
+mount | grep $dirnas && umount -l "$dirnas/"*
+mount | grep $dirusb && udevil umount -l "$dirusb/"*
 clear -x
 if selected database; then
 #........................

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #........................
-splash 'Reset for Image'
+dialogSplash 'Reset for Image'
 routerip=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 subip=${routerip%.*}.
 #........................

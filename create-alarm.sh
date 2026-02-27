@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # default download to: /root
-trap exit INT
+trap 'boot_rootMmount unmount' exit
 
-if [[ $bar ]] ; then
+alarm_rpi=ArchLinuxARM-rpi-
+if [[ $part_B ]] ; then
 	partition_sh=$1
 else
 	. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 fi
-alarm_rpi=ArchLinuxARM-rpi-
 #........................
 if [[ $partition_sh ]]; then
 	files_alarm=$alarm_rpi*.tar.gz
@@ -21,7 +21,7 @@ Continue in $PWD?
 #----------------------------------------------------------------------------
 fi
 #........................
-splash 'Write \Z1Arch Linux ARM\Zn'
+dialogSplash 'Write \Z1Arch Linux ARM\Zn'
 # required packages
 for cmd in bsdtar dialog nmap pv;do
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
@@ -29,57 +29,25 @@ done
 if [[ $packages ]]; then
 	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
-blk=$( lsblk -npo name,size,label | sed -n '/^..\// {s/^..//; s/\s*$//; p}' )
-while read l; do dev_lbl+=( "$l" off ); done <<< $blk
-selectPartition() {
-	local boot_root
-	boot_root=$( dialog $opt_check '
-Select \Z1BOOT\Zn and \Z1ROOT\Zn partitions:
-([space] = select)
-' $(( ${#dev_lbl[@]} / 2 + 2 )) 40 0 "${dev_lbl[@]}" | sed 's/ .*//' )
-	if (( $( wc -l <<< $boot_root ) != 2 )); then
-		dialog $opt_msg '
-Selected partitions not 2:
-\Z1$boot_root\Zn
-
-Please select again.
-' 0 0
-		selectPartition
-	else
-		echo $boot_root
-	fi
-}
-partitions=$( selectPartition )
-part_B=${partitions/ *}
-part_R=${partitions/* }
-if ! mount | grep -q '/dev.*BOOT '; then
-	mkdir -p BOOT ROOT
-	mount $part_B $PWD/BOOT
-	mount $part_R $PWD/ROOT
+if [[ ! $part_B ]]; then
+#........................
+	partitions=( $( dialogSDcard partition ) )
+	part_B=${partitions[0]}
+	part_R=${partitions[1]}
 fi
-BOOT=( $( mount | awk '/^'$part_B'/ {print $1" "$3" "$5}' ) ) # source mountpoint fstype
-ROOT=( $( mount | awk '/^'$part_R'/ {print $1" "$3" "$5}' ) )
+! mount | grep -q '/dev.*BOOT ' && boot_rootMount $partitions
+src_mp_fsB=( $( mount | awk '/^'$part_B'/ {print $1" "$3" "$5}' ) ) # source mountpoint fstype
+src_mp_fsR=( $( mount | awk '/^'$part_R'/ {print $1" "$3" "$5}' ) )
 # check empty to prevent wrong partitions
-[[ $( ls ${BOOT[1]} ) ]] && error+="${BOOT[0]} not empty\n"
-[[ $( ls ${ROOT[1]} | grep -v lost+found ) ]] && error+="${ROOT[0]} not empty\n"
+[[ $( ls ${src_mp_fsB[1]} ) ]] && error+="${src_mp_fsB[0]} not empty\n"
+[[ $( ls ${src_mp_fsR[1]} | grep -v lost+found ) ]] && error+="${Rsrc_mp_fsRT[0]} not empty\n"
 # check fstype
-[[ ${BOOT[2]} != vfat ]] && error+="${BOOT[0]} not fat32\n"
-[[ ${ROOT[2]} != ext4 ]] && error+="${ROOT[0]} not ext4\n"
+[[ ${src_mp_fsB[2]} != vfat ]] && error+="${src_mp_fsB[0]} not fat32\n"
+[[ ${src_mp_fsR[2]} != ext4 ]] && error+="${src_mp_fsR[0]} not ext4\n"
 [[ $error ]] && errorExit "Parttition:\n$error"
 #----------------------------------------------------------------------------
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
-	if [[ ! $partition_sh ]]; then # not from partition.sh
-#----------------------------------------------------------------------------
-#........................
-		dialog $opt_yesno "
-Confirm \Z1SD card\Zn:
-
-$( df -h --output=source,fstype,size,target /dev/sde1 /dev/sde2 )
-
-" 0 0 || exit
-#----------------------------------------------------------------------------
-	fi
 	latest=$( curl -sL https://github.com/rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
 #........................
 	release=$( dialog $opt_input "
@@ -183,7 +151,12 @@ foundIP() {
 		2 )
 #........................
 			ip_ping=$( dialogIP 'Ping Raspberry Pi at IP' )
-			pingIP 5 $ip_ping
+			ping=$( ping -4 -c 1 -w 5 $ip_ping | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Zn/" )
+			if grep -q '100% packet loss' <<< "$ping"; then
+				ping+=$'\n\n'"$ip_ping \Z1NOT\Zn found."
+			else
+				ping+=$'\n\n'"$ip_ping \Z1found\Zn."
+			fi
 #........................
 			dialog $opt_msg "
 $ping
@@ -211,16 +184,6 @@ Invalid IP: \Z1$ip\Zn
 }
 partUUID() {
 	blkid | sed -n '/LABEL="'$1'"/ {s/.* //; s/"//g; p}'
-}
-pingIP() {
-	wait=$1
-	ip=$2
-	ping=$( ping -4 -c 1 -w $wait $ip | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Zn/" )
-	if grep -q '100% packet loss' <<< "$ping"; then
-		ping+=$'\n\n'"$ip \Z1NOT\Zn found."
-	else
-		ping+=$'\n\n'"$ip \Z1found\Zn."
-	fi
 }
 scanIP() {
 #........................
@@ -252,38 +215,31 @@ sshRpi() {
 	done
 	scanIP
 }
- bluealsa='BlueALSA   - Bluetooth audio'
-  camilla='CamillaDSP - Digital signal processor'
-  browser='Firefox    - Browser on RPi screen'
-      iwd='iwd        - RPi access point'
-    samba='Samba      - File sharing'
-shairport='Shairport  - AirPlay renderer'
- snapcast='Snapcast   - Synchronous multiroom player'
-  spotify='Spotifyd   - Spotify renderer'
- upmpdcli='upmpdcli   - UPnP renderer'
+
+list_features="\
+BlueALSA   - Bluetooth audio^bluealsa bluez bluez-utils python-dbus python-gobject python-requests
+CamillaDSP - Digital signal processor^camilladsp python-websocket-client
+Firefox    - Browser on RPi screen^firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo
+iwd        - RPi access point^iwd
+Samba      - File sharing^samba
+Shairport  - AirPlay renderer^shairport-sync
+Snapcast   - Synchronous multiroom player^snapcast
+Spotifyd   - Spotify renderer^spotifyd
+upmpdcli   - UPnP renderer^upmpdcli python-upnpp"
+while read l; do
+	list_check+=( "${l/^*}" on )
+	list_ini+=( ${l/ *} )
+	list_pkg+=( "${l/*^}" )
+done <<< $list_features
 selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
 #........................
-	select=$( dialog $opt_check '
+	selected=$( dialog $opt_check '
  \Z1Features to install:\Zn
-' 9 0 0 \
-		"$bluealsa"  on \
-		"$camilla"   on \
-		"$browser"   on \
-		"$iwd"       on \
-		"$samba"     on \
-		"$shairport" on \
-		"$snapcast"  on \
-		"$spotify"   on \
-		"$upmpdcli"  on )
-	selected BlueALSA  && list+="$bluealsa"$'\n'  && features+='bluealsa bluez bluez-utils python-dbus python-gobject python-requests '
-	selected Camilla   && list+="$camilla"$'\n'   && features+='camilladsp python-websocket-client '
-	selected Firefox   && list+="$browser"$'\n'   && features+='firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo '
-	selected iwd       && list+="$iwd"$'\n'       && features+='iwd '
-	selected Samba     && list+="$samba"$'\n'     && features+='samba '
-	selected Shairport && list+="$shairport"$'\n' && features+='shairport-sync '
-	selected Snapcast  && list+="$snapcast"$'\n'  && features+='snapcast '
-	selected Spotifyd  && list+="$spotify"$'\n'   && features+='spotifyd '
-	selected upmpdcli  && list+="$upmpdcli"$'\n'  && features+='upmpdcli python-upnpp '
+' 8 0 0 "${list_check[@]}" )
+iniL=${#list_ini[@]}
+for (( i=0; i < iniL; i++ )); do
+	grep -q ^${list_ini[$i]} <<< $selected && features+="${list_packages[$i]} "
+done
 }
 
 getData
@@ -293,7 +249,7 @@ selectFeatures
 dialog $opt_yesno "
 \Z1Confirm features to install:\Zn
 
-$list
+$selected
 
 " 0 0
 if [[ $? == 0 ]]; then
@@ -460,8 +416,7 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # get create-ros.sh
 wget -q https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
-umount -l $BOOT
-umount -l $ROOT
+boot_rootMmount unmount
 #........................
 dialog $opt_msg "
 

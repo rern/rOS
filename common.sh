@@ -9,30 +9,17 @@ banner() {
     printf "\n%-${cols}s" "  $( echo $@ )"
     printf "\n%*s\e[0m\n\n" $cols
 }
-errorExit() {
-	banner E r r o r
-	echo -e "\e[41m ! \e[0m $@\n"
-	exit
+boot_rootMount() {
+	if [[ $1 == unmount ]]; then
+		umount -l $BOOT $ROOT
+		rmdir $BOOT $ROOT
+	else
+		mkdir -p BOOT ROOT
+		mount ${1[0]} $BOOT
+		mount ${2[1]} $ROOT
+	fi
 }
-dialogDevice() { # $1=sdx; $2=confirm text
-	local list
-	list=$( lsblk -o name,label,size,mountpoint \
-			| sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
-					' -e "/^$1/ {s/^/\\\Z1/; s/$/\\\Zn/}
-					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' )
-#........................
-	dialog $opt_yesno "
-$list
-
-\Zr $2 \ZR
-$( grep '^\\Z1' <<< $list )
-
-" 0 0 || exit
-}
-selected() {
-	grep -q -m1 "$1" <<< $select && return 0
-}
-splash() {
+dialogSplash() {
 	local H h i line pad txt W w
 	H=9
 	W=58
@@ -53,6 +40,85 @@ $txt
 " $H $W
 	sleep 1
 	clear -x
+}
+dialogSDcard() { # $1=confirm text
+	local dev devline error H l list list_BR list_check list_colored selected sL text
+#........................
+	dialog $opt_msg "
+\Z1Insert USB reader and/or SD card\Zn
+
+If already inserted:
+Remove and reinsert again for proper detection.
+
+" 0 0
+	devline=$( dmesgSDcard )
+	[[ ! $devline ]] && sleep 2 && devline=$( dmesgSDcard )
+	[[ ! $devline ]] && errorExit No SD card found
+#---------------------------------------------------------------
+	if [[ $devline == sd* ]]; then
+		dev=$( awk -F'[][]' '{print $2}' <<< $devline ) # sdX
+	else
+		dev=$( cut -d: -f1 <<< $devline )               # mmcbklN
+	fi
+	list=$( lsblk -po name,label,size,mountpoint )
+	list_colored=$( sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
+					' -e "/^.dev.$dev/ {s/^/\\\Z1/; s/$/\\\Zn/}
+					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $list )
+	if [[ $1 ]]; then # partition
+		text='BOOT\Zn and \Z1ROOT'
+		list_BR=$( grep -E ' BOOT | ROOT ' <<< $list | sed -n '/^..\// {s/^..//; s/\s*$//; p}' )
+		while read l; do
+			list_check+=( "$l" off )
+		done <<< $list_BR
+	else
+		text='SD card'
+		list_check+=( "$( grep ^/dev/$dev <<< $list )" off )
+	fi
+	H=$(( $( wc -l <<< $list_colored ) + ${#list_check[@]} + 5 ))
+	[[ ! $1 ]] && (( H++ ))
+#........................
+	selected=$( dialog $opt_check "
+$list_colored
+
+Select/Click \Z1$text\Zn to comfirm:
+" $H 0 0 "${list_check[@]}" | sed 's/ .*//' )
+	sL=$( awk NF <<< $selected | wc -l )
+	if (( $sL == 0 )); then
+		error=None
+	else
+		if [[ $1 ]]; then
+			case $sL in
+				1 ) error='Only 1';;
+				2 ) ;;
+				* ) error='More than 2';;
+			esac
+		else
+			(( $sL > 1 )) && error='More than 1'
+		fi
+	fi
+	if [[ $error ]]; then
+#........................
+		dialog $opt_msg "
+\Z1Select $text error\Zn
+
+$error selected: $selected
+" 0 0 && dialogSDcard $1
+	else
+		echo $selected
+	fi
+}
+dmesgSDcard() {
+	dmesg \
+		| tail \
+		| grep -m1 -E '] sd.* GiB|] mmcblk.* GiB' \
+		| sed -E 's/.* ([sm])/\1/'
+		# > sd 5:0:0:0: [sdX] 62333952 512-byte logical blocks: (31.9 GB/29.7 GiB) > sdX
+			# OR > mmcblkN: mmcN:0001 SD32G 29.7 GiB > mmcblkN
+}
+errorExit() {
+	banner E r r o r
+	echo -e "\e[41m ! \e[0m $@\n"
+	exit
 }
 
 bar='\e[44m  \e[0m'

@@ -2,7 +2,7 @@
 
 . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 #........................
-splash 'Image Utilities'
+dialogSplash 'Image Utilities'
 #........................
 cmd=$( dialog $opt_menu '
 \Z1Tasks:\Zn

@@ -1,13 +1,8 @@
 #!/bin/bash
 
 # write to: /root/rAudio-*.img.xz
-trap exit INT
-deviceLine() {
-	dmesg \
-		| tail \
-		| grep ' sd.* GiB\|mmcblk.* GiB' \
-		| tail -1
-}
+trap 'boot_rootMmount unmount' exit
+
 shrink() {
 	echo -e "$bar Shrink Pass #$1 ...\n"
 	partinfo=$( tune2fs -l $partroot )
@@ -41,14 +36,6 @@ quit
 EOF
 	fi
 }
-boot_rootMount() {
-	mount ${1}1 $BOOT
-	mount ${1}2 $ROOT
-}
-boot_rootUnmount() {
-	umount -l $BOOT $ROOT
-	rmdir $BOOT $ROOT
-}
 
 # required packages
 if [[ -e /usr/bin/pacman ]]; then
@@ -61,32 +48,15 @@ else
 	[[ $packages ]] && apt install -y $packages
 fi
 #........................
-splash 'Create Image File'
+dialogSplash 'Create Image File'
 #........................
-dialog $opt_msg "
-\Z1Insert SD card\Zn
-If already inserted:
-For proper detection, remove and reinsert again.
-
-" 0 0
-devline=$( deviceLine )
-[[ ! $devline ]] && sleep 2 && devline=$( deviceLine )
-[[ ! $devline ]] && errorExit No SD card found
-#---------------------------------------------------------------
 BOOT=$PWD/BOOT
 ROOT=$PWD/ROOT
-mkdir -p BOOT ROOT
-if [[ $devline == *\[sd?\]* ]]; then
-	name=$( sed -E 's|.*\[(.*)\].*|\1|' <<< $devline )
-else
-	name=$( sed -E 's/.*] (.*): .*/\1/' <<< $devline )
-fi
-dev=/dev/$name
-boot_rootMount $dev
-#........................
-dialogDevice $name 'rAudio to image'
+partitions=( $( dialogSDcard ) )
+boot_rootMount $partitions
+dev=${partitions[0]:0:-1}
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
-[[ ! $release ]] && boot_rootUnmount && errorExit SD card $dev is not rAudio.
+[[ ! $release ]] && boot_rootMmount unmount && errorExit SD card $dev is not rAudio.
 #---------------------------------------------------------------
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
@@ -101,7 +71,7 @@ Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 clear -x
 touch $BOOT/expand # auto expand root partition
-boot_rootUnmount
+boot_rootMmount unmount
 partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $partroot | awk '{print $3}' )
 shrink 1
