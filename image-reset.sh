@@ -7,7 +7,7 @@ selected() {
 }
 dirdata=/srv/http/data
 #........................
-dialogSplash 'Reset \Z1rZnAudio for Image'
+dialogSplash 'Reset \Z1r\ZnAudio for Image'
 list_reset="\
 Reset MPD database
 Reset user data directory
