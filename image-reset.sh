@@ -28,13 +28,11 @@ mount | grep $dirnas && umount -l "$dirnas/"*
 mount | grep $dirusb && udevil umount -l "$dirusb/"*
 clear -x
 if selected database; then
-#........................
-	banner Reset MPD database ...
+	echo -e "$bar Reset MPD database ..."
 	rm -f $dirdata/mpd/*
 fi
 if selected directory; then
-#........................
-	banner Reset user data directory ...
+	echo -e "$bar Reset user data directory ..."
 	rm -rf /root/.cache/*
 	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists}/*
 	echo '{
@@ -43,18 +41,15 @@ if selected directory; then
 }' > $dirdata/mpd/counts
 fi
 if selected cache; then
-#........................
-	banner Clear package cache ...
+	echo -e "$bar Clear package cache ..."
 	rm -f /var/cache/pacman/pkg/*
 fi
 if selected log; then
-#........................
-	banner Clear system log ...
+	echo -e "$bar Clear system log ..."
 	rm -rf /var/log/journal/*
 fi
 if selected connection; then
-#........................
-	banner Clear Bluetooth and Wi-Fi connection ...
+	echo -e "$bar Clear Bluetooth and Wi-Fi connection ..."
 	rm -rf /var/lib/bluetooth/*
 	profiles=$( ls -1p /etc/netctl | grep -v / )
 	if [[ $profiles ]]; then
@@ -68,12 +63,11 @@ if [[ ! -e /boot/kernel.img ]]; then # skip on rpi 0, 1
 	curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
 fi
 rm -rf /root/.config/chromium
-#........................
-banner Check Filesystems ...
+echo -e "$bar Check Filesystems ..."
 fsck.fat -taw /dev/mmcblk0p1
 e2fsck -p /dev/mmcblk0p2
 echo -e "
-$bar rAudio reset finished.
+$bar rAudio reset done.
 
 Shutdown ...
 

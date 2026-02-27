@@ -439,8 +439,8 @@ dialog $opt_msg "
 
 \Z1BOOT\Zn and \Z1ROOT\Zn have been unmounted.
 
-- Move SD card$usb to RPi > Power on
-- Press \Z1Enter\Zn to start boot timer > IP scan
+- Move SD card$usb to RPi » Power on
+- Press \Z1Enter\Zn to start boot timer » IP scan
 
 " 13 55
 #........................
