@@ -19,6 +19,23 @@ boot_rootMount() {
 		mount ${partitions[1]} $ROOT
 	fi
 }
+dialogIP() {
+	local ip
+	[[ ! $ip_base ]] && ip_base=$( ipBase )
+	ip=$( dialog $opt_input "
+\Z1$1:\Zn
+
+" 0 0 $ip_base )
+	[[ ${ip%.*}. == $ip_base ]] && ip_oct4=${ip/$ip_base}
+	if [[ $ip_oct4 && $ip_oct4 == [0-9]* ]] && (( $ip_oct4 > 0 && $ip_oct4 < 255 )); then
+		echo $ip
+	else
+		dialog $opt_msg "
+Invalid IP: \Z1$ip\Zn
+
+" 0 0 && dialogIP "$1"
+	fi
+}
 dialogSplash() {
 	local H h i l line pad txt W w
 	H=9
@@ -116,6 +133,11 @@ errorExit() {
 	banner E r r o r
 	echo -e "\e[41m ! \e[0m $@\n"
 	exit
+}
+ipBase() {
+	local ip_router
+	ip_router=$( ip r get 1 | head -1 | cut -d' ' -f3 )
+	echo ${ip_router%.*}.
 }
 
 bar='\e[44m  \e[0m'

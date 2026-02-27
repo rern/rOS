@@ -4,6 +4,7 @@
 trap 'boot_rootMount unmount' exit
 
 alarm_rpi=ArchLinuxARM-rpi-
+ip_base=$( ipBase )
 if [[ $part_B ]] ; then
 	partition_sh=$1
 else
@@ -79,8 +80,6 @@ getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=auto
 		sboot=60
 	fi
 	file+=latest.tar.gz
-	ip_router=$( ip r get 1 | head -1 | cut -d' ' -f3 )
-	ip_base=${ip_router%.*}.
 #........................
 	dialog $opt_yesno "
  RPi with \Z1pre-assigned\Zn IP?
@@ -170,21 +169,6 @@ $ping
 		3 ) errorExit Try starting over again;;
 #----------------------------------------------------------------------------
 	esac
-}
-dialogIP() {
-	ip=$( dialog $opt_input "
-\Z1$1:\Zn
-
-" 0 0 $ip_base )
-	[[ ${ip%.*}. == $ip_base ]] && ip_oct4=${ip/$ip_base}
-	if [[ $ip_oct4 && $ip_oct4 == [0-9]* ]] && (( $ip_oct4 > 0 && $ip_oct4 < 255 )); then
-		echo $ip
-	else
-		dialog $opt_msg "
-Invalid IP: \Z1$ip\Zn
-
-" 0 0 && dialogIP "$1"
-	fi
 }
 partUUID() {
 	blkid | sed -n '/LABEL="'$1'"/ {s/.* //; s/"//g; p}'
