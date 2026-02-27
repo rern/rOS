@@ -53,7 +53,7 @@ dialogSplash 'Create Image File'
 BOOT=$PWD/BOOT
 ROOT=$PWD/ROOT
 dialogSDcard # set var: partitions=( /dev/sdX1 /dev/sdX2 )
-boot_rootMount $partitions
+boot_rootMount
 dev=${partitions[0]:0:-1}
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
 [[ ! $release ]] && boot_rootMount unmount && errorExit SD card $dev is not rAudio.

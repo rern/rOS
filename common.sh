@@ -15,8 +15,8 @@ boot_rootMount() {
 		rmdir $BOOT $ROOT
 	else
 		mkdir -p BOOT ROOT
-		mount ${1[0]} $BOOT
-		mount ${2[1]} $ROOT
+		mount ${partitions[0]} $BOOT
+		mount ${partitions[1]} $ROOT
 	fi
 }
 dialogSplash() {
