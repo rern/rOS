@@ -29,7 +29,9 @@ done
 if [[ $packages ]]; then
 	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
-if [[ ! $part_B ]]; then
+if [[ $part_B ]]; then
+	partitions=( $part_B $part_R )
+else
 #........................
 	dialogSDcard # set var: partitions=( /dev/sdX1 /dev/sdX2 )
 	part_B=${partitions[0]}
