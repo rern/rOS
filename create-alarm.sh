@@ -29,6 +29,8 @@ done
 if [[ $packages ]]; then
 	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
+BOOT=$PWD/BOOT
+ROOT=$PWD/ROOT
 if [[ $part_B ]]; then
 	partitions=( $part_B $part_R )
 else
