@@ -2,18 +2,25 @@
 
 . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
+selected() {
+	grep -q $1 <<< $reset && return 0
+}
 dirdata=/srv/http/data
 #........................
 dialogSplash 'Reset \Z1rZnAudio for Image'
+list_reset="\
+Reset MPD database
+Reset user data directory
+Clear package cache
+Clear system log
+Clear Wi-Fi connection"
+while read l; do
+	list_check+=( "$l" on )
+done <<< $list_reset
 #........................
-select=$( dialog $opt_check '
+reset=$( dialog $opt_check '
  \Z1Tasks:\Zn
-' 9 50 0 \
-	"Reset MPD database" on \
-	"Reset user data directory" on \
-	"Clear package cache" on \
-	"Clear system log" on \
-	"Clear Wi-Fi connection" on )
+' 8 50 0 "${list_check[@]}" )
 systemctl stop mpd
 dirnas=/mnt/MPD/NAS
 dirusb=/mnt/MPD/USB
@@ -25,7 +32,7 @@ if selected database; then
 	banner Reset MPD database ...
 	rm -f $dirdata/mpd/*
 fi
-if selected user; then
+if selected directory; then
 #........................
 	banner Reset user data directory ...
 	rm -rf /root/.cache/*
@@ -45,7 +52,7 @@ if selected log; then
 	banner Clear system log ...
 	rm -rf /var/log/journal/*
 fi
-if selected Wi-Fi; then
+if selected connection; then
 #........................
 	banner Clear Bluetooth and Wi-Fi connection ...
 	rm -rf /var/lib/bluetooth/*
