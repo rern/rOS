@@ -20,7 +20,7 @@ boot_rootMount() {
 	fi
 }
 dialogSplash() {
-	local H h i line pad txt W w
+	local H h i l line pad txt W w
 	H=9
 	W=58
 	h=$( wc -l <<< $1 )
@@ -31,7 +31,8 @@ dialogSplash() {
 	while read -r line; do
 		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
 		
-		w=$(( ( W - ${#line} ) / 2 - 2 )) # -2: l/r border
+		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
+		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
 		txt+="$( printf '%*s' $w )$line\n"
 	done <<< $1
 #........................

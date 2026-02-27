@@ -421,10 +421,11 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 wget -q https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
 boot_rootMount unmount
+trap -
 #........................
 dialog $opt_msg "
 
-                   Arch Linux Arm
+                   Arch Linux ARM
                          for
                  \Z1Raspberry Pi $rpiname\Zn
                 Created successfully.
@@ -434,7 +435,7 @@ $( date -d@$SECONDS -u +%M:%S )
 [[ ${partuuidB:0:-3} != ${partuuidR:0:-3} ]] && usb=' and USB drive'
 #........................
 dialog $opt_msg "
-\Z1Arch Linux Arm\Zn is ready.
+\Z1Arch Linux ARM\Zn is ready.
 
 \Z1BOOT\Zn and \Z1ROOT\Zn have been unmounted.
 
@@ -449,7 +450,7 @@ dialog $opt_msg "
 done ) \
 	| dialog $opt_guage "
   Boot ...
-  \Z1Arch Linux Arm\Zn
+  \Z1Arch Linux ARM\Zn
 " 9 50
 
 if [[ $ip_assigned ]]; then
@@ -468,7 +469,7 @@ EOF
 		| dialog $opt_guage '' 9 50
 	if ping -4 -c 1 -w 1 $ip_assigned &> /dev/null; then
 		dialog $opt_info "
-  SSH Arch Linux Arm ...
+  SSH Arch Linux ARM ...
   @ \Z1$ip_assigned\Zn
 " 9 50
 		sleep 3
