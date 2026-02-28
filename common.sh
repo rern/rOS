@@ -48,7 +48,7 @@ $1:
 " 8 0 0 "${list_menu[@]}" # h=8: exclude list box
 }
 dialogSDcard() { # [[ $1 ]] && echo /dev/sdX || echo /dev/sdX1 /dev/sdX2
-	local dev devline error H l list list_BR list_check list_colored selected sL text
+	local dev devline error H l list list_BR list_check list_colored sd_part sL text
 #........................
 	dialog $opt_msg "
 \Z1Insert USB reader + SD card / SD card\Zn
@@ -83,15 +83,14 @@ Press Enter to continue
 			list_check+=( "$l" off )
 		done <<< $list_BR
 	fi
-	H=$(( $( wc -l <<< $list_colored ) + ${#list_check[@]} + 5 ))
-	[[ $1 ]] && (( H++ ))
+	H=$(( $( wc -l <<< $list ) + 9 ))
 #........................
-	selected=$( dialog $opt_check "
+	sd_part=$( dialog $opt_check "
 $list_colored
 
 Select/Click \Z1$text\Zn to comfirm:
-" 8 0 0 "${list_check[@]}" | sed 's/ .*//' ) # h=8: exclude list box
-	sL=$( awk NF <<< $selected | wc -l )
+" $H 0 0 "${list_check[@]}" | sed 's/ .*//' ) # h=8: exclude list box
+	sL=$( awk NF <<< $sd_part | wc -l )
 	if (( $sL == 0 )); then
 		error=None
 	else
@@ -110,10 +109,10 @@ Select/Click \Z1$text\Zn to comfirm:
 		dialog $opt_msg "
 \Z1Select $text error\Zn
 
-$error selected: $selected
+$error selected: $sd_part
 " 0 0 && dialogSDcard $1
 	else
-		echo $selected
+		echo $sd_part
 	fi
 }
 dialogSplash() {
