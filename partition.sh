@@ -8,7 +8,7 @@ label=$( mount | grep -E '/dev.*BOOT |/dev.*ROOT ' )
 #........................
 dialogSplash 'Partition SD Card'
 #........................
-dialogSDcard dev # set var: dev=/dev/sdX
+dev=$( dialogSDcard dev )
 part_B=${dev}1
 part_R=${dev}2
 clear -x

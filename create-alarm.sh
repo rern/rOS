@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # default download to: /root
-trap 'boot_rootMount unmount' exit
+trap BOOT_ROOT.unmount exit
 
 alarm_rpi=ArchLinuxARM-rpi-
 ip_base=$( ipBase )
@@ -36,11 +36,11 @@ if [[ $part_B ]]; then
 	partitions=( $part_B $part_R )
 else
 #........................
-	dialogSDcard # set var: partitions=( /dev/sdX1 /dev/sdX2 )
+	partitions=$( dialogSDcard )
 	part_B=${partitions[0]}
 	part_R=${partitions[1]}
 fi
-! mount | grep -q '/dev.*BOOT ' && boot_rootMount
+! mount | grep -q '/dev.*BOOT ' && BOOT_ROOT.mount
 src_mp_fsB=( $( mount | awk '/^'${part_B//\//\\/}'/ {print $1" "$3" "$5}' ) ) # source mountpoint fstype
 src_mp_fsR=( $( mount | awk '/^'${part_R//\//\\/}'/ {print $1" "$3" "$5}' ) )
 # check empty to prevent wrong partitions
@@ -64,21 +64,22 @@ getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=auto
 	fi
 	echo $release > $BOOT/release
 #........................
-	rpi=$( dialog $opt_menu "
-\Z1Raspberry Pi:\Zn
-" 8 0 0 \
-1 '64bit  : 5, 4, 3, 2, Zero 2' \
-2 '32bit  : 2 (BCM2836)' )
+	bit=$( dialogMenu 'Raspberry Pi' "\
+64bit  : 5, 4, 3, 2, Zero 2
+32bit  : 2 (BCM2836)" )
 	file=$alarm_rpi
-	if [[ $rpi == 1 ]]; then
-		file+=aarch64-
-		rpiname=64bit
-		sboot=45
-	else
-		file+=armv7-
-		rpiname=32bit
-		sboot=60
-	fi
+	case $bit in
+		1 )
+			file+=aarch64-
+			rpiname=64bit
+			sboot=45
+			;;
+		2 )
+			file+=armv7-
+			rpiname=32bit
+			sboot=60
+			;;
+	esac
 	file+=latest.tar.gz
 #........................
 	dialog $opt_yesno "
@@ -88,7 +89,7 @@ getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=auto
 	if [[ $? == 0 ]]; then
 #........................
 		ip_assigned=$( dialogIP 'Pre-assigned IP' )
-		[[ $rpi == 1 ]] && sboot=30 || sboot=40
+		[[ $bit == 1 ]] && sboot=30 || sboot=40
 		ip_confirm="
 Assigned IP  : $ip_assigned"
 	fi
@@ -107,12 +108,10 @@ Connect \Z1Wi-Fi\Zn on boot?
 \Z1Wi-Fi\Zn - Password:
 " 0 0 $password )
 #........................
-		wpa=$( dialog $opt_menu "
-\Z1Wi-Fi\Zn -Security:
-" 8 0 0 \
-1 WPA \
-2 WEP \
-3 None )
+		wpa=$( dialogMenu 'Wi-Fi Security' "\
+WPA
+WEP
+None" )
 		case $wpa in
 			1 ) wpa=wpa;;
 			2 ) wpa=wep;;
@@ -139,13 +138,11 @@ $ip_confirm
 }
 foundIP() {
 #........................
-	ans=$( dialog $opt_menu "
-\Z1Found IP address of Raspberry Pi?\Zn
-" 8 30 0 \
-1 'Yes' \
-2 'Ping IP' \
-3 'No' )
-	case $ans in
+	found=$( dialogMenu 'Raspberry Pi IP found?' "\
+Yes
+Ping IP
+No" )
+	case $found in
 		1 )
 #........................
 			ip_rpi=$( dialogIP 'Raspberry Pi IP' ) 
@@ -267,13 +264,9 @@ for line in "${lines[@]}"; do
 		codelist+=( $line )
 	fi
 done
-(( i++ ))
 #........................
-code=$( dialog $opt_menu "
-\Z1Package mirror server:\Zn
-" 0 0 $i \
-"${clist[@]}" )
-mirror=${codelist[$code]}
+server=$( dialogMenu 'Package mirror server' "${clist[@]}" )
+mirror=${codelist[$server]}
 [[ $mirror == 0 ]] && url=http://os.archlinuxarm.org/os || url=http://$mirror.mirror.archlinuxarm.org/os
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
@@ -404,7 +397,7 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # get create-ros.sh
 wget -q https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
-boot_rootMount unmount
+BOOT_ROOT.unmount
 trap -
 #........................
 dialog $opt_msg "
