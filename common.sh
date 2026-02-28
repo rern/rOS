@@ -12,6 +12,7 @@ banner() {
 BOOT_ROOT.unmount() {
 	umount -l $BOOT $ROOT
 	rmdir $BOOT $ROOT
+}
 BOOT_ROOT.mount() {
 	mkdir -p BOOT ROOT
 	mount ${partitions[0]} $BOOT
