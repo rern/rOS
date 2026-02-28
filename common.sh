@@ -10,6 +10,8 @@ banner() {
     printf "\n%*s\e[0m\n\n" $cols
 }
 BOOT_ROOT.unmount() {
+	[[ ! $BOOT ]] && return
+	
 	umount -l $BOOT $ROOT
 	rmdir $BOOT $ROOT
 }
