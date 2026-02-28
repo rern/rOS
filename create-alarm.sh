@@ -244,30 +244,30 @@ else
 fi
 SECONDS=0
 # package mirror server
-readarray -t lines <<< $( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
-							| sed -E -n '/^### Mirror/,$ {/^\s*$|^### Mirror/ d; s|.*//(.*)\.mirror.*|\1|; p}' )
-clist=( 0 'Auto (By Geo-IP)' )
-codelist=( 0 )
-i=0
-for line in "${lines[@]}"; do
-	if [[ ${line:0:4} == '### ' ]];then
+lines=$( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
+			| sed -E -n '/^### Mirror/,$ {/^\s*$|^### Mirror/ d; s|.*//(.*)\.mirror.*|\1|; p}' )
+list_menu="\
+Auto (By Geo-IP)"
+list_code=( '' '' )
+while read line; do
+	if [[ $line == '###'* ]];then
 		city=
 		country=${line:4}
-	elif [[ ${line:0:3} == '## ' ]];then
+	elif [[ $line == '## '* ]];then
 		city=${line:3}
 	else
 		[[ $city ]] && cc="$country - $city" || cc=$country
 		[[ $cc == $ccprev ]] && cc+=' 2'
 		ccprev=$cc
-		(( i++ ))
-		clist+=( $i "$cc" )
-		codelist+=( $line )
+		list_menu+="
+$cc"
+		list_code+=( $line )
 	fi
-done
+done <<< $lines
 #........................
-server=$( dialogMenu 'Package mirror server' "${clist[@]}" )
-mirror=${codelist[$server]}
-[[ $mirror == 0 ]] && url=http://os.archlinuxarm.org/os || url=http://$mirror.mirror.archlinuxarm.org/os
+server=$( dialogMenu 'Package mirror server' "$list_menu" )
+mirror=${list_code[$server]}
+[[ $mirror ]] && url=http://$mirror.mirror.archlinuxarm.org/os || url=http://os.archlinuxarm.org/os
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
 #........................
