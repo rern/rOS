@@ -1,7 +1,5 @@
 #!/bin/bash
 
-trap exit INT
-
 . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
 #........................

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap exit INT
+trap BOOT_ROOT.unmount SIGINT EXIT
 
 label=$( mount | grep -E '/dev.*BOOT |/dev.*ROOT ' )
 [[ $label ]] && errorExit "Partition label exist:\n$label"

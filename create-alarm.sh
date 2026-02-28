@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # default download to: /root
-trap BOOT_ROOT.unmount exit
+trap BOOT_ROOT.unmount SIGINT EXIT
 
 alarm_rpi=ArchLinuxARM-rpi-
 ip_base=$( ipBase )
@@ -398,7 +398,7 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 wget -q https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
 BOOT_ROOT.unmount
-trap -
+trap -- SIGINT EXIT
 #........................
 dialog $opt_msg "
 
