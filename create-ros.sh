@@ -16,10 +16,15 @@ systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy po
 banner Upgrade system and default packages ...
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns 
-parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets raspberrypi-utils sudo udevil websocat wget xorg-xset'
+parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
+raspberrypi-utils sudo udevil websocat wget xorg-xset'
 pkgs=$( pacman -Q )
-grep -q 'linux-firmware ' <<< $pkgs &&
-	remove='linux-firmware linux-firmware-amdgpu linux-firmware-broadcom linux-firmware-intel linux-firmware-nvidia linux-firmware-radeon'
+if grep -q 'linux-firmware ' <<< $pkgs; then
+	remove=linux-firmware
+	for n in amdgpu broadcom intel nvidia radeon; do
+		remove+=" linux-firmware-$n"
+	done
+fi
 if [[ -e /boot/kernel8.img ]]; then
 	grep -q linux-aarch64 <<< $pkgs && remove+=' linux-aarch64'
 	grep -q uboot-raspberrypi <<< $pkgs && remove+=' uboot-raspberrypi'
