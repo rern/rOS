@@ -35,7 +35,7 @@ Invalid IP: \Z1$ip\Zn
 " 0 0 && dialogIP "$1"
 	fi
 }
-dialogMenu() {
+dialogMenu() { # dialog --menu $1=title $2=multiline list
 	local i l list_menu
 	i=0
 	while read l; do
@@ -115,7 +115,7 @@ $error selected: $sd_part
 		echo $sd_part
 	fi
 }
-dialogSplash() {
+dialogSplash() { # dialog --infobox
 	local H h i l line pad txt W w
 	H=9
 	W=58
@@ -152,10 +152,10 @@ ipBase() {
 
 bar='\e[44m  \e[0m'
 option='--backtitle rAudio --colors --nocancel --no-collapse --no-shadow --output-fd 1' # --output-fd 1: stdout
-opt_check="$option --no-items --separate-output --checklist" # no leading N, multiline output
-opt_guage="$option --guage"
- opt_info="$option --infobox"
-opt_input="$option --inputbox"
- opt_menu="$option --menu"
-  opt_msg="$option --msgbox"
-opt_yesno="${option/ --nocancel} --yesno"
+opt_check="$option --no-items --separate-output --checklist" # select multiple            --no-items   : no leading N, multiline output
+opt_guage="$option --guage"               # no buttons
+opt_input="$option --inputbox"            # input with button (--nocancel=hide)
+ opt_menu="$option --menu"                # select single
+ opt_info="$option --infobox"             # no buttons, use 'sleep N' to delay continue
+  opt_msg="$option --msgbox"              # ok button only
+opt_yesno="${option/ --nocancel} --yesno" # Yes and No buttons

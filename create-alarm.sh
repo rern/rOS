@@ -412,14 +412,14 @@ $( date -d@$SECONDS -u +%M:%S )
 [[ ${partuuidB:0:-3} != ${partuuidR:0:-3} ]] && usb=' and USB drive'
 #........................
 dialog $opt_msg "
-\Z1Arch Linux ARM\Zn is ready.
+\Z1Arch Linux ARM\Zn : Ready
+\Z1SD card\Zn        : Unmounted
 
-\Z1BOOT\Zn and \Z1ROOT\Zn have been unmounted.
+● Move SD card$usb to Raspberry Pi
+● Power on
+● Press \Z1Enter\Zn to start boot timer » IP scan
 
-- Move SD card$usb to RPi » Power on
-- Press \Z1Enter\Zn to start boot timer » IP scan
-
-" 13 55
+" 12 48
 #........................
 ( for (( i = 1; i < sboot; i++ )); do
 	echo $(( i * 100 / sboot ))
