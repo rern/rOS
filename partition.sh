@@ -19,5 +19,4 @@ mkfs.fat -F 32 $part_B
 mkfs.ext4 -F $part_R
 fatlabel $part_B BOOT
 e2label $part_R ROOT
-partitions="$part_B $part_R"
 . <( curl -sL $https_ros_main/create-alarm.sh )
