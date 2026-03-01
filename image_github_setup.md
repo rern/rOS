@@ -11,7 +11,7 @@ gh auth login # as root
 	# ? How would you like to authenticate GitHub CLI?
 	#   » Login with a web browser
 	# ! First copy your one-time code: CODE-CODE
-	# Press Enter to open https://github.com/login/device in your browser...
+	# Press [Enter] to open https://github.com/login/device in your browser...
 	#   » DO NOT 'Press Enter' yet
 ```
 Manually open browser: https://github.com/login/device
@@ -21,7 +21,7 @@ Manually open browser: https://github.com/login/device
 
 *Continue the terminal*
 ```sh
-	#   > Press Enter (Ignore warning: Running Firefox as root ...)
+	#   > Press [Enter] (Ignore warning: Running Firefox as root ...)
 	# ✓ Authentication complete.
 
 # rAudio local repo - for upload

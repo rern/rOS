@@ -58,7 +58,7 @@ dialogSDcard() { # [[ $1 ]] && echo /dev/sdX || echo /dev/sdX1 /dev/sdX2
 If already inserted:
 Remove and reinsert for proper detection.
 
-Press Enter to continue
+Press \Zr Enter \ZR to continue
 " 0 0
 	for i in {0..3}; do
 		devline=$( dmesg | tail | grep -m1 -E '] sd.* GiB|] mmcblk.* GiB' )

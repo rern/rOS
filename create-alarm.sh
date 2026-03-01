@@ -182,7 +182,7 @@ scanIP() {
 				| sed -e 's/Nmap.*for \|MAC Address//g' -e '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Zn/}' \
 				| tac )
 #........................
-	dialog $option --output-fd 1 --cancel-label Rescan --inputbox "
+	dialog $option --cancel-label Rescan --inputbox "
 \Z1Note IP address of Raspberry Pi:\Zn
 (If Raspberri Pi not listed, ping may find it.)
 \Z4[arrowdown] = scrolldown\Zn
@@ -416,7 +416,7 @@ dialog $opt_msg "
 
 ● Move SD card$usb to Raspberry Pi
 ● Power on
-● Press \Z1Enter\Zn to start boot timer » IP scan
+● Press \Zr Enter \ZR to start boot timer » IP scan
 
 " 12 48
 #........................
