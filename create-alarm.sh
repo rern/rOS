@@ -3,12 +3,31 @@
 # default download to: /root
 trap BOOT_ROOT.unmount SIGINT EXIT
 
-if [[ $name ]]; then
+for cmd in bsdtar dialog nmap pv; do # required packages
+	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
+done
+if [[ $packages ]]; then
+	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
+fi
+
+alarm_rpi=ArchLinuxARM-rpi-
+https_rern='https://github.com/rern'
+https_ros_main="$https_rern/rOS/raw/main"
+if [[ ! $name ]]; then                        # not from +R.sh
+	get_partition=1 # for dialogSDcard
+	. <( curl -sL $https_ros_main/common.sh )
+fi
 #........................
-    dialogSplash 'Partition SD Card'
-    https_ros_main='https://github.com/rern/rOS/raw/main'
+dialogSplash 'Write \Z1Arch Linux ARM\Zn'
+. <( curl -sL $https_ros_main/dialog_sdcard.sh )
 #........................
-    . <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $dev $part_B $part_R
+sd_card=( $( dialogSDcard ) )
+dev=${sd_card[0]}
+part_B=${sd_card[1]}
+part_R=${sd_card[2]}
+if [[ $name ]]; then                         # from +R.sh
+#........................
+    banner Partition SD Card ...
     wipefs -a $dev
     mb_B=300
     mb_R=6400
@@ -16,42 +35,15 @@ if [[ $name ]]; then
     size_R=$(( mb_R * 2048 ))
     start_R=$(( 2048 + size_B ))
     echo "\
-    $part_B : start=     2048, size= $size_B, type=c
-    $part_R : start= $start_R, size= $size_R, type=83
-    " | sfdisk $dev # existing: fdisk -d /dev/sdX
+$part_B : start=     2048, size= $size_B, type=c
+$part_R : start= $start_R, size= $size_R, type=83
+" | sfdisk $dev # existing: fdisk -d /dev/sdX
     mkfs.fat -F 32 $part_B
     mkfs.ext4 -F $part_R
     fatlabel $part_B BOOT
     e2label $part_R ROOT
 fi
-alarm_rpi=ArchLinuxARM-rpi-
-if [[ $part_B ]]; then
-	files_alarm=$alarm_rpi*.tar.gz
-#........................
-	[[ ! $( ls $files_alarm ) ]] && dialog $opt_yesno "
-No $files_alarm in current \Z1$PWD\Zn
-
-Continue in $PWD?
-
-" 0 0 || exit
-#----------------------------------------------------------------------------
-fi
-for cmd in bsdtar dialog nmap pv; do # required packages
-	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
-done
-if [[ $packages ]]; then
-	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
-fi
-#........................
-dialogSplash 'Write \Z1Arch Linux ARM\Zn'
-https_rern='https://github.com/rern'
-https_ros_main="$https_rern/rOS/raw/main"
-#........................
-if [[ ! $part_B ]]; then
-	get_partition=1
-	. <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $part_B $part_R
-fi
-BOOT_ROOT.check # and mount
+BOOT_ROOT.checkMount
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
 	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
@@ -68,7 +60,7 @@ getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=auto
 	bit=$( dialogMenu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
 32bit  : 2 (BCM2836)" )
-	file=$alarm_rpi
+	file=ArchLinuxARM-rpi-
 	case $bit in
 		1 )
 			file+=aarch64-

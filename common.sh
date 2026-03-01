@@ -9,9 +9,14 @@ banner() {
     printf "\n%-${cols}s" "  $( echo $@ )"
     printf "\n%*s\e[0m\n\n" $cols
 }
-BOOT_ROOT.check() { # create-alarm.sh, image-create.sh
-	[[ $( lsblk -no fstype $part_B ) != vfat ]] && error+="$part_B : BOOT not vfat\n"
-	[[ $( lsblk -no fstype $part_R ) != ext4 ]] && error+="$part_R : ROOT not ext4\n"
+BOOT_ROOT.checkMount() { # create-alarm.sh, image-create.sh
+	banner Check Filesystem ...
+	if [[ ! $name ]]; then # not from +R.sh
+		[[ $( lsblk -no fstype $part_B ) != vfat ]] && error+="$part_B : BOOT not vfat\n"
+		[[ $( lsblk -no fstype $part_R ) != ext4 ]] && error+="$part_R : ROOT not ext4\n"
+		[[ $error ]] && errorExit $error
+#----------------------------------------------------------------------------
+	fi
 	fsck.fat -taw $part_B
 	e2fsck -p $part_R
 	BOOT_ROOT.mount

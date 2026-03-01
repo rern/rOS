@@ -50,8 +50,11 @@ fi
 #........................
 dialogSplash 'Create Image File'
 #........................
-. <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh ) # set $dev $part_R
-BOOT_ROOT.check # and mount
+. <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh )
+sd_card=( $( dialogSDcard ) )
+dev=${sd_card[0]}
+part_R=${sd_card[2]}
+BOOT_ROOT.checkMount
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
 [[ ! $release ]] && errorExit SD card $dev is not rAudio.
 #---------------------------------------------------------------
