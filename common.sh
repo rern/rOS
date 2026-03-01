@@ -29,8 +29,8 @@ BOOT_ROOT.mount() {
 	BOOT=$PWD/BOOT
 	ROOT=$PWD/ROOT
 	mkdir -p BOOT ROOT
-	mount ${partitions[0]} $BOOT
-	mount ${partitions[1]} $ROOT
+	mount $part_B $BOOT
+	mount $part_R $ROOT
 }
 dialogIP() {
 	local ip
