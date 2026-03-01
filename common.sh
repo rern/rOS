@@ -48,10 +48,6 @@ $1:
 " 8 0 0 "${list_menu[@]}" # h=8: exclude list box
 }
 dialogSDcard() { # [[ $1 ]] && echo /dev/sdX || echo /dev/sdX1 /dev/sdX2
-	BOOT=$PWD/BOOT
-	ROOT=$PWD/ROOT
-	[[ $part_b ]] && echo $part_B $part_R && return # already set from partition.sh
-#---------------------------------------------------------------
 	local dev devline error H l list list_BR list_check list_colored sd_part sL text
 #........................
 	dialog $opt_msg "

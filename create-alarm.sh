@@ -3,16 +3,13 @@
 # default download to: /root
 trap BOOT_ROOT.unmount SIGINT EXIT
 
+BOOT=$PWD/BOOT
+ROOT=$PWD/ROOT
 alarm_rpi=ArchLinuxARM-rpi-
 ip_base=$( ipBase )
-if [[ $part_B ]] ; then
-	partition_sh=$1
-else
-	. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
-fi
-#........................
-if [[ $partition_sh ]]; then
+if [[ $partitions ]]; then # continue from partiton.sh
 	files_alarm=$alarm_rpi*.tar.gz
+#........................
 	[[ ! $( ls $files_alarm ) ]] && dialog $opt_yesno "
 No $files_alarm in current \Z1$PWD\Zn
 
@@ -20,20 +17,23 @@ Continue in $PWD?
 
 " 0 0 || exit
 #----------------------------------------------------------------------------
+else
+	. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 fi
-#........................
-dialogSplash 'Write \Z1Arch Linux ARM\Zn'
-# required packages
-for cmd in bsdtar dialog nmap pv;do
+for cmd in bsdtar dialog nmap pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
 if [[ $packages ]]; then
 	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
 #........................
-partitions=$( dialogSDcard ) # set $BOOT $ROOT
-part_B=${partitions[0]}
-part_R=${partitions[1]}
+dialogSplash 'Write \Z1Arch Linux ARM\Zn'
+#........................
+if [[ ! $partitions ]]; then
+	partitions=$( dialogSDcard )
+	part_B=${partitions[0]}
+	part_R=${partitions[1]}
+fi
 fsck.fat -taw $part_B
 e2fsck -p $part_R
 BOOT_ROOT.mount
