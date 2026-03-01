@@ -4,7 +4,9 @@
 trap BOOT_ROOT.unmount SIGINT EXIT
 
 alarm_rpi=ArchLinuxARM-rpi-
-if [[ $partitions ]]; then # continue from partiton.sh
+https_rern='https://github.com/rern'
+https_ros_main="$https_rern/rOS/raw/main"
+if [[ $part_B ]]; then # continue from partiton.sh
 	files_alarm=$alarm_rpi*.tar.gz
 #........................
 	[[ ! $( ls $files_alarm ) ]] && dialog $opt_yesno "
@@ -15,7 +17,7 @@ Continue in $PWD?
 " 0 0 || exit
 #----------------------------------------------------------------------------
 else
-	. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
+	. <( curl -sL $https_ros_main/common.sh )
 fi
 for cmd in bsdtar dialog nmap pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
@@ -25,36 +27,20 @@ if [[ $packages ]]; then
 fi
 #........................
 dialogSplash 'Write \Z1Arch Linux ARM\Zn'
-BOOT=$PWD/BOOT
-ROOT=$PWD/ROOT
-ip_base=$( ipBase )
 #........................
-if [[ ! $partitions ]]; then
-	partitions=( $( dialogSDcard ) )
-	part_B=${partitions[0]}
-	part_R=${partitions[1]}
+if [[ ! $part_B ]]; then
+	get_partition=1
+	. <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $part_B $part_R
 fi
-fsck.fat -taw $part_B
-e2fsck -p $part_R
-BOOT_ROOT.mount
-src_mp_fsB=( $( mount | awk '/^'${part_B//\//\\/}'/ {print $1" "$3" "$5}' ) ) # source mountpoint fstype
-src_mp_fsR=( $( mount | awk '/^'${part_R//\//\\/}'/ {print $1" "$3" "$5}' ) )
-# check empty to prevent wrong partitions
-[[ $( ls ${src_mp_fsB[1]} ) ]] && error+="${src_mp_fsB[0]} not empty\n"
-[[ $( ls ${src_mp_fsR[1]} | grep -v lost+found ) ]] && error+="${Rsrc_mp_fsRT[0]} not empty\n"
-# check fstype
-[[ ${src_mp_fsB[2]} != vfat ]] && error+="${src_mp_fsB[0]} not fat32\n"
-[[ ${src_mp_fsR[2]} != ext4 ]] && error+="${src_mp_fsR[0]} not ext4\n"
-[[ $error ]] && errorExit "Parttition:\n$error"
-#----------------------------------------------------------------------------
+BOOT_ROOT.check # and mount
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
-	latest=$( curl -sL https://github.com/rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
+	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
 #........................
 	release=$( dialog $opt_input "
  \Z1r\ZnAudio release:
 " 0 0 $latest )
-	if ! curl -sIfo /dev/null 'https://github.com/rern/rAudio/releases/tag/'$release; then
+	if ! curl -sIfo /dev/null $https_rern/rAudio/releases/tag/$release; then
 		errorExit rAudio $release not found
 #----------------------------------------------------------------------------
 	fi
@@ -171,6 +157,7 @@ scanIP() {
 	dialog $opt_info "
   Scan hosts in network ...
 " 5 50
+	ip_base=$( ipBase )
 	lines=$( nmap -sn $ip_base* \
 				| grep '^Nmap scan\|^MAC' \
 				| paste -sd ' \n' \
@@ -390,7 +377,7 @@ sed -i -e 's/#\(PermitRootLogin \).*/\1yes/
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # get create-ros.sh
-wget -q https://github.com/rern/rOS/raw/main/create-ros.sh -P $ROOT/root
+wget -q $https_ros_main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
 BOOT_ROOT.unmount
 trap -- SIGINT EXIT

@@ -62,9 +62,6 @@ if [[ ! -e /boot/kernel.img ]]; then # skip on rpi 0, 1
 	curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
 fi
 rm -rf /root/.config/chromium
-echo -e "$bar Check Filesystems ..."
-fsck.fat -taw /dev/mmcblk0p1
-e2fsck -p /dev/mmcblk0p2
 echo -e "
 $bar rAudio reset done.
 

@@ -3,10 +3,8 @@
 #........................
 dialogSplash 'Partition SD Card'
 #........................
-dev=$( dialogSDcard dev )
-part_B=${dev}1
-part_R=${dev}2
-umount $part_B $part_R 2> /dev/null
+https_ros_main='https://github.com/rern/rOS/raw/main'
+. <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $dev $part_B $part_R
 wipefs -a $dev
 mb_B=300
 mb_R=6400
@@ -22,4 +20,4 @@ mkfs.ext4 -F $part_R
 fatlabel $part_B BOOT
 e2label $part_R ROOT
 partitions="$part_B $part_R"
-. <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
+. <( curl -sL $https_ros_main/create-alarm.sh )

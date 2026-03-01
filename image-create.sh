@@ -5,13 +5,13 @@ trap BOOT_ROOT.unmount SIGINT EXIT
 
 shrink() {
 	echo -e "$bar Shrink Pass #$1 ...\n"
-	partinfo=$( tune2fs -l $partroot )
+	partinfo=$( tune2fs -l $part_R )
 	blockcount=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
 	freeblocks=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
 	blocksize=$( awk '/Block size/ {print $NF}' <<< "$partinfo" )
 
 	sectorsize=$( sfdisk -l $dev | awk '/Units/ {print $8}' )
-	startsector=$( fdisk -l $dev | grep $partroot | awk '{print $2}' )
+	startsector=$( fdisk -l $dev | grep $part_R | awk '{print $2}' )
 
 	usedblocks=$(( blockcount - freeblocks ))
 	targetblocks=$(( usedblocks * 105 / 100 ))
@@ -24,7 +24,7 @@ shrink() {
 		echo Already reached minimum size.
 	else
 		# shrink filesystem to minimum
-		resize2fs -fp $partroot $(( newsize * Kblock ))K
+		resize2fs -fp $part_R $(( newsize * Kblock ))K
 		parted $dev ---pretend-input-tty <<EOF
 unit
 s
@@ -49,14 +49,11 @@ else
 fi
 #........................
 dialogSplash 'Create Image File'
-BOOT=$PWD/BOOT
-ROOT=$PWD/ROOT
 #........................
-partitions=$( dialogSDcard )
-BOOT_ROOT.mount
-dev=${partitions[0]:0:-1}
+. <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh ) # set $dev $part_R
+BOOT_ROOT.check # and mount
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
-[[ ! $release ]] && BOOT_ROOT.unmount && errorExit SD card $dev is not rAudio.
+[[ ! $release ]] && errorExit SD card $dev is not rAudio.
 #---------------------------------------------------------------
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
@@ -71,8 +68,8 @@ Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 touch $BOOT/expand # auto expand root partition
 BOOT_ROOT.unmount
-partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )
-used=$( df -k 2> /dev/null | grep $partroot | awk '{print $3}' )
+partsize=$( fdisk -l $part_R | awk '/^Disk/ {print $2" "$3}' )
+used=$( df -k 2> /dev/null | grep $part_R | awk '{print $3}' )
 shrink 1
 shrink 2
 #........................
