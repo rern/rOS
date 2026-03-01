@@ -21,10 +21,7 @@ fi
 dialogSplash 'Write \Z1Arch Linux ARM\Zn'
 . <( curl -sL $https_ros_main/dialog_sdcard.sh )
 #........................
-sd_card=( $( dialogSDcard ) )
-dev=${sd_card[0]}
-part_B=${sd_card[1]}
-part_R=${sd_card[2]}
+dialogSDcard # set $dev $part_B $part_R
 if [[ $name ]]; then                         # from +R.sh
 #........................
     banner Partition SD Card ...

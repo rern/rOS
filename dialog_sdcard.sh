@@ -1,7 +1,7 @@
 #!/bin/bash
 
 dialogSDcard() { # for create-alarm.sh, image-create.sh
-	local dev devline error H l list list_BR list_check list_colored part sd_part sL text
+	local devline error H l list list_BR list_check list_colored part dev_part sL text
 #........................
 	dialog $opt_msg "
 Insert \Z1USB reader + SD card\Zn or \Z1SD card\Zn
@@ -38,12 +38,12 @@ Press \Zr Enter \ZR to continue
 	fi
 	H=$(( $( wc -l <<< $list ) + 9 ))
 #........................
-	sd_part=$( dialog $opt_check "
+	dev_part=$( dialog $opt_check "
 $list_colored
 
 Select/Click \Z1$text\Zn to comfirm:
 " $H 0 0 "${list_check[@]}" | sed 's/ .*//' ) # h=8: exclude list box
-	sL=$( awk NF <<< $sd_part | wc -l )
+	sL=$( awk NF <<< $dev_part | wc -l )
 	if (( $sL == 0 )); then
 		error+=None
 	else
@@ -63,20 +63,20 @@ Select/Click \Z1$text\Zn to comfirm:
 \Z1Select $text error:\Zn
 
 $error selected:
-$sd_part
+$dev_part
 " 0 0 && dialogSDcard $1
 	else
 		if [[ $get_partition ]]; then
-			part=( $sd_part )
+			part=( $dev_part )
 			part_B=${part[0]}
 			part_R=${part[1]}
-            [[ $part_B == /dev/sd* ]] && dev=${part_B:0:1} || dev=${part_B:0:2}
+            dev=${part_B:0:-1}
+            [[ $dev == /dev/mmc* ]] && dev=${dev:0:-1}
 		else
-			[[ $sd_part == /dev/sd* ]] && dev=$sd_part || dev=${sd_part}p
+            dev=$dev_part
+			[[ $dev == /dev/mmc* ]] && dev+=p
 			part_B=${dev}1
 			part_R=${dev}2
 		fi
-        echo $dev $part_B $part_R
 	fi
-
 }
