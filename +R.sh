@@ -22,7 +22,7 @@ if [[ $task == 2 || $task == 7 ]]; then
 	sed -i "/$rpiip/ d" ~/.ssh/known_hosts
 	sshpass -p ros ssh -t -o StrictHostKeyChecking=no root@$rpiip $image_reset_sh
 else
-	names=( '' partition reset image-create image-upload distcc-client docker )
+	names=( '' create-alarm reset image-create image-upload distcc-client docker )
 	name=${names[$task]}
 	(( $task < 5 )) && repo=rOS || repo=rern.github.io
 	. <( curl -sL "https://github.com/rern/$repo/raw/main/$name.sh" )

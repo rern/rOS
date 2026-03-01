@@ -3,10 +3,29 @@
 # default download to: /root
 trap BOOT_ROOT.unmount SIGINT EXIT
 
+if [[ $name ]]; then
+#........................
+    dialogSplash 'Partition SD Card'
+    https_ros_main='https://github.com/rern/rOS/raw/main'
+#........................
+    . <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $dev $part_B $part_R
+    wipefs -a $dev
+    mb_B=300
+    mb_R=6400
+    size_B=$(( mb_B * 2048 ))
+    size_R=$(( mb_R * 2048 ))
+    start_R=$(( 2048 + size_B ))
+    echo "\
+    $part_B : start=     2048, size= $size_B, type=c
+    $part_R : start= $start_R, size= $size_R, type=83
+    " | sfdisk $dev # existing: fdisk -d /dev/sdX
+    mkfs.fat -F 32 $part_B
+    mkfs.ext4 -F $part_R
+    fatlabel $part_B BOOT
+    e2label $part_R ROOT
+fi
 alarm_rpi=ArchLinuxARM-rpi-
-https_rern='https://github.com/rern'
-https_ros_main="$https_rern/rOS/raw/main"
-if [[ $part_B ]]; then # continue from partiton.sh
+if [[ $part_B ]]; then
 	files_alarm=$alarm_rpi*.tar.gz
 #........................
 	[[ ! $( ls $files_alarm ) ]] && dialog $opt_yesno "
@@ -16,8 +35,6 @@ Continue in $PWD?
 
 " 0 0 || exit
 #----------------------------------------------------------------------------
-else
-	. <( curl -sL $https_ros_main/common.sh )
 fi
 for cmd in bsdtar dialog nmap pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
@@ -27,6 +44,8 @@ if [[ $packages ]]; then
 fi
 #........................
 dialogSplash 'Write \Z1Arch Linux ARM\Zn'
+https_rern='https://github.com/rern'
+https_ros_main="$https_rern/rOS/raw/main"
 #........................
 if [[ ! $part_B ]]; then
 	get_partition=1
