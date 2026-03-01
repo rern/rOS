@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # default download to: /root
-trap BOOT_ROOT.unmount SIGINT EXIT
+trap 'BOOT_ROOT.unmount; exit' EXIT
 
 for cmd in bsdtar dialog nmap pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
@@ -391,7 +391,7 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 wget -q $https_ros_main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
 BOOT_ROOT.unmount
-trap -- SIGINT EXIT
+trap -- EXIT
 #........................
 dialog $opt_msg "
 

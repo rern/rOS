@@ -1,6 +1,7 @@
 #!/bin/bash
 
 . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
+
 #........................
 dialogSplash 'Image Utilities'
 #........................

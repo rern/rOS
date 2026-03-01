@@ -95,6 +95,7 @@ ipBase() {
 
 bar='\e[44m  \e[0m'
 # --keep-tite        clear dialog screen after
+# --nocancel         (center <OK>)
 # --no-collapse      keep spaces and tabs
 # --no-items         no leading N
 # --output-fd 1      capture stdout
@@ -102,8 +103,8 @@ bar='\e[44m  \e[0m'
 option='--backtitle rAudio --colors --keep-tite --no-collapse --no-shadow --output-fd 1'
 opt_check="$option --no-items --separate-output --checklist" # select multiple
 opt_guage="$option --guage"                                  # no buttons
-opt_input="$option --nocancel --inputbox"                    # (--nocancel: center <OK>)
+opt_input="$option --nocancel --inputbox"
  opt_info="$option --sleep 1 --infobox"                      # no buttons
- opt_menu="$option --menu"                                   # select single
+ opt_menu="$option --nocancel --menu"                        # select single
   opt_msg="$option --msgbox"                                 # <OK> only
 opt_yesno="$option --yesno"                                  # <Yes> <No>

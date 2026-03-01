@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # write to: /root/rAudio-*.img.xz
-trap BOOT_ROOT.unmount SIGINT EXIT
+trap 'BOOT_ROOT.unmount; exit' EXIT
 
 shrink() {
 	echo -e "$bar Shrink Pass #$1 ...\n"
