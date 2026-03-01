@@ -1,10 +1,5 @@
 #!/bin/bash
 
-trap BOOT_ROOT.unmount SIGINT EXIT
-
-label=$( mount | grep -E '/dev.*BOOT |/dev.*ROOT ' )
-[[ $label ]] && errorExit "Partition label exist:\n$label"
-#-------------------------------------------------------------
 #........................
 dialogSplash 'Partition SD Card'
 #........................
@@ -13,20 +8,17 @@ part_B=${dev}1
 part_R=${dev}2
 umount $part_B $part_R 2> /dev/null
 wipefs -a $dev
-mbB=300
-mbR=6400
-sizeB=$(( mbB * 2048 ))
-sizeR=$(( mbR * 2048 ))
-startR=$(( 2048 + sizeB ))
+mb_B=300
+mb_R=6400
+size_B=$(( mb_B * 2048 ))
+size_R=$(( mb_R * 2048 ))
+start_R=$(( 2048 + size_B ))
 echo "\
-$part_B : start=    2048, size= $sizeB, type=c
-$part_R : start= $startR, size= $sizeR, type=83
-" | sfdisk $dev # list: fdisk -d /dev/sdX
-umount $part_B $part_R 2> /dev/null
+$part_B : start=     2048, size= $size_B, type=c
+$part_R : start= $start_R, size= $size_R, type=83
+" | sfdisk $dev # existing: fdisk -d /dev/sdX
 mkfs.fat -F 32 $part_B
 mkfs.ext4 -F $part_R
-fsck.fat -taw $part_B
-e2fsck -p $part_R
 fatlabel $part_B BOOT
 e2label $part_R ROOT
 . <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )

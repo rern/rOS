@@ -14,7 +14,7 @@ fi
 if [[ $partition_sh ]]; then
 	files_alarm=$alarm_rpi*.tar.gz
 	[[ ! $( ls $files_alarm ) ]] && dialog $opt_yesno "
-No $files_alarm in \Z1$PWD\Zn
+No $files_alarm in current \Z1$PWD\Zn
 
 Continue in $PWD?
 
@@ -30,17 +30,13 @@ done
 if [[ $packages ]]; then
 	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
-BOOT=$PWD/BOOT
-ROOT=$PWD/ROOT
-if [[ $part_B ]]; then
-	partitions=( $part_B $part_R )
-else
 #........................
-	partitions=$( dialogSDcard )
-	part_B=${partitions[0]}
-	part_R=${partitions[1]}
-fi
-! mount | grep -q '/dev.*BOOT ' && BOOT_ROOT.mount
+partitions=$( dialogSDcard ) # set $BOOT $ROOT
+part_B=${partitions[0]}
+part_R=${partitions[1]}
+fsck.fat -taw $part_B
+e2fsck -p $part_R
+BOOT_ROOT.mount
 src_mp_fsB=( $( mount | awk '/^'${part_B//\//\\/}'/ {print $1" "$3" "$5}' ) ) # source mountpoint fstype
 src_mp_fsR=( $( mount | awk '/^'${part_R//\//\\/}'/ {print $1" "$3" "$5}' ) )
 # check empty to prevent wrong partitions

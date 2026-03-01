@@ -50,9 +50,7 @@ fi
 #........................
 dialogSplash 'Create Image File'
 #........................
-BOOT=$PWD/BOOT
-ROOT=$PWD/ROOT
-partitions=$( dialogSDcard )
+partitions=$( dialogSDcard ) # set $BOOT $ROOT
 BOOT_ROOT.mount
 dev=${partitions[0]:0:-1}
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
