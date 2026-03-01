@@ -32,7 +32,6 @@ declare -A mdl_rpi=(
 	[64bit]='`5` `4` `3` `2 (64bit)` `Zero2`'
 	[32bit]='`3` `2`'
 	[Legacy]='`1` `Zero`' )
-clear -x
 #........................
 banner S H A - 2 5 6
 for model in $models; do

@@ -287,7 +287,6 @@ if [[ -e $file ]]; then
  No download required.
  
 " 0 0
-	sleep 2
 else
 #........................
 	( wget -O $file $url/$file 2>&1 \
@@ -449,8 +448,6 @@ EOF
   SSH Arch Linux ARM ...
   @ \Z1$ip_assigned\Zn
 " 9 50
-		sleep 3
-		clear -x
 		sshRpi $ip_assigned
 	else
 		scanIP

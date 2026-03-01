@@ -69,7 +69,6 @@ fi
 file_img=$( dialog $opt_input "
 Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
-clear -x
 touch $BOOT/expand # auto expand root partition
 BOOT_ROOT.unmount
 partsize=$( fdisk -l $partroot | awk '/^Disk/ {print $2" "$3}' )

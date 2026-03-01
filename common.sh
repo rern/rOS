@@ -137,11 +137,8 @@ dialogSplash() { # dialog --infobox
 	dialog $opt_info "
 $txt
 " $H $W
-	sleep 1
-	clear -x
 }
 errorExit() {
-	clear -x
 	banner E r r o r
 	echo -e "\e[41m ! \e[0m $@\n"
 	exit
@@ -153,11 +150,16 @@ ipBase() {
 }
 
 bar='\e[44m  \e[0m'
-option='--backtitle rAudio --colors --nocancel --no-collapse --no-shadow --output-fd 1' # --output-fd 1: stdout
-opt_check="$option --no-items --separate-output --checklist" # select multiple            --no-items   : no leading N, multiline output
-opt_guage="$option --guage"               # no buttons
-opt_input="$option --inputbox"            # input with button (--nocancel=hide)
- opt_menu="$option --menu"                # select single
- opt_info="$option --infobox"             # no buttons, use 'sleep N' to delay continue
-  opt_msg="$option --msgbox"              # ok button only
-opt_yesno="${option/ --nocancel} --yesno" # Yes and No buttons
+# --keep-tite        clear dialog screen after
+# --no-collapse      keep spaces and tabs
+# --no-items         no leading N
+# --output-fd 1      capture stdout
+# --separate-output  multiline stdout
+option='--backtitle rAudio --colors --keep-tite --no-collapse --no-shadow --output-fd 1'
+opt_check="$option --no-items --separate-output --checklist" # select multiple
+opt_guage="$option --guage"                                  # no buttons
+opt_input="$option --nocancel --inputbox"                    # (--nocancel: center <OK>)
+ opt_info="$option --sleep 1 --infobox"                      # no buttons
+ opt_menu="$option --menu"                                   # select single
+  opt_msg="$option --msgbox"                                 # <OK> only
+opt_yesno="$option --yesno"                                  # <Yes> <No>

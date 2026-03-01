@@ -11,7 +11,6 @@ dialogSplash 'Partition SD Card'
 dev=$( dialogSDcard dev )
 part_B=${dev}1
 part_R=${dev}2
-clear -x
 umount $part_B $part_R 2> /dev/null
 wipefs -a $dev
 mbB=300

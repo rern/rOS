@@ -26,7 +26,6 @@ dirnas=/mnt/MPD/NAS
 dirusb=/mnt/MPD/USB
 mount | grep $dirnas && umount -l "$dirnas/"*
 mount | grep $dirusb && udevil umount -l "$dirusb/"*
-clear -x
 if selected database; then
 	echo -e "$bar Reset MPD database ..."
 	rm -f $dirdata/mpd/*
