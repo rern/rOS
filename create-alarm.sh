@@ -3,10 +3,7 @@
 # default download to: /root
 trap BOOT_ROOT.unmount SIGINT EXIT
 
-BOOT=$PWD/BOOT
-ROOT=$PWD/ROOT
 alarm_rpi=ArchLinuxARM-rpi-
-ip_base=$( ipBase )
 if [[ $partitions ]]; then # continue from partiton.sh
 	files_alarm=$alarm_rpi*.tar.gz
 #........................
@@ -28,9 +25,12 @@ if [[ $packages ]]; then
 fi
 #........................
 dialogSplash 'Write \Z1Arch Linux ARM\Zn'
+BOOT=$PWD/BOOT
+ROOT=$PWD/ROOT
+ip_base=$( ipBase )
 #........................
 if [[ ! $partitions ]]; then
-	partitions=$( dialogSDcard )
+	partitions=( $( dialogSDcard ) )
 	part_B=${partitions[0]}
 	part_R=${partitions[1]}
 fi

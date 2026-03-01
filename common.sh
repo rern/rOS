@@ -51,7 +51,7 @@ dialogSDcard() { # [[ $1 ]] && echo /dev/sdX || echo /dev/sdX1 /dev/sdX2
 	local dev devline error H l list list_BR list_check list_colored sd_part sL text
 #........................
 	dialog $opt_msg "
-\Z1Insert USB reader + SD card / SD card\Zn
+Insert \Z1USB reader + SD card\Zn or \Z1SD card\Zn
 
 If already inserted:
 Remove and reinsert for proper detection.
