@@ -1,48 +1,48 @@
 #!/bin/bash
 
-dialogSDcard() { # for create-alarm.sh, image-create.sh
-	local devline error H l list list_BR list_check list_colored part dev_part sL text
+# for create-alarm.sh, image-create.sh
+dialogSDcard() {
+	local dev_gib error H i l line_lsblk list_BR list_check list_colored part dev_part sL txt_confirm
 #........................
-	dialog $opt_msg "
-Insert \Z1USB reader + SD card\Zn or \Z1SD card\Zn
+	dialog ${option/ --keep-tite} --infobox "
+Insert \Z1SD card\Zn / USB drive
 
-If already inserted:
-Remove and reinsert for proper detection.
+If already inserted, remove and reinsert.
 
-Press \Zr Enter \ZR to continue
 " 0 0
-	for i in {0..3}; do
-		devline=$( dmesg | tail | grep -m1 -E '] sd.* GiB|] mmcblk.* GiB' )
-		[[ $devline ]] && break || sleep 1
-	done
-	[[ ! $devline ]] && errorExit No SD card found
+	while read l; do
+		dev_gib=$( grep -m1 -E '^(sd|mmcblk).* GiB' <<< $l )
+		[[ $dev_gib ]] && break
+	done < <( timeout 30 dmesg -tW )
+	[[ ! $dev_gib ]] && errorExit 'No SD card found (30s timeout)'
 #---------------------------------------------------------------
-	if [[ $devline == *mmcblk* ]]; then
-		dev=$( sed 's/:.*//; s/.* //' <<< $devline )    # ...] mmcblkN: mmcN:0001 SD32G 29.7 GiB
+	tput cup 0 0 && tput ed
+	if [[ $dev_gib == sd* ]]; then
+		dev=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
 	else
-		dev=$( awk -F'[][]' '{print $4}' <<< $devline ) # ...] sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
+		dev=${dev_gib/:*}                               # mmcblkN: mmcN:0001 SD32G 29.7 GiB
 	fi
-	list=$( lsblk -po name,label,size,mountpoint )
+	line_lsblk=$( lsblk -po name,label,size,mountpoint )
 	list_colored=$( sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
 					' -e "/^.dev.$dev/ {s/^/\\\Z1/; s/$/\\\Zn/}
-					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $list )
+					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	if [[ $get_partition ]]; then
-		text='BOOT\Zn and \Z1ROOT'
-		list_BR=$( grep -E ' BOOT | ROOT ' <<< $list | sed -n '/^..\// {s/^..//; s/\s*$//; p}' )
+		txt_confirm='BOOT\Zn and \Z1ROOT'
+		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk | sed -n '/^..\// {s/^..//; s/\s*$//; p}' )
 		while read l; do
 			list_check+=( "$l" off )
 		done <<< $list_BR
 	else # get dev
-		text='SD card'
-		list_check+=( "$( grep ^/dev/$dev <<< $list )" off )
+		txt_confirm='SD card'
+		list_check+=( "$( grep ^/dev/$dev <<< $line_lsblk )" off )
 	fi
-	H=$(( $( wc -l <<< $list ) + 9 ))
+	H=$(( $( wc -l <<< $line_lsblk ) + 9 ))
 #........................
 	dev_part=$( dialog $opt_check "
 $list_colored
 
-Select/Click \Z1$text\Zn to comfirm:
-" $H 0 0 "${list_check[@]}" | sed 's/ .*//' ) # h=8: exclude list box
+Select \Z1$txt_confirm\Zn to comfirm:
+" $H 0 0 "${list_check[@]}" | sed 's/ .*//' )
 	sL=$( awk NF <<< $dev_part | wc -l )
 	if (( $sL == 0 )); then
 		error+=None
@@ -60,7 +60,7 @@ Select/Click \Z1$text\Zn to comfirm:
 	if [[ $error ]]; then
 #........................
 		dialog $opt_msg "
-\Z1Select $text error:\Zn
+\Z1Select $txt_confirm error:\Zn
 
 $error selected:
 $dev_part
@@ -80,3 +80,5 @@ $dev_part
 		fi
 	fi
 }
+
+dialogSDcard

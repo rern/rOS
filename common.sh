@@ -10,14 +10,18 @@ banner() {
     printf "\n%*s\e[0m\n\n" $cols
 }
 BOOT_ROOT.checkMount() { # create-alarm.sh, image-create.sh
-	banner Check Filesystem ...
+	banner Check Partitions ...
+	lbl_partB="BOOT: $part_B"
+	lbl_partR="ROOT: $part_R"
 	if [[ ! $name ]]; then # not from +R.sh
-		[[ $( lsblk -no fstype $part_B ) != vfat ]] && error+="$part_B : BOOT not vfat\n"
-		[[ $( lsblk -no fstype $part_R ) != ext4 ]] && error+="$part_R : ROOT not ext4\n"
+		[[ $( lsblk -no fstype $part_B ) != vfat ]] && error+="$lbl_partB not vfat\n"
+		[[ $( lsblk -no fstype $part_R ) != ext4 ]] && error+="$lbl_partR not ext4\n"
 		[[ $error ]] && errorExit $error
 #----------------------------------------------------------------------------
 	fi
+	echo -e "$bar $lbl_partB ..."
 	fsck.fat -taw $part_B
+	echo -e "$bar $lbl_partR ..."
 	e2fsck -p $part_R
 	BOOT_ROOT.mount
 }
@@ -61,7 +65,7 @@ dialogMenu() { # dialog --menu $1=title $2=multiline list
 $1:
 " 8 0 0 "${list_menu[@]}" # h=8: exclude list box
 }
-dialogSplash() { # dialog --infobox
+dialogSplash() {
 	local H h i l line pad txt W w
 	H=9
 	W=58
@@ -76,7 +80,7 @@ dialogSplash() { # dialog --infobox
 		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
 		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
 		txt+="$( printf '%*s' $w )$line\n"
-	done <<< $1
+	done <<< $@
 #........................
 	dialog $opt_info "
 $txt
@@ -108,3 +112,4 @@ opt_input="$option --nocancel --inputbox"
  opt_menu="$option --nocancel --menu"                        # select single
   opt_msg="$option --msgbox"                                 # <OK> only
 opt_yesno="$option --yesno"                                  # <Yes> <No>
+# dialog with button - auto fit height=8 exclude list box

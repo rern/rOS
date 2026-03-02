@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# write to: /root/rAudio-*.img.xz
-trap 'BOOT_ROOT.unmount; exit' EXIT
+trap 'BOOT_ROOT.unmount' EXIT
 
 shrink() {
 	echo -e "$bar Shrink Pass #$1 ...\n"
@@ -49,9 +48,7 @@ else
 fi
 #........................
 dialogSplash 'Create Image File'
-. <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh )
-#........................
-dialogSDcard # set $dev $part_B $part_R
+. <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh ) # set $dev $part_B $part_R
 BOOT_ROOT.checkMount
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
 [[ ! $release ]] && errorExit SD card $dev is not rAudio.

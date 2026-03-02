@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# default download to: /root
-trap 'BOOT_ROOT.unmount; exit' EXIT
-
 for cmd in bsdtar dialog nmap pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
@@ -13,16 +10,15 @@ fi
 alarm_rpi=ArchLinuxARM-rpi-
 https_rern='https://github.com/rern'
 https_ros_main="$https_rern/rOS/raw/main"
-if [[ ! $name ]]; then                        # not from +R.sh
+if [[ ! $task ]]; then # not from +R.sh
 	get_partition=1 # for dialogSDcard
 	. <( curl -sL $https_ros_main/common.sh )
 fi
+trap 'BOOT_ROOT.unmount' EXIT
 #........................
 dialogSplash 'Write \Z1Arch Linux ARM\Zn'
-. <( curl -sL $https_ros_main/dialog_sdcard.sh )
-#........................
-dialogSDcard # set $dev $part_B $part_R
-if [[ $name ]]; then                         # from +R.sh
+. <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $dev $part_B $part_R
+if [[ $task ]]; then # from +R.sh
 #........................
     banner Partition SD Card ...
     wipefs -a $dev
@@ -387,7 +383,6 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # get create-ros.sh
 wget -q $https_ros_main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
-BOOT_ROOT.unmount
 #........................
 dialog $opt_msg "
 
@@ -399,6 +394,7 @@ dialog $opt_msg "
 $( date -d@$SECONDS -u +%M:%S )
 " 12 58
 [[ ${partuuidB:0:-3} != ${partuuidR:0:-3} ]] && usb=' and USB drive'
+BOOT_ROOT.unmount
 #........................
 dialog $opt_msg "
 \Z1Arch Linux ARM\Zn : Ready

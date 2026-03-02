@@ -1,5 +1,7 @@
 #!/bin/bash
 
+trap 'rm -f /var/lib/pacman/db.lck' EXIT
+
 . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
 #........................
@@ -30,7 +32,6 @@ if [[ -e /boot/kernel8.img ]]; then
 	grep -q uboot-raspberrypi <<< $pkgs && remove+=' uboot-raspberrypi'
 	! grep -q linux-rpi <<< $pkgs && packages+=' linux-rpi'
 fi
-rm -f /var/lib/pacman/db.lck  # in case of rerun
 pacman -Rdd --noconfirm $remove
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
@@ -211,8 +212,7 @@ rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
 	  /root/create-ros.sh
 echo -e "
-$bar rAudio created successfully. ( $( date -d@$SECONDS -u +%M:%S ) )
-
-Reboot ...
+$bar rAudio created successfully » Reboot ...
+$( date -d@$SECONDS -u +%M:%S )
 "
 reboot
