@@ -76,7 +76,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- USB drive only
 	
 **Option 1: Micro SD card only**
-- 4GB+ (shoule be at least class 10 or U1)
+- 4GB+ (should be at least class 10 or U1)
 - `Unmount` > `Delete` all partitions (make sure it's the micro SD card)
 - Create partitions:
 	| No.| Size        | Type    | Format | Label |
@@ -109,7 +109,6 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 			| (any) | 4000MiB     | primary | ext4   | ROOT  |
 			
 **Option 3: USB drive only**
-
 - Not for Raspberry Pi Zero, 1
 - Suitable for faster-than-SD-card drives.
 - Normal hard drive needs external power, e.g., powered USB hub, to have it spin up 5+ seconds before boot.

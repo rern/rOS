@@ -47,7 +47,7 @@ else
 	[[ $packages ]] && apt install -y $packages
 fi
 #........................
-dialogSplash 'Create Image File'
+dialogSplash Image File
 . <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh ) # set $dev $part_B $part_R
 BOOT_ROOT.checkMount
 release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
@@ -68,6 +68,8 @@ touch $BOOT/expand # auto expand root partition
 BOOT_ROOT.unmount
 partsize=$( fdisk -l $part_R | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $part_R | awk '{print $3}' )
+#........................
+banner Shrink ROOT
 shrink 1
 shrink 2
 #........................

@@ -3,8 +3,8 @@
 # for create-alarm.sh, image-create.sh
 dialogSDcard() {
 	local dev_gib error H i l line_lsblk list_BR list_check list_colored part dev_part sL txt_confirm
-#........................
-	dialog ${option/ --keep-tite} --infobox "
+#........................ (no --sleep 1)
+	dialog $option --infobox "
 Insert \Z1SD card\Zn / USB drive
 
 If already inserted, remove and reinsert.
@@ -16,7 +16,6 @@ If already inserted, remove and reinsert.
 	done < <( timeout 30 dmesg -tW )
 	[[ ! $dev_gib ]] && errorExit 'No SD card found (30s timeout)'
 #---------------------------------------------------------------
-	tput cup 0 0 && tput ed
 	if [[ $dev_gib == sd* ]]; then
 		dev=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
 	else
@@ -27,13 +26,13 @@ If already inserted, remove and reinsert.
 					' -e "/^.dev.$dev/ {s/^/\\\Z1/; s/$/\\\Zn/}
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	if [[ $get_partition ]]; then
-		txt_confirm='BOOT\Zn and \Z1ROOT'
+		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
 		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk | sed -n '/^..\// {s/^..//; s/\s*$//; p}' )
 		while read l; do
 			list_check+=( "$l" off )
 		done <<< $list_BR
 	else # get dev
-		txt_confirm='SD card'
+		txt_confirm='\Z1SD card\Zn / USB drive'
 		list_check+=( "$( grep ^/dev/$dev <<< $line_lsblk )" off )
 	fi
 	H=$(( $( wc -l <<< $line_lsblk ) + 9 ))
@@ -41,7 +40,7 @@ If already inserted, remove and reinsert.
 	dev_part=$( dialog $opt_check "
 $list_colored
 
-Select \Z1$txt_confirm\Zn to comfirm:
+Select $txt_confirm to comfirm:
 " $H 0 0 "${list_check[@]}" | sed 's/ .*//' )
 	sL=$( awk NF <<< $dev_part | wc -l )
 	if (( $sL == 0 )); then

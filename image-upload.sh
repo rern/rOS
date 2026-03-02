@@ -5,7 +5,7 @@ imager_json=rpi-imager.json
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 [[ ! $files_list ]] && errorExit No image files in $PWD
 #---------------------------------------------------------------
-dialogSplash 'Upload Image Files'
+dialogSplash Upload Image Files
 dir_raudio=/mnt/BIG/RPi/Git/rAudio
 #........................
 files_img=$( dialog $opt_check '

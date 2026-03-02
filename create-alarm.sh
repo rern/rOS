@@ -16,7 +16,7 @@ if [[ ! $task ]]; then # not from +R.sh
 fi
 trap 'BOOT_ROOT.unmount' EXIT
 #........................
-dialogSplash 'Write \Z1Arch Linux ARM\Zn'
+dialogSplash Arch Linux ARM
 . <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $dev $part_B $part_R
 if [[ $task ]]; then # from +R.sh
 #........................
@@ -394,7 +394,7 @@ dialog $opt_msg "
 $( date -d@$SECONDS -u +%M:%S )
 " 12 58
 [[ ${partuuidB:0:-3} != ${partuuidR:0:-3} ]] && usb=' and USB drive'
-BOOT_ROOT.unmount
+sync && BOOT_ROOT.unmount
 #........................
 dialog $opt_msg "
 \Z1Arch Linux ARM\Zn : Ready
@@ -404,7 +404,7 @@ dialog $opt_msg "
 ● Power on
 ● Press \Zr Enter \ZR to start boot timer » IP scan
 
-" 12 48
+" 12 52
 #........................
 ( for (( i = 1; i < sboot; i++ )); do
 	echo $(( i * 100 / sboot ))

@@ -7,7 +7,7 @@ selected() {
 }
 dirdata=/srv/http/data
 #........................
-dialogSplash 'Reset \Z1r\ZnAudio for Image'
+dialogSplash Reset for Image
 list_reset="\
 Reset MPD database
 Reset user data directory
@@ -26,6 +26,7 @@ dirnas=/mnt/MPD/NAS
 dirusb=/mnt/MPD/USB
 mount | grep $dirnas && umount -l "$dirnas/"*
 mount | grep $dirusb && udevil umount -l "$dirusb/"*
+clear -x
 if selected database; then
 	echo -e "$bar Reset MPD database ..."
 	rm -f $dirdata/mpd/*

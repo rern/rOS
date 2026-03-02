@@ -2,30 +2,28 @@
 
 . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
+https_rern='https://github.com/rern'
 #........................
-dialogSplash 'Image Utilities'
+dialogSplash Image Utilities
 list="\
-rAudio - Create^create-alarm
-rAudio - Reset for image
-Image  - Create^image-create
-Images - Upload^image-upload
-Distcc Client^distcc-client
+Create OS^create-alarm
+Reset for Image
+Create image^image-create
+Upload images^image-upload
+Distcc client^distcc-client
 Docker^docker
-SSH to rAudio"
+SSH"
 #........................
 task=$( dialogMenu 'Tasks' "$( sed 's/\^.*//' <<< $list )" )
+name=$( sed -n "$task {s/.*^//; p}" <<< $list )
 if [[ $task == 2 || $task == 7 ]]; then
-	if [[ $task == 2 ]]; then
 #........................
-		dialogSplash 'Reset for Image'
-		image_reset_sh='bash <( curl -sL https://github.com/rern/rOS/raw/main/image-reset.sh )'
-	fi
-#........................
+	dialogSplash $name
+	[[ $task == 2 ]] && image_reset_sh="bash <( curl -sL $https_rern/rOS/raw/main/image-reset.sh )"
 	rpiip=$( dialogIP 'rAudio IP' )
 	sed -i "/$rpiip/ d" ~/.ssh/known_hosts
 	sshpass -p ros ssh -t -o StrictHostKeyChecking=no root@$rpiip $image_reset_sh
 else
-	name=$( sed -n "$task {s/.*^//; p}" <<< $list )
 	(( $task < 5 )) && repo=rOS || repo=rern.github.io
-	. <( curl -sL "https://github.com/rern/$repo/raw/main/$name.sh" )
+	. <( curl -sL "$https_rern/$repo/raw/main/$name.sh" )
 fi

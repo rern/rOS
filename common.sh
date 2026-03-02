@@ -2,8 +2,9 @@
 
 # on rpi - create-ros.sh, image-reset.h: . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
-banner() {
+banner() { # should be used on start stdout to screen
 	local cols
+	clear -x
 	cols=$( tput cols )
     printf "\n\e[44m%*s" $cols
     printf "\n%-${cols}s" "  $( echo $@ )"
@@ -71,7 +72,7 @@ dialogSplash() {
 	W=58
 	h=$( wc -l <<< $1 )
 	pad=$(( ( H - h ) / 2 ))
-	for (( i=1; i < $pad; i++ )); do # i=1: after top border
+	for (( i=2; i < $pad; i++ )); do # i=2: after top border
 		txt+='\n'
 	done
 	while read -r line; do
@@ -80,11 +81,12 @@ dialogSplash() {
 		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
 		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
 		txt+="$( printf '%*s' $w )$line\n"
-	done <<< $@
+	done <<< "\
+\Z1r\ZnAudio
+
+$@"
 #........................
-	dialog $opt_info "
-$txt
-" $H $W
+	dialog $opt_info "$txt" $H $W
 }
 errorExit() {
 	banner E r r o r
@@ -97,6 +99,7 @@ ipBase() {
 	echo ${ip_router%.*}.
 }
 
+r_audio='\Z1r\ZnAudio'
 bar='\e[44m  \e[0m'
 # --keep-tite        clear dialog screen after
 # --nocancel         (center <OK>)
@@ -104,7 +107,7 @@ bar='\e[44m  \e[0m'
 # --no-items         no leading N
 # --output-fd 1      capture stdout
 # --separate-output  multiline stdout
-option='--backtitle rAudio --colors --keep-tite --no-collapse --no-shadow --output-fd 1'
+option='--backtitle rAudio --colors --no-collapse --no-shadow --output-fd 1'
 opt_check="$option --no-items --separate-output --checklist" # select multiple
 opt_guage="$option --guage"                                  # no buttons
 opt_input="$option --nocancel --inputbox"

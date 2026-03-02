@@ -5,7 +5,7 @@ trap 'rm -f /var/lib/pacman/db.lck' EXIT
 . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
 #........................
-dialogSplash 'Create \Z1r\ZnAudio'
+dialogSplash O S
 SECONDS=0
 features=$( cat /boot/features )
 #........................
@@ -213,6 +213,7 @@ rm -f /boot/{features,finish.sh,release} \
 	  /root/create-ros.sh
 echo -e "
 $bar rAudio created successfully » Reboot ...
+
 $( date -d@$SECONDS -u +%M:%S )
 "
 reboot
