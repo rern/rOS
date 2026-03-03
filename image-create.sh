@@ -51,9 +51,10 @@ dialogSplash Image File
 image_create=1
 . <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh ) # set $dev $part_B $part_R
 BOOT_ROOT.checkMount
-release=$( cat $ROOT/srv/http/data/addons/r1 2> /dev/null )
-[[ ! $release ]] && errorExit SD card $dev is not rAudio.
+file_r1=$ROOT/srv/http/data/addons/r1
+[[ ! -e file_r1 ]] && errorExit SD card $dev is not rAudio.
 #---------------------------------------------------------------
+release=$( < $file_r1 )
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
 elif [[ -e $BOOT/kernel7.img ]]; then
