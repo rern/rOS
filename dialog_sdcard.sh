@@ -62,7 +62,7 @@ Select $txt_confirm to comfirm:
 	if (( $sL == 0 )); then
 		error+=None
 	else
-		if [[ $get_partition ]]; then
+		if [[ $create_alarm ]]; then
 			case $sL in
 				1 ) error='Only 1';;
 				2 ) ;;
@@ -81,7 +81,7 @@ $error selected:
 $dev_part
 " 0 0 && dialogSDcard $1
 	else
-		if [[ $get_partition ]]; then
+		if [[ $create_alarm ]]; then
 			part=( $dev_part )
 			part_B=${part[0]}
 			part_R=${part[1]}
