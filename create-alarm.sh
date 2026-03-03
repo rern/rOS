@@ -56,6 +56,18 @@ $part_R : start= $start_R, size= $size_R, type=83
     e2label $part_R ROOT
 fi
 BOOT_ROOT.checkMount
+if [[ ! $task ]]; then
+	. <( findmnt -no target,fstype $part_B | sed 's/^/m_B=/; s/ /\;f_B=/' ) # $m_B $f_B
+	. <( findmnt -no target,fstype $part_R | sed 's/^/m_R=/; s/ /\;f_R=/' ) # $m_R $f_R
+	[[ $( ls $m_B ) ]] && err_B+=', Not empty'
+	[[ $f_B != vfat ]] && err_B+=', Not fat32'
+	[[ $( ls $m_R | grep -v lost+found ) ]] && err_R+=', Not empty'
+	[[ $f_R != ext4 ]] &&                      err_R+=', Not ext4'
+	[[ $err_B ]] && error+="\e[36mBOOT\e[0m $part_B: ${err_B:2}"
+	[[ $err_R ]] && error+="\e[36mROOT\e[0m $part_R: ${err_R:2}"
+	[[ $error ]] && dialogErrorExit "$error"
+#----------------------------------------------------------------------------
+fi
 # get build data
 getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
 	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
