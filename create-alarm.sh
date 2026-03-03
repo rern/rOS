@@ -68,8 +68,7 @@ if [[ ! $task ]]; then
 	[[ $error ]] && dialogErrorExit "$error"
 #----------------------------------------------------------------------------
 fi
-# get build data
-getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=autoH menu>
+getData() {
 	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
 #........................
 	release=$( dialog $opt_input "
