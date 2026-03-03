@@ -14,7 +14,7 @@ if [[ ! $task ]]; then # not from +R.sh
 	create_alarm=1 # for dialogSDcard
 	. <( curl -sL $https_ros_main/common.sh )
 fi
-trap 'BOOT_ROOT.unmount; clean -x' EXIT
+trap 'BOOT_ROOT.unmount; clear -x' EXIT
 #........................
 dialogSplash Arch Linux ARM
 . <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $dev $part_B $part_R
@@ -200,7 +200,7 @@ Shairport  - AirPlay renderer             | shairport-sync
 Snapcast   - Synchronous multiroom player | snapcast
 Spotifyd   - Spotify renderer             | spotifyd
 upmpdcli   - UPnP renderer                | upmpdcli python-upnpp"
-readarray -t list_check <<< $( sed -e 's/ *|.*//' -e '/./ a\on' <<< $list_features )
+readarray -t list_check <<< $( sed -e 's/ *|.*//' -e 'a\on' <<< $list_features )
 selectFeatures() {
 #........................
 	selected=$( dialog $opt_check '

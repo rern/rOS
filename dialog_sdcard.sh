@@ -28,24 +28,29 @@ If already inserted, remove and reinsert.
 	else
 		dev=${dev_gib/:*}                               # mmcblkN: mmcN:0001 SD32G 29.7 GiB
 	fi
-	[[ $image_create ]] && dev_partBR $dev || dialogSDconfirm $dev
+	if [[ $image_create ]]; then
+		dev_partBR $dev
+	else
+		sleep 1
+		dialogSDconfirm $dev
+	fi
 }
 dialogSDconfirm() { # $1=sdX/mmcblkN
 	local error H l line_lsblk list_BR list_check list_colored part dev_part sL txt_confirm
 	line_lsblk=$( lsblk -po name,label,size,mountpoint )
-	list_colored=$( sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
-					' -e "/^.dev.$1/ {s/^/\\\Z1/; s/$/\\\Zn/}
-					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	if [[ $create_alarm ]]; then
-		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk | sed -n '/^..\// {s/^..//; s/\s*$//; p}' )
+		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
 		[[ ! $list_BR ]] && errorExit Partitions not found: BOOT and ROOT
 #---------------------------------------------------------------
-		readarray -t list_check <<< $( sed '/./ a\off' <<< $list_BR )
+		readarray -t list_check <<< $( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
 	else # get dev
 		list_check=( "$( grep ^/dev/$1 <<< $line_lsblk )" off )
 		txt_confirm='\Z1SD card\Zn / USB drive'
 	fi
+	list_colored=$( sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
+					' -e "/^.dev.$1/ {s/^/\\\Z1/; s/$/\\\Zn/}
+					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	H=$(( $( wc -l <<< $list_colored ) + 9 ))
 #........................
 	dev_part=$( dialog $opt_check "
