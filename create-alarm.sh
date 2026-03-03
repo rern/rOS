@@ -11,7 +11,7 @@ alarm_rpi=ArchLinuxARM-rpi-
 https_rern='https://github.com/rern'
 https_ros_main="$https_rern/rOS/raw/main"
 if [[ ! $task ]]; then # not from +R.sh
-	get_partition=1 # for dialogSDcard
+	create_alarm=1 # for dialogSDcard
 	. <( curl -sL $https_ros_main/common.sh )
 fi
 trap 'BOOT_ROOT.unmount' EXIT

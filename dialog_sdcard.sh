@@ -1,8 +1,15 @@
 #!/bin/bash
 
-# for create-alarm.sh, image-create.sh
+# set global $dev part_B part_R for create-alarm.sh, image-create.sh
+
+dev_partBR() {
+	dev=$1
+	[[ $dev == /dev/mmc* ]] && dev+=p
+	part_B=${dev}1
+	part_R=${dev}2
+}
 dialogSDcard() {
-	local dev_gib error H i l line_lsblk list_BR list_check list_colored part dev_part sL txt_confirm
+	local dev dev_gib l
 #........................ (no --sleep 1)
 	dialog $option --infobox "
 Insert \Z1SD card\Zn / USB drive
@@ -21,11 +28,15 @@ If already inserted, remove and reinsert.
 	else
 		dev=${dev_gib/:*}                               # mmcblkN: mmcN:0001 SD32G 29.7 GiB
 	fi
+	[[ $image_create ]] && dev_partBR $dev || dialogSDconfirm $dev
+}
+dialogSDconfirm() {
+	local error H l line_lsblk list_BR list_check list_colored part dev_part sL txt_confirm
 	line_lsblk=$( lsblk -po name,label,size,mountpoint )
 	list_colored=$( sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
 					' -e "/^.dev.$dev/ {s/^/\\\Z1/; s/$/\\\Zn/}
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
-	if [[ $get_partition ]]; then
+	if [[ $create_alarm ]]; then
 		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
 		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk | sed -n '/^..\// {s/^..//; s/\s*$//; p}' )
 		while read l; do
@@ -72,10 +83,7 @@ $dev_part
             dev=${part_B:0:-1}
             [[ $dev == /dev/mmc* ]] && dev=${dev:0:-1}
 		else
-            dev=$dev_part
-			[[ $dev == /dev/mmc* ]] && dev+=p
-			part_B=${dev}1
-			part_R=${dev}2
+	 		dev_partBR $dev_part
 		fi
 	fi
 }
