@@ -21,8 +21,13 @@ If already inserted, remove and reinsert.
 		dev_gib=$( grep -m1 -E '^(sd|mmcblk).* GiB' <<< $l )
 		[[ $dev_gib ]] && break
 	done < <( timeout 30 dmesg -tW )
-	[[ ! $dev_gib ]] && errorExit 'No SD card found (30s timeout)'
-#---------------------------------------------------------------
+	if [[ ! $dev_gib ]]; then
+		dialog $opt_msg '
+No SD card found (30s timeout)
+
+             Retry?
+' 0 0 && dialogSDcard
+	fi
 	if [[ $dev_gib == sd* ]]; then
 		dev=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
 	else
