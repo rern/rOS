@@ -46,7 +46,7 @@ dialogSDconfirm() { # $1=sdX/mmcblkN
 		list_check=( "$( grep ^/dev/$1 <<< $line_lsblk )" off )
 		txt_confirm='\Z1SD card\Zn / USB drive'
 	fi
-	H=$(( $( wc -l <<< $line_lsblk ) + 9 ))
+	H=$(( $( wc -l <<< $list_colored ) + 9 ))
 #........................
 	dev_part=$( dialog $opt_check "
 $list_colored
