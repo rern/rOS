@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'BOOT_ROOT.unmount' EXIT
+trap 'BOOT_ROOT.unmount; clean -x' EXIT
 
 shrink() {
 	echo -e "$bar Shrink Pass #$1 ...\n"
