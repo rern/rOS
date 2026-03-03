@@ -220,4 +220,5 @@ dialog $option --infobox "
 
 $( date -d@$SECONDS -u +%M:%S )
 " 9 $w_dialog
-reboot
+nohup sh -c 'sleep 2 && reboot' &> /dev/null & # run after exit to fix 'Connection to ... closed.'
+exit

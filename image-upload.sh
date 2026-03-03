@@ -37,7 +37,7 @@ banner S H A - 2 5 6
 for model in $models; do
 	file=rAudio-$model-$release.img.xz
  	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
-	echo -e "$bar $file"
+	bar $file
 	printf 'sha256sum \e[5m...\e[0m'
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	printf "\r$sha256\n"
@@ -53,7 +53,7 @@ for model in $models; do
 done
 #........................
 banner U p l o a d
-echo -e "$bar *.img.xz"
+bar *.img.xz
 files_img=$( sed "s|^|$PWD/|" <<< $files_img )
 cd $dir_raudio
 gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
@@ -69,6 +69,4 @@ git add $imager_json
 git commit -m u
 git push
 [[ $branch != UPDATE ]] && git switch UPDATE
-echo -e "
-$bar Image files uploaded successfully.
-"
+bar Image files uploaded successfully.

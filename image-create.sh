@@ -3,7 +3,7 @@
 trap 'BOOT_ROOT.unmount; clear -x' EXIT
 
 shrink() {
-	echo -e "$bar Shrink Pass #$1 ...\n"
+	bar "Shrink Pass #$1 ..."
 	partinfo=$( tune2fs -l $part_R )
 	blockcount=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
 	freeblocks=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
@@ -81,12 +81,10 @@ shrink 1
 shrink 2
 #........................
 banner Compressed to image file ...
-echo -e "$bar $file_img\n"
+bar $file_img
 threads=$(( $( nproc ) - 2 ))
 dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$file_img"
 size=$( xz -l --robot $file_img | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
-echo -e "
-$bar Image file created:
+bar "Image file created:
 $file_img
-$size
-"
+$size"

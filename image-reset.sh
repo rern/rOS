@@ -28,11 +28,11 @@ mount | grep $dirnas && umount -l "$dirnas/"*
 mount | grep $dirusb && udevil umount -l "$dirusb/"*
 clear -x
 if selected database; then
-	echo -e "$bar Reset MPD database ..."
+	bar Reset MPD database ...
 	rm -f $dirdata/mpd/*
 fi
 if selected directory; then
-	echo -e "$bar Reset user data directory ..."
+	bar Reset user data directory ...
 	rm -rf /root/.cache/*
 	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists}/*
 	echo '{
@@ -41,15 +41,15 @@ if selected directory; then
 }' > $dirdata/mpd/counts
 fi
 if selected cache; then
-	echo -e "$bar Clear package cache ..."
+	bar Clear package cache ...
 	rm -f /var/cache/pacman/pkg/*
 fi
 if selected log; then
-	echo -e "$bar Clear system log ..."
+	bar Clear system log ...
 	rm -rf /var/log/journal/*
 fi
 if selected connection; then
-	echo -e "$bar Clear Bluetooth and Wi-Fi connection ..."
+	bar Clear Bluetooth and Wi-Fi connection ...
 	rm -rf /var/lib/bluetooth/*
 	profiles=$( ls -1p /etc/netctl | grep -v / )
 	if [[ $profiles ]]; then
@@ -63,14 +63,12 @@ if [[ ! -e /boot/kernel.img ]]; then # skip on rpi 0, 1
 	curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
 fi
 rm -rf /root/.config/chromium
-echo -e "
-$bar rAudio reset done.
+bar 'rAudio reset done.
 
 Shutdown ...
 
 Before disconnecting power, observe \e[32;5m■\e[0m LED:
   - Stop services - Blips
-  - Shutdown      - 10 steady flashes » off
-"
-poweroff
+  - Shutdown      - 10 steady flashes » off'
+nohup sh -c 'sleep 2 && poweroff' &> /dev/null &
 exit

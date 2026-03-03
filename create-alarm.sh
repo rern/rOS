@@ -203,7 +203,7 @@ sshRpi() {
 	ip=$1
 	sed -i "/$ip/ d" ~/.ssh/known_hosts
 	for i in 1 2 3; do
-		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh 
+		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh
 		[[ $? != 0 ]] && sleep 3 || exit
 #----------------------------------------------------------------------------
 	done
@@ -269,7 +269,8 @@ mirror=${list_code[$server]}
 [[ $mirror ]] && url=http://$mirror.mirror.archlinuxarm.org/os || url=http://os.archlinuxarm.org/os
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
-	echo -e "$bar Verify already downloaded file ..."
+	clear -x
+	bar Verify already downloaded file ...
 	curl -skLO $url/$file.md5
 	md5sum --quiet -c $file.md5 || rm $file
 fi

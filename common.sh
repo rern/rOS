@@ -10,6 +10,9 @@ banner() { # should be used on start stdout to screen
     printf "\n%-${cols}s" "  $( echo -e "$@" )"
     printf "\n%*s\e[0m\n\n" $cols
 }
+bar() {
+	echo -e "\e[44m  \e[0m $@\n"
+}
 BOOT_ROOT.checkMount() { # create-alarm.sh, image-create.sh
 	banner Check Partitions ...
 	lbl_partB="BOOT: $part_B"
@@ -20,9 +23,9 @@ BOOT_ROOT.checkMount() { # create-alarm.sh, image-create.sh
 		[[ $error ]] && dialogErrorExit $error
 #----------------------------------------------------------------------------
 	fi
-	echo -e "$bar $lbl_partB ..."
+	bar $lbl_partB ...
 	fsck.fat -taw $part_B
-	echo -e "$bar $lbl_partR ..."
+	bar $lbl_partR ...
 	e2fsck -p $part_R
 	BOOT_ROOT.mount
 }
@@ -109,8 +112,6 @@ ipBase() {
 	ip_router=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 	echo ${ip_router%.*}.
 }
-
-bar='\e[44m  \e[0m'
 
 # --no-collapse      keep spaces and tabs
 # --output-fd 1      capture stdout
