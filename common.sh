@@ -67,7 +67,7 @@ $1:
 " 8 0 0 "${list_menu[@]}" # h=8: exclude list box
 }
 dialogSplash() {
-	local H h i l line pad txt W w
+	local H h i l line pad txt w
 	H=9
 	h=$( wc -l <<< $1 )
 	pad=$(( ( H - h ) / 2 ))
@@ -85,7 +85,7 @@ dialogSplash() {
 
 $@"
 #........................
-	dialog $opt_info "$txt" $H $W
+	dialog $opt_info "$txt" $H $w_dialog
 }
 errorExit() {
 	banner E r r o r
