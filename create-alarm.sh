@@ -63,8 +63,8 @@ if [[ ! $task ]]; then
 	[[ $f_B != vfat ]] && err_B+=', Not fat32'
 	[[ $( ls $m_R | grep -v lost+found ) ]] && err_R+=', Not empty'
 	[[ $f_R != ext4 ]] &&                      err_R+=', Not ext4'
-	[[ $err_B ]] && error+="\e[36mBOOT\e[0m $part_B: ${err_B:2}"
-	[[ $err_R ]] && error+="\e[36mROOT\e[0m $part_R: ${err_R:2}"
+	[[ $err_B ]] && error+="\Z1BOOT\Zn $part_B: ${err_B:2}"
+	[[ $err_R ]] && error+="\Z1ROOT\Zn $part_R: ${err_R:2}"
 	[[ $error ]] && dialogErrorExit "$error"
 #----------------------------------------------------------------------------
 fi
