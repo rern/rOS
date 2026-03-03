@@ -99,20 +99,22 @@ ipBase() {
 	echo ${ip_router%.*}.
 }
 
-r_audio='\Z1r\ZnAudio'
 bar='\e[44m  \e[0m'
-# --keep-tite        clear dialog screen after
-# --nocancel         (center <OK>)
+
 # --no-collapse      keep spaces and tabs
-# --no-items         no leading N
 # --output-fd 1      capture stdout
-# --separate-output  multiline stdout
 option='--backtitle rAudio --colors --no-collapse --no-shadow --output-fd 1'
-opt_check="$option --no-items --separate-output --checklist" # select multiple
 opt_guage="$option --guage"                                  # no buttons
-opt_input="$option --nocancel --inputbox"
- opt_info="$option --sleep 1 --infobox"                      # no buttons
- opt_menu="$option --nocancel --menu"                        # select single
+ opt_info="$option --sleep 2 --infobox"                      # no buttons
   opt_msg="$option --msgbox"                                 # <OK> only
 opt_yesno="$option --yesno"                                  # <Yes> <No>
-# dialog with button - auto fit height=8 exclude list box
+# --nocancel         (center <OK>, [ctrl+c]=cancel)
+option+=' --nocancel'
+opt_input="$option --inputbox"
+ opt_menu="$option --menu"                                   # select single
+# --no-items         no leading N
+# --separate-output  multiline stdout
+opt_check="$option --no-items --separate-output --checklist" # select multiple
+# auto fit: 0
+#    0 0   - w h
+#    8 0 0 - H w h - checklist / menu (H=8 - frame + button)

@@ -6,16 +6,16 @@ https_rern='https://github.com/rern'
 #........................
 dialogSplash Image Utilities
 list="\
-Create OS^create-alarm
-Reset for Image
-Create Image^image-create
-Upload Images^image-upload
-Distcc Client^distcc-client
-Docker^docker
-SSH"
+Create OS       | create-alarm
+Reset for Image |
+Create Image    | image-create
+Upload Images   | image-upload
+Distcc Client   | distcc-client
+Docker          | docker
+SSH             |"
 #........................
-task=$( dialogMenu 'Tasks' "$( sed 's/\^.*//' <<< $list )" )
-name=$( sed -n "$task {s/.*^//; p}" <<< $list )
+task=$( dialogMenu 'Tasks' "$( sed 's/ *|.*//' <<< $list )" )
+name=$( sed -n "$task {s/.*| *//; p}" <<< $list )
 if [[ $name ]]; then
 	(( $task < 5 )) && repo=rOS || repo=rern.github.io
 	. <( curl -sL "$https_rern/$repo/raw/main/$name.sh" )

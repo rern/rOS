@@ -93,6 +93,7 @@ Connect \Z1Wi-Fi\Zn on boot?
 		password=$( dialog $opt_input "
 \Z1Wi-Fi\Zn - Password:
 " 0 0 $password )
+		tput cup 0 0 && tput ed
 #........................
 		wpa=$( dialogMenu 'Wi-Fi Security' "\
 WPA
@@ -120,6 +121,7 @@ ROOT path    : \Z1$ROOT\Zn
 $confirmwifi
 $ip_confirm
 " 0 0
+	tput cup 0 0 && tput ed
 	[[ $? == 1 ]] && getData
 }
 foundIP() {
@@ -189,34 +191,28 @@ sshRpi() {
 }
 
 list_features="\
-BlueALSA   - Bluetooth audio^bluealsa bluez bluez-utils python-dbus python-gobject python-requests
-CamillaDSP - Digital signal processor^camilladsp python-websocket-client
-Firefox    - Browser on RPi screen^firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo
-iwd        - RPi access point^iwd
-Samba      - File sharing^samba
-Shairport  - AirPlay renderer^shairport-sync
-Snapcast   - Synchronous multiroom player^snapcast
-Spotifyd   - Spotify renderer^spotifyd
-upmpdcli   - UPnP renderer^upmpdcli python-upnpp"
-while read l; do
-	list_check+=( "${l/^*}" on )
-	list_ini+=( ${l/ *} )
-	list_pkg+=( "${l/*^}" )
-done <<< $list_features
-selectFeatures() { # --checklist <message> <lines exclude checklist box> <0=autoW dialog> <0=autoH checklist>
+BlueALSA   - Bluetooth audio              | bluealsa bluez bluez-utils python-dbus python-gobject python-requests
+CamillaDSP - Digital signal processor     | camilladsp python-websocket-client
+Firefox    - Browser on RPi screen        | firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo
+iwd        - RPi access point             | iwd
+Samba      - File sharing                 | samba
+Shairport  - AirPlay renderer             | shairport-sync
+Snapcast   - Synchronous multiroom player | snapcast
+Spotifyd   - Spotify renderer             | spotifyd
+upmpdcli   - UPnP renderer                | upmpdcli python-upnpp"
+readarray -t list_check <<< $( sed -e 's/ *|.*//' -e '/./ a\on' <<< $list_features )
+selectFeatures() {
 #........................
 	selected=$( dialog $opt_check '
  \Z1Features to install:\Zn
 ' 8 0 0 "${list_check[@]}" )
-iniL=${#list_ini[@]}
-for (( i=0; i < iniL; i++ )); do
-	grep -q ^${list_ini[$i]} <<< $selected && features+="${list_packages[$i]} "
-done
+	while read l; do
+		features+=$( sed -n "/^$l/ {s/.*|//; p}" <<< $list_features )
+	done <<< $selected
 }
 
 getData
 selectFeatures
-[[ ! $list ]] && list=(none)
 #........................
 dialog $opt_yesno "
 \Z1Confirm features to install:\Zn
@@ -224,11 +220,7 @@ dialog $opt_yesno "
 $selected
 
 " 0 0
-if [[ $? == 0 ]]; then
-	echo $features > $BOOT/features
-else
-	selectFeatures
-fi
+[[ $? == 0 ]] && echo $features > $BOOT/features || selectFeatures
 SECONDS=0
 # package mirror server
 lines=$( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
