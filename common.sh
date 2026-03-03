@@ -69,7 +69,6 @@ $1:
 dialogSplash() {
 	local H h i l line pad txt W w
 	H=9
-	W=58
 	h=$( wc -l <<< $1 )
 	pad=$(( ( H - h ) / 2 ))
 	for (( i=2; i < $pad; i++ )); do # i=2: after top border
@@ -79,7 +78,7 @@ dialogSplash() {
 		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
 		
 		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
-		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
+		w=$(( ( w_dialog - ${#l} ) / 2 - 2 )) # -2: l/r border
 		txt+="$( printf '%*s' $w )$line\n"
 	done <<< "\
 \Z1r\ZnAudio
@@ -115,6 +114,7 @@ opt_input="$option --inputbox"
 # --no-items         no leading N
 # --separate-output  multiline stdout
 opt_check="$option --no-items --separate-output --checklist" # select multiple
+w_dialog=55
 # auto fit: 0
-#    0 0   - w h
-#    8 0 0 - H w h - checklist / menu (H=8 - frame + button)
+#    0 0   - h w
+#    8 0 0 - h hl w - checklist / menu (h=8 - frame + button)

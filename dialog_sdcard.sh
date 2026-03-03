@@ -12,7 +12,7 @@ dialogSDcard() {
 	local dev dev_gib l
 #........................ (no --sleep 1)
 	dialog $option --infobox "
-Insert \Z1SD card\Zn / USB drive
+Insert \Z1SD card\Zn \Zb/ USB drive\Zn
 
 If already inserted, remove and reinsert.
 
@@ -46,9 +46,9 @@ dialogSDconfirm() { # $1=sdX/mmcblkN
 		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
 	else # get dev
 		list_check=( "$( grep ^/dev/$1 <<< $line_lsblk )" off )
-		txt_confirm='\Z1SD card\Zn / USB drive'
+		txt_confirm='\Z1SD card\Zn \Zb/ USB drive\Zn'
 	fi
-	list_colored=$( sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
+	list_colored=$( sed -E  -e '1 {s/^/\\\Zr\\\Zb/; s/$/\\\Zn/}
 					' -e "/^.dev.$1/ {s/^/\\\Z1/; s/$/\\\Zn/}
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	H=$(( $( wc -l <<< $list_colored ) + 9 ))

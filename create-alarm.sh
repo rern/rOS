@@ -384,7 +384,7 @@ dialog $opt_msg "
                 Created successfully.
 				
 $( date -d@$SECONDS -u +%M:%S )
-" 12 58
+" 12 $w_dialog
 [[ ${partuuidB:0:-3} != ${partuuidR:0:-3} ]] && usb=' and USB drive'
 sync && BOOT_ROOT.unmount
 #........................
@@ -394,9 +394,9 @@ dialog $opt_msg "
 
 ● Move SD card$usb to Raspberry Pi
 ● Power on
-● Press \Zr Enter \ZR to start boot timer » IP scan
+● Press \Zr\Zb Enter \Zn to start boot timer » IP scan
 
-" 12 52
+" 12 $w_dialog
 #........................
 ( for (( i = 1; i < sboot; i++ )); do
 	echo $(( i * 100 / sboot ))
