@@ -4,6 +4,9 @@ trap 'rm -f /var/lib/pacman/db.lck' EXIT
 
 . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
+retryCreate() {
+	dialogRetry "$@" && /root/create-ros.sh || exit
+}
 #........................
 dialogSplash O S
 SECONDS=0
@@ -48,8 +51,7 @@ if [[ $? != 0 ]]; then
 	echo -e "\e[38;5;0m\e[48;5;3m ! \e[0m Retry upgrade system ..."
 	sleep 3
 	pacman -Syu --noconfirm
-	[[ $? != 0 ]] && errorExit System upgrade incomplete
-#----------------------------------------------------------------------------
+	[[ $? != 0 ]] && retryCreate Upgrade system incomplete.
 fi
 if [[ -e /boot/cmdline.txt0 ]]; then
 	mv -f /boot/cmdline.txt{0,}
@@ -63,8 +65,7 @@ pacman -S --noconfirm --needed $packages $features
 if [[ $? != 0 ]]; then
 	echo -e "\e[38;5;0m\e[48;5;3m ! \e[0m Retry download packages ..."
 	pacman -S --noconfirm --needed $packages $features
-	[[ $? != 0 ]] && errorExit Packages download incomplete
-#----------------------------------------------------------------------------
+	[[ $? != 0 ]] && retryCreate Install packages incomplete.
 fi
 #........................
 banner Get configurations and user interface ...
@@ -211,9 +212,12 @@ touch /boot/expand
 rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
 	  /root/create-ros.sh
-echo -e "
-$bar rAudio created successfully » Reboot ...
+dialog $option --infobox "
+
+           \Z1r\Z0Audio created successfully.
+
+                     \Z1Reboot\Z0 ...
 
 $( date -d@$SECONDS -u +%M:%S )
-"
+" 9 $w_dialog
 reboot

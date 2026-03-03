@@ -1,5 +1,24 @@
 #!/bin/bash
 
+downloadArch() {
+#........................
+	( wget -O $file $url/$file 2>&1 \
+		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
+			print "XXX\n "substr($0,63,3)
+			print "\\n Download ..."
+			print "\\n \\Z1'$file'\\Zn"
+			print "\\n Time left: "substr($0,74,5)"\nXXX" }' ) \
+		| dialog $opt_guage "
+ Connecting ...
+" 9 50
+	# checksum
+	curl -skLO $url/$file.md5
+	if ! md5sum -c $file.md5; then
+		rm $file
+		dialogRetry Download incomplete. && downloadArch
+	fi
+}
+
 for cmd in bsdtar dialog nmap pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
@@ -45,7 +64,8 @@ getData() { # --menu <message> <lines exclude menu box> <0=autoW dialog> <0=auto
  \Z1r\ZnAudio release:
 " 0 0 $latest )
 	if ! curl -sIfo /dev/null $https_rern/rAudio/releases/tag/$release; then
-		errorExit rAudio $release not found
+		dialogRetry rAudio $release not found. && getData
+		return
 #----------------------------------------------------------------------------
 	fi
 	echo $release > $BOOT/release
@@ -151,7 +171,7 @@ $ping
 " 15 90
 			foundIP
 			;;
-		3 ) errorExit Try starting over again;;
+		3 ) dialogErrorExit Try starting over again;;
 #----------------------------------------------------------------------------
 	esac
 }
@@ -249,11 +269,8 @@ mirror=${list_code[$server]}
 [[ $mirror ]] && url=http://$mirror.mirror.archlinuxarm.org/os || url=http://os.archlinuxarm.org/os
 # if already downloaded, verify latest
 if [[ -e $file ]]; then
-#........................
-	curl -skLO $url/$file.md5 \
-		| dialog $opt_guage "
-  Verify already downloaded file ...
-" 9 50
+	echo -e "$bar Verify already downloaded file ..."
+	curl -skLO $url/$file.md5
 	md5sum --quiet -c $file.md5 || rm $file
 fi
 # download
@@ -264,26 +281,11 @@ if [[ -e $file ]]; then
  \Z1$file\Zn
  
  No download required.
- 
+
 " 0 0
 else
 #........................
-	( wget -O $file $url/$file 2>&1 \
-		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
-			print "XXX\n "substr($0,63,3)
-			print "\\n Download ..."
-			print "\\n \\Z1'$file'\\Zn"
-			print "\\n Time left: "substr($0,74,5)"\nXXX" }' ) \
-		| dialog $opt_guage "
- Connecting ...
-" 9 50
-	# checksum
-	curl -skLO $url/$file.md5
-	if ! md5sum -c $file.md5; then
-		rm $file
-		errorExit 'Download incomplete\nRun create-alarm.sh again'
-#----------------------------------------------------------------------------
-	fi
+	downloadArch
 fi
 rm $file.md5
 # expand

@@ -7,7 +7,7 @@ banner() { # should be used on start stdout to screen
 	clear -x
 	cols=$( tput cols )
     printf "\n\e[44m%*s" $cols
-    printf "\n%-${cols}s" "  $( echo $@ )"
+    printf "\n%-${cols}s" "  $( echo -e "$@" )"
     printf "\n%*s\e[0m\n\n" $cols
 }
 BOOT_ROOT.checkMount() { # create-alarm.sh, image-create.sh
@@ -17,7 +17,7 @@ BOOT_ROOT.checkMount() { # create-alarm.sh, image-create.sh
 	if [[ ! $name ]]; then # not from +R.sh
 		[[ $( lsblk -no fstype $part_B ) != vfat ]] && error+="$lbl_partB not vfat\n"
 		[[ $( lsblk -no fstype $part_R ) != ext4 ]] && error+="$lbl_partR not ext4\n"
-		[[ $error ]] && errorExit $error
+		[[ $error ]] && dialogErrorExit $error
 #----------------------------------------------------------------------------
 	fi
 	echo -e "$bar $lbl_partB ..."
@@ -36,6 +36,16 @@ BOOT_ROOT.mount() {
 	mkdir -p BOOT ROOT
 	mount $part_B $BOOT
 	mount $part_R $ROOT
+}
+dialogErrorExit() {
+	dialog $opt_msg "
+\Zr\Z1 ! \Zn Error:
+
+$( echo -e "$@" )
+" 0 0
+	clear -x
+	exit
+#----------------------------------------------------------------------------
 }
 dialogIP() {
 	local ip
@@ -66,6 +76,13 @@ dialogMenu() { # dialog --menu $1=title $2=multiline list
 $1:
 " 8 0 0 "${list_menu[@]}" # h=8: exclude list box
 }
+dialogRetry() {
+	dialog $opt_msg "
+\Zr\Z1 ! \Zn $( echo -e "$@" )
+
+Retry?
+" 0 0
+}
 dialogSplash() {
 	local H h i l line pad txt w
 	H=9
@@ -83,14 +100,9 @@ dialogSplash() {
 	done <<< "\
 \Z1r\ZnAudio
 
-$@"
+$( echo -e "$@" )"
 #........................
 	dialog $opt_info "$txt" $H $w_dialog
-}
-errorExit() {
-	banner E r r o r
-	echo -e "\e[41m ! \e[0m $@\n"
-	exit
 }
 ipBase() {
 	local ip_router

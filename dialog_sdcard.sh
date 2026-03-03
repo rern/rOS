@@ -23,11 +23,8 @@ If already inserted, remove and reinsert.
 		[[ $dev_gib ]] && break
 	done < <( timeout $s dmesg -tW )
 	if [[ ! $dev_gib ]]; then
-		dialog $opt_msg "
-No SD card detected in ${s}s.
-
-           Retry?
-" 0 0 && dialogSDcard
+		dialogRetry 'No SD card detected in ${s}s.' && dialogSDcard
+		return
 	fi
 	if [[ $dev_gib == sd* ]]; then
 		dev=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
@@ -46,7 +43,7 @@ dialogSDconfirm() { # $1=sdX/mmcblkN
 	line_lsblk=$( lsblk -po name,label,size,mountpoint )
 	if [[ $create_alarm ]]; then
 		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
-		[[ ! $list_BR ]] && errorExit Partitions not found: BOOT and ROOT
+		[[ ! $list_BR ]] && dialogErrorExit Partitions not found: BOOT and ROOT
 #---------------------------------------------------------------
 		readarray -t list_check <<< $( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
