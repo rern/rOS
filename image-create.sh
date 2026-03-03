@@ -52,8 +52,13 @@ image_create=1
 . <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh ) # set $dev $part_B $part_R
 BOOT_ROOT.checkMount
 file_r1=$ROOT/srv/http/data/addons/r1
-[[ ! -e $file_r1 ]] && errorExit SD card $dev is not rAudio.
-#---------------------------------------------------------------
+if [[ ! -e $file_r1 ]]; then
+#........................
+	dialog $opt_msg "
+SD card is not rAudio: \Z1$devZn
+" 0 0
+	dialogSDcard
+fi
 release=$( < $file_r1 )
 if [[ -e $BOOT/kernel8.img ]]; then
 	model=64bit
