@@ -38,14 +38,12 @@ dialogSDconfirm() { # $1=sdX/mmcblkN
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	if [[ $create_alarm ]]; then
 		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk | sed -n '/^..\// {s/^..//; s/\s*$//; p}' )
-		[[ ! $list_BR ]] && errorExit Partition not found: BOOT and ROOT
+		[[ ! $list_BR ]] && errorExit Partitions not found: BOOT and ROOT
 #---------------------------------------------------------------
-		while read l; do
-			list_check+=( "$l" off )
-		done <<< $list_BR
+		readarray -t list_check <<< $( sed '/./ a\off' <<< $list_BR )
 		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
 	else # get dev
-		list_check+=( "$( grep ^/dev/$1 <<< $line_lsblk )" off )
+		list_check=( "$( grep ^/dev/$1 <<< $line_lsblk )" off )
 		txt_confirm='\Z1SD card\Zn / USB drive'
 	fi
 	H=$(( $( wc -l <<< $line_lsblk ) + 9 ))
