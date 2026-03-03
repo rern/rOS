@@ -17,16 +17,17 @@ Insert \Z1SD card\Zn \Zb/ USB drive\Zn
 If already inserted, remove and reinsert.
 
 " 0 0
+	s=15
 	while read l; do
 		dev_gib=$( grep -m1 -E '^(sd|mmcblk).* GiB' <<< $l )
 		[[ $dev_gib ]] && break
-	done < <( timeout 30 dmesg -tW )
+	done < <( timeout $s dmesg -tW )
 	if [[ ! $dev_gib ]]; then
-		dialog $opt_msg '
-No SD card found (30s timeout)
+		dialog $opt_msg "
+No SD card detected in ${s}s.
 
-             Retry?
-' 0 0 && dialogSDcard
+           Retry?
+" 0 0 && dialogSDcard
 	fi
 	if [[ $dev_gib == sd* ]]; then
 		dev=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
