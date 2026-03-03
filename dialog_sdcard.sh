@@ -30,21 +30,23 @@ If already inserted, remove and reinsert.
 	fi
 	[[ $image_create ]] && dev_partBR $dev || dialogSDconfirm $dev
 }
-dialogSDconfirm() {
+dialogSDconfirm() { # $1=sdX/mmcblkN
 	local error H l line_lsblk list_BR list_check list_colored part dev_part sL txt_confirm
 	line_lsblk=$( lsblk -po name,label,size,mountpoint )
 	list_colored=$( sed -E  -e '1 {s/^/\\\Zr/; s/$/\\\ZR/}
-					' -e "/^.dev.$dev/ {s/^/\\\Z1/; s/$/\\\Zn/}
+					' -e "/^.dev.$1/ {s/^/\\\Z1/; s/$/\\\Zn/}
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	if [[ $create_alarm ]]; then
-		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
 		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk | sed -n '/^..\// {s/^..//; s/\s*$//; p}' )
+		[[ ! $list_BR ]] && errorExit Partition not found: BOOT and ROOT
+#---------------------------------------------------------------
 		while read l; do
 			list_check+=( "$l" off )
 		done <<< $list_BR
+		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
 	else # get dev
+		list_check+=( "$( grep ^/dev/$1 <<< $line_lsblk )" off )
 		txt_confirm='\Z1SD card\Zn / USB drive'
-		list_check+=( "$( grep ^/dev/$dev <<< $line_lsblk )" off )
 	fi
 	H=$(( $( wc -l <<< $line_lsblk ) + 9 ))
 #........................
