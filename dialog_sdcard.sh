@@ -23,7 +23,7 @@ If already inserted, remove and reinsert.
 		[[ $dev_gib ]] && break
 	done < <( timeout $s dmesg -tW )
 	if [[ ! $dev_gib ]]; then
-		dialogRetry 'No SD card detected in ${s}s.' && dialogSDcard
+		dialogRetry "No SD card detected in ${s}s." && dialogSDcard
 		return
 	fi
 	if [[ $dev_gib == sd* ]]; then
