@@ -27,7 +27,6 @@ If already inserted, remove and reinsert.
 	done < <( timeout $s dmesg -tW )
 	[[ ! $dev_gib ]] && dialogRetrySD "No SD card detected in ${s}s." && return
 #---------------------------------------------------------------
-	fi
 	if [[ $dev_gib == sd* ]]; then
 		dev=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
 	else
