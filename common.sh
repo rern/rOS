@@ -11,7 +11,7 @@ banner() { # should be used on start stdout to screen
     printf "\n%*s\e[0m\n\n" $cols
 }
 bar() {
-	echo -e "\e[44m  \e[0m $@\n"
+	echo -e "\n\e[44m  \e[0m $@\n"
 }
 BOOT_ROOT.check() { # create-alarm.sh, image-create.sh
 	BOOT_ROOT.unmount

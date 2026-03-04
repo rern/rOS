@@ -47,7 +47,7 @@ dialogDownload() {
 }
 verifyMD5() {
 	clear -x
-	bar Verify $$file ...
+	bar Verify $file ...
 	curl -skLO $url/$file.md5
 	[[ $? != 0 ]] && dialogRetry 'Download *.md5 failed.' && verifyMD5
 	md5sum -c $file.md5 && return 0
