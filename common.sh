@@ -109,9 +109,8 @@ ipBase() {
 	echo ${ip_router%.*}.
 }
 
-# --no-collapse      keep spaces and tabs
-# --output-fd 1      capture stdout
-option='--backtitle rAudio --colors --no-collapse --no-shadow --output-fd 1'
+                 # keep spaces/tabs          capture stdout
+option='--colors --no-collapse --no-shadow --output-fd 1'
 opt_guage="$option --guage"                                  # no buttons
  opt_info="$option --sleep 2 --infobox"                      # no buttons
   opt_msg="$option --msgbox"                                 # <OK> only
@@ -120,8 +119,7 @@ opt_yesno="$option --yesno"                                  # <Yes> <No>
 option+=' --nocancel'
 opt_input="$option --inputbox"
  opt_menu="$option --menu"                                   # select single
-# --no-items         no leading N
-# --separate-output  multiline stdout
+                   # no number  multiline stdout
 opt_check="$option --no-items --separate-output --checklist" # select multiple
 w_dialog=55
 # auto fit: 0
