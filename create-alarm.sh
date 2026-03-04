@@ -70,7 +70,7 @@ if [[ ! $task ]]; then # not from +R.sh
 	create_alarm=1 # for dialogSDcard
 	. <( curl -sL $https_ros_main/common.sh )
 fi
-trap 'BOOT_ROOT.unmount; clear -x' EXIT
+trap 'BRunmount; clear -x' EXIT
 #........................
 dialogSplash Arch Linux ARM
 . <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $dev $part_B $part_R
@@ -92,7 +92,7 @@ $part_R : start= $start_R, size= $size_R, type=83
     fatlabel $part_B BOOT
     e2label $part_R ROOT
 fi
-BOOT_ROOT.mount
+BRfsck_mount
 if [[ ! $task ]]; then
 	read -r mp fs < <( findmnt -no target,fstype $part_B )
 	[[ $( ls $mp ) ]] && err_B+=', Not empty\n'
@@ -105,7 +105,6 @@ if [[ ! $task ]]; then
 	[[ $error ]] && dialogErrorExit "$error"
 #----------------------------------------------------------------------------
 fi
-BOOT_ROOT.check
 getData() {
 	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
 #........................
@@ -386,7 +385,7 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # get create-ros.sh
 wget -q $https_ros_main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
-sync && BOOT_ROOT.unmount
+sync && BRunmount
 #........................
 dialog $opt_msg "
 $( textAlignCenter "

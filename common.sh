@@ -13,26 +13,23 @@ banner() { # should be used on start stdout to screen
 bar() {
 	echo -e "\n\e[44m  \e[0m $@\n"
 }
-BOOT_ROOT.check() { # create-alarm.sh, image-create.sh
-	BOOT_ROOT.unmount
+BRfsck_mount() { # create-alarm.sh, image-create.sh
 	banner Check Partitions ...
 	bar BOOT: $part_B ...
 	fsck.fat -taw $part_B
 	bar ROOT: $part_R ...
 	e2fsck -p $part_R
-}
-BOOT_ROOT.unmount() {
-	! findmnt $BOOT &> /dev/null && return
-
-	umount -l $BOOT $ROOT &> /dev/null
-	rmdir $BOOT $ROOT &> /dev/null
-}
-BOOT_ROOT.mount() {
 	BOOT=$PWD/BOOT
 	ROOT=$PWD/ROOT
 	mkdir -p BOOT ROOT
 	mount $part_B $BOOT
 	mount $part_R $ROOT
+}
+BRunmount() {
+	! findmnt $BOOT &> /dev/null && return
+
+	umount -l $BOOT $ROOT &> /dev/null
+	rmdir $BOOT $ROOT &> /dev/null
 }
 dialogErrorExit() {
 	dialog $opt_msg "

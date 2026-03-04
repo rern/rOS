@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'BOOT_ROOT.unmount; clear -x' EXIT
+trap 'BRunmount; clear -x' EXIT
 
 shrink() {
 	bar "Shrink Pass #$1 ..."
@@ -50,8 +50,7 @@ fi
 dialogSplash Image File
 image_create=1
 . <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh ) # set $dev $part_B $part_R
-BOOT_ROOT.check
-BOOT_ROOT.mount
+BRfsck_mount
 file_r1=$ROOT/srv/http/data/addons/r1
 if [[ ! -e $file_r1 ]]; then
 #........................
@@ -73,7 +72,7 @@ file_img=$( dialog $opt_input "
 Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 touch $BOOT/expand # auto expand root partition
-BOOT_ROOT.unmount
+BRunmount
 partsize=$( fdisk -l $part_R | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $part_R | awk '{print $3}' )
 #........................
