@@ -95,11 +95,13 @@ dialogSplash() {
 		w=$(( ( w_dialog - ${#l} ) / 2 - 2 )) # -2: l/r border
 		txt+="$( printf '%*s' $w )$line\n"
 	done <<< "\
-\Z1r\ZnAudio
+                       \Zr\Z4+R\Zn
 
 $( echo -e "$@" )"
+	tput civis # fix: hide cursor at corner
 #........................
 	dialog $opt_info "$txt" $H $w_dialog
+	tput cnorm # restore cursor
 }
 ipBase() {
 	local ip_router
