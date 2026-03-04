@@ -119,19 +119,19 @@ getData() {
 	fi
 	echo $release > $BOOT/release
 #........................
-	bit=$( dialogMenu 'Raspberry Pi' "\
+	rpi=$( dialogMenu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
 32bit  : 2 (BCM2836)" )
 	file=ArchLinuxARM-rpi-
-	case $bit in
+	case $rpi in
 		1 )
 			file+=aarch64-
-			rpiname=64bit
+			bit=64bit
 			sboot=45
 			;;
 		2 )
 			file+=armv7-
-			rpiname=32bit
+			bit=32bit
 			sboot=60
 			;;
 	esac
@@ -142,9 +142,9 @@ getData() {
 
 " 0 0
 	if [[ $? == 0 ]]; then
+		(( sboot-=10 ))
 #........................
 		ip_assigned=$( dialogIP 'Pre-assigned IP' )
-		[[ $bit == 1 ]] && sboot=30 || sboot=40
 		ip_confirm="
 Assigned IP  : $ip_assigned"
 	fi
@@ -154,6 +154,7 @@ Connect \Z1Wi-Fi\Zn on boot?
 
 " 0 0
 	if [[ $? == 0 ]]; then
+		(( sboot+=5 ))
 #........................
 		ssid=$( dialog $opt_input "
 Wi-Fi - \Z1SSID\Zn:
@@ -182,7 +183,7 @@ Security     : ${wpa^^}"
 \Z1Confirm data:\Zn
 
 Release      : $release
-Raspberry Pi : $rpiname
+Raspberry Pi : $bit
 
 BOOT path    : $BOOT
 ROOT path    : $ROOT
@@ -387,18 +388,19 @@ sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # get create-ros.sh
 wget -q $https_ros_main/create-ros.sh -P $ROOT/root
 chmod 755 $ROOT/root/create-ros.sh
+sync && BOOT_ROOT.unmount
 #........................
 dialog $opt_msg "
+$( textAlignCenter "
 
-                   Arch Linux ARM
-                         for
-                 \Z1Raspberry Pi $rpiname\Zn
-                Created successfully.
-				
+Arch Linux ARM
+for
+\Z1r\ZnAudio
+Created successfully.
+" )				
 $( date -d@$SECONDS -u +%M:%S )
 " 12 $w_dialog
 [[ ${partuuidB:0:-3} != ${partuuidR:0:-3} ]] && usb=' and USB drive'
-sync && BOOT_ROOT.unmount
 #........................
 dialog $opt_msg "
 \Z1Arch Linux ARM\Zn : Ready

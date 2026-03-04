@@ -8,7 +8,7 @@ retryCreate() {
 	dialogRetry "$@" && /root/create-ros.sh || exit
 }
 #........................
-dialogSplash O S
+dialogSplash r A u d i o
 SECONDS=0
 features=$( cat /boot/features )
 #........................
@@ -213,12 +213,14 @@ rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
 	  /root/create-ros.sh
 dialog $option --infobox "
+$( textAlignCenter "
 
-           \Z1r\Z0Audio created successfully.
+\Zr\Z4+R\Zn rAudio
+Created successfully.
 
-                     \Z1Reboot\Z0 ...
-
+\Z1  Reboot\Zn ...
+" )				
 $( date -d@$SECONDS -u +%M:%S )
-" 9 $w_dialog
+" 10 $w_dialog
 nohup sh -c 'sleep 2 && reboot' &> /dev/null & # run after exit to fix 'Connection to ... closed.'
 exit

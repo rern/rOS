@@ -81,32 +81,31 @@ Retry?
 " 0 0
 }
 dialogSplash() {
-	local H h i l line pad txt w
-	H=9
-	h=$( wc -l <<< $1 )
-	pad=$(( ( H - h ) / 2 ))
-	for (( i=2; i < $pad; i++ )); do # i=2: after top border
-		txt+='\n'
-	done
-	while read -r line; do
-		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
-		
-		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
-		w=$(( ( w_dialog - ${#l} ) / 2 - 2 )) # -2: l/r border
-		txt+="$( printf '%*s' $w )$line\n"
-	done <<< "\
-                       \Zr\Z4+R\Zn
-
-$( echo -e "$@" )"
 	tput civis # fix: hide cursor at corner
 #........................
-	dialog $opt_info "$txt" $H $w_dialog
+	dialog $opt_info "$( textAlignCenter "
+
+\Zr\Z4+R\Zn
+
+$@" )" 9 $w_dialog
 	tput cnorm # restore cursor
 }
 ipBase() {
 	local ip_router
 	ip_router=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 	echo ${ip_router%.*}.
+}
+textAlignCenter() {
+	local l line txt w
+	while read -r line; do
+		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
+		
+		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
+		w=$(( ( w_dialog - ${#l} ) / 2 - 2 )) # -2: l/r border
+		txt+="
+$( printf '%*s' $w )$line\n"
+	done <<< "$@"
+	echo "$txt"
 }
 
                  # keep spaces/tabs          capture stdout
