@@ -12,7 +12,7 @@ dialogRetrySD() {
 	dialogRetry "$@" && dialogSDcard
 }
 dialogSDcard() {
-	local dev dev_gib error H l line_lsblk list_BR list_check list_colored part dev_part sL txt_confirm
+	local dev_gib error H l line_lsblk list_BR list_check list_colored part dev_part sd_mmc sL txt_confirm
 #........................ (no --sleep 1)
 	dialog $option --infobox "
 Insert \Z1SD card\Zn \Zb/ USB drive\Zn
@@ -28,11 +28,11 @@ Insert \Z1SD card\Zn \Zb/ USB drive\Zn
 	[[ ! $dev_gib ]] && dialogRetrySD "No SD card detected in ${s}s." && return
 #---------------------------------------------------------------
 	if [[ $dev_gib == sd* ]]; then
-		dev=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
+		sd_mmc=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
 	else
-		dev=${dev_gib/:*}                               # mmcblkN: mmcN:0001 SD32G 29.7 GiB
+		sd_mmc=${dev_gib/:*}                               # mmcblkN: mmcN:0001 SD32G 29.7 GiB
 	fi
-	[[ $image_create ]] && dev_partBR $dev && return
+	[[ $image_create ]] && dev_partBR $sd_mmc && return
 #---------------------------------------------------------------
 	sleep 1
 	line_lsblk=$( lsblk -po name,label,size,mountpoint )
@@ -43,11 +43,11 @@ Insert \Z1SD card\Zn \Zb/ USB drive\Zn
 #---------------------------------------------------------------
 		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else # get dev
-		list_check=( "$( grep ^/dev/$dev <<< $line_lsblk )" off )
+		list_check=( "$( grep ^/dev/$sd_mmc <<< $line_lsblk )" off )
 		txt_confirm='\Z1SD card\Zn \Zb/ USB drive\Zn'
 	fi
 	list_colored=$( sed -E  -e '1 {s/^/\\\Zr\\\Zb/; s/$/\\\Zn/}
-					' -e "/^.dev.$dev/ {s/^/\\\Z1/; s/$/\\\Zn/}
+					' -e "/^.dev.$sd_mmc/ {s/^/\\\Z1/; s/$/\\\Zn/}
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	H=$(( $( wc -l <<< $list_colored ) + 9 ))
 #........................
@@ -83,8 +83,7 @@ $dev_part
 			part=( $dev_part )
 			part_B=${part[0]}
 			part_R=${part[1]}
-            dev=${part_B:0:-1}
-            [[ $dev == /dev/mmc* ]] && dev=${dev:0:-1}
+            [[ $sd_mmc == /dev/sd* ]] && dev=${part_B:0:-1} || dev=${dev:0:-2}
 		else
 	 		dev_partBR $dev_part
 		fi
