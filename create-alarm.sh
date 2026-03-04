@@ -319,14 +319,14 @@ done ) \
 " 9 50
 sync
 # fstab
-uuid=( $( blkid -o value -s PARTUUID $part_B $part_R | sed 's/^/PARTUUID=/' ) )
-uuid_B=${uuid[0]}
-uuid_R=${uuid[1]}
+partid=( $( blkid -o value -s PARTUUID $part_B $part_R | sed 's/^/PARTUUID=/' ) )
+partid_B=${partid[0]}
+partid_R=${partid[1]}
 echo "\
-$uuid_B  /boot  vfat  defaults,noatime  0  0
-$uuid_R  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
+$partid_B  /boot  vfat  defaults,noatime  0  0
+$partid_R  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
 # cmdline.txt, config.txt
-cmdline="root=$uuid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
+cmdline="root=$partid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
 config="\
 disable_overscan=1
 disable_splash=1
@@ -398,7 +398,7 @@ Created successfully.
 " )				
 $( date -d@$SECONDS -u +%M:%S )
 " 12 $w_dialog
-[[ ${uuid_B:0:-3} != ${uuid_R:0:-3} ]] && usb=' and USB drive'
+[[ ${partid_B:0:-3} != ${partid_R:0:-3} ]] && usb=' and USB drive'
 #........................
 dialog $opt_msg "
 \Z1Arch Linux ARM\Zn : Ready
