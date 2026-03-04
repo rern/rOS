@@ -222,5 +222,4 @@ Created successfully.
 " )				
 $( date -d@$SECONDS -u +%M:%S )
 " 10 $w_dialog
-nohup sh -c 'sleep 2 && reboot' &> /dev/null & # run after exit to fix 'Connection to ... closed.'
-exit
+reboot
