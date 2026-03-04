@@ -13,23 +13,17 @@ banner() { # should be used on start stdout to screen
 bar() {
 	echo -e "\e[44m  \e[0m $@\n"
 }
-BOOT_ROOT.checkMount() { # create-alarm.sh, image-create.sh
+BOOT_ROOT.check() { # create-alarm.sh, image-create.sh
+	BOOT_ROOT.unmount
 	banner Check Partitions ...
-	lbl_partB="BOOT: $part_B"
-	lbl_partR="ROOT: $part_R"
-	if [[ ! $name ]]; then # not from +R.sh
-		[[ $( lsblk -no fstype $part_B ) != vfat ]] && error+="$lbl_partB not vfat\n"
-		[[ $( lsblk -no fstype $part_R ) != ext4 ]] && error+="$lbl_partR not ext4\n"
-		[[ $error ]] && dialogErrorExit $error
-#----------------------------------------------------------------------------
-	fi
-	bar $lbl_partB ...
+	bar BOOT: $part_B ...
 	fsck.fat -taw $part_B
-	bar $lbl_partR ...
+	bar ROOT: $part_R ...
 	e2fsck -p $part_R
-	BOOT_ROOT.mount
 }
 BOOT_ROOT.unmount() {
+	! findmnt $BOOT &> /dev/null && return
+
 	umount -l $BOOT $ROOT &> /dev/null
 	rmdir $BOOT $ROOT &> /dev/null
 }

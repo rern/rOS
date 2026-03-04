@@ -8,8 +8,11 @@ dev_partBR() {
 	part_B=${dev}1
 	part_R=${dev}2
 }
+dialogRetrySD() {
+	dialogRetry "$@" && dialogSDcard
+}
 dialogSDcard() {
-	local dev dev_gib l
+	local dev dev_gib error H l line_lsblk list_BR list_check list_colored part dev_part sL txt_confirm
 #........................ (no --sleep 1)
 	dialog $option --infobox "
 Insert \Z1SD card\Zn \Zb/ USB drive\Zn
@@ -22,31 +25,24 @@ If already inserted, remove and reinsert.
 		dev_gib=$( grep -m1 -E '^(sd|mmcblk).* GiB' <<< $l )
 		[[ $dev_gib ]] && break
 	done < <( timeout $s dmesg -tW )
-	if [[ ! $dev_gib ]]; then
-		dialogRetry "No SD card detected in ${s}s." && dialogSDcard
-		return
+	[[ ! $dev_gib ]] && dialogRetrySD "No SD card detected in ${s}s." && return
+#---------------------------------------------------------------
 	fi
 	if [[ $dev_gib == sd* ]]; then
 		dev=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
 	else
 		dev=${dev_gib/:*}                               # mmcblkN: mmcN:0001 SD32G 29.7 GiB
 	fi
-	if [[ $image_create ]]; then
-		dev_partBR $dev
-	else
-		sleep 1
-		dialogSDconfirm $dev
-	fi
-}
-dialogSDconfirm() { # $1=sdX/mmcblkN
-	local error H l line_lsblk list_BR list_check list_colored part dev_part sL txt_confirm
+	[[ $image_create ]] && dev_partBR $dev && return
+#---------------------------------------------------------------
+	sleep 1
 	line_lsblk=$( lsblk -po name,label,size,mountpoint )
 	if [[ $create_alarm ]]; then
 		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
-		[[ ! $list_BR ]] && dialogErrorExit Partitions not found: BOOT and ROOT
-#---------------------------------------------------------------
-		readarray -t list_check <<< $( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
+		[[ ! $list_BR ]] && dialogRetrySD "Partitions $txt_confirm not found." && return
+#---------------------------------------------------------------
+		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else # get dev
 		list_check=( "$( grep ^/dev/$1 <<< $line_lsblk )" off )
 		txt_confirm='\Z1SD card\Zn \Zb/ USB drive\Zn'

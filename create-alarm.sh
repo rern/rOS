@@ -55,19 +55,20 @@ $part_R : start= $start_R, size= $size_R, type=83
     fatlabel $part_B BOOT
     e2label $part_R ROOT
 fi
-BOOT_ROOT.checkMount
+BOOT_ROOT.mount
 if [[ ! $task ]]; then
-	. <( findmnt -no target,fstype $part_B | sed 's/^/m_B=/; s/ /\;f_B=/' ) # $m_B $f_B
-	. <( findmnt -no target,fstype $part_R | sed 's/^/m_R=/; s/ /\;f_R=/' ) # $m_R $f_R
-	[[ $( ls $m_B ) ]] && err_B+=', Not empty'
-	[[ $f_B != vfat ]] && err_B+=', Not fat32'
-	[[ $( ls $m_R | grep -v lost+found ) ]] && err_R+=', Not empty'
-	[[ $f_R != ext4 ]] &&                      err_R+=', Not ext4'
+	read -r mp fs < <( findmnt -no target,fstype $part_B )
+	[[ $( ls $mp ) ]] && err_B+=', Not empty'
+	[[ $fs != vfat ]] && err_B+=', Not fat32'
+	read -r mp fs < <( findmnt -no target,fstype $part_R )
+	[[ $( ls $mp | grep -v lost+found ) ]] && err_R+=', Not empty'
+	[[ $fs != ext4 ]] &&                      err_R+=', Not ext4'
 	[[ $err_B ]] && error+="\Z1BOOT\Zn $part_B: ${err_B:2}"
 	[[ $err_R ]] && error+="\Z1ROOT\Zn $part_R: ${err_R:2}"
 	[[ $error ]] && dialogErrorExit "$error"
 #----------------------------------------------------------------------------
 fi
+BOOT_ROOT.check
 getData() {
 	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
 #........................
@@ -231,7 +232,7 @@ Shairport  - AirPlay renderer             | shairport-sync
 Snapcast   - Synchronous multiroom player | snapcast
 Spotifyd   - Spotify renderer             | spotifyd
 upmpdcli   - UPnP renderer                | upmpdcli python-upnpp"
-readarray -t list_check <<< $( sed -e 's/ *|.*//' -e 'a\on' <<< $list_features )
+readarray -t list_check < <( sed -e 's/ *|.*//' -e 'a\on' <<< $list_features )
 selectFeatures() {
 #........................
 	selected=$( dialog $opt_check '

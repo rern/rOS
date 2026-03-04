@@ -50,7 +50,8 @@ fi
 dialogSplash Image File
 image_create=1
 . <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh ) # set $dev $part_B $part_R
-BOOT_ROOT.checkMount
+BOOT_ROOT.check
+BOOT_ROOT.mount
 file_r1=$ROOT/srv/http/data/addons/r1
 if [[ ! -e $file_r1 ]]; then
 #........................
