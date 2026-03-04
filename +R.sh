@@ -1,5 +1,7 @@
 #!/bin/bash
 
+trap 'clear -x' EXIT
+
 . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
 https_rern='https://github.com/rern'
