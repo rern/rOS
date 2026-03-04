@@ -224,9 +224,6 @@ $ping
 #----------------------------------------------------------------------------
 	esac
 }
-partUUID() {
-	blkid | sed -n '/LABEL="'$1'"/ {s/.* //; s/"//g; p}'
-}
 scanIP() {
 #........................
 	dialog $opt_info "
@@ -322,13 +319,14 @@ done ) \
 " 9 50
 sync
 # fstab
-partuuidB=$( partUUID BOOT )
-partuuidR=$( partUUID ROOT )
+uuid=( $( blkid -o value -s PARTUUID $part_B $part_R | sed 's/^/PARTUUID=/' ) )
+uuid_B=${uuid[0]}
+uuid_R=${uuid[1]}
 echo "\
-$partuuidB  /boot  vfat  defaults,noatime  0  0
-$partuuidR  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
+$uuid_B  /boot  vfat  defaults,noatime  0  0
+$uuid_R  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
 # cmdline.txt, config.txt
-cmdline="root=$partuuidR rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
+cmdline="root=$uuid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
 config="\
 disable_overscan=1
 disable_splash=1
@@ -400,7 +398,7 @@ Created successfully.
 " )				
 $( date -d@$SECONDS -u +%M:%S )
 " 12 $w_dialog
-[[ ${partuuidB:0:-3} != ${partuuidR:0:-3} ]] && usb=' and USB drive'
+[[ ${uuid_B:0:-3} != ${uuid_R:0:-3} ]] && usb=' and USB drive'
 #........................
 dialog $opt_msg "
 \Z1Arch Linux ARM\Zn : Ready
