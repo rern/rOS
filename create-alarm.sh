@@ -290,6 +290,7 @@ if [[ -e $file ]]; then
  \Z1$file\Zn
  
  No download required.
+ 
 " 0 0
 else
 	dialogDownload
