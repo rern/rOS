@@ -43,12 +43,17 @@ dialogDownload() {
 		| dialog $opt_guage "
  Connecting ...
 " 9 50
-	bar Verify downloaded file ...
+	verifyMD5
+}
+verifyMD5() {
+	clear -x
+	bar Verify $$file ...
 	curl -skLO $url/$file.md5
-	if ! md5sum -c $file.md5; then
-		rm $file
-		dialogRetry Download incomplete. && dialogDownload
-	fi
+	[[ $? != 0 ]] && dialogRetry 'Download *.md5 failed.' && verifyMD5
+	md5sum -c $file.md5 && return 0
+#----------------------------------------------------------------------------
+	rm $file
+	dialogDownload
 }
 
 for cmd in bsdtar dialog nmap pv; do # required packages
@@ -281,25 +286,15 @@ done <<< $lines
 server=$( dialogMenu 'Package mirror server' "$list_menu" )
 mirror=${list_code[$server]}
 [[ $mirror ]] && url=http://$mirror.mirror.archlinuxarm.org/os || url=http://os.archlinuxarm.org/os
-# if already downloaded, verify latest
-if [[ -e $file ]]; then
-	clear -x
-	bar Verify already downloaded file ...
-	curl -skLO $url/$file.md5
-	md5sum --quiet -c $file.md5 || rm $file
-fi
-# download
 if [[ -e $file ]]; then
 #........................
-	dialog $opt_info "
+	verifyMD5 && dialog $opt_info "
  Existing is the latest:
  \Z1$file\Zn
  
  No download required.
-
 " 0 0
 else
-#........................
 	dialogDownload
 fi
 rm $file.md5
