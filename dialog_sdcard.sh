@@ -17,7 +17,7 @@ dialogSDcard() {
 	dialog $option --infobox "
 Insert \Z1SD card\Zn \Zb/ USB drive\Zn
 
-If already inserted, remove and reinsert.
+\Zb(If already inserted, remove and reinsert.)\Zn
 
 " 0 0
 	s=15
@@ -43,11 +43,11 @@ If already inserted, remove and reinsert.
 #---------------------------------------------------------------
 		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else # get dev
-		list_check=( "$( grep ^/dev/$1 <<< $line_lsblk )" off )
+		list_check=( "$( grep ^/dev/$dev <<< $line_lsblk )" off )
 		txt_confirm='\Z1SD card\Zn \Zb/ USB drive\Zn'
 	fi
 	list_colored=$( sed -E  -e '1 {s/^/\\\Zr\\\Zb/; s/$/\\\Zn/}
-					' -e "/^.dev.$1/ {s/^/\\\Z1/; s/$/\\\Zn/}
+					' -e "/^.dev.$dev/ {s/^/\\\Z1/; s/$/\\\Zn/}
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	H=$(( $( wc -l <<< $list_colored ) + 9 ))
 #........................
