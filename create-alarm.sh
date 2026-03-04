@@ -1,6 +1,38 @@
 #!/bin/bash
 
-downloadArch() {
+list_features="\
+BlueALSA   - Bluetooth audio              | bluealsa bluez bluez-utils python-dbus python-gobject python-requests
+CamillaDSP - Digital signal processor     | camilladsp python-websocket-client
+Firefox    - Browser on RPi screen        | firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo
+iwd        - RPi access point             | iwd
+Samba      - File sharing                 | samba
+Shairport  - AirPlay renderer             | shairport-sync
+Snapcast   - Synchronous multiroom player | snapcast
+Spotifyd   - Spotify renderer             | spotifyd
+upmpdcli   - UPnP renderer                | upmpdcli python-upnpp"
+readarray -t list_check < <( sed -e 's/ *|.*//' -e 'a\on' <<< $list_features )
+dialogFeature() {
+#........................
+	selected=$( dialog $opt_check '
+ \Z1Features to install:\Zn
+' 8 0 0 "${list_check[@]}" )
+	features=
+	while read l; do
+		features+=$( sed -n "/^$l/ {s/.*|//; p}" <<< $list_features )
+	done <<< $selected
+#........................
+	dialog $opt_yesno "
+\Z1Confirm features to install:\Zn
+
+$selected
+" 0 0
+	if [[ $? == 0 ]]; then
+		echo $features > $BOOT/features
+	else
+		dialogFeature
+	fi
+}
+dialogDownload() {
 #........................
 	( wget -O $file $url/$file 2>&1 \
 		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
@@ -11,11 +43,11 @@ downloadArch() {
 		| dialog $opt_guage "
  Connecting ...
 " 9 50
-	# checksum
+	bar Verify downloaded file ...
 	curl -skLO $url/$file.md5
 	if ! md5sum -c $file.md5; then
 		rm $file
-		dialogRetry Download incomplete. && downloadArch
+		dialogRetry Download incomplete. && dialogDownload
 	fi
 }
 
@@ -119,15 +151,15 @@ Connect \Z1Wi-Fi\Zn on boot?
 	if [[ $? == 0 ]]; then
 #........................
 		ssid=$( dialog $opt_input "
-\Z1Wi-Fi\Zn - SSID:
+Wi-Fi - \Z1SSID\Zn:
 " 0 0 $ssid )
 #........................
 		password=$( dialog $opt_input "
-\Z1Wi-Fi\Zn - Password:
+Wi-Fi - \Z1Password\Zn:
 " 0 0 $password )
 		tput cup 0 0 && tput ed
 #........................
-		wpa=$( dialogMenu 'Wi-Fi Security' "\
+		wpa=$( dialogMenu 'Wi-Fi \Z1Security\Zn' "\
 WPA
 WEP
 None" )
@@ -136,20 +168,19 @@ None" )
 			2 ) wpa=wep;;
 		esac
 		confirmwifi="
-SSID         : \Z1$ssid\Zn
-Password     : \Z1$password\Zn
-Security     : \Z1${wpa^^}\Zn"
+SSID         : $ssid
+Password     : $password
+Security     : ${wpa^^}"
 	fi
 #........................
 	dialog $opt_yesno "
 \Z1Confirm data:\Zn
 
-\Z1r\ZnAudio
 Release      : $release
-Raspberry Pi : \Z1$rpiname\Zn
+Raspberry Pi : $rpiname
 
-BOOT path    : \Z1$BOOT\Zn
-ROOT path    : \Z1$ROOT\Zn
+BOOT path    : $BOOT
+ROOT path    : $ROOT
 $confirmwifi
 $ip_confirm
 " 0 0
@@ -158,7 +189,7 @@ $ip_confirm
 }
 foundIP() {
 #........................
-	found=$( dialogMenu 'Raspberry Pi IP found?' "\
+	found=$( dialogMenu 'Raspberry Pi \Z1IP\Zn found?' "\
 Yes
 Ping IP
 No" )
@@ -170,7 +201,7 @@ No" )
 			;;
 		2 )
 #........................
-			ip_ping=$( dialogIP 'Ping Raspberry Pi at IP' )
+			ip_ping=$( dialogIP '\Z1Ping\Zn Raspberry Pi at IP' )
 			ping=$( ping -4 -c 1 -w 5 $ip_ping | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Zn/" )
 			if grep -q '100% packet loss' <<< "$ping"; then
 				ping+=$'\n\n'"$ip_ping \Z1NOT\Zn found."
@@ -222,37 +253,8 @@ sshRpi() {
 	scanIP
 }
 
-list_features="\
-BlueALSA   - Bluetooth audio              | bluealsa bluez bluez-utils python-dbus python-gobject python-requests
-CamillaDSP - Digital signal processor     | camilladsp python-websocket-client
-Firefox    - Browser on RPi screen        | firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo
-iwd        - RPi access point             | iwd
-Samba      - File sharing                 | samba
-Shairport  - AirPlay renderer             | shairport-sync
-Snapcast   - Synchronous multiroom player | snapcast
-Spotifyd   - Spotify renderer             | spotifyd
-upmpdcli   - UPnP renderer                | upmpdcli python-upnpp"
-readarray -t list_check < <( sed -e 's/ *|.*//' -e 'a\on' <<< $list_features )
-selectFeatures() {
-#........................
-	selected=$( dialog $opt_check '
- \Z1Features to install:\Zn
-' 8 0 0 "${list_check[@]}" )
-	while read l; do
-		features+=$( sed -n "/^$l/ {s/.*|//; p}" <<< $list_features )
-	done <<< $selected
-}
-
 getData
-selectFeatures
-#........................
-dialog $opt_yesno "
-\Z1Confirm features to install:\Zn
-
-$selected
-
-" 0 0
-[[ $? == 0 ]] && echo $features > $BOOT/features || selectFeatures
+dialogFeature
 SECONDS=0
 # package mirror server
 lines=$( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
@@ -298,7 +300,7 @@ if [[ -e $file ]]; then
 " 0 0
 else
 #........................
-	downloadArch
+	dialogDownload
 fi
 rm $file.md5
 # expand
