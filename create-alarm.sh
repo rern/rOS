@@ -95,11 +95,11 @@ fi
 BOOT_ROOT.mount
 if [[ ! $task ]]; then
 	read -r mp fs < <( findmnt -no target,fstype $part_B )
-	[[ $( ls $mp ) ]] && err_B+=', Not empty'
-	[[ $fs != vfat ]] && err_B+=', Not fat32'
+	[[ $( ls $mp ) ]] && err_B+=', Not empty\n'
+	[[ $fs != vfat ]] && err_B+=', Not fat32\n'
 	read -r mp fs < <( findmnt -no target,fstype $part_R )
-	[[ $( ls $mp | grep -v lost+found ) ]] && err_R+=', Not empty'
-	[[ $fs != ext4 ]] &&                      err_R+=', Not ext4'
+	[[ $( ls $mp | grep -v lost+found ) ]] && err_R+=', Not empty\n'
+	[[ $fs != ext4 ]] &&                      err_R+=', Not ext4\n'
 	[[ $err_B ]] && error+="\Z1BOOT\Zn $part_B: ${err_B:2}"
 	[[ $err_R ]] && error+="\Z1ROOT\Zn $part_R: ${err_R:2}"
 	[[ $error ]] && dialogErrorExit "$error"
