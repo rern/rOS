@@ -71,7 +71,7 @@ for f in create-ros.sh  common.sh; do
 	curl -sL $https_ros_main/$f -o $root_file
 	chmod 755 $root_file
 done
-if [[ ${BASH_SOURCE[0]} != ${0} ]]; then # not . <( ... from +R.sh
+if [[ ${BASH_SOURCE[0]} == ${0} ]]; then # not . <( ... from +R.sh
 	create_alarm=1 # for dialog.sdCard
 	. $root_file # common.sh 
 fi

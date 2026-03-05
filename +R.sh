@@ -6,7 +6,7 @@ trap 'clear -x' EXIT
 
 https_rern='https://github.com/rern'
 #........................
-dialog.splash Image Utilities
+dialog.splash U t i l i t i e s
 list="\
 Create OS       | create-alarm
 Reset for Image |
