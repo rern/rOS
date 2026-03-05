@@ -45,6 +45,13 @@ $checked
 		dialog.feature
 	fi
 }
+dialog.scanIP() {
+	dialog $opt_msg "
+$@
+
+Scan all IPs?
+" 0 0 && scanIP
+}
 verifyMD5() {
 	clear -x
 	bar Verify $file ...
@@ -154,25 +161,29 @@ Connect \Z1Wi-Fi\Zn on boot?
 " 0 0
 	if [[ $? == 0 ]]; then
 		(( sec_boot+=5 ))
+		if [[ -e wifi ]]; then
+			. <( sed -E -n '/^Security|^ESSID|^Key/ {s/^.*=/\L&/; p}' wifi )
+		else
 #........................
-		ssid=$( dialog $opt_input "
+			essid=$( dialog $opt_input "
 Wi-Fi - \Z1SSID\Zn:
-" 0 0 $ssid )
+" 0 0 $essid )
 #........................
-		password=$( dialog $opt_input "
+			key=$( dialog $opt_input "
 Wi-Fi - \Z1Password\Zn:
-" 0 0 $password )
-		tput cup 0 0 && tput ed
+" 0 0 $key )
+			tput cup 0 0 && tput ed
 #........................
-		i=$( dialog.menu 'Wi-Fi \Z1Security\Zn' "\
+			i=$( dialog.menu 'Wi-Fi \Z1Security\Zn' "\
 WPA
 WEP
 None" )
-		security=( '' wpa wep )
-		security=${security[i]}
+			security=( '' wpa wep )
+			security=${security[i]}
+		fi
 		confirm_wifi="
-SSID         : $ssid
-Password     : $password
+SSID         : $essid
+Password     : $key
 Security     : ${security^^}"
 	fi
 #........................
@@ -211,12 +222,13 @@ scanIP() {
 sshRpi() {
 	ip=$1
 	sed -i "/$ip/ d" ~/.ssh/known_hosts
-	for i in {0..3}; do
-		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh 2> /dev/null
-		[[ $? == 0 ]] && break || sleep 2
+	for i in 1 2 3; do
+		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh && exit
+#----------------------------------------------------------------------------
+		sleep 3
 	done
-	scanIP
 }
+dialog.scanIP "Unable to SSH connect IP: \Z1$ip\Zn"
 
 getData
 dialog.feature
@@ -305,22 +317,22 @@ mv $ROOT/boot/* $BOOT
 echo $cmdline > $BOOT/cmdline.txt0
 echo "$config" > $BOOT/config.txt0
 # wifi
-if [[ $ssid ]]; then
-	profile=$ROOT/etc/netctl/$ssid
+if [[ $essid ]]; then
+	profile=$ROOT/etc/netctl/$essid
 	echo 'Interface=wlan0
 Connection=wireless
 IP=dhcp
-ESSID="'$ssid'"
+ESSID="'$essid'"
 Security='$security'
-Key="'$password'"' > $profile
+Key="'$key'"' > $profile
 	[[ ! $security ]] && sed -E -i '/^Security|^Key/ d' "$profile"
-	dir="$ROOT/etc/systemd/system/netctl@$ssid.service.d"
+	dir="$ROOT/etc/systemd/system/netctl@$essid.service.d"
 	mkdir -p $dir
 	echo "\
 [Unit]
 BindsTo=sys-subsystem-net-devices-wlan0.device
 After=sys-subsystem-net-devices-wlan0.device" > "$dir/profile.conf"
-	ln -sr $ROOT/usr/lib/systemd/system/netctl@.service "$ROOT/etc/systemd/system/multi-user.target.wants/netctl@$ssid.service"
+	ln -sr $ROOT/usr/lib/systemd/system/netctl@.service "$ROOT/etc/systemd/system/multi-user.target.wants/netctl@$essid.service"
 fi
 # dhcpd - disable arp
 echo noarp >> $ROOT/etc/dhcpcd.conf
@@ -385,18 +397,19 @@ $(( i * 10 ))
 \n  #$i
 XXX
 EOF
-		ping -4 -c 1 -w 1 $ip_assigned &> /dev/null && break
+		ping -4 -c 1 -w 1 $ip_assigned &> /dev/null && pong=1 && break
+
 		sleep 3
 	done ) \
 		| dialog $opt_guage '' 9 $W
-	if ping -4 -c 1 -w 1 $ip_assigned &> /dev/null; then
+	if [[ $pong ]]; then
 		dialog $opt_info "
   SSH Arch Linux ARM ...
   @ \Z1$ip_assigned\Zn
 " 9 $W
 		sshRpi $ip_assigned
 	else
-		scanIP
+		dialog.scanIP "\Z1Assigned IP\Zn not found: $ip_assigned"
 	fi
 else
 	scanIP
