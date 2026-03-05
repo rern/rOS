@@ -199,10 +199,10 @@ scanIP() {
 " 5 $W
 	ip_base=$( ipBase )
 	lines=$( nmap -sn $ip_base* \
-				| grep '^Nmap scan\|^MAC' \
 				| paste -sd ' \n' \
-				| grep 'MAC Address' \
-				| sed -e 's/Nmap.*for \|MAC Address//g' -e '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Zn/}' \
+				| grep 'MAC Address:' \
+				| column -t -H 1-4,6,7 \
+				| sed -E -e ':a; s/\(([^)]*[^ ])  +/\(\1 /; ta' -e 's/[()]//g' \
 				| tac )
 #........................
 	line=$( dialog.menu 'Select Raspberry Pi' "$lines" )
