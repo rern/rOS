@@ -321,13 +321,17 @@ echo "$config" > $BOOT/config.txt0
 # wifi
 if [[ $essid ]]; then
 	profile=$ROOT/etc/netctl/$essid
-	echo 'Interface=wlan0
+	if [[ -e wifi ]]; then
+		cp wifi $profile
+	else
+		echo 'Interface=wlan0
 Connection=wireless
 IP=dhcp
 ESSID="'$essid'"
 Security='$security'
 Key="'$key'"' > $profile
-	[[ ! $security ]] && sed -E -i '/^Security|^Key/ d' "$profile"
+		[[ ! $security ]] && sed -E -i '/^Security|^Key/ d' "$profile"
+	fi
 	dir="$ROOT/etc/systemd/system/netctl@$essid.service.d"
 	mkdir -p $dir
 	echo "\
