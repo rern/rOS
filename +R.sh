@@ -17,15 +17,15 @@ Docker          | docker
 SSH             |"
 list_task=$( sed 's/ *|.*//' <<< $list )
 #........................
-task=$( dialog.menu Tasks "$list_task" )
-file_name=$( sed -n "$task {s/.*| *//; p}" <<< $list )
+i=$( dialog.menu Tasks "$list_task" )
+file_name=$( sed -n "$i {s/.*| *//; p}" <<< $list )
 if [[ $file_name ]]; then
-	(( $task < 5 )) && repo=rOS || repo=rern.github.io
+	(( $i < 5 )) && repo=rOS || repo=rern.github.io
 	. <( curl -sL "$https_rern/$repo/raw/main/$file_name.sh" )
 else
 #........................
-	rpiip=$( dialog.ip 'rAudio IP' )
-	sed -i "/$rpiip/ d" ~/.ssh/known_hosts
-	[[ $task == 2 ]] && bash_reset_sh="bash <( curl -sL $https_rern/rOS/raw/main/image-reset.sh )"
-	sshpass -p ros ssh -t -o StrictHostKeyChecking=no root@$rpiip $bash_reset_sh
+	ip=$( dialog.ip 'rAudio IP' )
+	sed -i "/$ip/ d" ~/.ssh/known_hosts
+	(( $i == 2 )) && bash_reset_sh="bash <( curl -sL $https_rern/rOS/raw/main/image-reset.sh )"
+	sshpass -p ros ssh -t -o StrictHostKeyChecking=no root@$ip $bash_reset_sh
 fi

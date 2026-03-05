@@ -26,18 +26,18 @@ upmpdcli   - UPnP renderer                | upmpdcli python-upnpp"
 readarray -t list_check < <( sed -e 's/ *|.*//' -e 'a\on' <<< $list_features )
 dialog.feature() {
 #........................
-	selected=$( dialog $opt_check '
+	checked=$( dialog $opt_check '
  \Z1Features to install:\Zn
 ' 8 0 0 "${list_check[@]}" )
 	features=
 	while read l; do
 		features+=$( sed -n "/^$l/ {s/.*|//; p}" <<< $list_features )
-	done <<< $selected
+	done <<< $checked
 #........................
 	dialog $opt_yesno "
 \Z1Confirm features to install:\Zn
 
-$selected
+$checked
 " 0 0
 	if [[ $? == 0 ]]; then
 		echo $features > $BOOT/features
@@ -118,11 +118,11 @@ getData() {
 	fi
 	echo $release > $BOOT/release
 #........................
-	rpi=$( dialog.menu 'Raspberry Pi' "\
+	i=$( dialog.menu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
 32bit  : 2 (BCM2836)" )
 	file=ArchLinuxARM-rpi-
-	case $rpi in
+	case $i in
 		1 )
 			file+=aarch64-
 			bit=64bit
@@ -144,7 +144,7 @@ getData() {
 		(( sec_boot-=10 ))
 #........................
 		ip_assigned=$( dialog.ip 'Pre-assigned IP' )
-		ip_confirm="
+		confirm_ip="
 Assigned IP  : $ip_assigned"
 	fi
 #........................
@@ -164,15 +164,13 @@ Wi-Fi - \Z1Password\Zn:
 " 0 0 $password )
 		tput cup 0 0 && tput ed
 #........................
-		security=$( dialog.menu 'Wi-Fi \Z1Security\Zn' "\
+		i=$( dialog.menu 'Wi-Fi \Z1Security\Zn' "\
 WPA
 WEP
 None" )
-		case $security in
-			1 ) security=wpa;;
-			2 ) security=wep;;
-		esac
-		confirmwifi="
+		security=( '' wpa wep )
+		security=${security[i]}
+		confirm_wifi="
 SSID         : $ssid
 Password     : $password
 Security     : ${security^^}"
@@ -186,8 +184,8 @@ Raspberry Pi : $bit
 
 BOOT path    : $BOOT
 ROOT path    : $ROOT
-$confirmwifi
-$ip_confirm
+$confirm_wifi
+$confirm_ip
 " 0 0
 	tput cup 0 0 && tput ed
 	[[ $? == 1 ]] && getData
@@ -205,10 +203,10 @@ scanIP() {
 				| sed -E -e ':a; s/\(([^)]*[^ ])  +/\(\1 /; ta' -e 's/[()]//g' \
 				| tac )
 #........................
-	line=$( dialog.menu 'Select Raspberry Pi' "$lines" )
+	i=$( dialog.menu 'Select Raspberry Pi' "$lines" )
 	[[ $? != 0 ]] && dialog.error_exit Arch Linux ARM not found.
 #----------------------------------------------------------------------------
-	sshRpi $( sed -n "$line {s/ .*//; p}" <<< $lines )
+	sshRpi $( awk '/'$i'/ {print $1}' <<< $lines )
 }
 sshRpi() {
 	ip=$1
@@ -245,8 +243,8 @@ $cc"
 	fi
 done <<< $lines
 #........................
-server=$( dialog.menu 'Package mirror server' "$list_menu" )
-mirror=${list_code[$server]}
+i=$( dialog.menu 'Package mirror server' "$list_menu" )
+mirror=${list_code[i]}
 [[ $mirror ]] && url=http://$mirror.mirror.archlinuxarm.org/os || url=http://os.archlinuxarm.org/os
 if [[ -e $file ]]; then
 #........................
