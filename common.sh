@@ -99,6 +99,19 @@ $logo
 $@" )" $(( 8 + $( wc -l <<< $@ ) )) $w_dialog
 	tput cnorm # restore cursor
 }
+dialog.success() {
+#........................
+	dialog $opt_msg "
+$( alignCenter "
+$logo
+
+$@
+
+Created successfully.
+$( runDuration )
+" )				
+" 12 $w_dialog
+}
 ipBase() {
 	local ip_router
 	ip_router=$( ip r get 1 | head -1 | cut -d' ' -f3 )

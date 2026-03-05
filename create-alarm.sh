@@ -66,17 +66,20 @@ fi
 alarm_rpi=ArchLinuxARM-rpi-
 https_rern='https://github.com/rern'
 https_ros_main="$https_rern/rOS/raw/main"
-[[ ${BASH_SOURCE[0]} != ${0} ]] && source=1 # from +R.sh
-
-if [[ ! $source ]]; then # not from +R.sh
+for f in create-ros.sh  common.sh; do
+	root_file=$ROOT/root/$f
+	curl -sL $https_ros_main/$f -o $root_file
+	chmod 755 $root_file
+done
+if [[ ${BASH_SOURCE[0]} != ${0} ]]; then # not . <( ... from +R.sh
 	create_alarm=1 # for dialog.sdCard
-	. <( curl -sL $https_ros_main/common.sh )
+	. $root_file # common.sh 
 fi
 trap 'BRunmount; clear -x' EXIT
 #........................
 dialog.splash Arch Linux ARM
 . <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $dev $part_B $part_R
-if [[ $source ]]; then # from +R.sh
+if [[ ! $create_alarm ]]; then # from +R.sh
 #........................
     banner Partition SD Card ...
     wipefs -a $dev
@@ -95,7 +98,7 @@ $part_R : start= $start_R, size= $size_R, type=83
     e2label $part_R ROOT
 fi
 BRfsck_mount
-if [[ ! $source ]]; then
+if [[ $create_alarm ]]; then
 	read -r mp fs < <( findmnt -no target,fstype $part_B )
 	[[ $( ls $mp ) ]] && err_B+=', Not empty\n'
 	[[ $fs != vfat ]] && err_B+=', Not fat32\n'
@@ -251,16 +254,7 @@ sshRpi() {
 	sed -i "/$ip/ d" ~/.ssh/known_hosts
 	for i in {0..3}; do
 		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh 2> /dev/null
-		if [[ $? != 0 ]]; then
-			sleep 2
-		else
-			dialog.splash "\
-rAudio
-Created successfully.
-$( runDuration )"
-			return 0
-#---------------------------------------------------------------
-		fi
+		[[ $? == 0 ]] && break || sleep 2
 	done
 	scanIP
 }
@@ -393,21 +387,8 @@ sed -i -e 's/#\(PermitRootLogin \).*/\1yes/
 # set root password
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
-# get create-ros.sh
-wget -q $https_ros_main/create-ros.sh -P $ROOT/root
-chmod 755 $ROOT/root/create-ros.sh
 sync && BRunmount
-#........................
-dialog $opt_msg "
-$( alignCenter "
-
-Arch Linux ARM
-for
-\Z1r\ZnAudio
-Created successfully.
-$( runDuration )
-" )				
-" 12 $w_dialog
+dialog.success Arch Linux ARM
 [[ ${partid_B:0:-1} != ${partid_R:0:-1} ]] && usb=' + USB drive'
 #........................
 dialog $opt_msg "

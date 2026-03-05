@@ -2,7 +2,7 @@
 
 trap 'rm -f /var/lib/pacman/db.lck' EXIT
 
-. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
+. /root/common.sh
 
 retryCreate() {
 	dialog.retry "$@" && /root/create-ros.sh || exit
@@ -211,10 +211,6 @@ touch /boot/expand
 [[ -e /boot/finish.sh ]] && . /boot/finish.sh
 rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
-	  /root/create-ros.sh
-nohup bash -c 'sleep 2; reboot' </dev/null &>/dev/null & # force reboot after return/exit
-if [[ ${BASH_SOURCE[0]} != ${0} ]]; then # from +R.sh: . <( ...
-    return 0
-else                                     # run bash <( ...
-    exit 0
-fi
+	  /root/{common,create-ros}.sh
+dialog.success r A u d i o
+reboot
