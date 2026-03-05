@@ -96,7 +96,7 @@ dialog.splash() {
 
 $logo
 
-$@" )" 9 $w_dialog
+$@" )" $(( 8 + $( wc -l <<< $@ ) )) $w_dialog
 	tput cnorm # restore cursor
 }
 ipBase() {
