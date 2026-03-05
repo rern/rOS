@@ -169,13 +169,13 @@ WPA
 WEP
 None" )
 		case $security in
-			1 ) security=WPA;;
-			2 ) security=WEP;;
+			1 ) security=wpa;;
+			2 ) security=wep;;
 		esac
 		confirmwifi="
 SSID         : $ssid
 Password     : $password
-Security     : $security"
+Security     : ${security^^}"
 	fi
 #........................
 	dialog $opt_yesno "
@@ -206,7 +206,7 @@ scanIP() {
 				| tac )
 #........................
 	line=$( dialog.menu 'Select Raspberry Pi' "$lines" )
-	[[ ! $selected ]] && dialog.error_exit Arch Linux ARM not found.
+	[[ $? != 0 ]] && dialog.error_exit Arch Linux ARM not found.
 #----------------------------------------------------------------------------
 	sshRpi $( sed -n "$line {s/ .*//; p}" <<< $lines )
 }
