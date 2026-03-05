@@ -10,7 +10,7 @@ dialog.download() {
 			print "\\n Time left: "substr($0,74,5)"\nXXX" }' ) \
 		| dialog $opt_guage "
  Connecting ...
-" 9 50
+" 9 $W
 	verifyMD5
 }
 list_features="\
@@ -131,12 +131,12 @@ getData() {
 		1 )
 			file+=aarch64-
 			bit=64bit
-			sboot=45
+			sec_boot=45
 			;;
 		2 )
 			file+=armv7-
 			bit=32bit
-			sboot=60
+			sec_boot=60
 			;;
 	esac
 	file+=latest.tar.gz
@@ -146,7 +146,7 @@ getData() {
 
 " 0 0
 	if [[ $? == 0 ]]; then
-		(( sboot-=10 ))
+		(( sec_boot-=10 ))
 #........................
 		ip_assigned=$( dialog.ip 'Pre-assigned IP' )
 		ip_confirm="
@@ -158,7 +158,7 @@ Connect \Z1Wi-Fi\Zn on boot?
 
 " 0 0
 	if [[ $? == 0 ]]; then
-		(( sboot+=5 ))
+		(( sec_boot+=5 ))
 #........................
 		ssid=$( dialog $opt_input "
 Wi-Fi - \Z1SSID\Zn:
@@ -232,7 +232,7 @@ scanIP() {
 #........................
 	dialog $opt_info "
   Scan hosts in network ...
-" 5 50
+" 5 $W
 	ip_base=$( ipBase )
 	lines=$( nmap -sn $ip_base* \
 				| grep '^Nmap scan\|^MAC' \
@@ -305,9 +305,9 @@ rm $file.md5
 ( pv -n $file \
 	| bsdtar -C $ROOT -xpf - --exclude=boot/initramfs-linux-fallback.img ) 2>&1 \
 	| dialog $opt_guage "
-  Decompress ...
+  Decompress to SD card ...
   \Z1$file\Zn
-" 9 50
+" 9 $W
 sync &
 Sstart=$( date +%s )
 dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
@@ -318,9 +318,9 @@ dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
 	sleep 2
 done ) \
 	| dialog $opt_guage "
-  Write to SD card ...
+  Write remaining to SD card ...
   \Z1$file\Zn
-" 9 50
+" 9 $W
 sync
 # fstab
 partid=( $( blkid -o value -s PARTUUID $part_B $part_R | sed 's/^/PARTUUID=/' ) )
@@ -400,16 +400,16 @@ dialog $opt_msg "
 	  » Press $btn_enter to:
 		• Start boot timer
 		• Create $logo rAudio
-" 14 $w_dialog
+" 14 $W
 #........................
-( for (( i = 1; i < sboot; i++ )); do
-	echo $(( i * 100 / sboot ))
+( for (( i = 1; i < sec_boot; i++ )); do
+	echo $(( i * 100 / sec_boot ))
 	sleep 1
 done ) \
 	| dialog $opt_guage "
   Boot ...
   \Z1Arch Linux ARM\Zn
-" 9 50
+" 9 $W
 
 if [[ $ip_assigned ]]; then
 #........................
@@ -424,12 +424,12 @@ EOF
 		ping -4 -c 1 -w 1 $ip_assigned &> /dev/null && break
 		sleep 3
 	done ) \
-		| dialog $opt_guage '' 9 50
+		| dialog $opt_guage '' 9 $W
 	if ping -4 -c 1 -w 1 $ip_assigned &> /dev/null; then
 		dialog $opt_info "
   SSH Arch Linux ARM ...
   @ \Z1$ip_assigned\Zn
-" 9 50
+" 9 $W
 		sshRpi $ip_assigned
 	else
 		scanIP

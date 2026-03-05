@@ -20,7 +20,7 @@ done <<< $list_reset
 #........................
 reset=$( dialog $opt_check '
  \Z1Tasks:\Zn
-' 8 50 0 "${list_check[@]}" )
+' 8 $W 0 "${list_check[@]}" )
 systemctl stop mpd
 dirnas=/mnt/MPD/NAS
 dirusb=/mnt/MPD/USB

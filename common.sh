@@ -8,7 +8,7 @@ alignCenter() {
 		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
 		
 		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
-		w=$(( ( w_dialog - ${#l} ) / 2 - 2 )) # -2: l/r border
+		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
 		txt+="
 $( printf '%*s' $w )$line\n"
 	done <<< "$@"
@@ -96,7 +96,7 @@ dialog.splash() {
 
 $logo
 
-$@" )" $(( 8 + $( wc -l <<< $@ ) )) $w_dialog
+$@" )" $(( 8 + $( wc -l <<< $@ ) )) $W
 	tput cnorm # restore cursor
 }
 dialog.success() {
@@ -110,7 +110,7 @@ $@
 Created successfully.
 $( runDuration )
 " )				
-" 12 $w_dialog
+" 12 $W
 }
 ipBase() {
 	local ip_router
@@ -123,7 +123,7 @@ runDuration() {
 
 btn_enter='\Zr\Zb Enter \Zn'
 logo='\Zr\Z4+R\Zn'
-w_dialog=55
+W=50
 # auto fit: 0 0
 #    0 0   - h w
 #    8 0 0 - hf h w - checklist / menu (hf=8 - frame + button)
