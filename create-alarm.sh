@@ -102,14 +102,16 @@ fi
 BRfsck_mount
 if [[ $create_alarm ]]; then
 	read -r mp fs < <( findmnt -no target,fstype $part_B )
-	[[ $( ls $mp ) ]] && err_B+=', Not empty\n'
-	[[ $fs != vfat ]] && err_B+=', Not fat32\n'
+	[[ $( ls $mp ) ]] && err_B=', Empty'
+	[[ $fs != vfat ]] && err_B+=', FAT32'
 	read -r mp fs < <( findmnt -no target,fstype $part_R )
-	[[ $( ls $mp | grep -v lost+found ) ]] && err_R+=', Not empty\n'
-	[[ $fs != ext4 ]] &&                      err_R+=', Not ext4\n'
-	[[ $err_B ]] && error+="\Z1BOOT\Zn $part_B: ${err_B:2}"
-	[[ $err_R ]] && error+="\Z1ROOT\Zn $part_R: ${err_R:2}"
-	[[ $error ]] && dialog.error_exit "$error"
+	[[ $( ls $mp | grep -v lost+found ) ]] && err_R=', Empty'
+	[[ $fs != ext4 ]] &&                      err_R+=', EXT4'
+	[[ $err_B ]] && error="
+\Z1BOOT\Zn $part_B not: ${err_B:2}" # :2 leading ,
+	[[ $err_R ]] && error+="
+\Z1ROOT\Zn $part_R not: ${err_R:2}"
+	[[ $error ]] && dialog.error_exit "${error:1}" # :1 leading \n
 #----------------------------------------------------------------------------
 fi
 getData() {
