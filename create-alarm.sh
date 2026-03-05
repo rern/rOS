@@ -66,14 +66,9 @@ fi
 alarm_rpi=ArchLinuxARM-rpi-
 https_rern='https://github.com/rern'
 https_ros_main="$https_rern/rOS/raw/main"
-for f in create-ros.sh  common.sh; do
-	root_file=$ROOT/root/$f
-	curl -sL $https_ros_main/$f -o $root_file
-	chmod 755 $root_file
-done
 if [[ ${BASH_SOURCE[0]} == ${0} ]]; then # not . <( ... from +R.sh
 	create_alarm=1 # for dialog.sdCard
-	. $root_file # common.sh 
+	. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 fi
 trap 'BRunmount; clear -x' EXIT
 #........................
@@ -381,12 +376,17 @@ rm -r $ROOT/etc/systemd/system/network-online.target.wants
 # fix: long wait login
 sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
 # ssh - root login, blank password
-sed -i -e 's/#\(PermitRootLogin \).*/\1yes/
-' -e 's/#\(PermitEmptyPasswords \).*/\1yes/
+sed -i -e 's/#*\(PermitRootLogin \).*/\1yes/
+' -e 's/#*\(PermitEmptyPasswords \).*/\1yes/
 ' $ROOT/etc/ssh/sshd_config
 # set root password
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
+# scripts
+for f in create-ros common; do
+	curl -sL $https_ros_main/$f.sh --output-dir $ROOT/root
+done
+chmod 755 $ROOT/root/*.sh
 sync && BRunmount
 dialog.success Arch Linux ARM
 [[ ${partid_B:0:-1} != ${partid_R:0:-1} ]] && usb=' + USB drive'
