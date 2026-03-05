@@ -384,7 +384,7 @@ id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # scripts
 for f in create-ros common; do
-	curl -sL $https_ros_main/$f.sh --output-dir $ROOT/root
+	curl -sLO $https_ros_main/$f.sh --output-dir $ROOT/root
 done
 chmod 755 $ROOT/root/*.sh
 sync && BRunmount
