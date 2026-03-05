@@ -7,7 +7,7 @@ selected() {
 }
 dirdata=/srv/http/data
 #........................
-dialogSplash Reset for Image
+dialog.splash Reset for Image
 list_reset="\
 Reset MPD database
 Reset user data directory

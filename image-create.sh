@@ -47,7 +47,7 @@ else
 	[[ $packages ]] && apt install -y $packages
 fi
 #........................
-dialogSplash Image File
+dialog.splash Image File
 image_create=1
 . <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh ) # set $dev $part_B $part_R
 BRfsck_mount
@@ -57,7 +57,7 @@ if [[ ! -e $file_r1 ]]; then
 	dialog $opt_msg "
 SD card is not rAudio: \Z1$devZn
 " 0 0
-	dialogSDcard
+	dialog.sdCard
 fi
 release=$( < $file_r1 )
 if [[ -e $BOOT/kernel8.img ]]; then

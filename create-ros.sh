@@ -5,10 +5,10 @@ trap 'rm -f /var/lib/pacman/db.lck' EXIT
 . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
 retryCreate() {
-	dialogRetry "$@" && /root/create-ros.sh || exit
+	dialog.retry "$@" && /root/create-ros.sh || exit
 }
 #........................
-dialogSplash r A u d i o
+dialog.splash r A u d i o
 SECONDS=0
 features=$( cat /boot/features )
 #........................
@@ -212,14 +212,9 @@ touch /boot/expand
 rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
 	  /root/create-ros.sh
-dialog $option --infobox "
-$( textAlignCenter "
-
-\Zr\Z4+R\Zn rAudio
-Created successfully.
-
-\Z1  Reboot\Zn ...
-" )				
-$( date -d@$SECONDS -u +%M:%S )
-" 10 $w_dialog
-reboot
+nohup bash -c 'sleep 2; reboot' </dev/null &>/dev/null & # force reboot after return/exit
+if [[ ${BASH_SOURCE[0]} != ${0} ]]; then # from +R.sh: . <( ...
+    return 0
+else                                     # run bash <( ...
+    exit 0
+fi

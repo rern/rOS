@@ -3,9 +3,9 @@
 # default images path: /root/rAudio-*.img.xz
 imager_json=rpi-imager.json
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
-[[ ! $files_list ]] && dialogErrorExit No image files in $PWD
+[[ ! $files_list ]] && dialog.error_exit No image files in $PWD
 #---------------------------------------------------------------
-dialogSplash Upload Image Files
+dialog.splash Upload Image Files
 dir_raudio=/mnt/BIG/RPi/Git/rAudio
 #........................
 files_img=$( dialog $opt_check '
@@ -17,7 +17,7 @@ mdl=$( cut -d- -f1 <<< $mdl_rel )
 [[ $( echo $mdl ) != '32bit 64bit Legacy' ]] && error="Not all 3 models:\n$mdl\n"
 release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
-[[ $error ]] && dialogErrorExit "$error"
+[[ $error ]] && dialog.error_exit "$error"
 #---------------------------------------------------------------
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
 json=$( sed -E -e "s|i[0-9]*/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
@@ -57,7 +57,7 @@ bar *.img.xz
 files_img=$( sed "s|^|$PWD/|" <<< $files_img )
 cd $dir_raudio
 gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
-[[ $? != 0 ]] && dialogErrorExit Upload failed.
+[[ $? != 0 ]] && dialog.error_exit Upload failed.
 #---------------------------------------------------------------
 branch=$( git branch --show-current )
 if [[ $branch != main ]]; then

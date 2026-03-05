@@ -2,6 +2,18 @@
 
 # on rpi - create-ros.sh, image-reset.h: . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
+alignCenter() {
+	local l line txt w
+	while read -r line; do
+		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
+		
+		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
+		w=$(( ( w_dialog - ${#l} ) / 2 - 2 )) # -2: l/r border
+		txt+="
+$( printf '%*s' $w )$line\n"
+	done <<< "$@"
+	echo "$txt"
+}
 banner() { # should be used on start stdout to screen
 	local cols
 	clear -x
@@ -31,7 +43,7 @@ BRunmount() {
 	umount -l $BOOT $ROOT &> /dev/null
 	rmdir $BOOT $ROOT &> /dev/null
 }
-dialogErrorExit() {
+dialog.error_exit() {
 	dialog $opt_msg "
 \Zr\Z1 ! \Zn Error:
 
@@ -41,7 +53,7 @@ $( echo -e "$@" )
 	exit
 #----------------------------------------------------------------------------
 }
-dialogIP() {
+dialog.ip() {
 	local ip
 	[[ ! $ip_base ]] && ip_base=$( ipBase )
 	ip=$( dialog $opt_input "
@@ -55,10 +67,10 @@ dialogIP() {
 		dialog $opt_msg "
 Invalid IP: \Z1$ip\Zn
 
-" 0 0 && dialogIP "$1"
+" 0 0 && dialog.ip "$1"
 	fi
 }
-dialogMenu() { # dialog --menu $1=title $2=multiline list
+dialog.menu() { # dialog --menu $1=title $2=multiline list
 	local i l list_menu
 	i=0
 	while read l; do
@@ -70,19 +82,19 @@ dialogMenu() { # dialog --menu $1=title $2=multiline list
 $1:
 " 8 0 0 "${list_menu[@]}" # h=8: exclude list box
 }
-dialogRetry() {
+dialog.retry() {
 	dialog $opt_msg "
 \Zr\Z1 ! \Zn $( echo -e "$@" )
 
 Retry?
 " 0 0
 }
-dialogSplash() {
+dialog.splash() {
 	tput civis # fix: hide cursor at corner
 #........................
-	dialog $opt_info "$( textAlignCenter "
+	dialog $opt_info "$( alignCenter "
 
-\Zr\Z4+R\Zn
+$logo
 
 $@" )" 9 $w_dialog
 	tput cnorm # restore cursor
@@ -92,19 +104,16 @@ ipBase() {
 	ip_router=$( ip r get 1 | head -1 | cut -d' ' -f3 )
 	echo ${ip_router%.*}.
 }
-textAlignCenter() {
-	local l line txt w
-	while read -r line; do
-		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
-		
-		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
-		w=$(( ( w_dialog - ${#l} ) / 2 - 2 )) # -2: l/r border
-		txt+="
-$( printf '%*s' $w )$line\n"
-	done <<< "$@"
-	echo "$txt"
+runDuration() {
+	echo \\Z4$( date -d@$SECONDS -u +%M:%S )\\Zn
 }
 
+btn_enter='\Zr\Zb Enter \Zn'
+logo='\Zr\Z4+R\Zn'
+w_dialog=55
+# auto fit: 0 0
+#    0 0   - h w
+#    8 0 0 - hf h w - checklist / menu (hf=8 - frame + button)
                  # keep spaces/tabs          capture stdout
 option='--colors --no-collapse --no-shadow --output-fd 1'
 opt_guage="$option --guage"                                  # no buttons
@@ -117,7 +126,3 @@ opt_input="$option --inputbox"
  opt_menu="$option --menu"                                   # select single
                    # no number  multiline stdout
 opt_check="$option --no-items --separate-output --checklist" # select multiple
-w_dialog=55
-# auto fit: 0
-#    0 0   - h w
-#    8 0 0 - h hl w - checklist / menu (h=8 - frame + button)

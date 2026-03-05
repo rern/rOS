@@ -1,5 +1,18 @@
 #!/bin/bash
 
+dialog.download() {
+#........................
+	( wget -O $file $url/$file 2>&1 \
+		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
+			print "XXX\n "substr($0,63,3)
+			print "\\n Download ..."
+			print "\\n \\Z1'$file'\\Zn"
+			print "\\n Time left: "substr($0,74,5)"\nXXX" }' ) \
+		| dialog $opt_guage "
+ Connecting ...
+" 9 50
+	verifyMD5
+}
 list_features="\
 BlueALSA   - Bluetooth audio              | bluealsa bluez bluez-utils python-dbus python-gobject python-requests
 CamillaDSP - Digital signal processor     | camilladsp python-websocket-client
@@ -11,7 +24,7 @@ Snapcast   - Synchronous multiroom player | snapcast
 Spotifyd   - Spotify renderer             | spotifyd
 upmpdcli   - UPnP renderer                | upmpdcli python-upnpp"
 readarray -t list_check < <( sed -e 's/ *|.*//' -e 'a\on' <<< $list_features )
-dialogFeature() {
+dialog.feature() {
 #........................
 	selected=$( dialog $opt_check '
  \Z1Features to install:\Zn
@@ -29,31 +42,18 @@ $selected
 	if [[ $? == 0 ]]; then
 		echo $features > $BOOT/features
 	else
-		dialogFeature
+		dialog.feature
 	fi
-}
-dialogDownload() {
-#........................
-	( wget -O $file $url/$file 2>&1 \
-		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
-			print "XXX\n "substr($0,63,3)
-			print "\\n Download ..."
-			print "\\n \\Z1'$file'\\Zn"
-			print "\\n Time left: "substr($0,74,5)"\nXXX" }' ) \
-		| dialog $opt_guage "
- Connecting ...
-" 9 50
-	verifyMD5
 }
 verifyMD5() {
 	clear -x
 	bar Verify $file ...
 	curl -skLO $url/$file.md5
-	[[ $? != 0 ]] && dialogRetry 'Download *.md5 failed.' && verifyMD5
+	[[ $? != 0 ]] && dialog.retry 'Download *.md5 failed.' && verifyMD5
 	md5sum -c $file.md5 && return 0
 #----------------------------------------------------------------------------
 	rm $file
-	dialogDownload
+	dialog.download
 }
 
 for cmd in bsdtar dialog nmap pv; do # required packages
@@ -66,15 +66,17 @@ fi
 alarm_rpi=ArchLinuxARM-rpi-
 https_rern='https://github.com/rern'
 https_ros_main="$https_rern/rOS/raw/main"
-if [[ ! $task ]]; then # not from +R.sh
-	create_alarm=1 # for dialogSDcard
+[[ ${BASH_SOURCE[0]} != ${0} ]] && source=1 # from +R.sh
+
+if [[ ! $source ]]; then # not from +R.sh
+	create_alarm=1 # for dialog.sdCard
 	. <( curl -sL $https_ros_main/common.sh )
 fi
 trap 'BRunmount; clear -x' EXIT
 #........................
-dialogSplash Arch Linux ARM
+dialog.splash Arch Linux ARM
 . <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $dev $part_B $part_R
-if [[ $task ]]; then # from +R.sh
+if [[ $source ]]; then # from +R.sh
 #........................
     banner Partition SD Card ...
     wipefs -a $dev
@@ -93,7 +95,7 @@ $part_R : start= $start_R, size= $size_R, type=83
     e2label $part_R ROOT
 fi
 BRfsck_mount
-if [[ ! $task ]]; then
+if [[ ! $source ]]; then
 	read -r mp fs < <( findmnt -no target,fstype $part_B )
 	[[ $( ls $mp ) ]] && err_B+=', Not empty\n'
 	[[ $fs != vfat ]] && err_B+=', Not fat32\n'
@@ -102,7 +104,7 @@ if [[ ! $task ]]; then
 	[[ $fs != ext4 ]] &&                      err_R+=', Not ext4\n'
 	[[ $err_B ]] && error+="\Z1BOOT\Zn $part_B: ${err_B:2}"
 	[[ $err_R ]] && error+="\Z1ROOT\Zn $part_R: ${err_R:2}"
-	[[ $error ]] && dialogErrorExit "$error"
+	[[ $error ]] && dialog.error_exit "$error"
 #----------------------------------------------------------------------------
 fi
 getData() {
@@ -112,13 +114,13 @@ getData() {
  \Z1r\ZnAudio release:
 " 0 0 $latest )
 	if ! curl -sIfo /dev/null $https_rern/rAudio/releases/tag/$release; then
-		dialogRetry rAudio $release not found. && getData
+		dialog.retry rAudio $release not found. && getData
 		return
 #----------------------------------------------------------------------------
 	fi
 	echo $release > $BOOT/release
 #........................
-	rpi=$( dialogMenu 'Raspberry Pi' "\
+	rpi=$( dialog.menu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
 32bit  : 2 (BCM2836)" )
 	file=ArchLinuxARM-rpi-
@@ -143,7 +145,7 @@ getData() {
 	if [[ $? == 0 ]]; then
 		(( sboot-=10 ))
 #........................
-		ip_assigned=$( dialogIP 'Pre-assigned IP' )
+		ip_assigned=$( dialog.ip 'Pre-assigned IP' )
 		ip_confirm="
 Assigned IP  : $ip_assigned"
 	fi
@@ -164,7 +166,7 @@ Wi-Fi - \Z1Password\Zn:
 " 0 0 $password )
 		tput cup 0 0 && tput ed
 #........................
-		wpa=$( dialogMenu 'Wi-Fi \Z1Security\Zn' "\
+		wpa=$( dialog.menu 'Wi-Fi \Z1Security\Zn' "\
 WPA
 WEP
 None" )
@@ -194,19 +196,19 @@ $ip_confirm
 }
 foundIP() {
 #........................
-	found=$( dialogMenu 'Raspberry Pi \Z1IP\Zn found?' "\
+	found=$( dialog.menu 'Raspberry Pi \Z1IP\Zn found?' "\
 Yes
 Ping IP
 No" )
 	case $found in
 		1 )
 #........................
-			ip_rpi=$( dialogIP 'Raspberry Pi IP' ) 
+			ip_rpi=$( dialog.ip 'Raspberry Pi IP' ) 
 			sshRpi $ip_rpi
 			;;
 		2 )
 #........................
-			ip_ping=$( dialogIP '\Z1Ping\Zn Raspberry Pi at IP' )
+			ip_ping=$( dialog.ip '\Z1Ping\Zn Raspberry Pi at IP' )
 			ping=$( ping -4 -c 1 -w 5 $ip_ping | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Zn/" )
 			if grep -q '100% packet loss' <<< "$ping"; then
 				ping+=$'\n\n'"$ip_ping \Z1NOT\Zn found."
@@ -219,7 +221,7 @@ $ping
 " 15 90
 			foundIP
 			;;
-		3 ) dialogErrorExit Try starting over again;;
+		3 ) dialog.error_exit Try starting over again;;
 #----------------------------------------------------------------------------
 	esac
 }
@@ -247,16 +249,24 @@ $lines
 sshRpi() {
 	ip=$1
 	sed -i "/$ip/ d" ~/.ssh/known_hosts
-	for i in 1 2 3; do
-		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh
-		[[ $? != 0 ]] && sleep 3 || exit
-#----------------------------------------------------------------------------
+	for i in {0..3}; do
+		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh 2> /dev/null
+		if [[ $? != 0 ]]; then
+			sleep 2
+		else
+			dialog.splash "\
+rAudio
+Created successfully.
+$( runDuration )"
+			return 0
+#---------------------------------------------------------------
+		fi
 	done
 	scanIP
 }
 
 getData
-dialogFeature
+dialog.feature
 SECONDS=0
 # package mirror server
 lines=$( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
@@ -280,7 +290,7 @@ $cc"
 	fi
 done <<< $lines
 #........................
-server=$( dialogMenu 'Package mirror server' "$list_menu" )
+server=$( dialog.menu 'Package mirror server' "$list_menu" )
 mirror=${list_code[$server]}
 [[ $mirror ]] && url=http://$mirror.mirror.archlinuxarm.org/os || url=http://os.archlinuxarm.org/os
 if [[ -e $file ]]; then
@@ -293,7 +303,7 @@ if [[ -e $file ]]; then
  
 " 0 0
 else
-	dialogDownload
+	dialog.download
 fi
 rm $file.md5
 # expand
@@ -389,26 +399,27 @@ chmod 755 $ROOT/root/create-ros.sh
 sync && BRunmount
 #........................
 dialog $opt_msg "
-$( textAlignCenter "
+$( alignCenter "
 
 Arch Linux ARM
 for
 \Z1r\ZnAudio
 Created successfully.
+$( runDuration )
 " )				
-$( date -d@$SECONDS -u +%M:%S )
 " 12 $w_dialog
-[[ ${partid_B:0:-3} != ${partid_R:0:-3} ]] && usb=' and USB drive'
+[[ ${partid_B:0:-1} != ${partid_R:0:-1} ]] && usb=' + USB drive'
 #........................
 dialog $opt_msg "
-\Z1Arch Linux ARM\Zn : Ready
-\Z1SD card\Zn        : Unmounted
+	\Z1Arch Linux ARM\Zn : Ready
+	\Z1SD card\Zn        : Unmounted
 
-● Move SD card$usb to Raspberry Pi
-● Power on
-● Press \Zr\Zb Enter \Zn to start boot timer » IP scan
-
-" 12 $w_dialog
+	  » Move SD card$usb to RPi
+	  » Power on
+	  » Press $btn_enter to:
+		• Start boot timer
+		• Create $logo rAudio
+" 14 $w_dialog
 #........................
 ( for (( i = 1; i < sboot; i++ )); do
 	echo $(( i * 100 / sboot ))

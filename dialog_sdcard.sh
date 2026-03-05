@@ -8,10 +8,10 @@ dev_partBR() {
 	part_B=${dev}1
 	part_R=${dev}2
 }
-dialogRetrySD() {
-	dialogRetry "$@" && dialogSDcard
+dialog.retrySD() {
+	dialog.retry "$@" && dialog.sdCard
 }
-dialogSDcard() {
+dialog.sdCard() {
 	local dev_gib error H l line_lsblk list_BR list_check list_colored part dev_part sd_mmc sL txt_confirm
 #........................ (no --sleep 1)
 	dialog $option --infobox "
@@ -25,7 +25,7 @@ Insert \Z1SD card\Zn \Zb/ USB drive\Zn
 		dev_gib=$( grep -m1 -E '^(sd|mmcblk).* GiB' <<< $l )
 		[[ $dev_gib ]] && break
 	done < <( timeout $s dmesg -tW )
-	[[ ! $dev_gib ]] && dialogRetrySD "No SD card detected in ${s}s." && return
+	[[ ! $dev_gib ]] && dialog.retrySD "No SD card detected in ${s}s." && return
 #---------------------------------------------------------------
 	if [[ $dev_gib == sd* ]]; then
 		sd_mmc=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
@@ -39,7 +39,7 @@ Insert \Z1SD card\Zn \Zb/ USB drive\Zn
 	if [[ $create_alarm ]]; then
 		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
 		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
-		[[ ! $list_BR ]] && dialogRetrySD "Partitions $txt_confirm not found." && return
+		[[ ! $list_BR ]] && dialog.retrySD "Partitions $txt_confirm not found." && return
 #---------------------------------------------------------------
 		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else # get dev
@@ -77,7 +77,7 @@ Select $txt_confirm to comfirm:
 
 $error selected:
 $dev_part
-" 0 0 && dialogSDcard $1
+" 0 0 && dialog.sdCard $1
 	else
 		if [[ $create_alarm ]]; then
 			part=( $dev_part )
@@ -90,4 +90,4 @@ $dev_part
 	fi
 }
 
-dialogSDcard
+dialog.sdCard
