@@ -34,8 +34,8 @@ BRfsck_mount() { # create-alarm.sh, image-create.sh
 	BOOT=$PWD/BOOT
 	ROOT=$PWD/ROOT
 	mkdir -p BOOT ROOT
-	mount $part_B $BOOT
-	mount $part_R $ROOT
+	mount -o rw,noatime,nodiratime $part_B $BOOT
+	mount -o rw,noatime,nodiratime $part_R $ROOT
 }
 BRunmount() {
 	! findmnt $BOOT &> /dev/null && return

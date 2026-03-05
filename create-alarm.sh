@@ -192,37 +192,6 @@ $ip_confirm
 	tput cup 0 0 && tput ed
 	[[ $? == 1 ]] && getData
 }
-foundIP() {
-#........................
-	found=$( dialog.menu 'Raspberry Pi \Z1IP\Zn found?' "\
-Yes
-Ping IP
-No" )
-	case $found in
-		1 )
-#........................
-			ip_rpi=$( dialog.ip 'Raspberry Pi IP' ) 
-			sshRpi $ip_rpi
-			;;
-		2 )
-#........................
-			ip_ping=$( dialog.ip '\Z1Ping\Zn Raspberry Pi at IP' )
-			ping=$( ping -4 -c 1 -w 5 $ip_ping | sed "s/\(. received.*loss\)/from \\\Z1\1\\\Zn/" )
-			if grep -q '100% packet loss' <<< "$ping"; then
-				ping+=$'\n\n'"$ip_ping \Z1NOT\Zn found."
-			else
-				ping+=$'\n\n'"$ip_ping \Z1found\Zn."
-			fi
-#........................
-			dialog $opt_msg "
-$ping
-" 15 90
-			foundIP
-			;;
-		3 ) dialog.error_exit Try starting over again;;
-#----------------------------------------------------------------------------
-	esac
-}
 scanIP() {
 #........................
 	dialog $opt_info "
@@ -236,13 +205,10 @@ scanIP() {
 				| sed -e 's/Nmap.*for \|MAC Address//g' -e '/Raspberry Pi/ {s/^/\\Z1/; s/$/\\Zn/}' \
 				| tac )
 #........................
-	dialog $option --cancel-label Rescan --inputbox "
-\Z1Note IP address of Raspberry Pi:\Zn
-(If Raspberri Pi not listed, ping may find it.)
-\Z4[arrowdown] = scrolldown\Zn
-
-$lines
-" 25 80 && foundIP || scanIP
+	line=$( dialog.menu 'Select Raspberry Pi' "$lines" )
+	[[ ! $selected ]] && dialog.error_exit Arch Linux ARM not found.
+#----------------------------------------------------------------------------
+	sshRpi $( sed -n "$line {s/ .*//; p}" <<< $lines )
 }
 sshRpi() {
 	ip=$1

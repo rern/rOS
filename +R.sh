@@ -17,7 +17,7 @@ Docker          | docker
 SSH             |"
 list_task=$( sed 's/ *|.*//' <<< $list )
 #........................
-task=$( dialog.menu 'Tasks' "$list_task" )
+task=$( dialog.menu Tasks "$list_task" )
 file_name=$( sed -n "$task {s/.*| *//; p}" <<< $list )
 if [[ $file_name ]]; then
 	(( $task < 5 )) && repo=rOS || repo=rern.github.io
