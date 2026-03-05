@@ -169,18 +169,18 @@ Wi-Fi - \Z1Password\Zn:
 " 0 0 $password )
 		tput cup 0 0 && tput ed
 #........................
-		wpa=$( dialog.menu 'Wi-Fi \Z1Security\Zn' "\
+		security=$( dialog.menu 'Wi-Fi \Z1Security\Zn' "\
 WPA
 WEP
 None" )
-		case $wpa in
-			1 ) wpa=wpa;;
-			2 ) wpa=wep;;
+		case $security in
+			1 ) security=WPA;;
+			2 ) security=WEP;;
 		esac
 		confirmwifi="
 SSID         : $ssid
 Password     : $password
-Security     : ${wpa^^}"
+Security     : $security"
 	fi
 #........................
 	dialog $opt_yesno "
@@ -352,9 +352,9 @@ if [[ $ssid ]]; then
 Connection=wireless
 IP=dhcp
 ESSID="'$ssid'"
-Security='$wpa'
+Security='$security'
 Key="'$password'"' > $profile
-	[[ ! $wpa ]] && sed -E -i '/^Security|^Key/ d' "$profile"
+	[[ ! $security ]] && sed -E -i '/^Security|^Key/ d' "$profile"
 	dir="$ROOT/etc/systemd/system/netctl@$ssid.service.d"
 	mkdir -p $dir
 	echo "\
