@@ -212,5 +212,15 @@ touch /boot/expand
 rm -f /boot/{features,finish.sh,release} \
 	  /boot/{cmdline,config}.txt.pacnew \
 	  /root/{common,create-ros}.sh
+#........................
 dialog.success r A u d i o
+#........................
+dialog $opt_msg "
+$logo rAudio : Ready
+
+» Press $btn_enter:
+	• Reboot to rAudio
+
+\Z4(Not auto reboot: Power off » on)\Zn
+" 11 40
 reboot

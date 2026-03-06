@@ -375,15 +375,15 @@ dialog.success Arch Linux ARM
 [[ ${partid_B:0:-1} != ${partid_R:0:-1} ]] && usb=' + USB drive'
 #........................
 dialog $opt_msg "
-	\Z1Arch Linux ARM\Zn : Ready
-	\Z1SD card\Zn        : Unmounted
+\Z1Arch Linux ARM\Zn : Ready
+\Z1SD card\Zn        : Unmounted
 
-	  » Move SD card$usb to RPi
-	  » Power on
-	  » Press $btn_enter to:
-		• Start boot timer
-		• Create $logo rAudio
-" 14 $W
+» Move SD card$usb to RPi
+» Power on
+» Press $btn_enter:
+	• Start boot timer
+	• Create $logo rAudio
+" 14 40
 #........................
 ( for (( i = 1; i < sec_boot; i++ )); do
 	echo $(( i * 100 / sec_boot ))
