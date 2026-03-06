@@ -18,7 +18,7 @@ SSH             :"
 list_task=$( awk -F' *:' '{print $1}' <<< $list )
 #........................
 i=$( dialog.menu Tasks "$list_task" )
-file_name=$( awk 'NR=='$i' {print $NF}' <<< $list )
+file_name=$( sed -n "$i {s/.*: *//; p}" <<< $list )
 if [[ $file_name ]]; then
 	(( $i < 5 )) && repo=rOS || repo=rern.github.io
 	. <( curl -sL "$https_rern/$repo/raw/main/$file_name.sh" )
