@@ -31,7 +31,7 @@ dialog.feature() {
 ' 8 0 0 "${list_check[@]}" )
 	features=
 	while read l; do
-		features+=$( sed -n "/^$l/ {s/.*|//; p}" <<< $list_features )
+		features+=$( sed -n "/^$l/ {s/.*://; p}" <<< $list_features )
 	done <<< $checked
 #........................
 	dialog $opt_yesno "
