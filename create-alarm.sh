@@ -271,9 +271,9 @@ if [[ -e $file ]]; then
  Existing is the latest:
  \Z1$file\Zn
  
+
  No download required.
- 
-" 0 0
+" 9 $W
 else
 	dialog.download
 fi
@@ -404,12 +404,12 @@ $(( i * 10 ))
 \n  #$i
 XXX
 EOF
-		ping -4 -c 1 -w 1 $ip_assigned &> /dev/null && pong=1 && break
+		ping -4 -c 1 -w 1 $ip_assigned &> /dev/null && break
 
 		sleep 3
 	done ) \
 		| dialog $opt_guage '' 9 $W
-	if [[ $pong ]]; then
+	if ping -4 -c 1 -w 1 $ip_assigned &> /dev/null; then
 		dialog $opt_info "
   SSH Arch Linux ARM ...
   @ \Z1$ip_assigned\Zn
