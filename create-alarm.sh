@@ -234,8 +234,8 @@ sshRpi() {
 #----------------------------------------------------------------------------
 		sleep 3
 	done
+	dialog.scanIP "Unable to SSH connect IP: \Z1$ip\Zn"
 }
-dialog.scanIP "Unable to SSH connect IP: \Z1$ip\Zn"
 
 getData
 dialog.feature
