@@ -14,16 +14,16 @@ dialog.download() {
 	verifyMD5
 }
 list_features="\
-BlueALSA   - Bluetooth audio              | bluealsa bluez bluez-utils python-dbus python-gobject python-requests
-CamillaDSP - Digital signal processor     | camilladsp python-websocket-client
-Firefox    - Browser on RPi screen        | firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo
-iwd        - RPi access point             | iwd
-Samba      - File sharing                 | samba
-Shairport  - AirPlay renderer             | shairport-sync
-Snapcast   - Synchronous multiroom player | snapcast
-Spotifyd   - Spotify renderer             | spotifyd
-upmpdcli   - UPnP renderer                | upmpdcli python-upnpp"
-readarray -t list_check < <( sed -e 's/ *|.*//' -e 'a\on' <<< $list_features )
+BlueALSA   - Bluetooth audio              : bluealsa bluez bluez-utils python-dbus python-gobject python-requests
+CamillaDSP - Digital signal processor     : camilladsp python-websocket-client
+Firefox    - Browser on RPi screen        : firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo
+iwd        - RPi access point             : iwd
+Samba      - File sharing                 : samba
+Shairport  - AirPlay renderer             : shairport-sync
+Snapcast   - Synchronous multiroom player : snapcast
+Spotifyd   - Spotify renderer             : spotifyd
+upmpdcli   - UPnP renderer                : upmpdcli python-upnpp"
+readarray -t list_check < <( awk -F' *:' '{print $1; print "on"}' <<< $list_features )
 dialog.feature() {
 #........................
 	checked=$( dialog $opt_check '
@@ -209,17 +209,22 @@ scanIP() {
   Scan hosts in network ...
 " 5 $W
 	ip_base=$( ipBase )
-	lines=$( nmap -sn $ip_base* \
-				| paste -sd ' \n' \
-				| grep 'MAC Address:' \
-				| column -t -H 1-4,6,7 \
-				| sed -E -e ':a; s/\(([^)]*[^ ])  +/\(\1 /; ta' -e 's/[()]//g' \
+	lines=$( nmap -sn "$ip_base*" \
+				| awk '
+					/^Nmap/ { ip=$NF }
+					/^MAC/ {
+						mac=$3
+						vendor=substr( $0, index( $0, $4 ) )
+						gsub( /[()]/, "", vendor )
+						printf "%-13s %-18s %s\n", ip, mac, vendor
+					}
+				' \
 				| tac )
 #........................
 	i=$( dialog.menu 'Select Raspberry Pi' "$lines" )
 	[[ $? != 0 ]] && dialog.error_exit Arch Linux ARM not found.
 #----------------------------------------------------------------------------
-	sshRpi $( awk '/'$i'/ {print $1}' <<< $lines )
+	sshRpi $( awk 'NR=='$i' {print $1}' <<< $lines )
 }
 sshRpi() {
 	ip=$1

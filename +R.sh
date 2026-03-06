@@ -8,17 +8,17 @@ https_rern='https://github.com/rern'
 #........................
 dialog.splash U t i l i t i e s
 list="\
-Create OS       | create-alarm
-Reset for Image |
-Create Image    | image-create
-Upload Images   | image-upload
-Distcc Client   | distcc-client
-Docker          | docker
-SSH             |"
-list_task=$( sed 's/ *|.*//' <<< $list )
+Create OS       : create-alarm
+Reset for Image :
+Create Image    : image-create
+Upload Images   : image-upload
+Distcc Client   : distcc-client
+Docker          : docker
+SSH             :"
+list_task=$( awk -F' *:' '{print $1}' <<< $list )
 #........................
 i=$( dialog.menu Tasks "$list_task" )
-file_name=$( sed -n "$i {s/.*| *//; p}" <<< $list )
+file_name=$( awk 'NR=='$i' {print $NF}' <<< $list )
 if [[ $file_name ]]; then
 	(( $i < 5 )) && repo=rOS || repo=rern.github.io
 	. <( curl -sL "$https_rern/$repo/raw/main/$file_name.sh" )

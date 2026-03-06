@@ -14,9 +14,7 @@ Reset user data directory
 Clear package cache
 Clear system log
 Clear Wi-Fi connection"
-while read l; do
-	list_check+=( "$l" on )
-done <<< $list_reset
+readarray -t list_check < <( awk '{print $0; print "on"}' <<< $list_reset )
 #........................
 reset=$( dialog $opt_check '
  \Z1Tasks:\Zn

@@ -71,16 +71,12 @@ Invalid IP: \Z1$ip\Zn
 	fi
 }
 dialog.menu() { # dialog --menu $1=title $2=multiline list
-	local i l list_menu
-	i=0
-	while read l; do
-		(( i++ ))
-		list_menu+=( $i "$l" )
-	done <<< $2
+	local -a list
+	readarray -t list < <( awk '{print NR; print}' <<< $2 )
 #........................
 	dialog $opt_menu "
 $1:
-" 8 0 0 "${list_menu[@]}" # h=8: exclude list box
+" 8 0 0 "${list[@]}"
 }
 dialog.retry() {
 	dialog $opt_msg "
@@ -127,8 +123,8 @@ W=50
 # auto fit: 0 0
 #    0 0   - h w
 #    8 0 0 - hf h w - checklist / menu (hf=8 - frame + button)
-                 # keep spaces/tabs          capture stdout
-option='--colors --no-collapse --no-shadow --output-fd 1'
+                 # keep spaces/tabs
+option='--colors --no-collapse --no-shadow --stdout'
 opt_guage="$option --guage"                                  # no buttons
  opt_info="$option --sleep 2 --infobox"                      # no buttons
   opt_msg="$option --msgbox"                                 # <OK> only
