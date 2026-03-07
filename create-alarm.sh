@@ -1,5 +1,8 @@
 #!/bin/bash
 
+[[ $1 ]] && branch=$1          # bash -s UPDATE <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
+[[ ! $branch ]] && branch=main # bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
+
 for cmd in bsdtar dialog nmap pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
@@ -9,7 +12,6 @@ fi
 
 alarm_rpi=ArchLinuxARM-rpi-
 if [[ ${BASH_SOURCE[0]} == ${0} ]]; then # not . <( ... from +R.sh
-	[[ ! $branch ]] && branch=main
 	. <( curl -sL $https_ros_raw/$branch/common.sh )
 #............................
 	i=$( dialog.menu 'Partitions on target \Z1SD card\Zn' "

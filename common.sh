@@ -117,7 +117,6 @@ runDuration() {
 	echo \\Z4$( date -d@$SECONDS -u +%M:%S )\\Zn
 }
 
-[[ ! $branch ]] && branch=main
 https_rern='https://github.com/rern'
 https_ros_raw="$https_rern/rOS/raw"
 https_ros_branch="$https_ros_raw/$branch"

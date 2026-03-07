@@ -1,6 +1,5 @@
 #!/bin/bash
 
-[[ ! $branch ]] && branch=main
 . <( curl -sL $https_ros_raw/$branch/common.sh )
 
 selected() {

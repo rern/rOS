@@ -2,7 +2,7 @@
 
 trap 'clear -x' EXIT
 
-[[ ! $branch ]] && branch=main
+[[ ! $branch ]] && branch=main # +R.sh UPDATE
 . <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
 
 #............................

@@ -49,7 +49,6 @@ fi
 #............................
 dialog.splash Image File
 image_create=1
-[[ ! $branch ]] && branch=main
 . <( curl -sL $https_ros_raw/$branch/dialog_sdcard.sh ) # set $dev $part_B $part_R
 BRfsck_mount
 file_r1=$ROOT/srv/http/data/addons/r1
