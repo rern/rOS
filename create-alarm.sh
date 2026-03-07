@@ -76,7 +76,6 @@ $logo rAudio : Ready
 Reboot to start rAudio ...
 \Z4(Not reboot after 10s: Power off » on)\Zn
 " 9 40
-	fi
 }
 dialog.download() {
 #............................
