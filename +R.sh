@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# /usr/local/bin/+R.sh
+# #!/bin/bash
+# [[ $1 ]] && branch=$1 || branch=main
+# . <( curl -sL "https://github.com/rern/rOS/raw/$branch/+R.sh" )
+
 trap 'clear -x' EXIT
 
 [[ ! $branch ]] && branch=main # +R.sh UPDATE
