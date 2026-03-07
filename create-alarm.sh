@@ -109,21 +109,20 @@ dialog.feature() {
 	checked=$( dialog $opt_check '
  \Z1Features to install:\Zn
 ' 8 0 0 "${list_check[@]}" )
-	features=
-	while read l; do
-		features+=$( sed -n "/^$l/ {s/.*://; p}" <<< $list_features )
-	done <<< $checked
+	if [[ $checked ]]; then
+		features=
+		while read l; do
+			features+=$( sed -n "/^$l/ {s/.*://; p}" <<< $list_features )
+		done <<< $checked
+	else
+		checked='(none)'
+	fi
 #............................
 	dialog $opt_yesno "
 \Z1Confirm features to install:\Zn
 
 $checked
-" 0 0
-	if [[ $? == 0 ]]; then
-		echo $features > $ROOT/root/features
-	else
-		dialog.feature
-	fi
+" 0 0 && echo $features > $BOOT/features || dialog.feature
 }
 dialog.scanIP() {
 	dialog $opt_msg "
@@ -144,7 +143,7 @@ getData() {
 		return
 #..............................................................................
 	fi
-	echo $release > $ROOT/root/release
+	echo $release > $BOOT/release
 #............................
 	i=$( dialog.menu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
@@ -389,6 +388,7 @@ sed -i -e 's/#*\(PermitRootLogin \).*/\1yes/
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # scripts
+mv $BOOT/{features,release} $ROOT/root
 for f in {common,create-ros}.sh; do
 	curl -sL $https_ros_branch/$f -o $ROOT/root/$f
 done
