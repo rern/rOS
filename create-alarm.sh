@@ -1,6 +1,6 @@
 #!/bin/bash
-echo $1; exit
-[[ $1 ]] && branch=$1
+
+[[ $1 ]] && branch=$1 # bash <( curl -sL https://github.com/rern/rOS/raw/UPDATE/common.sh ) UPDATE
 [[ ! $branch ]] && branch=main
 
 for cmd in bsdtar dialog nmap pv; do # required packages
