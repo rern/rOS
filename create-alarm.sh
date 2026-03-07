@@ -9,9 +9,8 @@ if [[ $packages ]]; then
 	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
 
-alarm_rpi=ArchLinuxARM-rpi-
 if [[ ${BASH_SOURCE[0]} == ${0} ]]; then # not . <( ... from +R.sh
-	. <( curl -sL $https_ros_raw/$branch/common.sh )
+	. <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
 #............................
 	i=$( dialog.menu 'Partitions on target \Z1SD card\Zn' "
 Select already created
