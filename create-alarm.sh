@@ -81,13 +81,13 @@ Reboot ...
 }
 dialog.download() {
 #............................
-	( wget .O $file $url/$file 2>&1 \
-		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
+	{ wget .O $file $url/$file 2>&1 | stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ {
 			print "XXX\n "substr($0,63,3)
 			print "\\n Download ..."
 			print "\\n \\Z1'$file'\\Zn"
-			print "\\n Time left: "substr($0,74,5)"\nXXX" }' ) \
-		| dialog $opt_guage "
+			print "\\n Time left: "substr($0,74,5)"\nXXX"
+		}' 
+	} | dialog $opt_guage "
  Connecting ...
 " 9 $W
 	md5verify
