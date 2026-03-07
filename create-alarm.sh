@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo $1; exit
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
