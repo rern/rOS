@@ -1,68 +1,5 @@
 #!/bin/bash
 
-dialog.download() {
-#........................
-	( wget -O $file $url/$file 2>&1 \
-		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
-			print "XXX\n "substr($0,63,3)
-			print "\\n Download ..."
-			print "\\n \\Z1'$file'\\Zn"
-			print "\\n Time left: "substr($0,74,5)"\nXXX" }' ) \
-		| dialog $opt_guage "
- Connecting ...
-" 9 $W
-	verifyMD5
-}
-list_features="\
-BlueALSA   - Bluetooth audio              : bluealsa bluez bluez-utils python-dbus python-gobject python-requests
-CamillaDSP - Digital signal processor     : camilladsp python-websocket-client
-Firefox    - Browser on RPi screen        : firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo
-iwd        - RPi access point             : iwd
-Samba      - File sharing                 : samba
-Shairport  - AirPlay renderer             : shairport-sync
-Snapcast   - Synchronous multiroom player : snapcast
-Spotifyd   - Spotify renderer             : spotifyd
-upmpdcli   - UPnP renderer                : upmpdcli python-upnpp"
-readarray -t list_check < <( awk -F' *:' '{print $1; print "on"}' <<< $list_features )
-dialog.feature() {
-#........................
-	checked=$( dialog $opt_check '
- \Z1Features to install:\Zn
-' 8 0 0 "${list_check[@]}" )
-	features=
-	while read l; do
-		features+=$( sed -n "/^$l/ {s/.*://; p}" <<< $list_features )
-	done <<< $checked
-#........................
-	dialog $opt_yesno "
-\Z1Confirm features to install:\Zn
-
-$checked
-" 0 0
-	if [[ $? == 0 ]]; then
-		echo $features > $BOOT/features
-	else
-		dialog.feature
-	fi
-}
-dialog.scanIP() {
-	dialog $opt_msg "
-$@
-
-Scan all IPs?
-" 0 0 && scanIP
-}
-verifyMD5() {
-	clear -x
-	bar Verify $file ...
-	curl -skLO $url/$file.md5
-	[[ $? != 0 ]] && dialog.retry 'Download *.md5 failed.' && verifyMD5
-	md5sum -c $file.md5 && return 0
-#----------------------------------------------------------------------------
-	rm $file
-	dialog.download
-}
-
 for cmd in bsdtar dialog nmap pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
@@ -71,18 +8,22 @@ if [[ $packages ]]; then
 fi
 
 alarm_rpi=ArchLinuxARM-rpi-
-https_rern='https://github.com/rern'
-https_ros_main="$https_rern/rOS/raw/main"
 if [[ ${BASH_SOURCE[0]} == ${0} ]]; then # not . <( ... from +R.sh
-	create_alarm=1 # for dialog.sdCard
-	. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
+	[[ ! $branch ]] && branch=main
+	. <( curl -sL $https_ros_raw/$branch/common.sh )
+#............................
+	i=$( dialog.menu 'Partitions on target \Z1SD card\Zn' "
+Select already created
+Wipe and create new
+" )
+	[[ $i == 1 ]] && create_alarm=1
 fi
 trap 'BRunmount; clear -x' EXIT
-#........................
+#............................
 dialog.splash Arch Linux ARM
-. <( curl -sL $https_ros_main/dialog_sdcard.sh ) # set $dev $part_B $part_R
+. <( curl -sL $https_ros_branch/dialog_sdcard.sh ) # set $dev $part_B $part_R
 if [[ ! $create_alarm ]]; then # from +R.sh
-#........................
+#............................
     banner Partition SD Card ...
     wipefs -a $dev
     mb_B=300
@@ -112,21 +53,93 @@ if [[ $create_alarm ]]; then
 	[[ $err_R ]] && error+="
 \Z1ROOT\Zn $part_R not: ${err_R:2}"
 	[[ $error ]] && dialog.error_exit "${error:1}" # :1 leading \n
-#----------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 fi
+
+create_rOS() {
+	sed -i "/$ip_assigned/ d" ~/.ssh/known_hosts
+	ssh -tt -o StrictHostKeyChecking=no root@$ip_assigned /root/create-ros.sh
+#............................
+	[[ $? != 0 ]] && dialog.scanIP "Unable to SSH connect IP: \Z1$ip\Zn" && return
+#..............................................................................
+	ssh -o StrictHostKeyChecking=no root@$ip_assigned reboot 2> /dev/null
+	if [[ $? == 0 ]]; then
+#............................
+		dialog $opt_info "
+$logo rAudio : Ready
+
+
+Reboot to rAudio ...
+\Z4(iF no reboot: Power off » on)\Zn
+" 9 40
+	fi
+}
+dialog.download() {
+#............................
+	( wget .O $file $url/$file 2>&1 \
+		| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { \
+			print "XXX\n "substr($0,63,3)
+			print "\\n Download ..."
+			print "\\n \\Z1'$file'\\Zn"
+			print "\\n Time left: "substr($0,74,5)"\nXXX" }' ) \
+		| dialog $opt_guage "
+ Connecting ...
+" 9 $W
+	md5verify
+}
+list_features="\
+BlueALSA   - Bluetooth audio              : bluealsa bluez bluez-utils python-dbus python-gobject python-requests
+CamillaDSP - Digital signal processor     : camilladsp python-websocket-client
+Firefox    - Browser on RPi screen        : firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo
+iwd        - RPi access point             : iwd
+Samba      - File sharing                 : samba
+Shairport  - AirPlay renderer             : shairport-sync
+Snapcast   - Synchronous multiroom player : snapcast
+Spotifyd   - Spotify renderer             : spotifyd
+upmpdcli   - UPnP renderer                : upmpdcli python-upnpp"
+readarray -t list_check < <( awk -F' *:' '{print $1; print "on"}' <<< $list_features )
+dialog.feature() {
+#............................
+	checked=$( dialog $opt_check '
+ \Z1Features to install:\Zn
+' 8 0 0 "${list_check[@]}" )
+	features=
+	while read l; do
+		features+=$( sed -n "/^$l/ {s/.*://; p}" <<< $list_features )
+	done <<< $checked
+#............................
+	dialog $opt_yesno "
+\Z1Confirm features to install:\Zn
+
+$checked
+" 0 0
+	if [[ $? == 0 ]]; then
+		echo $features > $ROOT/features
+	else
+		dialog.feature
+	fi
+}
+dialog.scanIP() {
+	dialog $opt_msg "
+$@
+
+Scan all IPs?
+" 0 0 && scanIP
+}
 getData() {
 	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
-#........................
+#............................
 	release=$( dialog $opt_input "
  \Z1r\ZnAudio release:
 " 0 0 $latest )
 	if ! curl -sIfo /dev/null $https_rern/rAudio/releases/tag/$release; then
-		dialog.retry rAudio $release not found. && getData
+		dialog.retry rAudio $release not found.
+		getData
 		return
-#----------------------------------------------------------------------------
+#..............................................................................
 	fi
-	echo $release > $BOOT/release
-#........................
+	echo $release > $ROOT/release
+#............................
 	i=$( dialog.menu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
 32bit  : 2 (BCM2836)" )
@@ -144,19 +157,19 @@ getData() {
 			;;
 	esac
 	file+=latest.tar.gz
-#........................
+#............................
 	dialog $opt_yesno "
  RPi with \Z1pre-assigned\Zn IP?
 
 " 0 0
 	if [[ $? == 0 ]]; then
 		(( sec_boot-=10 ))
-#........................
+#............................
 		ip_assigned=$( dialog.ip 'Pre-assigned IP' )
 		confirm_ip="
 Assigned IP  : $ip_assigned"
 	fi
-#........................
+#............................
 	dialog $opt_yesno "
 Connect \Z1Wi-Fi\Zn on boot?
 
@@ -166,16 +179,16 @@ Connect \Z1Wi-Fi\Zn on boot?
 		if [[ -e wifi ]]; then
 			. <( sed -E -n '/^Security|^ESSID|^Key/ {s/^.*=/\L&/; p}' wifi )
 		else
-#........................
+#............................
 			essid=$( dialog $opt_input "
 Wi-Fi - \Z1SSID\Zn:
 " 0 0 $essid )
-#........................
+#............................
 			key=$( dialog $opt_input "
 Wi-Fi - \Z1Password\Zn:
 " 0 0 $key )
 			tput cup 0 0 && tput ed
-#........................
+#............................
 			i=$( dialog.menu 'Wi-Fi \Z1Security\Zn' "\
 WPA
 WEP
@@ -188,7 +201,7 @@ SSID         : $essid
 Password     : $key
 Security     : ${security^^}"
 	fi
-#........................
+#............................
 	dialog $opt_yesno "
 \Z1Confirm data:\Zn
 
@@ -203,8 +216,21 @@ $confirm_ip
 	tput cup 0 0 && tput ed
 	[[ $? == 1 ]] && getData
 }
+md5verify() {
+	clear -x
+	bar Verify $file ...
+	curl -skLO $url/$file.md5
+	[[ $? != 0 ]] && dialog.retry 'Download *.md5 failed.' && md5verify
+	md5sum -c $file.md5 && return 0
+#..............................................................................
+	rm $file
+	dialog.download
+}
+pingIP() {
+	ping -4 -c 1 -W 1 $1 &> /dev/null
+}
 scanIP() {
-#........................
+#............................
 	dialog $opt_info "
   Scan hosts in network ...
 " 5 $W
@@ -220,21 +246,12 @@ scanIP() {
 					}
 				' \
 				| tac )
-#........................
+#............................
 	i=$( dialog.menu 'Select Raspberry Pi' "$lines" )
 	[[ $? != 0 ]] && dialog.error_exit Arch Linux ARM not found.
-#----------------------------------------------------------------------------
-	sshRpi $( awk 'NR=='$i' {print $1}' <<< $lines )
-}
-sshRpi() {
-	ip=$1
-	sed -i "/$ip/ d" ~/.ssh/known_hosts
-	for i in 1 2 3; do
-		ssh -tt -o StrictHostKeyChecking=no root@$ip /root/create-ros.sh && exit
-#----------------------------------------------------------------------------
-		sleep 3
-	done
-	dialog.scanIP "Unable to SSH connect IP: \Z1$ip\Zn"
+#------------------------------------------------------------------------------
+	ip_assigned=$( awk 'NR=='$i' {print $1}' <<< $lines )
+	create_rOS 
 }
 
 getData
@@ -261,13 +278,13 @@ $cc"
 		list_code+=( $line )
 	fi
 done <<< $lines
-#........................
+#............................
 i=$( dialog.menu 'Package mirror server' "$list_menu" )
 mirror=${list_code[i]}
 [[ $mirror ]] && url=http://$mirror.mirror.archlinuxarm.org/os || url=http://os.archlinuxarm.org/os
 if [[ -e $file ]]; then
-#........................
-	verifyMD5 && dialog $opt_info "
+#............................
+	md5verify && dialog $opt_info "
  Existing is the latest:
  \Z1$file\Zn
  
@@ -279,7 +296,7 @@ else
 fi
 rm $file.md5
 # expand
-#........................
+#............................
 ( pv -n $file \
 	| bsdtar -C $ROOT -xpf - --exclude=boot/initramfs-linux-fallback.img ) 2>&1 \
 	| dialog $opt_guage "
@@ -289,7 +306,7 @@ rm $file.md5
 sync &
 Sstart=$( date +%s )
 dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
-#........................
+#............................
 ( while (( $( awk '/Dirty:/{print $2}' /proc/meminfo ) > 1000 )); do
 	left=$( awk '/Dirty:/{print $2}' /proc/meminfo )
 	echo $(( $(( dirty - left )) * 100 / dirty ))
@@ -367,13 +384,13 @@ id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # scripts
 for f in {common,create-ros}.sh; do
-	curl -sL $https_ros_main/$f -o $ROOT/root/$f
+	curl -sL $https_ros_branch/$f -o $ROOT/root/$f
 done
 chmod 755 $ROOT/root/*.sh
 sync && BRunmount
 dialog.success Arch Linux ARM
 [[ ${partid_B:0:-1} != ${partid_R:0:-1} ]] && usb=' + USB drive'
-#........................
+#............................
 dialog $opt_msg "
 \Z1Arch Linux ARM\Zn : Ready
 \Z1SD card\Zn        : Unmounted
@@ -384,7 +401,7 @@ dialog $opt_msg "
 	• Start boot timer
 	• Create $logo rAudio
 " 14 40
-#........................
+#............................
 ( for (( i = 1; i < sec_boot; i++ )); do
 	echo $(( i * 100 / sec_boot ))
 	sleep 1
@@ -395,26 +412,26 @@ done ) \
 " 9 $W
 
 if [[ $ip_assigned ]]; then
-#........................
-	( for i in {1..10}; do
-		cat <<EOF
+	{
+		for i in {1..10}; do
+			echo "
 XXX
 $(( i * 10 ))
-\n  Ping \Z1$ip_assigned\Zn ...
-\n  #$i
-XXX
-EOF
-		ping -4 -c 1 -w 1 $ip_assigned &> /dev/null && break
 
-		sleep 3
-	done ) \
-		| dialog $opt_guage '' 9 $W
-	if ping -4 -c 1 -w 1 $ip_assigned &> /dev/null; then
+  Ping Arch Linux ARM ...
+  \Z1$ip_assigned\Zn
+XXX"
+			pingIP $ip_assigned && break || sleep 2
+		done
+#............................
+	} | dialog $opt_guage '' 9 $W
+#............................
+	if pingIP $ip_assigned; then
 		dialog $opt_info "
   SSH Arch Linux ARM ...
   @ \Z1$ip_assigned\Zn
 " 9 $W
-		sshRpi $ip_assigned
+		create_rOS
 	else
 		dialog.scanIP "\Z1Assigned IP\Zn not found: $ip_assigned"
 	fi

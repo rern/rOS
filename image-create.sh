@@ -46,14 +46,15 @@ else
 	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
 	[[ $packages ]] && apt install -y $packages
 fi
-#........................
+#............................
 dialog.splash Image File
 image_create=1
-. <( curl -sL https://github.com/rern/rOS/raw/main/dialog_sdcard.sh ) # set $dev $part_B $part_R
+[[ ! $branch ]] && branch=main
+. <( curl -sL $https_ros_raw/$branch/dialog_sdcard.sh ) # set $dev $part_B $part_R
 BRfsck_mount
 file_r1=$ROOT/srv/http/data/addons/r1
 if [[ ! -e $file_r1 ]]; then
-#........................
+#............................
 	dialog $opt_msg "
 SD card is not rAudio: \Z1$devZn
 " 0 0
@@ -67,7 +68,7 @@ elif [[ -e $BOOT/kernel7.img ]]; then
 else # $BOOT/kernel.img
 	model=Legacy
 fi
-#........................
+#............................
 file_img=$( dialog $opt_input "
 Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
@@ -75,11 +76,11 @@ touch $BOOT/expand # auto expand root partition
 BRunmount
 partsize=$( fdisk -l $part_R | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $part_R | awk '{print $3}' )
-#........................
+#............................
 banner Shrink ROOT
 shrink 1
 shrink 2
-#........................
+#............................
 banner Compressed to image file ...
 bar $file_img
 threads=$(( $( nproc ) - 2 ))

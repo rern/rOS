@@ -13,7 +13,7 @@ dialog.retrySD() {
 }
 dialog.sdCard() {
 	local dev_gib error H l line_lsblk list_BR list_check list_colored part dev_part sd_mmc sL txt_confirm
-#........................ (no --sleep 1)
+#............................ (no --sleep 1)
 	dialog $option --infobox "
 Insert \Z1SD card\Zn \Zb/ USB drive\Zn
 
@@ -26,21 +26,21 @@ Insert \Z1SD card\Zn \Zb/ USB drive\Zn
 		[[ $dev_gib ]] && break
 	done < <( timeout $s dmesg -tW )
 	[[ ! $dev_gib ]] && dialog.retrySD "No SD card detected in ${s}s." && return
-#---------------------------------------------------------------
+#..............................................................................
 	if [[ $dev_gib == sd* ]]; then
 		sd_mmc=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
 	else
 		sd_mmc=${dev_gib/:*}                               # mmcblkN: mmcN:0001 SD32G 29.7 GiB
 	fi
 	[[ $image_create ]] && dev_partBR $sd_mmc && return
-#---------------------------------------------------------------
+#..............................................................................
 	sleep 1
 	line_lsblk=$( lsblk -po name,label,size,mountpoint )
 	if [[ $create_alarm ]]; then
 		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
 		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
 		[[ ! $list_BR ]] && dialog.retrySD "Partitions $txt_confirm not found." && return
-#---------------------------------------------------------------
+#..............................................................................
 		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else # get dev
 		list_check=( "$( grep ^/dev/$sd_mmc <<< $line_lsblk )" off )
@@ -50,7 +50,7 @@ Insert \Z1SD card\Zn \Zb/ USB drive\Zn
 					' -e "/^.dev.$sd_mmc/ {s/^/\\\Z1/; s/$/\\\Zn/}
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	H=$(( $( wc -l <<< $list_colored ) + 9 ))
-#........................
+#............................
 	dev_part=$( dialog $opt_check "
 $list_colored
 
@@ -71,7 +71,7 @@ Select $txt_confirm to comfirm:
 		fi
 	fi
 	if [[ $error ]]; then
-#........................
+#............................
 		dialog $opt_msg "
 \Z1Select $txt_confirm error:\Zn
 

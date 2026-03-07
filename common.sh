@@ -39,7 +39,7 @@ BRfsck_mount() { # create-alarm.sh, image-create.sh
 }
 BRunmount() {
 	! findmnt $BOOT &> /dev/null && return
-
+#..............................................................................
 	umount -l $BOOT $ROOT &> /dev/null
 	rmdir $BOOT $ROOT &> /dev/null
 }
@@ -51,7 +51,7 @@ $( echo -e "$@" )
 " 0 0
 	clear -x
 	exit
-#----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 }
 dialog.ip() {
 	local ip
@@ -72,8 +72,8 @@ Invalid IP: \Z1$ip\Zn
 }
 dialog.menu() { # dialog --menu $1=title $2=multiline list
 	local -a list
-	readarray -t list < <( awk '{print NR; print}' <<< $2 )
-#........................
+	readarray -t list < <( awk 'NF {print ++i; print}' <<< $2 )
+#............................
 	dialog $opt_menu "
 $1:
 " 8 0 0 "${list[@]}"
@@ -87,7 +87,7 @@ Retry?
 }
 dialog.splash() {
 	tput civis # fix: hide cursor at corner
-#........................
+#............................
 	dialog $opt_info "$( alignCenter "
 
 $logo
@@ -96,7 +96,7 @@ $@" )" $(( 8 + $( wc -l <<< $@ ) )) $W
 	tput cnorm # restore cursor
 }
 dialog.success() {
-#........................
+#............................
 	dialog $opt_msg "
 $( alignCenter "
 $logo
@@ -117,6 +117,10 @@ runDuration() {
 	echo \\Z4$( date -d@$SECONDS -u +%M:%S )\\Zn
 }
 
+[[ ! $branch ]] && branch=main
+https_rern='https://github.com/rern'
+https_ros_raw="$https_rern/rOS/raw"
+https_ros_branch="$https_ros_raw/$branch"
 btn_enter='\Zr\Zb Enter \Zn'
 logo='\Zr\Z4+R\Zn'
 W=50
