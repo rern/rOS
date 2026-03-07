@@ -66,12 +66,11 @@ create_rOS() {
 	sed -i "/$ip_assigned/ d" ~/.ssh/known_hosts
 	ssh -tt -o StrictHostKeyChecking=no root@$ip_assigned /root/create-ros.sh
 #............................
-	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect IP: \Z1$ip\Zn" && return
-#..............................................................................
-    [[ $? != 0 ]] && exit
-#------------------------------------------------------------------------------
+	if [[ $? == 255 ]]; then
+	    dialog.scanIP "Unable to SSH connect IP: \Z1$ip\Zn"
+    elif [[ $? == 0 ]]n then
 #............................
-	dialog $opt_info "
+	    dialog $opt_info "
 $logo rAudio : Ready
 
 
@@ -80,6 +79,7 @@ Reboot ...
 
 » Browser » rAudio URL: \Z1$ip_assigned\Zn 
 " 11 40
+    fi
 }
 dialog.download() {
 #............................
