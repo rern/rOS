@@ -12,6 +12,8 @@ fi
 if [[ ${BASH_SOURCE[0]} == ${0} ]]; then # not . <( ... from +R.sh
 	. <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
 #............................
+	dialog.splash Create OS
+#............................
 	i=$( dialog.menu 'Partitions on target \Z1SD card\Zn' "
 Select already created
 Wipe and create new
