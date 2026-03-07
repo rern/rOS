@@ -36,7 +36,7 @@ Insert \Z1SD card\Zn \Zb/ USB drive\Zn
 #..............................................................................
 	sleep 1
 	line_lsblk=$( lsblk -po name,label,size,mountpoint )
-	if [[ $create_alarm ]]; then
+	if [[ $select_part_BR ]]; then
 		list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
 		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
 		[[ ! $list_BR ]] && dialog.retrySD "Partitions $txt_confirm not found." && return
@@ -60,7 +60,7 @@ Select $txt_confirm to comfirm:
 	if (( $sL == 0 )); then
 		error+=None
 	else
-		if [[ $create_alarm ]]; then
+		if [[ $select_part_BR ]]; then
 			case $sL in
 				1 ) error='Only 1';;
 				2 ) ;;
@@ -79,7 +79,7 @@ $error selected:
 $dev_part
 " 0 0 && dialog.sdCard $1
 	else
-		if [[ $create_alarm ]]; then
+		if [[ $select_part_BR ]]; then
 			part=( $dev_part )
 			part_B=${part[0]}
 			part_R=${part[1]}

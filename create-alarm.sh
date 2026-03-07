@@ -9,22 +9,25 @@ if [[ $packages ]]; then
 	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
 
-if [[ ${BASH_SOURCE[0]} == ${0} ]]; then # not . <( ... from +R.sh
+if [[ ${BASH_SOURCE[0]} != ${0} ]]; then # . <( ... from +R.sh
+#............................
+	dialog.splash Arch Linux ARM
+else
 	. <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
 #............................
-	dialog.splash Create OS
+	dialog.splash Arch Linux ARM
 #............................
 	i=$( dialog.menu 'Partitions on target \Z1SD card\Zn' "
 Select already created
 Wipe and create new
 " )
-	[[ $i == 1 ]] && create_alarm=1
+	[[ $i == 1 ]] && select_part_BR=1
 fi
+
 trap 'BRunmount; clear -x' EXIT
-#............................
-dialog.splash Arch Linux ARM
+
 . <( curl -sL $https_ros_branch/dialog_sdcard.sh ) # set $dev $part_B $part_R
-if [[ ! $create_alarm ]]; then # from +R.sh
+if [[ ! $select_part_BR ]]; then # from +R.sh
 #............................
     banner Partition SD Card ...
     wipefs -a $dev
@@ -43,7 +46,7 @@ $part_R : start= $start_R, size= $size_R, type=83
     e2label $part_R ROOT
 fi
 BRfsck_mount
-if [[ $create_alarm ]]; then
+if [[ $select_part_BR ]]; then
 	read -r mp fs < <( findmnt -no target,fstype $part_B )
 	[[ $( ls $mp ) ]] && err_B=', Empty'
 	[[ $fs != vfat ]] && err_B+=', FAT32'
