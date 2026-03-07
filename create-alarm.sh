@@ -73,9 +73,11 @@ create_rOS() {
 $logo rAudio : Ready
 
 
-Reboot to start rAudio ...
-\Z4(Not reboot after 10s: Power off » on)\Zn
-" 9 40
+Reboot ...
+\Z4(Not reboot after 10s: » Power off » on)\Zn
+
+» Browser » rAudio URL: \Z1$ip_assigned\Zn 
+" 11 40
 }
 dialog.download() {
 #............................
