@@ -1,5 +1,6 @@
 #!/bin/bash
 
+[[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
 for cmd in bsdtar dialog nmap pv; do # required packages
