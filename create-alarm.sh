@@ -1,7 +1,6 @@
 #!/bin/bash
 
-[[ $1 ]] && branch=$1          # bash -s UPDATE <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
-[[ ! $branch ]] && branch=main # bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
+[[ ! $branch ]] && branch=main
 
 for cmd in bsdtar dialog nmap pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
