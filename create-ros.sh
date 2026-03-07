@@ -9,7 +9,7 @@ features=$( < features )
 release=$( < release )
 
 retryCreate() {
-	dialog.retry "$@" && ./create-ros.sh || exit 1
+	dialog.retry "$@" && ./create-ros.sh || exit 11
 }
 #............................
 dialog.splash r A u d i o
