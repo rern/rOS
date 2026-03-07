@@ -120,7 +120,7 @@ dialog.feature() {
 $checked
 " 0 0
 	if [[ $? == 0 ]]; then
-		echo $features > $ROOT/features
+		echo $features > $ROOT/root/features
 	else
 		dialog.feature
 	fi
@@ -144,7 +144,7 @@ getData() {
 		return
 #..............................................................................
 	fi
-	echo $release > $ROOT/release
+	echo $release > $ROOT/root/release
 #............................
 	i=$( dialog.menu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
