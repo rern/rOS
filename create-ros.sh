@@ -215,3 +215,4 @@ file=/boot/finish.sh
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
+reboot

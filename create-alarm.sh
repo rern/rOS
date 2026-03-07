@@ -68,15 +68,13 @@ create_rOS() {
 #............................
 	[[ $? != 0 ]] && dialog.scanIP "Unable to SSH connect IP: \Z1$ip\Zn" && return
 #..............................................................................
-	ssh -o StrictHostKeyChecking=no root@$ip_assigned reboot 2> /dev/null
-	if [[ $? == 0 ]]; then
 #............................
 		dialog $opt_info "
 $logo rAudio : Ready
 
 
-Reboot to rAudio ...
-\Z4(iF no reboot: Power off » on)\Zn
+Reboot to start rAudio ...
+\Z4(Not reboot after 10s: Power off » on)\Zn
 " 9 40
 	fi
 }
