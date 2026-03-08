@@ -178,15 +178,14 @@ if [[ -e /usr/bin/spotifyd ]]; then
 else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
-# ssh
+# ssh: reset root password
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
-# user
-echo root:ros | chpasswd
-echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
+chpasswd <<< root:ros
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
 	chage -E -1 $user # set expire to none
 done
+echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 # upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
@@ -205,17 +204,15 @@ systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 # data - settings directories
 $dirbash/settings/system-datadefault.sh $release
-# system
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
 #............................
-			dialog $opt_info "
-$logo rAudio : Ready
+dialog.splash "\
+r A u d i o
 
+Created successfully.
+$( runDuration )
 
-Reboot ...
-\Z4(Not reboot after 10s: » Power off » on)\Zn
-
-" 10 $W
+\Z1  Reboot ...\Zn"
 reboot

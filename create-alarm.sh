@@ -64,7 +64,7 @@ fi
 
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
-	[[ $? == 255 ]] dialog.scanIP "Unable to SSH connect IP: \Z1$1\Zn"
+	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect IP: \Z1$1\Zn"
 }
 dialog.download() {
 #............................
@@ -378,14 +378,12 @@ done
 rm -r $ROOT/etc/systemd/system/network-online.target.wants
 # fix: slow login
 sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
-# set root password:
-#  - to blank: for ssh create-ros.sh without password
-#  - to ros: on done
-id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
-sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
+# ssh create-ros.sh without password
 sed -i 's/#*\(PermitRootLogin \).*/\1yes/
 		s/#*\(PermitEmptyPasswords \).*/\1yes/
 ' $ROOT/etc/ssh/sshd_config
+id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
+sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # scripts
 mv $BOOT/{features,release} $ROOT/root
 for f in {common,create-ros}.sh; do
@@ -393,7 +391,17 @@ for f in {common,create-ros}.sh; do
 done
 chmod 755 $ROOT/root/*.sh
 sync && BRunmount
-dialog.success Arch Linux ARM
+#............................
+	dialog $opt_msg "
+$( alignCenter "
+$logo
+
+Arch Linux ARM
+
+Created successfully.
+$( runDuration )
+" )				
+" 12 $W
 [[ ${partid_B:0:-1} != ${partid_R:0:-1} ]] && usb=' + USB drive'
 #............................
 dialog $opt_msg "
