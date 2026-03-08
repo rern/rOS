@@ -71,7 +71,7 @@ if [[ $? != 0 ]]; then
 	[[ $? != 0 ]] && retryCreate Install packages incomplete.
 fi
 #............................
-banner Get configurations and user interface ...
+banner Setup rAudio ...
 mkdir -p /tmp/config
 curl -skL https://github.com/rern/rAudio/archive/$release.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
 curl -skL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
@@ -85,8 +85,6 @@ dirbash=/srv/http/bash
 chmod -R 755 $dirbash
 mkdir /srv/http/assets/img/guide
 curl -skL https://github.com/rern/_assets/raw/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
-#............................
-banner Configure ...
 # alsa
 alsactl store
 # bluetooth
@@ -208,9 +206,6 @@ systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 # data - settings directories
 $dirbash/settings/system-datadefault.sh $release
-# custom script
-finish=/boot/finish.sh
-[[ -e $finish ]] && . $finish && rm $finish
 # system
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null

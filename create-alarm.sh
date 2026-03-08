@@ -63,14 +63,15 @@ if [[ $select_part_BR ]]; then
 fi
 
 create_rOS() {
-	opt_ssh+=" root@$ip_assigned"
-	sed -i "/$ip_assigned/ d" ~/.ssh/known_hosts
-	ssh -tt $opt_ssh /root/create-ros.sh
+	ssh -qtt root@$ip_assigned /root/create-ros.sh
 #............................
 	if [[ $? == 255 ]]; then
 		dialog.scanIP "Unable to SSH connect IP: \Z1$ip_assigned\Zn"
     elif [[ $? == 0 ]]; then
-		ssh ${opt_ssh/-tt} 'nohup bash -c "sleep 1; reboot" &> /dev/null &'
+		ssh -q root@$ip_assigned 'nohup bash -c "\
+> /root/.ssh/authorized_keys
+sleep 1
+reboot" &> /dev/null &'
 #............................
 		dialog $opt_info "
 $logo rAudio : Ready
@@ -383,10 +384,14 @@ done
 rm -r $ROOT/etc/systemd/system/network-online.target.wants
 # fix: long wait login
 sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
-# ssh - root login, blank password
+# ssh - root login, blank password(for fater login)
 sed -i -e 's/#*\(PermitRootLogin \).*/\1yes/
 ' -e 's/#*\(PermitEmptyPasswords \).*/\1yes/
 ' $ROOT/etc/ssh/sshd_config
+# ssh key - for created-ros.sh
+file_key=~/.ssh/id_ed25519 # works with this name only
+[[ ! -e $file_key ]] && ssh-keygen -qf $file_key -N ''
+cat $file_key.pub > $ROOT/root/.ssh/authorized_keys
 # set root password
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow

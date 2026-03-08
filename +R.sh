@@ -31,5 +31,10 @@ else
 #............................
 	ip=$( dialog.ip 'rAudio IP' )
 	[[ $i == 2 ]] && bash_reset_sh="bash <( curl -sL $https_ros_branch/image-reset.sh )"
-	sshpass -p ros ssh $opt_ssh root@$ip $bash_reset_sh
+	sshpass -p ros \
+		ssh -qtt \
+			-o StrictHostKeyChecking=no \
+			-o UserKnownHostsFile=/dev/null \
+				root@$ip $bash_reset_sh
 fi
+
