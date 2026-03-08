@@ -209,9 +209,10 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 # data - settings directories
 $dirbash/settings/system-datadefault.sh $release
 # custom script
-file=/boot/finish.sh
-[[ -e $file ]] && . $file; rm $file
+finish=/boot/finish.sh
+[[ -e $finish ]] && . $finish && rm $finish
 # system
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
+exit 0
