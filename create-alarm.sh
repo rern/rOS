@@ -63,13 +63,13 @@ if [[ $select_part_BR ]]; then
 fi
 
 create_rOS() {
-	ssh -qtt root@$ip_assigned /root/create-ros.sh
+	createSSH /root/create-ros.sh
 #............................
 	if [[ $? == 255 ]]; then
 		dialog.scanIP "Unable to SSH connect IP: \Z1$ip_assigned\Zn"
     elif [[ $? == 0 ]]; then
-		ssh -q root@$ip_assigned 'nohup bash -c "\
-> /root/.ssh/authorized_keys
+		createSSH 'nohup bash -c "
+echo root:ros | chpasswd
 sleep 1
 reboot" &> /dev/null &'
 #............................
@@ -83,6 +83,9 @@ Reboot ...
 » Browser » rAudio URL: \Z1$ip_assigned\Zn 
 " 11 40
 	fi
+}
+createSSH() {
+	ssh $opt_ssh root@$ip_assigned "$@"
 }
 dialog.download() {
 #............................
@@ -306,9 +309,9 @@ fi
 rm $file.md5
 # expand
 #............................
-( pv -n $file \
-	| bsdtar -C $ROOT -xpf - --exclude=boot/initramfs-linux-fallback.img ) 2>&1 \
-	| dialog $opt_guage "
+{
+	pv -n $file | bsdtar -C $ROOT -xpf - --exclude=boot/initramfs-linux-fallback.img
+} 2>&1 | dialog $opt_guage "
   Decompress to SD card ...
   \Z1$file\Zn
 " 9 $W
@@ -316,13 +319,14 @@ sync &
 Sstart=$( date +%s )
 dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
 #............................
-( while (( $( awk '/Dirty:/{print $2}' /proc/meminfo ) > 1000 )); do
-	left=$( awk '/Dirty:/{print $2}' /proc/meminfo )
-	echo $(( $(( dirty - left )) * 100 / dirty ))
-	sleep 2
-done ) \
-	| dialog $opt_guage "
-  Write remaining to SD card ...
+{
+	while (( $( awk '/Dirty:/{print $2}' /proc/meminfo ) > 1000 )); do
+		left=$( awk '/Dirty:/{print $2}' /proc/meminfo )
+		echo $(( $(( dirty - left )) * 100 / dirty ))
+		sleep 2
+	done
+} | dialog $opt_guage "
+  Write remaining to SD card
   \Z1$file\Zn
 " 9 $W
 sync
@@ -384,17 +388,14 @@ done
 rm -r $ROOT/etc/systemd/system/network-online.target.wants
 # fix: slow login
 sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
-# no blank password - faster login
-sed -i 's/#*\(PermitRootLogin \).*/\1yes/
-		s/#*\(PermitEmptyPasswords \).*/\1no/
-' $ROOT/etc/ssh/sshd_config
-# ssh key - for created-ros.sh
-file_key=~/.ssh/id_ed25519 # any reserved names - ssh connect without '-i $file_key'
-[[ ! -e $file_key ]] && ssh-keygen -qf $file_key -N '' # '-f $file_key' - no prompts
-cat $file_key.pub > $ROOT/root/.ssh/authorized_keys
-# set root password
+# set root password:
+#  - to blank: for ssh create-ros.sh without password
+#  - to ros: on done
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
+sed -i 's/#*\(PermitRootLogin \).*/\1yes/
+		s/#*\(PermitEmptyPasswords \).*/\1yes/
+' $ROOT/etc/ssh/sshd_config
 # scripts
 mv $BOOT/{features,release} $ROOT/root
 for f in {common,create-ros}.sh; do

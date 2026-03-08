@@ -155,8 +155,6 @@ chsh -s /bin/bash mpd
 ln -sf $dirbash/motd.sh /etc/profile.d/
 # pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
-# password
-echo root:ros | chpasswd
 # samba
 if [[ -e /usr/bin/smbd ]]; then
 	( echo ros; echo ros ) | smbpasswd -s -a root
@@ -180,6 +178,8 @@ if [[ -e /usr/bin/spotifyd ]]; then
 else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
+# ssh
+sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
 # user
 echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 users=$( cut -d: -f1 /etc/passwd )
