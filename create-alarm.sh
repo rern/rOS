@@ -62,30 +62,9 @@ if [[ $select_part_BR ]]; then
 #------------------------------------------------------------------------------
 fi
 
-create_rOS() {
-	createSSH /root/create-ros.sh
-	case $? in
-		0 ) createSSH 'nohup bash -c "
-echo root:ros | chpasswd
-sleep 1
-reboot" &> /dev/null &'
-#............................
-		dialog $opt_info "
-$logo rAudio : Ready
-
-
-Reboot ...
-\Z4(Not reboot after 10s: » Power off » on)\Zn
-
-» Browser » rAudio URL: \Z1$ip_assigned\Zn 
-" 11 40
-			;;
-		255 ) dialog.scanIP "Unable to SSH connect IP: \Z1$ip_assigned\Zn"
-			;;
-	esac
-}
-createSSH() {
-	ssh $opt_ssh root@$ip_assigned "$@"
+create_ros() {
+	ssh $opt_ssh root@$1 /root/create-ros.sh
+	[[ $? == 255 ]] dialog.scanIP "Unable to SSH connect IP: \Z1$1\Zn"
 }
 dialog.download() {
 #............................
@@ -265,8 +244,7 @@ scanIP() {
 	i=$( dialog.menu 'Select Raspberry Pi' "$lines" )
 	[[ $? != 0 ]] && dialog.error_exit Arch Linux ARM not found.
 #------------------------------------------------------------------------------
-	ip_assigned=$( awk 'NR=='$i' {print $1}' <<< $lines )
-	create_rOS 
+	create_ros $( awk 'NR=='$i' {print $1}' <<< $lines )
 }
 
 getData
@@ -450,15 +428,16 @@ $(( i * 10 ))
 XXX"
 			pingIP $ip_assigned && break || sleep 2
 		done
+	} \
 #............................
-	} | dialog $opt_guage '' 9 $W
+		| dialog $opt_guage '' 9 $W
 #............................
 	if pingIP $ip_assigned; then
 		dialog $opt_info "
   SSH Arch Linux ARM ...
   @ \Z1$ip_assigned\Zn
 " 9 $W
-		create_rOS
+		create_ros $ip_assigned
 	else
 		dialog.scanIP "\Z1Assigned IP\Zn not found: $ip_assigned"
 	fi

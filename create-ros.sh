@@ -181,6 +181,7 @@ fi
 # ssh
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
 # user
+echo root:ros | chpasswd
 echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
@@ -208,4 +209,13 @@ $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
-exit 0
+#............................
+			dialog $opt_info "
+$logo rAudio : Ready
+
+
+Reboot ...
+\Z4(Not reboot after 10s: » Power off » on)\Zn
+
+" 10 $W
+reboot
