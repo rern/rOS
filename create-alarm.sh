@@ -3,7 +3,7 @@
 [[ $1 ]] && branch=$1 # bash <( curl -sL https://github.com/rern/rOS/raw/UPDATE/common.sh ) UPDATE
 [[ ! $branch ]] && branch=main
 
-for cmd in bsdtar dialog nmap pv; do # required packages
+for cmd in bsdtar dialog nmap pigz pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
 if [[ $packages ]]; then
@@ -64,11 +64,8 @@ fi
 
 create_rOS() {
 	createSSH /root/create-ros.sh
-#............................
-	if [[ $? == 255 ]]; then
-		dialog.scanIP "Unable to SSH connect IP: \Z1$ip_assigned\Zn"
-    elif [[ $? == 0 ]]; then
-		createSSH 'nohup bash -c "
+	case $? in
+		0 ) createSSH 'nohup bash -c "
 echo root:ros | chpasswd
 sleep 1
 reboot" &> /dev/null &'
@@ -82,7 +79,10 @@ Reboot ...
 
 » Browser » rAudio URL: \Z1$ip_assigned\Zn 
 " 11 40
-	fi
+			;;
+		255 ) dialog.scanIP "Unable to SSH connect IP: \Z1$ip_assigned\Zn"
+			;;
+	esac
 }
 createSSH() {
 	ssh $opt_ssh root@$ip_assigned "$@"
@@ -238,6 +238,9 @@ md5verify() {
 	rm $file
 	dialog.download
 }
+memDirty() {
+	awk '/Dirty:/{print $2}' /proc/meminfo
+}
 pingIP() {
 	ping -4 -c 1 -W 1 $1 &> /dev/null
 }
@@ -308,24 +311,33 @@ else
 fi
 rm $file.md5
 # expand
-#............................
+size=$( stat -c %s $file )
 {
-	pv -n $file | bsdtar -C $ROOT -xpf - --exclude=boot/initramfs-linux-fallback.img
-} 2>&1 | dialog $opt_guage "
+	pv -n -s $size $file \
+		| pigz -dc
+		| bsdtar -C $ROOT -xpf - \
+			--no-same-owner \
+			--exclude=boot/initramfs-linux-fallback.img
+} 2>&1 \
+#............................
+	| dialog $opt_guage "
   Decompress to SD card ...
   \Z1$file\Zn
 " 9 $W
 sync &
 Sstart=$( date +%s )
-dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
-#............................
+dirty=$( memDirty )
 {
-	while (( $( awk '/Dirty:/{print $2}' /proc/meminfo ) > 1000 )); do
-		left=$( awk '/Dirty:/{print $2}' /proc/meminfo )
-		echo $(( $(( dirty - left )) * 100 / dirty ))
+	while true; do
+		left=$( memDirty )
+		(( left <= 1000 )) && break
+
+		echo $(( ( dirty - left ) * 100 / dirty ))
 		sleep 2
 	done
-} | dialog $opt_guage "
+} \
+#............................
+	| dialog $opt_guage "
   Write remaining to SD card
   \Z1$file\Zn
 " 9 $W

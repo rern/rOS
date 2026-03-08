@@ -17,7 +17,7 @@ dialog.sdCard() {
 	dialog $option --infobox "
 $logo
 
-\Zr Insert \Zn \Z1SD card\Zn
+\Zr\Zb Insert \Zn \Z1SD card\Zn
 \Z4         or/and USB drive
 
 If already inserted, remove and reinsert.\Zn
