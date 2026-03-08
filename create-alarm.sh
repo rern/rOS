@@ -384,13 +384,13 @@ done
 rm -r $ROOT/etc/systemd/system/network-online.target.wants
 # fix: slow login
 sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
-# ssh - root login, blank password(for fater login)
+# no blank password - faster login
 sed -i 's/#*\(PermitRootLogin \).*/\1yes/
-		s/#*\(PermitEmptyPasswords \).*/\1yes/
+		s/#*\(PermitEmptyPasswords \).*/\1no/
 ' $ROOT/etc/ssh/sshd_config
 # ssh key - for created-ros.sh
 file_key=~/.ssh/id_ed25519 # any reserved names - ssh connect without '-i $file_key'
-[[ ! -e $file_key ]] && ssh-keygen -qf $file_key -N '' # '-f $file_key' - no promts
+[[ ! -e $file_key ]] && ssh-keygen -qf $file_key -N '' # '-f $file_key' - no prompts
 cat $file_key.pub > $ROOT/root/.ssh/authorized_keys
 # set root password
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )

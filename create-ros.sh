@@ -180,10 +180,8 @@ if [[ -e /usr/bin/spotifyd ]]; then
 else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
-# ssh
-sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # connect faster
-echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 # user
+echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
 	chage -E -1 $user # set expire to none
