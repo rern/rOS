@@ -15,17 +15,19 @@ dialog.sdCard() {
 	local dev_gib error H l line_lsblk list_BR list_check list_colored part dev_part sd_mmc sL txt_confirm
 #............................ (no --sleep 1)
 	dialog $option --infobox "
-Insert \Z1SD card\Zn \Zb/ USB drive\Zn
+$logo
 
-\Zb(If already inserted, remove and reinsert.)\Zn
+\Zr Insert \Zn \Z1SD card\Zn
+\Z4         or/and USB drive
 
-" 0 0
+If already inserted, remove and reinsert.\Zn
+" 9 $W
 	s=15
 	while read l; do
 		dev_gib=$( grep -m1 -E '^(sd|mmcblk).* GiB' <<< $l )
 		[[ $dev_gib ]] && break
 	done < <( timeout $s dmesg -tW )
-	[[ ! $dev_gib ]] && dialog.retrySD "No SD card detected in ${s}s." && return
+	[[ ! $dev_gib ]] && dialog.retrySD "No new device inserted in ${s}s." && return
 #..............................................................................
 	if [[ $dev_gib == sd* ]]; then
 		sd_mmc=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
