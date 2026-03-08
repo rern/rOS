@@ -30,7 +30,6 @@ if [[ $file_name ]]; then
 else
 #............................
 	ip=$( dialog.ip 'rAudio IP' )
-	sed -i "/$ip/ d" ~/.ssh/known_hosts
 	[[ $i == 2 ]] && bash_reset_sh="bash <( curl -sL $https_ros_branch/image-reset.sh )"
-	sshpass -p ros ssh -t -o StrictHostKeyChecking=no root@$ip $bash_reset_sh
+	sshpass -p ros ssh $opt_ssh root@$ip $bash_reset_sh
 fi

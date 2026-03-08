@@ -50,10 +50,10 @@ BRfsck_mount
 if [[ $select_part_BR ]]; then
 	read -r mp fs < <( findmnt -no target,fstype $part_B )
 	[[ $( ls $mp ) ]] && err_B=', Empty'
-	[[ $fs != vfat ]] && err_B+=', FAT32'
+	[[ $fs != vfat ]] && err_B+=', VFAT'
 	read -r mp fs < <( findmnt -no target,fstype $part_R )
 	[[ $( ls $mp | grep -v lost+found ) ]] && err_R=', Empty'
-	[[ $fs != ext4 ]] &&                      err_R+=', EXT4'
+	[[ $fs != ext4 ]] &&                      err_R+=', Ext4'
 	[[ $err_B ]] && error="
 \Z1BOOT\Zn $part_B not: ${err_B:2}" # :2 leading ,
 	[[ $err_R ]] && error+="
@@ -63,14 +63,16 @@ if [[ $select_part_BR ]]; then
 fi
 
 create_rOS() {
+	opt_ssh+=" root@$ip_assigned"
 	sed -i "/$ip_assigned/ d" ~/.ssh/known_hosts
-	ssh -tt -o StrictHostKeyChecking=no root@$ip_assigned /root/create-ros.sh
+	ssh -tt $opt_ssh /root/create-ros.sh
 #............................
 	if [[ $? == 255 ]]; then
-	    dialog.scanIP "Unable to SSH connect IP: \Z1$ip\Zn"
-    elif [[ $? == 0 ]]n then
+		dialog.scanIP "Unable to SSH connect IP: \Z1$ip_assigned\Zn"
+    elif [[ $? == 0 ]]; then
+		ssh ${opt_ssh/-tt} 'nohup bash -c "sleep 1; reboot" &> /dev/null &'
 #............................
-	    dialog $opt_info "
+		dialog $opt_info "
 $logo rAudio : Ready
 
 
@@ -79,7 +81,7 @@ Reboot ...
 
 » Browser » rAudio URL: \Z1$ip_assigned\Zn 
 " 11 40
-    fi
+	fi
 }
 dialog.download() {
 #............................

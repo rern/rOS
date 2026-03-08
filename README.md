@@ -20,119 +20,59 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 - Take less than 15 minutes for the whole process with a decent download speed.
 
 **Procedure**
-- [Prepare partitions](#prepare-partitions)
-	- Create `BOOT` and `ROOT`
 - [Create Arch Linux ARM + rAudio](#create-arch-linux-arm--raudio)
 	- Use wired LAN connection if possible
-		- Use router assigned IP address if possible
-			- Router may take some time to broadcast hostname of DHCP Raspberry Pi
-		- Optional - Pre-configure Wi-Fi connection
-	- Select features
-	- Download Arch Linux ARM
-	- Write `BOOT` and `ROOT`
-	- SSH connect PC to Raspberry Pi
-	- Upgrade kernel and default packages
-	- Install feature packages
-	- Install web user interface
-	- Configure
-	- Set defaults
-- [Optionals](#optionals)
-	- Setup Wi-Fi auto-connect
-	- Create image file
-- Expert mode (1 command line )
-	- For those who know how to read and confirm syntax of SD card partitions.
-	- For Alternative 1: Micro SD card only
-	```sh
-	bash <( curl -sL https://github.com/rern/rOS/raw/main/partition.sh )
-	```
-	- If the SD card was not recognized, use GParted to wipe all partitions.
+	- Use router pre-assigned IP address if possible
+	- Run script:
+		- Setup
+		- Create Arch Linux ARM
+			- Write `BOOT` and `ROOT`
+		- SSH to Raspberry Pi
+		- Create rAudio
+			- Upgrade kernel and default packages
+			- Install feature packages
+			- Install web user interface
+			- Configure
+			- Setup defaults
 
 ![dialog1](https://github.com/rern/rOS/raw/main/select-hw.png)
 ![dialog2](https://github.com/rern/rOS/raw/main/select-features.png)  
 
 **Need**
-- PC - Linux - any distro
-	- or on USB e.g., [Manjaro](https://itsfoss.com/create-live-usb-manjaro-linux/) - Arch Linux
-	- or on Raspberry Pi itself (If no GUI, `fdisk` and `mount` skills needed.)
-	- or on VirtualBox on Windows (with network set as `Bridge Adapter`) - Slowest
+- Linux
+	- Or PC:
+		- Linux on USB e.g., [Manjaro](https://itsfoss.com/create-live-usb-manjaro-linux/) *(Arch Linux)*
+		- Linux on VirtualBox (with network set as `Bridge Adapter`)
 - Raspberry Pi
 - Network connection to Raspberry Pi 
 	- Wired LAN
 	- Optional: Wi-Fi (if necessary)
 - Media:
-	- Micro SD card
-		- Optional: Micro SD card + USB drive
-		- Optional: USB drive only
+	- Micro SD card or/and USB drive
 
 ---
 
-### Prepare partitions
-- On Linux PC
-- Make sure no partitions labelled as `BOOT` or `ROOT`
-- Open **GParted** app (Manjaro root password: `manjaro`)
-- 3 options:
-	- Micro SD card only
-	- Micro SD card + USB drive
-	- USB drive only
-	
-**Option 1: Micro SD card only**
-- 4GB+ (should be at least class 10 or U1)
-- `Unmount` > `Delete` all partitions (make sure it's the micro SD card)
-- Create partitions:
-	| No.| Size        | Type    | Format | Label |
-	|----|-------------|---------|--------|-------|
-	| 1  | 300MiB      | primary | fat32  | BOOT  |
-	| 2  | (the rest)  | primary | ext4   | ROOT  |
-	
-**Option 2: Micro SD card + USB drive**
-- Micro SD card - 300MB+
-	- `Unmount` > `Delete` all partitions (Caution: make sure it's the SD card)
-	- Create a partition:
-		| No.| Size        | Type    | Format | Label |
-		|----|-------------|---------|--------|-------|
-		| 1  | 300MiB      | primary | fat32  | BOOT  |
-- USB drive - 4GB+
-	- Blank:
-		- `Unmount` > `Delete` all partitions (Caution: make sure it's the USB drive)
-		- Create partitions:
-			| No.| Size        | Type    | Format | Label |
-			|----|-------------|---------|--------|-------|
-			| 1  | 4000MiB     | primary | ext4   | ROOT  |
-			| 2  | (the rest)  | primary | ext4   | (any) |
-	- Not blabk:
-		- No need to reformat or change format of existing partition
-		- Resize the existing to get 5000MiB unallocated space (anywhere - at the end, middle or start of the disk)
-		- Create a partition in the space:
-			| No.   | Size        | Type    | Format | Label |
-			|-------|-------------|---------|--------|-------|
-			| (any) | (existing)  | primary | (any)  | (any) |
-			| (any) | 4000MiB     | primary | ext4   | ROOT  |
-			
-**Option 3: USB drive only**
-- Not for Raspberry Pi Zero, 1
-- Suitable for faster-than-SD-card drives.
+### Create rAudio
+**Target device:**
+- Option 1: Micro SD card (Should be at least class 10 or U1)
+- Option 2: USB drive (Not for Zero and 1)
+- Option 3: Micro SD card + USB drive
+	- Create partitions:
+		| Device    | Size        | Type    | Format | Label |
+		|:----------|:------------|:--------|:-------|:------|
+		| SD card   | 300MiB      | primary | VFAT   | BOOT  |
+		| USB drive | 4000MiB     | primary | Ext4   | ROOT  |
+
+Note: USB drive
+- Suitable for much-faster-than-SD-card drives.
 - Normal hard drive needs external power, e.g., powered USB hub, to have it spin up 5+ seconds before boot.
 - Boot takes 10+ seconds longer (detect no sd card > read boot loader into memory > boot)
-- Enable [USB mass storage boot](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot)
-- Create partitions: (Drive with existing data must be resized and rearranged respectively.)
-	| No.| Size        | Type    | Format | Label |
-	|----|-------------|---------|--------|-------|
-	| 1  | 300MiB      | primary | fat32  | BOOT  |
-	| 2  | 4000MiB     | primary | ext4   | ROOT  |
-	| 3  | (the rest)  | primary | ext4   | (any) |
+- [USB mass storage boot](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot) must be enabled on Raspberry.
 
----
-	
-### Create Arch Linux ARM + rAudio
-- Run write Arch Linux ARM script
+**Run script on Linux terminal**
 ```sh
-su
-bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
+sudo bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
 ```
-- RPi 2 and 3 get the same `ArchLinuxARM-rpi-2-latest.tar.gz` 
-- Errors or too slow download: press `Ctrl+C` and run `./create-alarm.sh` again (while in `Create Arch Linux ARM` mode only)
-- If there're other applications running and "Create Arch Linux ARM" progress was stalled, open another terminal and run `sync` command.
-
 ---
 
 ### Optionals
@@ -153,14 +93,13 @@ bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
 - Move micro SD card to Raspberry Pi
 - Power on
 	
-**Create image file** (Micro SD card mode only)
-
+**Create image file** (`BOOT` and `ROOT` on single device only)
 - Once started rAudio successfully
 - SSH to RPi
 - Reset for image
 ```sh
 ssh root@<RPI IP>
-bash <( curl -sL https://github.com/rern/rOS/raw/main/reset.sh )
+bash <( curl -sL https://github.com/rern/rOS/raw/main/image-reset.sh )
 ```
 - Shutdown
 - Move micro SD card to Linux
@@ -171,8 +110,3 @@ bash <( curl -sL https://github.com/rern/rOS/raw/main/image-create.sh )
 
 **LED flashes - errors**  
 Decode: https://support.pishop.ca/article/33-raspberry-pi-act-led-error-patterns
-
-**Fix - Error: Known host keys on SSH**
-```sh
-sed -i "/IP_ADDRESS/ d" ~/.ssh/known_hosts
-```

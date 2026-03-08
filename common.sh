@@ -120,6 +120,8 @@ runDuration() {
 https_rern='https://github.com/rern'
 https_ros_raw="$https_rern/rOS/raw"
 https_ros_branch="$https_ros_raw/$branch"
+opt_ssh="-tt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+
 btn_enter='\Zr\Zb Enter \Zn'
 logo='\Zr\Z4+R\Zn'
 W=50
