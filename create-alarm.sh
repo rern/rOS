@@ -68,13 +68,13 @@ create_ros() {
 }
 dialog.download() {
 #............................
-	{ wget -O $file $url/$file 2>&1 | stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ {
+	( wget -O $file $url/$file 2>&1 | stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ {
 			print "XXX\n "substr($0,63,3)
 			print "\\n Download ..."
 			print "\\n \\Z1'$file'\\Zn"
 			print "\\n Time left: "substr($0,74,5)"\nXXX"
 		}' 
-	} | dialog $opt_gauge "
+	 ) 2>&1 | dialog $opt_gauge "
  Connecting ...
 " 9 $W 0
 	md5verify
@@ -292,11 +292,11 @@ rm $file.md5
 mkdir -p ALARM
 size=$( stat -c %s $file )
 #............................
-{
+(
 	pv -n -s $size $file \
 		| pigz -dc \
 		| bsdtar xpf - -C ALARM --exclude=*fallback.img
-} 2>&1 | dialog $opt_gauge "
+ ) 2>&1 | dialog $opt_gauge "
   Decompress ...
   \Z1$file\Zn
 " 9 $W 0
@@ -304,7 +304,7 @@ for d in boot root; do
 	dir_src=ALARM/
 	[[ $d == boot ]] && dir_src+=$d/
 	dir_target=${d^^}
-	{
+	(
 		rsync $dir_src $dir_target/ -ah --fsync --info=progress2 2>&1 \
 			| tr '\r' '\n' \
 			| stdbuf -o0 awk '/%/ {
@@ -321,7 +321,7 @@ for d in boot root; do
 					fflush()
 				}
 			}'
-	} | dialog $opt_gauge "
+	 ) 2>&1 | dialog $opt_gauge "
   Write partition \Z1$dir_target\Zn
   Data: ...
 " 9 $W 0
