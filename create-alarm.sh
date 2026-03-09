@@ -81,8 +81,7 @@ dialog.download() {
 			}' 
 	 ) 2>&1 | dialog $opt_gauge "
  Connecting ...
-" 9 $W 0
-	md5verify
+" 9 $W 0 && md5verify || dialog.retry "Download failed:\n$file"
 }
 list_features="\
 BlueALSA   - Bluetooth audio              : bluealsa bluez bluez-utils python-dbus python-gobject python-requests
