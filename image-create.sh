@@ -4,13 +4,13 @@ trap 'BRunmount; clear -x' EXIT
 
 shrink() {
 	bar "Shrink Pass #$1 ..."
-	partinfo=$( tune2fs -l $part_R )
+	partinfo=$( tune2fs -l $PART_R )
 	blockcount=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
 	freeblocks=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
 	blocksize=$( awk '/Block size/ {print $NF}' <<< "$partinfo" )
 
-	sectorsize=$( sfdisk -l $dev | awk '/Units/ {print $8}' )
-	startsector=$( fdisk -l $dev | grep $part_R | awk '{print $2}' )
+	sectorsize=$( sfdisk -l $DEV | awk '/Units/ {print $8}' )
+	startsector=$( fdisk -l $DEV | grep $PART_R | awk '{print $2}' )
 
 	usedblocks=$(( blockcount - freeblocks ))
 	targetblocks=$(( usedblocks * 105 / 100 ))
@@ -23,8 +23,8 @@ shrink() {
 		echo Already reached minimum size.
 	else
 		# shrink filesystem to minimum
-		resize2fs -fp $part_R $(( newsize * Kblock ))K
-		parted $dev ---pretend-input-tty <<EOF
+		resize2fs -fp $PART_R $(( newsize * Kblock ))K
+		parted $DEV ---pretend-input-tty <<EOF
 unit
 s
 resizepart
@@ -49,13 +49,13 @@ fi
 #............................
 dialog.splash Image File
 image_create=1
-. <( curl -sL $https_ros_raw/$branch/dialog_sdcard.sh ) # set $dev $part_B $part_R
+. <( curl -sL $https_ros_raw/$branch/dialog_sdcard.sh ) # set $DEV $PART_B $PART_R
 BRfsck_mount
 file_r1=$ROOT/srv/http/data/addons/r1
 if [[ ! -e $file_r1 ]]; then
 #............................
 	dialog $opt_msg "
-SD card is not rAudio: \Z1$devZn
+SD card is not rAudio: \Z1$DEVZn
 " 0 0
 	dialog.sdCard
 fi
@@ -73,8 +73,8 @@ Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 touch $BOOT/expand # auto expand root partition
 BRunmount
-partsize=$( fdisk -l $part_R | awk '/^Disk/ {print $2" "$3}' )
-used=$( df -k 2> /dev/null | grep $part_R | awk '{print $3}' )
+partsize=$( fdisk -l $PART_R | awk '/^Disk/ {print $2" "$3}' )
+used=$( df -k 2> /dev/null | grep $PART_R | awk '{print $3}' )
 #............................
 banner Shrink ROOT
 shrink 1
@@ -83,7 +83,7 @@ shrink 2
 banner Compressed to image file ...
 bar $file_img
 threads=$(( $( nproc ) - 2 ))
-dd if=$dev bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$file_img"
+dd if=$DEV bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$file_img"
 size=$( xz -l --robot $file_img | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
 bar "Image file created:
 $file_img

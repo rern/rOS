@@ -27,37 +27,37 @@ fi
 
 trap 'BRunmount; clear -x' EXIT
 
-. <( curl -sL $https_ros_branch/dialog_sdcard.sh ) # set $dev $part_B $part_R
+. <( curl -sL $https_ros_branch/dialog_sdcard.sh ) # set $DEV $PART_B $PART_R
 if [[ ! $select_part_BR ]]; then # from +R.sh
 #............................
     banner Partition SD Card ...
-    wipefs -a $dev
+    wipefs -a $DEV
     mb_B=300
     mb_R=6400
     size_B=$(( mb_B * 2048 ))
     size_R=$(( mb_R * 2048 ))
     start_R=$(( 2048 + size_B ))
     echo "\
-$part_B : start=     2048, size= $size_B, type=c
-$part_R : start= $start_R, size= $size_R, type=83
-" | sfdisk $dev # existing: fdisk -d /dev/sdX
-    mkfs.fat -F 32 $part_B
-    mkfs.ext4 -F $part_R
-    fatlabel $part_B BOOT
-    e2label $part_R ROOT
+$PART_B : start=     2048, size= $size_B, type=c
+$PART_R : start= $start_R, size= $size_R, type=83
+" | sfdisk $DEV # existing: fdisk -d /dev/sdX
+    mkfs.fat -F 32 $PART_B
+    mkfs.ext4 -F $PART_R
+    fatlabel $PART_B BOOT
+    e2label $PART_R ROOT
 fi
 BRfsck_mount
 if [[ $select_part_BR ]]; then
-	read -r mp fs < <( findmnt -no target,fstype $part_B )
+	read -r mp fs < <( findmnt -no target,fstype $PART_B )
 	[[ $( ls $mp ) ]] && err_B=', Empty'
 	[[ $fs != vfat ]] && err_B+=', VFAT'
-	read -r mp fs < <( findmnt -no target,fstype $part_R )
+	read -r mp fs < <( findmnt -no target,fstype $PART_R )
 	[[ $( ls $mp | grep -v lost+found ) ]] && err_R=', Empty'
 	[[ $fs != ext4 ]] &&                      err_R+=', Ext4'
 	[[ $err_B ]] && error="
-\Z1BOOT\Zn $part_B not: ${err_B:2}" # :2 leading ,
+\Z1BOOT\Zn $PART_B not: ${err_B:2}" # :2 leading ,
 	[[ $err_R ]] && error+="
-\Z1ROOT\Zn $part_R not: ${err_R:2}"
+\Z1ROOT\Zn $PART_R not: ${err_R:2}"
 	[[ $error ]] && dialog.error_exit "${error:1}" # :1 leading \n
 #------------------------------------------------------------------------------
 fi
@@ -321,7 +321,7 @@ dirty=$( memDirty )
 " 9 $W
 sync
 # fstab
-partid=( $( blkid -o value -s PARTUUID $part_B $part_R | sed 's/^/PARTUUID=/' ) )
+partid=( $( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' ) )
 partid_B=${partid[0]}
 partid_R=${partid[1]}
 echo "\

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# set global $dev part_B part_R for create-alarm.sh, image-create.sh
+# set global $DEV PART_B PART_R for create-alarm.sh, image-create.sh
 
 dev_partBR() {
-	dev=$1
-	[[ $dev == /dev/mmc* ]] && dev+=p
-	part_B=${dev}1
-	part_R=${dev}2
+	DEV=$1
+	[[ $DEV == /dev/mmc* ]] && DEV+=p
+	PART_B=${DEV}1
+	PART_R=${DEV}2
 }
 dialog.retrySD() {
 	dialog.retry "$@" && dialog.sdCard
@@ -27,7 +27,7 @@ If already inserted, remove and reinsert.\Zn
 		dev_gib=$( grep -m1 -E '^(sd|mmcblk).* GiB' <<< $l )
 		[[ $dev_gib ]] && break
 	done < <( timeout $s dmesg -tW )
-	[[ ! $dev_gib ]] && dialog.retrySD "No new device inserted in ${s}s." && return
+	[[ ! $dev_gib ]] && dialog.retrySD "No devices inserted in ${s}s." && return
 #..............................................................................
 	if [[ $dev_gib == sd* ]]; then
 		sd_mmc=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
@@ -83,9 +83,9 @@ $dev_part
 	else
 		if [[ $select_part_BR ]]; then
 			part=( $dev_part )
-			part_B=${part[0]}
-			part_R=${part[1]}
-            [[ $sd_mmc == /dev/sd* ]] && dev=${part_B:0:-1} || dev=${dev:0:-2}
+			PART_B=${part[0]}
+			PART_R=${part[1]}
+            [[ $sd_mmc == /dev/sd* ]] && DEV=${PART_B:0:-1} || DEV=${PART_B:0:-2}
 		else
 	 		dev_partBR $dev_part
 		fi

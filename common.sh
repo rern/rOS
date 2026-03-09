@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# on rpi - create-ros.sh, image-reset.h: . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
+# branch=main; . <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
 
 alignCenter() {
 	local l line txt w
@@ -27,15 +27,15 @@ bar() {
 }
 BRfsck_mount() { # create-alarm.sh, image-create.sh
 	banner Check Partitions ...
-	bar BOOT: $part_B ...
-	fsck.fat -taw $part_B
-	bar ROOT: $part_R ...
-	e2fsck -p $part_R
+	bar BOOT: $PART_B ...
+	fsck.fat -taw $PART_B
+	bar ROOT: $PART_R ...
+	e2fsck -p $PART_R
 	BOOT=$PWD/BOOT
 	ROOT=$PWD/ROOT
 	mkdir -p BOOT ROOT
-	mount -o rw,noatime,nodiratime $part_B $BOOT
-	mount -o rw,noatime,nodiratime $part_R $ROOT
+	mount -o rw,noatime,nodiratime $PART_B $BOOT
+	mount -o rw,noatime,nodiratime $PART_R $ROOT
 }
 BRunmount() {
 	! findmnt $BOOT &> /dev/null && return
