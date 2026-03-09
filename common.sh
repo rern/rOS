@@ -37,7 +37,6 @@ BR.unmount() {
 #..............................................................................
 	umount -l $BOOT $ROOT &> /dev/null
 	rmdir BOOT ROOT &> /dev/null
-	rm -rf ALARM
 }
 dialog.error_exit() {
 	dialog $opt_msg "
