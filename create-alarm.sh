@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ $1 ]] && branch=$1 # bash <( curl -sL https://github.com/rern/rOS/raw/UPDATE/common.sh ) UPDATE
+[[ $1 ]] && branch=$1 # bash <( curl -sL https://github.com/rern/rOS/raw/UPDATE/create-alarm.sh ) UPDATE
 [[ ! $branch ]] && branch=main
 
 for cmd in bsdtar dialog nmap pigz pv; do # required packages

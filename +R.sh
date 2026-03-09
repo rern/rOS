@@ -3,7 +3,7 @@
 # /usr/local/bin/+R.sh
 # #!/bin/bash
 # [[ $1 ]] && branch=$1 || branch=main
-# . <( curl -sL "https://github.com/rern/rOS/raw/$branch/+R.sh" )
+# . <( curl -sL https://github.com/rern/rOS/raw/$branch/+R.sh )
 
 trap 'clear -x' EXIT
 
