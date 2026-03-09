@@ -25,19 +25,14 @@ banner() { # should be used on start stdout to screen
 bar() {
 	echo -e "\n\e[44m  \e[0m $@\n"
 }
-BRfsck_mount() { # create-alarm.sh, image-create.sh
-	banner Check Partitions ...
-	bar BOOT: $PART_B ...
-	fsck.fat -taw $PART_B
-	bar ROOT: $PART_R ...
-	e2fsck -p $PART_R
+BR.mount() { # create-alarm.sh, image-create.sh
 	BOOT=$PWD/BOOT
 	ROOT=$PWD/ROOT
 	mkdir -p BOOT ROOT
 	mount -o rw,noatime,nodiratime $PART_B $BOOT
 	mount -o rw,noatime,nodiratime $PART_R $ROOT
 }
-BRunmount() {
+BR.unmount() {
 	! findmnt $BOOT &> /dev/null && return
 #..............................................................................
 	umount -l $BOOT $ROOT &> /dev/null

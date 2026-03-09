@@ -25,7 +25,7 @@ Wipe and create new
 	[[ $i == 1 ]] && select_part_BR=1
 fi
 
-trap 'BRunmount; clear -x' EXIT
+trap 'BR.unmount; clear -x' EXIT
 
 . <( curl -sL $https_ros_branch/dialog_sdcard.sh ) # set $DEV $PART_B $PART_R
 if [[ ! $select_part_BR ]]; then # from +R.sh
@@ -46,7 +46,7 @@ $PART_R : start= $start_R, size= $size_R, type=83
     fatlabel $PART_B BOOT
     e2label $PART_R ROOT
 fi
-BRfsck_mount
+BR.mount
 if [[ $select_part_BR ]]; then
 	read -r mp fs < <( findmnt -no target,fstype $PART_B )
 	[[ $( ls $mp ) ]] && err_B=', Empty'
@@ -292,7 +292,7 @@ rm $file.md5
 size=$( stat -c %s $file )
 {
 	pv -n -s $size $file \
-		| pigz -dc
+		| pigz -dc \
 		| bsdtar -C $ROOT -xpf - \
 			--no-same-owner \
 			--exclude=boot/initramfs-linux-fallback.img
@@ -390,7 +390,7 @@ for f in {common,create-ros}.sh; do
 	curl -sL $https_ros_branch/$f -o $ROOT/root/$f
 done
 chmod 755 $ROOT/root/*.sh
-sync && BRunmount
+sync && BR.unmount
 #............................
 	dialog.splash "\
 Arch Linux ARM

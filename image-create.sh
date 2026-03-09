@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'BRunmount; clear -x' EXIT
+trap 'BR.unmount; clear -x' EXIT
 
 shrink() {
 	bar "Shrink Pass #$1 ..."
@@ -50,7 +50,12 @@ fi
 dialog.splash Image File
 image_create=1
 . <( curl -sL $https_ros_raw/$branch/dialog_sdcard.sh ) # set $DEV $PART_B $PART_R
-BRfsck_mount
+banner Check Partitions ...
+bar BOOT: $PART_B ...
+fsck.fat -taw $PART_B
+bar ROOT: $PART_R ...
+e2fsck -p $PART_R
+BR.mount
 file_r1=$ROOT/srv/http/data/addons/r1
 if [[ ! -e $file_r1 ]]; then
 #............................
@@ -72,7 +77,7 @@ file_img=$( dialog $opt_input "
 Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
 touch $BOOT/expand # auto expand root partition
-BRunmount
+BR.unmount
 partsize=$( fdisk -l $PART_R | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $PART_R | awk '{print $3}' )
 #............................
