@@ -74,9 +74,9 @@ dialog.download() {
 			print "\\n \\Z1'$file'\\Zn"
 			print "\\n Time left: "substr($0,74,5)"\nXXX"
 		}' 
-	} | dialog $opt_guage "
+	} | dialog $opt_gauge "
  Connecting ...
-" 9 $W
+" 9 $W 0
 	md5verify
 }
 list_features="\
@@ -289,37 +289,44 @@ else
 fi
 rm $file.md5
 # expand
+mkdir -p ALARM
 size=$( stat -c %s $file )
+#............................
 {
 	pv -n -s $size $file \
 		| pigz -dc \
-		| bsdtar -C $ROOT -xpf - \
-			--no-same-owner \
-			--exclude=boot/initramfs-linux-fallback.img
-} 2>&1 \
-#............................
-	| dialog $opt_guage "
-  Decompress to SD card ...
+		| bsdtar xpf - -C ALARM --exclude=*fallback.img
+} 2>&1 | dialog $opt_gauge "
+  Decompress ...
   \Z1$file\Zn
-" 9 $W
-sync &
-Sstart=$( date +%s )
-dirty=$( memDirty )
-{
-	while true; do
-		left=$( memDirty )
-		(( left <= 1000 )) && break
-
-		echo $(( ( dirty - left ) * 100 / dirty ))
-		sleep 2
-	done
-} \
-#............................
-	| dialog $opt_guage "
-  Write remaining to SD card
-  \Z1$file\Zn
-" 9 $W
-sync
+" 9 $W 0
+for d in boot root; do
+	dir_src=ALARM/
+	[[ $d == boot ]] && dir_src+=$d/
+	dir_target=${d^^}
+	{
+		rsync $dir_src $dir_target/ -ah --fsync --info=progress2 2>&1 \
+			| tr '\r' '\n' \
+			| stdbuf -o0 awk '/%/ {
+				percent=$2
+				gsub( /%/, "", percent )
+				if ( percent > max ) {
+					max = percent
+					print "XXX"
+					print max
+					print "\n  Write partition \\Z1'$dir_target'\\Zn ..."
+					print "  Data: "$1"B"
+					print "  "$3
+					print "XXX"
+					fflush()
+				}
+			}'
+	} | dialog $opt_gauge "
+  Write partition \Z1$dir_target\Zn
+  Data: ...
+" 9 $W 0
+	[[ $? == 0 ]] && rm -rf $dir_src
+done
 # fstab
 partid=( $( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' ) )
 partid_B=${partid[0]}
@@ -410,16 +417,16 @@ dialog $opt_msg "
 	• Create $logo rAudio
 " 14 40
 #............................
-( for (( i = 1; i < sec_boot; i++ )); do
+{ for (( i = 1; i < sec_boot; i++ )); do
 	echo $(( i * 100 / sec_boot ))
 	sleep 1
-done ) \
-	| dialog $opt_guage "
+done } | dialog $opt_gauge "
   Boot ...
   \Z1Arch Linux ARM\Zn
-" 9 $W
+" 9 $W 0
 
 if [[ $ip_assigned ]]; then
+#............................
 	{
 		for i in {1..10}; do
 			echo "
@@ -431,11 +438,9 @@ $(( i * 10 ))
 XXX"
 			pingIP $ip_assigned && break || sleep 2
 		done
-	} \
-#............................
-		| dialog $opt_guage '' 9 $W
-#............................
+	} | dialog $opt_gauge '' 9 $W 0
 	if pingIP $ip_assigned; then
+#............................
 		dialog $opt_info "
   SSH Arch Linux ARM ...
   @ \Z1$ip_assigned\Zn

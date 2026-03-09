@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# branch=main; . <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
+# branch=UPDATE; . <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
 
 alignCenter() {
 	local l line txt w
@@ -36,7 +36,8 @@ BR.unmount() {
 	! findmnt $BOOT &> /dev/null && return
 #..............................................................................
 	umount -l $BOOT $ROOT &> /dev/null
-	rmdir $BOOT $ROOT &> /dev/null
+	rmdir BOOT ROOT &> /dev/null
+	rm -rf ALARM
 }
 dialog.error_exit() {
 	dialog $opt_msg "
@@ -111,7 +112,7 @@ W=50
 #    8 0 0 - hf h w - checklist / menu (hf=8 - frame + button)
                  # keep spaces/tabs
 option='--colors --no-collapse --no-shadow --stdout'
-opt_guage="$option --guage"                                  # no buttons
+opt_gauge="$option --gauge"                                  # no buttons
  opt_info="$option --sleep 2 --infobox"                      # no buttons
   opt_msg="$option --msgbox"                                 # <OK> only
 opt_yesno="$option --yesno"                                  # <Yes> <No>
