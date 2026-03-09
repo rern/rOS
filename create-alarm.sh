@@ -113,7 +113,7 @@ dialog.feature() {
 \Z1Confirm features to install:\Zn
 
 $checked
-" 0 0 && echo $features > $BOOT/features || dialog.feature
+" 0 0 && echo $features > BOOT/features || dialog.feature
 }
 dialog.scanIP() {
 	dialog $opt_msg "
@@ -134,7 +134,7 @@ getData() {
 		return
 #..............................................................................
 	fi
-	echo $release > $BOOT/release
+	echo $release > BOOT/release
 #............................
 	i=$( dialog.menu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
@@ -161,9 +161,9 @@ getData() {
 	if [[ $? == 0 ]]; then
 		(( sec_boot-=10 ))
 #............................
-		ip_assigned=$( dialog.ip 'Pre-assigned IP' )
+		IP=$( dialog.ip 'Pre-assigned IP' )
 		confirm_ip="
-Assigned IP  : $ip_assigned"
+Assigned IP  : $IP"
 	fi
 #............................
 	dialog $opt_yesno "
@@ -204,8 +204,6 @@ Security     : ${security^^}"
 Release      : $release
 Raspberry Pi : $bit
 
-BOOT path    : $BOOT
-ROOT path    : $ROOT
 $confirm_wifi
 $confirm_ip
 " 0 0
@@ -315,7 +313,7 @@ done ) | dialog $opt_guage "
   Write remaining ...
   \Z1$file\Zn
 " 9 $W
-sync
+mv $ROOT/boot/* BOOT
 # fstab
 partid=( $( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' ) )
 partid_B=${partid[0]}
@@ -336,9 +334,8 @@ else
 	config+='
 hdmi_force_hotplug=1'
 fi
-mv $ROOT/boot/* $BOOT
-echo $cmdline > $BOOT/cmdline.txt0
-echo "$config" > $BOOT/config.txt0
+echo $cmdline > BOOT/cmdline.txt0
+echo "$config" > BOOT/config.txt0
 # wifi
 if [[ $essid ]]; then
 	profile=$ROOT/etc/netctl/$essid
@@ -381,12 +378,13 @@ sed -i 's/#*\(PermitRootLogin \).*/\1yes/
 id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
 # scripts
-mv $BOOT/{features,release} $ROOT/root
+mv BOOT/{features,release} $ROOT/root
 for f in {common,create-ros}.sh; do
 	curl -sL $https_ros_branch/$f -o $ROOT/root/$f
 done
 chmod 755 $ROOT/root/*.sh
-sync && BR.unmount
+sync
+BR.unmount
 #............................
 	dialog.splash "\
 Arch Linux ARM
@@ -416,7 +414,7 @@ dialog $opt_msg "
   \Z1Arch Linux ARM\Zn
 " 9 $W 0
 
-if [[ $ip_assigned ]]; then
+if [[ $IP ]]; then
 #............................
 	(
 		for i in {1..10}; do
@@ -425,20 +423,20 @@ XXX
 $(( i * 10 ))
 
   Ping Arch Linux ARM ...
-  \Z1$ip_assigned\Zn
+  \Z1$IP\Zn
 XXX"
-			pingIP $ip_assigned && break || sleep 2
+			pingIP $IP && break || sleep 2
 		done
 	) | dialog $opt_gauge '' 9 $W 0
-	if pingIP $ip_assigned; then
+	if pingIP $IP; then
 #............................
 		dialog $opt_info "
   SSH Arch Linux ARM ...
-  @ \Z1$ip_assigned\Zn
+  @ \Z1$IP\Zn
 " 9 $W
-		create_ros $ip_assigned
+		create_ros $IP
 	else
-		dialog.scanIP "\Z1Assigned IP\Zn not found: $ip_assigned"
+		dialog.scanIP "\Z1Assigned IP\Zn not found: $IP"
 	fi
 else
 	scanIP

@@ -26,16 +26,14 @@ bar() {
 	echo -e "\n\e[44m  \e[0m $@\n"
 }
 BR.mount() { # create-alarm.sh, image-create.sh
-	BOOT=$PWD/BOOT
-	ROOT=$PWD/ROOT
 	mkdir -p BOOT ROOT
-	mount -o rw,noatime,nodiratime $PART_B $BOOT
-	mount -o rw,noatime,nodiratime $PART_R $ROOT
+	mount -o rw,noatime,nodiratime $PART_B $PWD/BOOT
+	mount -o rw,noatime,nodiratime $PART_R $PWD/ROOT
 }
 BR.unmount() {
-	! findmnt $BOOT &> /dev/null && return
+	! findmnt $PWD/BOOT &> /dev/null && return
 #..............................................................................
-	umount -l $BOOT $ROOT &> /dev/null
+	umount -l $PWD/BOOT $PWD/ROOT &> /dev/null
 	rmdir BOOT ROOT &> /dev/null
 }
 dialog.error_exit() {

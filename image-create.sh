@@ -65,18 +65,18 @@ SD card is not rAudio: \Z1$DEVZn
 	dialog.sdCard
 fi
 release=$( < $file_r1 )
-if [[ -e $BOOT/kernel8.img ]]; then
+if [[ -e BOOT/kernel8.img ]]; then
 	model=64bit
-elif [[ -e $BOOT/kernel7.img ]]; then
+elif [[ -e BOOT/kernel7.img ]]; then
 	model=32bit
-else # $BOOT/kernel.img
+else # BOOT/kernel.img
 	model=Legacy
 fi
 #............................
 file_img=$( dialog $opt_input "
 Image filename:
 " 0 0 rAudio-$model-$release.img.xz )
-touch $BOOT/expand # auto expand root partition
+touch BOOT/expand # auto expand root partition
 BR.unmount
 partsize=$( fdisk -l $PART_R | awk '/^Disk/ {print $2" "$3}' )
 used=$( df -k 2> /dev/null | grep $PART_R | awk '{print $3}' )
