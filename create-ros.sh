@@ -211,7 +211,7 @@ touch /boot/expand
 dialog.splash "\
 r A u d i o
 
-Created successfully.
+Created successfully
 $( runDuration )
 
 \Z1  Reboot ...\Zn"

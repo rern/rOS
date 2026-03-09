@@ -392,16 +392,11 @@ done
 chmod 755 $ROOT/root/*.sh
 sync && BRunmount
 #............................
-	dialog $opt_msg "
-$( alignCenter "
-$logo
-
+	dialog.splash "\
 Arch Linux ARM
 
-Created successfully.
-$( runDuration )
-" )				
-" 12 $W
+Created successfully
+$( runDuration )"
 [[ ${partid_B:0:-1} != ${partid_R:0:-1} ]] && usb=' + USB drive'
 #............................
 dialog $opt_msg "
@@ -410,7 +405,7 @@ dialog $opt_msg "
 
 » Move SD card$usb to RPi
 » Power on
-» Press $btn_enter:
+» Press \Zr\Zb Enter \Zn:
 	• Start boot timer
 	• Create $logo rAudio
 " 14 40

@@ -109,7 +109,6 @@ https_ros_raw="$https_rern/rOS/raw"
 https_ros_branch="$https_ros_raw/$branch"
 opt_ssh='-qtt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
-btn_enter='\Zr\Zb Enter \Zn'
 logo='\Zr\Z4+R\Zn'
 W=50
 # auto fit: 0 0
