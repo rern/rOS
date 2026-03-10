@@ -1,0 +1,23 @@
+.monaco-pane-view .pane > .pane-header h3.title,
+.settings-editor > .settings-header > .settings-header-controls .settings-tabs-widget > .monaco-action-bar .action-item .action-label,
+.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab .tab-label a,
+.monaco-workbench .part.editor .tab,
+.monaco-menu-container,
+.monaco-menu-container .action-item,
+.monaco-findInput .monaco-inputbox,
+.monaco-button.monaco-text-button,
+.monaco-editor .view-line,
+.monaco-workbench .part > .content,
+.monaco-workbench .part.statusbar {
+    font-family: 'Inconsolata Semi Condensed SemiBold';
+	font-size: 18px;
+}
+.monaco-pane-view .pane > .pane-header h3.title {
+    color: grey;
+}
+.monaco-workbench .codicon[class*="codicon-"] {
+	font-size: 20px;
+}
+.md-ext-file-icon.ext-file-icon.file-icon::before {
+    width: 20px;
+}
