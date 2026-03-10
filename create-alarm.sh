@@ -50,10 +50,10 @@ $PART_R : start= $start_R, size= $size_R, type=83
 fi
 BR.mount
 if [[ $select_part_BR ]]; then
-	read -r mp fs < <( findmnt -no target,fstype $PART_B )
+	read mp fs < <( findmnt -no target,fstype $PART_B )
 	[[ $( ls $mp ) ]] && err_B=', Empty'
 	[[ $fs != vfat ]] && err_B+=', VFAT'
-	read -r mp fs < <( findmnt -no target,fstype $PART_R )
+	read mp fs < <( findmnt -no target,fstype $PART_R )
 	[[ $( ls $mp | grep -v lost+found ) ]] && err_R=', Empty'
 	[[ $fs != ext4 ]] &&                      err_R+=', Ext4'
 	[[ $err_B ]] && error="

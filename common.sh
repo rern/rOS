@@ -4,7 +4,7 @@
 
 alignCenter() {
 	local l line txt w
-	while read -r line; do
+	while read -r line; do # -r keep \
 		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
 		
 		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
