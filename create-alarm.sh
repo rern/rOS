@@ -9,7 +9,11 @@ for cmd in bsdtar dialog nmap pigz pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
 if [[ $packages ]]; then
-	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
+	if [[ -e /usr/bin/pacman ]]; then
+		pacman -Sy --noconfirm $packages
+	else
+		apt install -y $packages
+	fi
 fi
 
 if [[ ${BASH_SOURCE[0]} == ${0} ]]; then
