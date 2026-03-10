@@ -20,9 +20,9 @@ fi
 dialog.splash Arch Linux ARM » rAudio
 if [[ $bash_run ]]; then
 #............................
-	i=$( dialog.menu 'Partitions on target \Z1SD card\Zn' "
-Select already created
-Wipe and create new
+	i=$( dialog.menu "Target $sd_usb" "
+Select already created partitions
+Wipe existings and create new
 " )
 	[[ $i == 1 ]] && select_part_BR=1
 fi
@@ -392,18 +392,18 @@ Arch Linux ARM
 
 Created successfully
 $( runDuration )"
-[[ ${partid_B:0:-1} != ${partid_R:0:-1} ]] && usb=' + USB drive'
+[[ ${partid_B:0:-1} != ${partid_R:0:-1} ]] && usb=' and USB drive'
 #............................
 dialog $opt_msg "
-\Z1Arch Linux ARM\Zn : Ready
-\Z1SD card\Zn        : Unmounted
+\Z1Arch Linux ARM\Zn            : Ready
+$sd_usb : Unmounted
 
 » Move SD card$usb to RPi
 » Power on
 » Press \Zr\Zb Enter \Zn:
 	• Start boot timer
 	• Create $logo rAudio
-" 14 40
+" 14 $W
 #............................
 (
 	for (( i = 1; i < sec_boot; i++ )); do

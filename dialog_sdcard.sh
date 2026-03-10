@@ -17,12 +17,11 @@ dialog.sdCard() {
 	dialog $option --infobox "
 $logo
 
-\Z1Insert SD card\Zn
-or/and USB drive\Zn
+Insert $sd_usb
 
 
 \Z4If already inserted, remove and reinsert.\Zn
-" 10 $W
+" 9 $W
 	s=15
 	while read l; do
 		dev_gib=$( grep -m1 -E '^(sd|mmcblk).* GiB' <<< $l )
