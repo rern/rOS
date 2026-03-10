@@ -56,7 +56,7 @@ fsck.fat -taw $PART_B
 bar ROOT: $PART_R ...
 e2fsck -p $PART_R
 BR.mount
-file_r1=$ROOT/srv/http/data/addons/r1
+file_r1=ROOT/srv/http/data/addons/r1
 if [[ ! -e $file_r1 ]]; then
 #............................
 	dialog $opt_msg "

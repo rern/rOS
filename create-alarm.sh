@@ -21,7 +21,7 @@ dialog.splash Arch Linux ARM » rAudio
 if [[ $bash_run ]]; then
 #............................
 	i=$( dialog.menu "Target $sd_usb" "
-Select already created partitions
+Select already created
 Wipe existings and create new
 " )
 	[[ $i == 1 ]] && select_part_BR=1
@@ -302,10 +302,10 @@ size=$( stat -c %s $file )
   Decompress ...
   \Z1$file\Zn
 " 9 $W 0
-dirty=$( awk '/Dirty:/{print $2}' /proc/meminfo )
+dirty=$( memDirty )
 #........................
 ( while true; do
-	left=$( awk '/Dirty:/{print $2}' /proc/meminfo )
+	left=$( memDirty )
 	(( $left < 1000 )) && break
 
 	echo $(( ( dirty - left ) * 100 / dirty ))
@@ -314,14 +314,14 @@ done ) | dialog $opt_guage "
   Write remaining ...
   \Z1$file\Zn
 " 9 $W
-mv $ROOT/boot/* BOOT
+mv ROOT/boot/* BOOT
 # fstab
 partid=( $( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' ) )
 partid_B=${partid[0]}
 partid_R=${partid[1]}
 echo "\
 $partid_B  /boot  vfat  defaults,noatime  0  0
-$partid_R  /      ext4  defaults,noatime  0  0" > $ROOT/etc/fstab
+$partid_R  /      ext4  defaults,noatime  0  0" > ROOT/etc/fstab
 # cmdline.txt, config.txt
 cmdline="root=$partid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
 config="\
@@ -339,7 +339,7 @@ echo $cmdline > BOOT/cmdline.txt0
 echo "$config" > BOOT/config.txt0
 # wifi
 if [[ $essid ]]; then
-	profile=$ROOT/etc/netctl/$essid
+	profile=ROOT/etc/netctl/$essid
 	echo 'Interface=wlan0
 Connection=wireless
 IP=dhcp
@@ -347,43 +347,43 @@ ESSID="'$essid'"
 Security='$security'
 Key="'$key'"' > $profile
 	[[ ! $security ]] && sed -E -i '/^Security|^Key/ d' "$profile"
-	dir="$ROOT/etc/systemd/system/netctl@$essid.service.d"
+	dir="ROOT/etc/systemd/system/netctl@$essid.service.d"
 	mkdir -p $dir
 	echo "\
 [Unit]
 BindsTo=sys-subsystem-net-devices-wlan0.device
 After=sys-subsystem-net-devices-wlan0.device" > "$dir/profile.conf"
-	ln -sr $ROOT/usr/lib/systemd/system/netctl@.service "$ROOT/etc/systemd/system/multi-user.target.wants/netctl@$essid.service"
+	ln -sr ROOT/usr/lib/systemd/system/netctl@.service "ROOT/etc/systemd/system/multi-user.target.wants/netctl@$essid.service"
 fi
 # dhcpd - disable arp
-echo noarp >> $ROOT/etc/dhcpcd.conf
+echo noarp >> ROOT/etc/dhcpcd.conf
 # mirror server
-[[ $mirror != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' $ROOT/etc/pacman.d/mirrorlist
+[[ $mirror != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' ROOT/etc/pacman.d/mirrorlist
 # fix dns errors
-echo DNSSEC=no >> $ROOT/etc/systemd/resolved.conf
+echo DNSSEC=no >> ROOT/etc/systemd/resolved.conf
 # fix: time not sync on wlan
-files=$( ls $ROOT/etc/systemd/network/* )
+files=$( ls ROOT/etc/systemd/network/* )
 for file in $files; do
 	! grep -q RequiredForOnline=no $file && echo '
 [Link]
 RequiredForOnline=no' >> $file
 done
 # disable wait-online
-rm -r $ROOT/etc/systemd/system/network-online.target.wants
+rm -r ROOT/etc/systemd/system/network-online.target.wants
 # fix: slow login
-sed -i '/^-.*pam_systemd/ s/^/#/' $ROOT/etc/pam.d/system-login
+sed -i '/^-.*pam_systemd/ s/^/#/' ROOT/etc/pam.d/system-login
 # ssh create-ros.sh without password
 sed -i 's/#*\(PermitRootLogin \).*/\1yes/
 		s/#*\(PermitEmptyPasswords \).*/\1yes/
-' $ROOT/etc/ssh/sshd_config
-id=$( awk -F':' '/^root/ {print $3}' $ROOT/etc/shadow )
-sed -i "s/^root.*/root::$id::::::/" $ROOT/etc/shadow
+' ROOT/etc/ssh/sshd_config
+id=$( awk -F':' '/^root/ {print $3}' ROOT/etc/shadow )
+sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
 # scripts
-mv BOOT/{features,release} $ROOT/root
+mv BOOT/{features,release} ROOT/root
 for f in {common,create-ros}.sh; do
-	curl -sL $https_ros_branch/$f -o $ROOT/root/$f
+	curl -sL $https_ros_branch/$f -o ROOT/root/$f
 done
-chmod 755 $ROOT/root/*.sh
+chmod 755 ROOT/root/*.sh
 sync
 BR.unmount
 #............................
