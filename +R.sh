@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# /usr/local/bin/+R.sh
-# #!/bin/bash
-# [[ $1 ]] && branch=$1 || branch=main
-# . <( curl -sL https://github.com/rern/rOS/raw/$branch/+R.sh )
+comment-local_+R.sh() {
+	echo '#!/bin/bash
+[[ $1 ]] && branch=UPDATE || branch=main
+. <( curl -sL https://github.com/rern/rOS/raw/$branch/+R.sh )' > +R.sh
+	chmod +x +R.sh
+	echo 'export PATH="$PATH:/root"' >> .bashrc
+}
 
 trap 'clear -x' EXIT
 

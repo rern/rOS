@@ -1,6 +1,8 @@
 #!/bin/bash
 
-[[ $1 ]] && branch=$1 # bash <( curl -sL https://github.com/rern/rOS/raw/UPDATE/create-alarm.sh ) UPDATE
+# bash <( curl -sL https://github.com/rern/rOS/raw/UPDATE/create-alarm.sh ) UPDATE
+
+[[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
 for cmd in bsdtar dialog nmap pigz pv; do # required packages
@@ -10,13 +12,13 @@ if [[ $packages ]]; then
 	[[ -e /usr/bin/pacman ]] && pacman -Sy --noconfirm $packages || apt install -y $packages
 fi
 
-if [[ ${BASH_SOURCE[0]} != ${0} ]]; then # . <( ... from +R.sh
-#............................
-	dialog.splash Arch Linux ARM
-else
+if [[ ${BASH_SOURCE[0]} == ${0} ]]; then
+	bash_run=1
 	. <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
+fi
 #............................
-	dialog.splash Arch Linux ARM
+dialog.splash Arch Linux ARM » rAudio
+if [[ $bash_run ]]; then
 #............................
 	i=$( dialog.menu 'Partitions on target \Z1SD card\Zn' "
 Select already created
