@@ -27,13 +27,13 @@ bar() {
 }
 BR.mount() { # create-alarm.sh, image-create.sh
 	mkdir -p BOOT ROOT
-	mount -o rw,noatime,nodiratime $PART_B $PWD/BOOT
-	mount -o rw,noatime,nodiratime $PART_R $PWD/ROOT
+	mount -o rw,noatime,nodiratime $PART_B BOOT
+	mount -o rw,noatime,nodiratime $PART_R ROOT
 }
 BR.unmount() {
-	if findmnt $PWD/BOOT &> /dev/null; then
+	if findmnt BOOT &> /dev/null; then
 		rm -f BOOT/{features,release}
-		umount -l $PWD/BOOT $PWD/ROOT &> /dev/null
+		umount -l BOOT ROOT &> /dev/null
 		rmdir BOOT ROOT &> /dev/null
 	fi
 }

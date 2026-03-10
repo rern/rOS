@@ -3,7 +3,7 @@
 # default images path: /root/rAudio-*.img.xz
 imager_json=rpi-imager.json
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
-[[ ! $files_list ]] && dialog.error_exit No image files in $PWD
+[[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$PWD\Zn"
 #------------------------------------------------------------------------------
 dialog.splash Upload Image Files
 dir_raudio=/mnt/BIG/RPi/Git/rAudio
