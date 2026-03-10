@@ -5,7 +5,7 @@
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
-for cmd in bsdtar dialog nmap pigz pv; do # required packages
+for cmd in bsdtar dialog jq nmap pigz pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
 if [[ $packages ]]; then

@@ -31,10 +31,11 @@ BR.mount() { # create-alarm.sh, image-create.sh
 	mount -o rw,noatime,nodiratime $PART_R $PWD/ROOT
 }
 BR.unmount() {
-	! findmnt $PWD/BOOT &> /dev/null && return
-#..............................................................................
-	umount -l $PWD/BOOT $PWD/ROOT &> /dev/null
-	rmdir BOOT ROOT &> /dev/null
+	if findmnt $PWD/BOOT &> /dev/null; then
+		rm -f BOOT/{features,release}
+		umount -l $PWD/BOOT $PWD/ROOT &> /dev/null
+		rmdir BOOT ROOT &> /dev/null
+	fi
 }
 dialog.error_exit() {
 	dialog $opt_msg "
