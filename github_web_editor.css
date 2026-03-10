@@ -1,3 +1,10 @@
+.monaco-workbench .codicon[class*="codicon-"] {
+	font-size: 20px;
+}
+.md-ext-file-icon.ext-file-icon.file-icon::before {
+    width: 20px;
+}
+.monaco-workbench .part > .title > .title-label h2,
 .monaco-pane-view .pane > .pane-header h3.title,
 .settings-editor > .settings-header > .settings-header-controls .settings-tabs-widget > .monaco-action-bar .action-item .action-label,
 .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab .tab-label a,
@@ -15,9 +22,6 @@
 .monaco-pane-view .pane > .pane-header h3.title {
     color: grey;
 }
-.monaco-workbench .codicon[class*="codicon-"] {
-	font-size: 20px;
-}
-.md-ext-file-icon.ext-file-icon.file-icon::before {
-    width: 20px;
+.monaco-workbench .part > .title > .title-label h2 {
+    color:#79c0ff !important;
 }
