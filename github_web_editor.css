@@ -21,6 +21,10 @@ Required fonts:
 .monaco-action-bar .action-item .codicon {
 	width: 20px;
 }
+.codicon-search-details::before {
+    margin-right: 8px;
+	line-height: 26px;
+}
 .titlebar {
 	border-bottom: 1px solid var(--vscode-tab-inactiveForeground) !important;
 }
