@@ -5,58 +5,70 @@ Required fonts:
     Linux      - apt install fonts-inconsolata
 */
 
-.monaco-workbench .part.titlebar > .titlebar-container > .titlebar-center > .window-title > .command-center > .monaco-toolbar > .monaco-action-bar > .actions-container > .action-item > .action-label,
-.monaco-workbench .part.titlebar > .titlebar-container > .titlebar-center > .window-title > .command-center .action-item.command-center-center .action-item.command-center-quick-pick .search-icon {
-	color: var(--vscode-tab-activeForeground) !important; /* center icons */
+.action-item.command-center-center {
+    height: 26px
 }
-.monaco-workbench .codicon[class*="codicon-"] { /* top-right icons */
-    font-size: 20px;
-    color: var(--vscode-tab-activeForeground);
+.action-label.codicon, /* top icons */
+.search-icon {
+	font-size: 26px !important;
 }
-.monaco-inputbox, /* input box */
-.monaco-workbench .part.titlebar > .titlebar-container > .titlebar-center > .window-title > .command-center .action-item.command-center-center {
+.search-icon {
+    width: 26px;
+}
+.titlebar-right > .action-toolbar-container { /* top-right icons */
+	padding-right: 12px !important;
+}
+.monaco-action-bar .action-item .codicon {
+	width: 20px;
+}
+.titlebar {
+	border-bottom: 1px solid var(--vscode-tab-inactiveForeground) !important;
+}
+.action-item.command-center-center, 
+.monaco-inputbox { /* input box */
     border-color: var(--vscode-tab-inactiveForeground) !important;
 }
-.monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .badge .badge-content { /* changed count */
-    font-size: 14px;
+.badge-content,
+.monaco-count-badge { /* changes count */
+    font-size: 14px !important;
 }
-.scm-viewlet .monaco-editor { /* commit inputbox */
+.monaco-editor { /* commit inputbox */
     outline: 1px solid var(--vscode-tab-inactiveForeground);
 }
-.monaco-pane-view .pane > .pane-header h3.title,
-.monaco-workbench .part > .title > .title-label h2 { /* panel header */
+.pane-header h3.title,
+.title-label h2 { /* panel header */
     font-family: 'Inconsolata';
     letter-spacing: 5px;
 }
-.monaco-pane-view .pane > .pane-header { /* panel header */
+.pane-header { /* panel header */
 	background: #3f3f3f !important;
 }
-.split-view-view:first-of-type .pane > .pane-header h3.title { /* repo name */
+.split-view-view:first-of-type .pane-header h3.title { /* repo name */
     letter-spacing: unset;
     text-transform: none;
 }
-.md-ext-file-icon.ext-file-icon.file-icon::before { /* *.md icon */
+.file-icon::before { /* *.md icon */
     width: 20px;
 }
-.monaco-icon-label::before {
+.monaco-icon-label::before { /* file type icon */
     width: 20px;
 }
-.monaco-workbench .part > .title > .title-label h2,
-.monaco-pane-view .pane > .pane-header h3.title,
-.settings-editor > .settings-header > .settings-header-controls .settings-tabs-widget > .monaco-action-bar .action-item .action-label,
-.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab .tab-label a,
-.monaco-workbench .part.editor .tab,
+.action-item,
+.action-label,
+.content,
+.monaco-inputbox,
 .monaco-menu-container,
-.monaco-menu-container .action-item,
-.monaco-findInput .monaco-inputbox,
-.monaco-button.monaco-text-button,
-.monaco-editor .view-line,
-.monaco-workbench .part > .content,
-.monaco-workbench .part.statusbar,
+.monaco-text-button,
+.pane-header h3,
+.part.editor .tab,
+.view-line,
+.statusbar,
+.tab-label a,
+.title-label h2,
 textarea.input {
 	font-size: 18px !important;
     font-family: 'Inconsolata Semi Condensed SemiBold';
 }
-.monaco-workbench .part.statusbar > .left-items, .monaco-workbench .part.statusbar > .right-items { /* status bar */
+.statusbar > .items-container { /* status bar */
     color: var(--vscode-tab-activeForeground);
 }
