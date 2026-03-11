@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# . <( curl -sL https://github.com/rern/rOS/raw/UPDATE/common.sh )
+# branch=UPDATE; . <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
 
 alignCenter() {
 	local l line txt w

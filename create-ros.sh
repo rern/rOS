@@ -178,9 +178,8 @@ if [[ -e /usr/bin/spotifyd ]]; then
 else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
-# ssh: reset root password
+# user
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
-chpasswd <<< root:ros
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
 	chage -E -1 $user # set expire to none
@@ -207,12 +206,4 @@ $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
-#............................
-dialog.splash "\
-r A u d i o
 
-Created successfully
-$( runDuration )
-
-\Z1  Reboot ...\Zn"
-reboot

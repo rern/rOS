@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# bash <( curl -sL https://github.com/rern/rOS/raw/UPDATE/create-alarm.sh ) UPDATE
+# branch=UPDATE bash <( curl -sL https://github.com/rern/rOS/raw/$branch/create-alarm.sh ) $branch
 
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
@@ -70,7 +70,23 @@ fi
 
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
-	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect IP: \Z1$1\Zn"
+	if [[ $? == 255 ]]; then
+		dialog.scanIP "Unable to SSH connect IP: \Z1$1\Zn"
+	elif [[ $? == 0 ]]; then
+		pwd=$( dialog.input 'Set password for \Z1root\Zn' ros )
+		ssh -qn ${opt_ssh/-qtt} root@$1 "\
+chpasswd <<< root:$pwd
+reboot
+" < /dev/null
+#............................
+		dialog.splash "\
+r A u d i o
+
+Created successfully
+$( runDuration )
+
+\Z1  Reboot ...\Zn"
+	fi
 }
 dialog.download() {
 #............................
