@@ -130,7 +130,7 @@ Scan all IPs?
 getData() {
 	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
 #............................
-	release=$( dialog.input '\Z1r\ZnAudio release:' "$latest )
+	release=$( dialog.input '\Z1r\ZnAudio release:' $latest )
 	if ! curl -sIfo /dev/null $https_rern/rAudio/releases/tag/$release; then
 		dialog.retry rAudio $release not found.
 		getData

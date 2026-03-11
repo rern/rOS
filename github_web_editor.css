@@ -1,6 +1,6 @@
-/* required:
-    pacman -S ttf-inconsolata
-    apt install fonts-inconsolata
+/*
+required:
+pacman -S ttf-inconsolata / apt install fonts-inconsolata
 */
 
 .monaco-workbench .part.titlebar > .titlebar-container > .titlebar-center > .window-title > .command-center > .monaco-toolbar > .monaco-action-bar > .actions-container > .action-item > .action-label,
