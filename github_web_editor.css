@@ -1,4 +1,5 @@
 /*
+[URLs on the domain] github.dev
 Required fonts:
     Windows    - Inconsolata, Inconsolata Semi Condensed SemiBold
     Arch Linux - pacman -S ttf-inconsolata
@@ -41,7 +42,7 @@ Required fonts:
 }
 .pane-header h3.title,
 .title-label h2 { /* panel header */
-    font-family: 'Inconsolata';
+    font-family: Inconsolata, InconsolataGO;
     letter-spacing: 5px;
 }
 .pane-header { /* panel header */
@@ -71,7 +72,7 @@ Required fonts:
 .title-label h2,
 textarea.input {
 	font-size: 18px !important;
-    font-family: 'Inconsolata Semi Condensed SemiBold';
+    font-family: 'Inconsolata Semi Condensed', 'Inconsolata Semi Condensed SemiBold';
 }
 .statusbar > .items-container { /* status bar */
     color: var(--vscode-tab-activeForeground);
