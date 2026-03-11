@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# on rpi - create-ros.sh, image-reset.h: . <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
+# . <( curl -sL https://github.com/rern/rOS/raw/UPDATE/common.sh )
 
 alignCenter() {
 	local l line txt w
-	while read -r line; do
+	while read -r line; do # -r keep \
 		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
 		
 		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
@@ -25,23 +25,17 @@ banner() { # should be used on start stdout to screen
 bar() {
 	echo -e "\n\e[44m  \e[0m $@\n"
 }
-BRfsck_mount() { # create-alarm.sh, image-create.sh
-	banner Check Partitions ...
-	bar BOOT: $part_B ...
-	fsck.fat -taw $part_B
-	bar ROOT: $part_R ...
-	e2fsck -p $part_R
-	BOOT=$PWD/BOOT
-	ROOT=$PWD/ROOT
+BR.mount() { # create-alarm.sh, image-create.sh
 	mkdir -p BOOT ROOT
-	mount -o rw,noatime,nodiratime $part_B $BOOT
-	mount -o rw,noatime,nodiratime $part_R $ROOT
+	mount -o rw,noatime,nodiratime $PART_B BOOT
+	mount -o rw,noatime,nodiratime $PART_R ROOT
 }
-BRunmount() {
-	! findmnt $BOOT &> /dev/null && return
-
-	umount -l $BOOT $ROOT &> /dev/null
-	rmdir $BOOT $ROOT &> /dev/null
+BR.unmount() {
+	if findmnt BOOT &> /dev/null; then
+		rm -f BOOT/{features,release}
+		umount -l BOOT ROOT &> /dev/null
+		rmdir BOOT ROOT &> /dev/null
+	fi
 }
 dialog.error_exit() {
 	dialog $opt_msg "
@@ -51,15 +45,12 @@ $( echo -e "$@" )
 " 0 0
 	clear -x
 	exit
-#----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 }
 dialog.ip() {
 	local ip
 	[[ ! $ip_base ]] && ip_base=$( ipBase )
-	ip=$( dialog $opt_input "
-\Z1$1:\Zn
-
-" 0 0 $ip_base )
+	ip=$( dialog.input "\Z1$1:\Zn" $ip_base )
 	[[ ${ip%.*}. == $ip_base ]] && ip_oct4=${ip/$ip_base}
 	if [[ $ip_oct4 && $ip_oct4 == [0-9]* ]] && (( $ip_oct4 > 0 && $ip_oct4 < 255 )); then
 		echo $ip
@@ -70,10 +61,25 @@ Invalid IP: \Z1$ip\Zn
 " 0 0 && dialog.ip "$1"
 	fi
 }
+dialog.input() {
+	dialog $opt_input "
+ $1
+
+" 8 40 "$2"
+}
+dialog.maxH() {
+	(( $1 > $( tput rows ) )) && 
+	dialog $opt_msg "
+Drag set \Z1Terminal height\Zn > $1
+
+Then continue
+" 0 0
+}
 dialog.menu() { # dialog --menu $1=title $2=multiline list
 	local -a list
-	readarray -t list < <( awk '{print NR; print}' <<< $2 )
-#........................
+	dialog.maxH $(( ${#list[@]} / 2 + 8 ))
+	readarray -t list < <( awk 'NF {print ++i; print}' <<< $2 )
+#............................
 	dialog $opt_menu "
 $1:
 " 8 0 0 "${list[@]}"
@@ -87,26 +93,13 @@ Retry?
 }
 dialog.splash() {
 	tput civis # fix: hide cursor at corner
-#........................
+#............................
 	dialog $opt_info "$( alignCenter "
 
 $logo
 
 $@" )" $(( 8 + $( wc -l <<< $@ ) )) $W
 	tput cnorm # restore cursor
-}
-dialog.success() {
-#........................
-	dialog $opt_msg "
-$( alignCenter "
-$logo
-
-$@
-
-Created successfully.
-$( runDuration )
-" )				
-" 12 $W
 }
 ipBase() {
 	local ip_router
@@ -117,15 +110,20 @@ runDuration() {
 	echo \\Z4$( date -d@$SECONDS -u +%M:%S )\\Zn
 }
 
-btn_enter='\Zr\Zb Enter \Zn'
+https_rern='https://github.com/rern'
+https_ros_raw="$https_rern/rOS/raw"
+https_ros_branch="$https_ros_raw/$branch"
+opt_ssh='-qtt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+
 logo='\Zr\Z4+R\Zn'
+sd_usb='\Z1SD card\Zn \Z4or/and USB device\Zn'
 W=50
 # auto fit: 0 0
 #    0 0   - h w
 #    8 0 0 - hf h w - checklist / menu (hf=8 - frame + button)
                  # keep spaces/tabs
 option='--colors --no-collapse --no-shadow --stdout'
-opt_guage="$option --guage"                                  # no buttons
+opt_gauge="$option --gauge"                                  # no buttons
  opt_info="$option --sleep 2 --infobox"                      # no buttons
   opt_msg="$option --msgbox"                                 # <OK> only
 opt_yesno="$option --yesno"                                  # <Yes> <No>

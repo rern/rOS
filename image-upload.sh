@@ -3,11 +3,11 @@
 # default images path: /root/rAudio-*.img.xz
 imager_json=rpi-imager.json
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
-[[ ! $files_list ]] && dialog.error_exit No image files in $PWD
-#---------------------------------------------------------------
+[[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$PWD\Zn"
+#------------------------------------------------------------------------------
 dialog.splash Upload Image Files
 dir_raudio=/mnt/BIG/RPi/Git/rAudio
-#........................
+#............................
 files_img=$( dialog $opt_check '
  \Z1Images to upload:\Zn
 ' 9 0 0 \
@@ -18,7 +18,7 @@ mdl=$( cut -d- -f1 <<< $mdl_rel )
 release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
 [[ $error ]] && dialog.error_exit "$error"
-#---------------------------------------------------------------
+#------------------------------------------------------------------------------
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
 json=$( sed -E -e "s|i[0-9]*/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
 " -e 's/(release_date": ").*/\1'$date_rel'",/
@@ -32,7 +32,7 @@ declare -A mdl_rpi=(
 	[64bit]='`5` `4` `3` `2 (64bit)` `Zero2`'
 	[32bit]='`3` `2`'
 	[Legacy]='`1` `Zero`' )
-#........................
+#............................
 banner S H A - 2 5 6
 for model in $models; do
 	file=rAudio-$model-$release.img.xz
@@ -51,14 +51,14 @@ for model in $models; do
 | [$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
 | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file) |"
 done
-#........................
+#............................
 banner U p l o a d
 bar *.img.xz
 files_img=$( sed "s|^|$PWD/|" <<< $files_img )
 cd $dir_raudio
 gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
 [[ $? != 0 ]] && dialog.error_exit Upload failed.
-#---------------------------------------------------------------
+#------------------------------------------------------------------------------
 branch=$( git branch --show-current )
 if [[ $branch != main ]]; then
 	git diff-index --quiet HEAD && git commit -m U

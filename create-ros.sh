@@ -2,22 +2,25 @@
 
 trap 'rm -f /var/lib/pacman/db.lck' EXIT
 
-. /root/common.sh
+. common.sh
+
+dir_system=/etc/systemd/system
+features=$( < features )
+release=$( < release )
 
 retryCreate() {
-	dialog.retry "$@" && /root/create-ros.sh || exit
+	dialog.retry "$@" && ./create-ros.sh || exit
 }
-#........................
+#............................
 dialog.splash r A u d i o
 SECONDS=0
-features=$( cat /boot/features )
-#........................
+#............................
 banner Initialize Arch Linux ARM ...
 pacman-key --init
 pacman-key --populate archlinuxarm
 systemctl restart systemd-timesyncd # force time sync
 systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy pool is not initialized)
-#........................
+#............................
 banner Upgrade system and default packages ...
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns 
@@ -59,7 +62,7 @@ if [[ -e /boot/cmdline.txt0 ]]; then
 fi
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
-#........................
+#............................
 banner Install packages ...
 pacman -S --noconfirm --needed $packages $features
 if [[ $? != 0 ]]; then
@@ -67,10 +70,9 @@ if [[ $? != 0 ]]; then
 	pacman -S --noconfirm --needed $packages $features
 	[[ $? != 0 ]] && retryCreate Install packages incomplete.
 fi
-#........................
-banner Get configurations and user interface ...
+#............................
+banner Setup rAudio ...
 mkdir -p /tmp/config
-release=$( cat /boot/release )
 curl -skL https://github.com/rern/rAudio/archive/$release.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
 curl -skL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
 rm -f /tmp/config/{.*,*} 2> /dev/null
@@ -83,16 +85,14 @@ dirbash=/srv/http/bash
 chmod -R 755 $dirbash
 mkdir /srv/http/assets/img/guide
 curl -skL https://github.com/rern/_assets/raw/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
-#........................
-banner Configure ...
 # alsa
 alsactl store
 # bluetooth
 if [[ -e /usr/bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
 else
-	rm -rf /etc/systemd/system/{bluealsa,bluetooth}.service.d
-	rm -f /etc/systemd/system/blue*
+	rm -rf $dir_system/{bluealsa,bluetooth}.service.d
+	rm -f $dir_system/blue*
 fi
 # camilladsp
 if [[ -e /usr/bin/camilladsp ]]; then
@@ -106,7 +106,7 @@ else
 	rm -f /srv/http/data/mpdconf/conf/camilladsp.conf
 fi
 # cava
-ln -s /etc/cava.conf /root/.config
+ln -s /etc/cava.conf .config
 # cron - for addons updates
 echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
 echo VISUAL=nano >> /etc/environment
@@ -115,11 +115,11 @@ if [[ -e /usr/bin/firefox ]]; then
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
-	timeout 1 firefox --headless &> /dev/null                    # init /root/.mozilla/firefox
+	timeout 1 firefox --headless &> /dev/null                    # init .mozilla/firefox
 	systemctl disable getty@tty1                                 # disable login prompt
 	systemctl enable bootsplash localbrowser
 else
-	rm -f /etc/systemd/system/{bootsplash,localbrowser}*
+	rm -f $dir_system/{bootsplash,localbrowser}*
 fi
 # initramfs disable
 dirhooks=/etc/pacman.d/hooks
@@ -155,8 +155,6 @@ chsh -s /bin/bash mpd
 ln -sf $dirbash/motd.sh /etc/profile.d/
 # pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
-# password
-echo root:ros | chpasswd
 # samba
 if [[ -e /usr/bin/smbd ]]; then
 	( echo ros; echo ros ) | smbpasswd -s -a root
@@ -165,8 +163,8 @@ else
 fi
 # shairport-sync
 if [[ ! -e /usr/bin/shairport-sync ]]; then
-	rm /etc/shairport-sync.conf /etc/systemd/system/shairport.service
-	rm -rf /etc/systemd/system/shairport-sync.service.d/
+	rm /etc/shairport-sync.conf $dir_system/shairport.service
+	rm -rf $dir_system/shairport-sync.service.d/
 fi
 # snapcast
 if [[ -e /usr/bin/snapserver ]]; then
@@ -178,16 +176,16 @@ fi
 if [[ -e /usr/bin/spotifyd ]]; then
 	ln -s /lib/systemd/{user,system}/spotifyd.service
 else
-	rm /etc/spotifyd.conf /etc/systemd/system/spotifyd.service
+	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
-# ssh
-sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # connect faster
-echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
-# user
+# ssh: reset root password
+sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
+chpasswd <<< root:ros
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
 	chage -E -1 $user # set expire to none
 done
+echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 # upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
@@ -197,7 +195,7 @@ if [[ -e /usr/bin/upmpdcli ]]; then
 	openssl rsa -in $file -RSAPublicKey_out
 	chown upmpdcli:root $file
 else
-	rm -rf /etc/upmpdcli.conf /etc/systemd/system/upmpdcli.service
+	rm -rf /etc/upmpdcli.conf $dir_system/upmpdcli.service
 fi
 # wireless-regdom
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
@@ -206,21 +204,15 @@ systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 # data - settings directories
 $dirbash/settings/system-datadefault.sh $release
-# flag expand partition
+rm -f /boot/{cmdline,config}.txt.pacnew
+rm * &> /dev/null
 touch /boot/expand
-[[ -e /boot/finish.sh ]] && . /boot/finish.sh
-rm -f /boot/{features,finish.sh,release} \
-	  /boot/{cmdline,config}.txt.pacnew \
-	  /root/{common,create-ros}.sh
-#........................
-dialog.success r A u d i o
-#........................
-dialog $opt_msg "
-$logo rAudio : Ready
+#............................
+dialog.splash "\
+r A u d i o
 
-» Press $btn_enter:
-	• Reboot to rAudio
+Created successfully
+$( runDuration )
 
-\Z4(Not auto reboot: Power off » on)\Zn
-" 11 40
+\Z1  Reboot ...\Zn"
 reboot

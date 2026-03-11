@@ -1,0 +1,78 @@
+/*
+Required fonts:
+    Windows    - Inconsolata, Inconsolata Semi Condensed SemiBold
+    Arch Linux - pacman -S ttf-inconsolata
+    Linux      - apt install fonts-inconsolata
+*/
+
+.action-item.command-center-center {
+    height: 26px
+}
+.action-label.codicon, /* top icons */
+.search-icon {
+	font-size: 26px !important;
+}
+.search-icon {
+    width: 26px;
+}
+.titlebar-right > .action-toolbar-container { /* top-right icons */
+	padding-right: 12px !important;
+}
+.monaco-action-bar .action-item .codicon {
+	width: 20px;
+}
+.codicon-search-details::before {
+    margin-right: 8px;
+	line-height: 26px;
+}
+.titlebar {
+	border-bottom: 1px solid var(--vscode-tab-inactiveForeground) !important;
+}
+.action-item.command-center-center, 
+.monaco-inputbox { /* input box */
+    border-color: var(--vscode-tab-inactiveForeground) !important;
+}
+.badge-content,
+.monaco-count-badge { /* changes count */
+    font-size: 14px !important;
+}
+.monaco-editor { /* commit inputbox */
+    outline: 1px solid var(--vscode-tab-inactiveForeground);
+}
+.pane-header h3.title,
+.title-label h2 { /* panel header */
+    font-family: 'Inconsolata';
+    letter-spacing: 5px;
+}
+.pane-header { /* panel header */
+	background: #3f3f3f !important;
+}
+.split-view-view:first-of-type .pane-header h3.title { /* repo name */
+    letter-spacing: unset;
+    text-transform: none;
+}
+.file-icon::before { /* *.md icon */
+    width: 20px;
+}
+.monaco-icon-label::before { /* file type icon */
+    width: 20px;
+}
+.action-item,
+.action-label,
+.content,
+.monaco-inputbox,
+.monaco-menu-container,
+.monaco-text-button,
+.pane-header h3,
+.part.editor .tab,
+.view-line,
+.statusbar,
+.tab-label a,
+.title-label h2,
+textarea.input {
+	font-size: 18px !important;
+    font-family: 'Inconsolata Semi Condensed SemiBold';
+}
+.statusbar > .items-container { /* status bar */
+    color: var(--vscode-tab-activeForeground);
+}

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
+. <( curl -sL $https_ros_raw/$branch/common.sh )
 
 selected() {
 	grep -q $1 <<< $reset && return 0
 }
 dirdata=/srv/http/data
-#........................
+#............................
 dialog.splash Reset for Image
 list_reset="\
 Reset MPD database
@@ -15,7 +15,7 @@ Clear package cache
 Clear system log
 Clear Wi-Fi connection"
 readarray -t list_check < <( awk '{print $0; print "on"}' <<< $list_reset )
-#........................
+#............................
 reset=$( dialog $opt_check '
  \Z1Tasks:\Zn
 ' 8 $W 0 "${list_check[@]}" )
