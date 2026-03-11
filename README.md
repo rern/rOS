@@ -13,20 +13,15 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 - Create **rAudio** from latest releases of [**Arch Linux ARM**](https://archlinuxarm.org/about/downloads)
 - Interactive interface
 - Options:
-	- Run `ROOT` partition on USB drive
-	- Run on USB only - no SD card ([boot from USB](https://www.raspberrypi.org/documentation/hardware/raspberrypi/bootmodes/msd.md))
 	- Pre-configure Wi-Fi connection
 	- Exclude features (can be as light as possible in terms of build time and disk space)
-- Take less than 15 minutes for the whole process with a decent download speed.
 
 **Procedure**
 - [Create Arch Linux ARM + rAudio](#create-arch-linux-arm--raudio)
-	- Use wired LAN connection if possible
 	- Use router pre-assigned IP address if possible
 	- Run script:
 		- Setup
 		- Create Arch Linux ARM
-			- Write `BOOT` and `ROOT`
 		- SSH to Raspberry Pi
 		- Create rAudio
 			- Upgrade kernel and default packages
@@ -39,16 +34,9 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 ![dialog2](https://github.com/rern/rOS/raw/main/select-features.png)  
 
 **Need**
-- Linux
-	- Or PC:
-		- Linux on USB e.g., [Manjaro](https://itsfoss.com/create-live-usb-manjaro-linux/) *(Arch Linux)*
-		- Linux on VirtualBox (with network set as `Bridge Adapter`)
+- Linux or Linux on USB e.g., [Manjaro](https://itsfoss.com/create-live-usb-manjaro-linux/) *(Arch Linux)*
 - Raspberry Pi
-- Network connection to Raspberry Pi 
-	- Wired LAN
-	- Optional: Wi-Fi (if necessary)
-- Media:
-	- Micro SD card or/and USB drive
+- Micro SD card or USB drive
 
 ---
 
@@ -56,22 +44,18 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 **Target device:**
 - Option 1: Micro SD card (Should be at least class 10 or U1)
 - Option 2: USB drive (Not for Zero and 1)
-- Option 3: Micro SD card + USB drive
-	- Create partitions:
-		| Device    | Size        | Type    | Format | Label |
-		|:----------|:------------|:--------|:-------|:------|
-		| SD card   | 300MiB      | primary | VFAT   | BOOT  |
-		| USB drive | 4000MiB     | primary | Ext4   | ROOT  |
+	- Suitable for much-faster-than-SD-card drives.
+	- Normal hard drive needs external power, e.g., powered USB hub, to have it spin up 5+ seconds before boot.
+	- [USB mass storage boot](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot) must be enabled on Raspberry.
+	- Boot
+		- Might takes 10+ seconds longer: Detect no sd card » read boot loader » boot
+		- Remedy: Copy `/boot/*` to an SD card » Use for boot loader instead.
 
-Note: USB drive
-- Suitable for much-faster-than-SD-card drives.
-- Normal hard drive needs external power, e.g., powered USB hub, to have it spin up 5+ seconds before boot.
-- Boot takes 10+ seconds longer (detect no sd card > read boot loader into memory > boot)
-- [USB mass storage boot](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot) must be enabled on Raspberry.
-
-**Run script on Linux terminal**
+**Run script**
+- Open terminal on Linux
 ```sh
-sudo bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
+su
+bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
 ```
 ---
 

@@ -73,9 +73,7 @@ else # BOOT/kernel.img
 	model=Legacy
 fi
 #............................
-file_img=$( dialog $opt_input "
-Image filename:
-" 0 0 rAudio-$model-$release.img.xz )
+file_img=$( dialog.input 'Image filename:' rAudio-$model-$release.img.xz )
 touch BOOT/expand # auto expand root partition
 BR.unmount
 partsize=$( fdisk -l $PART_R | awk '/^Disk/ {print $2" "$3}' )

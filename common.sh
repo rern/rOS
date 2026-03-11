@@ -50,10 +50,7 @@ $( echo -e "$@" )
 dialog.ip() {
 	local ip
 	[[ ! $ip_base ]] && ip_base=$( ipBase )
-	ip=$( dialog $opt_input "
-\Z1$1:\Zn
-
-" 0 0 $ip_base )
+	ip=$( dialog.input "\Z1$1:\Zn" $ip_base )
 	[[ ${ip%.*}. == $ip_base ]] && ip_oct4=${ip/$ip_base}
 	if [[ $ip_oct4 && $ip_oct4 == [0-9]* ]] && (( $ip_oct4 > 0 && $ip_oct4 < 255 )); then
 		echo $ip
@@ -64,8 +61,23 @@ Invalid IP: \Z1$ip\Zn
 " 0 0 && dialog.ip "$1"
 	fi
 }
+dialog.input() {
+	dialog $opt_input "
+$1
+
+" 8 40 "$2"
+}
+dialog.maxH() {
+	(( $1 > $( tput rows ) )) && 
+	dialog $opt_msg "
+Drag set \Z1Terminal height\Zn > $1
+
+Then continue
+" 0 0
+}
 dialog.menu() { # dialog --menu $1=title $2=multiline list
 	local -a list
+	dialog.maxH $(( ${#list[@]} / 2 + 8 ))
 	readarray -t list < <( awk 'NF {print ++i; print}' <<< $2 )
 #............................
 	dialog $opt_menu "

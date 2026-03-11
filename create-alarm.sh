@@ -130,9 +130,7 @@ Scan all IPs?
 getData() {
 	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
 #............................
-	release=$( dialog $opt_input "
- \Z1r\ZnAudio release:
-" 0 0 $latest )
+	release=$( dialog.input '\Z1r\ZnAudio release:' "$latest )
 	if ! curl -sIfo /dev/null $https_rern/rAudio/releases/tag/$release; then
 		dialog.retry rAudio $release not found.
 		getData
@@ -181,13 +179,9 @@ Connect \Z1Wi-Fi\Zn on boot?
 			. <( sed -E -n '/^Security|^ESSID|^Key/ {s/^.*=/\L&/; p}' wifi )
 		else
 #............................
-			essid=$( dialog $opt_input "
-Wi-Fi - \Z1SSID\Zn:
-" 0 0 $essid )
+			essid=$( dialog.input 'Wi-Fi - \Z1SSID\Zn:' "$essid" )
 #............................
-			key=$( dialog $opt_input "
-Wi-Fi - \Z1Password\Zn:
-" 0 0 $key )
+			key=$( dialog.input 'Wi-Fi - \Z1Password\Zn:' "$key" )
 			tput cup 0 0 && tput ed
 #............................
 			i=$( dialog.menu 'Wi-Fi \Z1Security\Zn' "\

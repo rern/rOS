@@ -52,6 +52,7 @@ Insert $sd_usb
 					' -e "/^.dev.$sd_mmc/ {s/^/\\\Z1/; s/$/\\\Zn/}
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	H=$(( $( wc -l <<< $list_colored ) + 9 ))
+	dialog.maxH $H
 #............................
 	dev_part=$( dialog $opt_check "
 $list_colored
