@@ -1,4 +1,5 @@
 /*
+[URLs on the domain] github.dev
 Required fonts:
     Windows    - Inconsolata, Inconsolata Semi Condensed SemiBold
     Arch Linux - pacman -S ttf-inconsolata
@@ -41,10 +42,11 @@ Required fonts:
 }
 .pane-header h3.title,
 .title-label h2 { /* panel header */
-    font-family: 'Inconsolata';
+    font-family: Inconsolata, InconsolataGO;
     letter-spacing: 5px;
 }
 .pane-header { /* panel header */
+    height: 30px !important;
 	background: #3f3f3f !important;
 }
 .split-view-view:first-of-type .pane-header h3.title { /* repo name */
@@ -62,16 +64,17 @@ Required fonts:
 .content,
 .monaco-inputbox,
 .monaco-menu-container,
-.monaco-text-button,
 .pane-header h3,
 .part.editor .tab,
 .view-line,
 .statusbar,
 .tab-label a,
-.title-label h2,
-textarea.input {
+.title-label h2 {
 	font-size: 18px !important;
-    font-family: 'Inconsolata Semi Condensed SemiBold';
+    font-family: 'Inconsolata Semi Condensed';
+}
+.monaco-text-button {
+	font-size: 16px !important;
 }
 .statusbar > .items-container { /* status bar */
     color: var(--vscode-tab-activeForeground);
