@@ -1,6 +1,8 @@
 /*
-required:
-pacman -S ttf-inconsolata / apt install fonts-inconsolata
+Required fonts:
+    Windows    - Inconsolata, Inconsolata Semi Condensed SemiBold
+    Arch Linux - pacman -S ttf-inconsolata
+    Linux      - apt install fonts-inconsolata
 */
 
 .monaco-workbench .part.titlebar > .titlebar-container > .titlebar-center > .window-title > .command-center > .monaco-toolbar > .monaco-action-bar > .actions-container > .action-item > .action-label,
@@ -50,9 +52,10 @@ pacman -S ttf-inconsolata / apt install fonts-inconsolata
 .monaco-button.monaco-text-button,
 .monaco-editor .view-line,
 .monaco-workbench .part > .content,
-.monaco-workbench .part.statusbar {
+.monaco-workbench .part.statusbar,
+textarea.input {
+	font-size: 18px !important;
     font-family: 'Inconsolata Semi Condensed SemiBold';
-	font-size: 18px;
 }
 .monaco-workbench .part.statusbar > .left-items, .monaco-workbench .part.statusbar > .right-items { /* status bar */
     color: var(--vscode-tab-activeForeground);

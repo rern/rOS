@@ -21,7 +21,7 @@ if [[ ${BASH_SOURCE[0]} == ${0} ]]; then
 	. <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
 fi
 #............................
-dialog.splash Arch Linux ARM » rAudio
+dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
 if [[ $bash_run ]]; then
 #............................
 	i=$( dialog.menu "Target $sd_usb" "
@@ -199,10 +199,8 @@ Security     : ${security^^}"
 #............................
 	dialog $opt_yesno "
 \Z1Confirm data:\Zn
-
 Release      : $release
 Raspberry Pi : $bit
-
 $confirm_wifi
 $confirm_ip
 " 0 0

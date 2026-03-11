@@ -63,7 +63,7 @@ Invalid IP: \Z1$ip\Zn
 }
 dialog.input() {
 	dialog $opt_input "
-$1
+ $1
 
 " 8 40 "$2"
 }
