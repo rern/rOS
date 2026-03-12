@@ -8,6 +8,7 @@ Required fonts:
 :root {
     --cw : hsl(   0, 0%, 90% );
     --cg : hsl( 200, 3%, 50% );
+    --cg70 : hsl( 200, 3%, 70% );
     --cg30 : hsl( 200, 3%, 30% );
 	--cg20 : hsl( 200, 3%, 20% );
     --cg10 : hsl( 200, 3%, 10% );
@@ -27,7 +28,7 @@ Required fonts:
     font-family: 'Inconsolata Semi Condensed';
 }
 .tab-border-top-container {
-	background-color: transparent !important;
+	background-color: unset !important;
 }
 .monaco-workbench .part.titlebar {
     background-color: var(--cg10) !important;
@@ -121,6 +122,8 @@ Required fonts:
 .monaco-workbench .codicon[class*="codicon-"] {
     padding: 0 !important;
 	font-size: 20px;
+	border: none;
+    background-color: unset !important;
 }
 .monaco-editor .find-widget > .find-part,
 .monaco-text-button,
@@ -135,5 +138,8 @@ Required fonts:
 }
 .monaco-workbench a,
 .statusbar > .items-container {
+    color: var(--cg70) !important;
+}
+.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > .tab.active a {
     color: var(--cw) !important;
 }
