@@ -178,7 +178,7 @@ if [[ -e /usr/bin/spotifyd ]]; then
 else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
-# user
+# system
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
@@ -206,4 +206,3 @@ $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
-
