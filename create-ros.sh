@@ -179,6 +179,7 @@ else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
 # user
+chpasswd <<< root:ros
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do

@@ -72,12 +72,8 @@ create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
 	if [[ $? == 255 ]]; then
 		dialog.scanIP "Unable to SSH connect IP: \Z1$1\Zn"
-	elif [[ $? == 0 ]]; then
-		pwd=$( dialog.input 'Set password for \Z1root\Zn' ros )
-		ssh -qn ${opt_ssh/-qtt} root@$1 "\
-chpasswd <<< root:$pwd
-reboot
-" < /dev/null
+	else
+		ssh -qn ${opt_ssh/-qtt} root@$1 reboot < /dev/null
 #............................
 		dialog.splash "\
 r A u d i o
