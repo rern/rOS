@@ -123,7 +123,9 @@ Required fonts:
     padding: 0 !important;
 	font-size: 20px;
 	border: none;
-    background-color: unset !important;
+}
+.monaco-custom-toggle {
+	background-color: unset !important;
 }
 .monaco-editor .find-widget > .find-part,
 .monaco-text-button,
