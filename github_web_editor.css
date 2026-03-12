@@ -1,13 +1,37 @@
 /*
 [URLs on the domain] github.dev
 Required fonts:
-    Windows    - Inconsolata, Inconsolata Semi Condensed SemiBold
+    Windows    - Inconsolata, Inconsolata Semi Condensed
     Arch Linux - pacman -S ttf-inconsolata
     Linux      - apt install fonts-inconsolata
 */
-
-.action-item.command-center-center {
-    height: 26px
+:root {
+    --cw : hsl(   0, 0%, 90% );
+    --cg : hsl( 200, 3%, 50% );
+    --cg30 : hsl( 200, 3%, 30% );
+	--cg20 : hsl( 200, 3%, 20% );
+}
+.action-item,
+.action-label,
+.monaco-findInput .input,
+.monaco-inputbox,
+.monaco-workbench .part > .content,
+.pane-header h3,
+.part.editor .tab,
+.view-line,
+.statusbar > .items-container,
+.tab-label a,
+.title-label h2 {
+	font-size: 18px !important;
+    font-family: 'Inconsolata Semi Condensed';
+}
+.pane-header h3.title,
+.title-label h2 { /* panel header */
+    font-family: Inconsolata, InconsolataGO;
+    letter-spacing: 5px;
+}
+.codicon.codicon-search.search-icon {
+	font-size: 20px !important;
 }
 .action-label.codicon, /* top icons */
 .search-icon {
@@ -26,56 +50,66 @@ Required fonts:
     margin-right: 8px;
 	line-height: 26px;
 }
-.titlebar {
-	border-bottom: 1px solid var(--vscode-tab-inactiveForeground) !important;
+.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab {
+    color: var(--cg);
+	background: var(--cg20) !important;
 }
-.action-item.command-center-center, 
-.monaco-inputbox { /* input box */
-    border-color: var(--vscode-tab-inactiveForeground) !important;
+.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > .tab.active,
+.monaco-breadcrumbs,
+.statusbar > .items-container {
+	background: var(--cg30) !important;
+}
+.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab {
+    padding-left: 0;
+}
+.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > .tab > .tab-actions .action-label.codicon {
+    display: inline;
+    vertical-align: -5px;
+    font-size: 20px !important;
+    color: var(--cg);
+}
+.action-item.command-center-center, /* input box */
+.monaco-inputbox {
+    border-color: var(--cg) !important;
 }
 .badge-content,
 .monaco-count-badge { /* changes count */
     font-size: 14px !important;
 }
 .monaco-editor { /* commit inputbox */
-    outline: 1px solid var(--vscode-tab-inactiveForeground);
-}
-.pane-header h3.title,
-.title-label h2 { /* panel header */
-    font-family: Inconsolata, InconsolataGO;
-    letter-spacing: 5px;
+    outline: 1px solid var(--cg);
 }
 .pane-header { /* panel header */
-    height: 30px !important;
-	background: #3f3f3f !important;
+    height: 36px !important;
+	background: var(--cg20) !important;
 }
 .split-view-view:first-of-type .pane-header h3.title { /* repo name */
     letter-spacing: unset;
     text-transform: none;
 }
-.file-icon::before { /* *.md icon */
-    width: 20px;
+.monaco-workbench .codicon[class*="codicon-"] {
+	margin-right: 6px;
+    height: fit-content;
 }
-.monaco-icon-label::before { /* file type icon */
-    width: 20px;
+.file-icon::before,
+.monaco-icon-label::before,
+.monaco-workbench .codicon[class*="codicon-"],
+.monaco-action-bar .action-item .codicon {
+	width: 20px;
 }
-.action-item,
-.action-label,
-.content,
-.monaco-inputbox,
-.monaco-menu-container,
-.pane-header h3,
-.part.editor .tab,
-.view-line,
-.statusbar,
-.tab-label a,
-.title-label h2 {
-	font-size: 18px !important;
-  font-family: 'Inconsolata Semi Condensed';
+.monaco-workbench .codicon[class*="codicon-"] {
+    padding: 0 !important;
+    border: none;
+	font-size: 20px;
 }
-.monaco-text-button {
-	font-size: 16px !important;
+.monaco-editor .find-widget > .find-part,
+.monaco-text-button,
+.monaco-workbench .part > .content .message,
+.search-view .query-details.more h4 {
+	font-size: 16px;
+    color: var(--cw);
 }
-.statusbar > .items-container { /* status bar */
-    color: var(--vscode-tab-activeForeground);
+.scm-view .button-container > .monaco-button-dropdown > .monaco-dropdown-button {
+	line-height: 24px;
+	margin: 0;
 }
