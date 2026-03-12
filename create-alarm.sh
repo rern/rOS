@@ -58,7 +58,7 @@ if [[ $select_part_BR ]]; then
 	[[ $( ls $mp ) ]] && err_B=', Empty'
 	[[ $fs != vfat ]] && err_B+=', VFAT'
 	read mp fs < <( findmnt -no target,fstype $PART_R )
-	[[ $( ls $mp | grep -v lost+found ) ]] && err_R=', Empty'
+	[[ $( ls $mp | grep -v lost+found ) ]] && err_R=', Empty' 
 	[[ $fs != ext4 ]] &&                      err_R+=', Ext4'
 	[[ $err_B ]] && error="
 \Z1BOOT\Zn $PART_B not: ${err_B:2}" # :2 leading ,

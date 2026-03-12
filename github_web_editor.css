@@ -46,6 +46,10 @@ Required fonts:
 .monaco-action-bar .action-item .codicon {
 	width: 20px;
 }
+.monaco-tl-contents .action-label.codicon {
+    margin-right: 0 !important;
+	font-size: 18px !important;
+}
 .codicon-search-details::before {
     margin-right: 8px;
 	line-height: 26px;
