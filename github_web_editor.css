@@ -25,22 +25,23 @@ Required fonts:
 	font-size: 18px !important;
     font-family: 'Inconsolata Semi Condensed';
 }
-.pane-header h3.title,
-.title-label h2 { /* panel header */
+.pane-header h3.title, /* panel header */
+.title-label h2 {
     font-family: Inconsolata, InconsolataGO;
     letter-spacing: 5px;
 }
-.codicon.codicon-search.search-icon {
+.icon.checked > .action-label.codicon {
+	color: var(--cw) !important;
+}
+.search-icon {
 	font-size: 20px !important;
 }
-.action-label.codicon, /* top icons */
-.search-icon {
-	font-size: 26px !important;
-}
-.search-icon {
+.action-label.codicon {
     width: 26px;
+	font-size: 26px !important;
+    color: var(--cg) !important;
 }
-.titlebar-right > .action-toolbar-container { /* top-right icons */
+.titlebar-right > .action-toolbar-container {
 	padding-right: 12px !important;
 }
 .monaco-action-bar .action-item .codicon {
@@ -67,11 +68,14 @@ Required fonts:
 .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab {
     padding-left: 0;
 }
+.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab > .tab-actions {
+	width: 22px;
+}
 .monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > .tab > .tab-actions .action-label.codicon {
     display: inline;
     vertical-align: -5px;
     font-size: 20px !important;
-    color: var(--cg);
+    color: var(--cg) !important;
 }
 .action-item.command-center-center, /* input box */
 .monaco-inputbox {
@@ -116,4 +120,8 @@ Required fonts:
 .scm-view .button-container > .monaco-button-dropdown > .monaco-dropdown-button {
 	line-height: 24px;
 	margin: 0;
+}
+.monaco-workbench a,
+.statusbar > .items-container {
+    color: var(--cw) !important;
 }
