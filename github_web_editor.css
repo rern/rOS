@@ -57,6 +57,7 @@ Required fonts:
 .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab {
     color: var(--cg);
 	background: var(--cg20) !important;
+    border-right-color: #000 !important;
 }
 .monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > .tab.active,
 .monaco-breadcrumbs,
@@ -103,7 +104,6 @@ Required fonts:
 }
 .monaco-workbench .codicon[class*="codicon-"] {
     padding: 0 !important;
-    border: none;
 	font-size: 20px;
 }
 .monaco-editor .find-widget > .find-part,
