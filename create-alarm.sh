@@ -70,9 +70,10 @@ fi
 
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
-	if [[ $? == 255 ]]; then
+	exit_code=$?
+	if [[ $exit_code == 255 ]]; then
 		dialog.scanIP "Unable to SSH connect IP: \Z1$1\Zn"
-	elif [[ $? == 0 ]]; then
+	elif [[ $exit_code == 0 ]]; then
 		ssh -qn ${opt_ssh/-qtt} root@$1 "\
 chpasswd <<< root:ros
 reboot
