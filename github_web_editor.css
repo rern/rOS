@@ -1,7 +1,7 @@
 /*
 [URLs on the domain] github.dev
 Required fonts:
-    Windows    - Inconsolata, Inconsolata Semi Condensed
+    Windows    - Inconsolata, Inconsolata SemiCondensed
     Arch Linux - pacman -S ttf-inconsolata
     Linux      - apt install fonts-inconsolata
 */
@@ -26,7 +26,7 @@ Required fonts:
 .tab-label a,
 .title-label h2 {
 	font-size: 18px !important;
-    font-family: 'Inconsolata Semi Condensed';
+    font-family: 'Inconsolata Semi Condensed', 'Inconsolata SemiCondensed';
 }
 .monaco-workbench .part.titlebar { /* top bar */
     background-color: var(--cg10) !important;
