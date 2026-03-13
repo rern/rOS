@@ -173,6 +173,7 @@ Required fonts:
 }
 .settings-editor,
 .monaco-menu-container,
+.monaco-button.monaco-text-button > span:not(.codicon),
 .monaco-menu-container .monaco-action-bar .action-item,
 .monaco-menu-container .monaco-action-bar .action-label { /* menus */
 	font-family: system-ui, Ubuntu, 'Droid Sans', sans-serif !important;
