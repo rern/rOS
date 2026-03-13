@@ -135,8 +135,11 @@ Required fonts:
 	margin-right: 3px;
     height: fit-content;
     padding: 0 !important;
-	font-size: 20px;
     color: var(--cg60) !important;
+}
+.scm-view .monaco-list-row .actions .action-label { /* icons after commit-changed files*/
+	font-size: 18px !important;
+	width: 14px !important;
 }
 .file-icon::before,
 .monaco-icon-label::before,
