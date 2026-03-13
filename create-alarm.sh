@@ -322,7 +322,7 @@ dirty=$( memDirty )
 
 	echo $(( ( dirty - left ) * 100 / dirty ))
 	sleep 2
-done ) | dialog $opt_guage "
+done ) | dialog $opt_gauge "
   Write remaining ...
   \Z1$file\Zn
 " 9 $W
