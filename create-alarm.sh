@@ -25,7 +25,7 @@ dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
 if [[ $bash_run ]]; then
 #............................
 	i=$( dialog.menu "Target $sd_usb" "
-Select already created
+Select already created partitions
 Wipe existings and create new
 " )
 	[[ $i == 1 ]] && select_part_BR=1
