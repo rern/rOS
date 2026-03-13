@@ -83,6 +83,7 @@ Required fonts:
 }
 .monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab > .tab-actions {
 	width: 22px;
+    padding: 0 5px 0 0;
 }
 .monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > .tab a,
 .monaco-breadcrumbs .label-name,
@@ -167,10 +168,10 @@ Required fonts:
 	color: var(--cw);
     background-color: #000;
 }
+.settings-editor,
 .monaco-menu-container,
 .monaco-menu-container .monaco-action-bar .action-item,
 .monaco-menu-container .monaco-action-bar .action-label { /* menus */
-  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
-  font-size: 16px !important;
-  line-height: 1.4 !important;
+	font-family: system-ui, Ubuntu, 'Droid Sans', sans-serif !important;
+    font-size: 16px !important;
 }
