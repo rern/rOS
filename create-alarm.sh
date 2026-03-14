@@ -82,8 +82,8 @@ dialog.download() {
 					if ( now == last ) next
 
 					last = now
-					rate = $(NF-1)
-                    if ( substr( rate, length(rate), 1 ) == "T" ) next
+					speed = $(NF-1)
+                    if ( substr( speed, length(speed), 1 ) == "T" ) next
 
 					pct = $(NF-2); sub( /%/, "", pct )
 
@@ -92,7 +92,7 @@ dialog.download() {
 					print ""
 					print "  Download ..."
 					print "  \\Z1" file "\\Zn"
-					print "  Time left: " $NF " (" rate "/s)"
+					print "  Time left: " $NF " (" speed "/s)"
 					print "XXX"
 
 					fflush()
@@ -224,10 +224,19 @@ md5verify() {
 	bar Verify $file ...
 	curl -skLO $url/$file.md5
 	[[ $? != 0 ]] && dialog.retry 'Download *.md5 failed.' && md5verify
-	md5sum -c $file.md5 && return 0
-#..............................................................................
-	rm $file
-	dialog.download
+	if md5sum -c $file.md5; then
+#............................
+		[[ $1 ]] && dialog $opt_info "
+ Existing is the latest:
+ \Z1$file\Zn
+ 
+
+ No download required.
+" 9 $W
+	else
+		rm $file
+		dialog.retry "Verify failed:\n$file" && dialog.download
+	fi
 }
 memDirty() {
 	awk '/Dirty:/{print $2}' /proc/meminfo
@@ -289,14 +298,7 @@ mirror=${list_code[i]}
 url=http://os.archlinuxarm.org/os
 [[ $mirror ]] && url=${url/os./$mirror.mirror.}
 if [[ -e $file ]]; then
-#............................
-	md5verify && dialog $opt_info "
- Existing is the latest:
- \Z1$file\Zn
- 
-
- No download required.
-" 9 $W
+	md5verify existing
 else
 	dialog.download
 fi
@@ -309,17 +311,18 @@ size=$( stat -c %s $file )
 		| bsdtar xpf - -C ROOT --exclude=*fallback.img
 ) 2>&1 | awk -v file=$file '
 			{
-				rate = int( $2 / 1024 / 1024 )
+				speed = int( $2 / 1024 / 1024 )
 				split( $NF, t, ":" );
 				m = t[2] + 0
 				s = t[3] + 0
+				ms = ( m > 0 ) ? m "m" s "s" : s "s"
 
 				print "XXX"
 				print $1
 				print ""
 				print "  Decompress ..."
 				print "  \\Z1" file "\\Zn"
-  				printf "  Time left: %dm%ds (%dMB/s)\n", m, s, rate
+  				print "  Time left: " ms " (" speed "MB/s)"
 				print "XXX"
 
 				fflush()
