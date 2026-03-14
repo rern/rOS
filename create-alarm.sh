@@ -74,19 +74,31 @@ create_ros() {
 }
 dialog.download() {
 #............................
-	( 
+	( # 50K .......... .......... .......... .......... ..........  12%  123K 12m34s
 		wget -O $file $url/$file 2>&1 \
-			| stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ {
-				print "XXX"
-				print substr( $0, 63, 3 )
-				print ""
-				print "  Download ..."
-				print "  \\Z1'$file'\\Zn"
-				print "  Time left: "substr( $0, 74, 5 )
-				print "XXX"
-			}' 
+			| awk -v file=$file '
+				/%/ {
+					now = systime()
+					if ( now == last ) next
+
+					last = now
+					rate = $(NF-1)
+                    if ( substr( rate, length(rate), 1 ) == "T" ) next
+
+					pct = $(NF-2); sub( /%/, "", pct )
+
+					print "XXX"
+					print pct
+					print ""
+					print "  Download ..."
+					print "  \\Z1" file "\\Zn"
+					print "  Time left: " $NF " (" rate "/s)"
+					print "XXX"
+
+					fflush()
+				}' 
 	 ) 2>&1 | dialog $opt_gauge "
- Connecting ...
+  Connecting ...
 " 9 $W 0 && md5verify || dialog.retry "Download failed:\n$file"
 }
 list_features="\
@@ -274,7 +286,8 @@ done <<< $lines
 #............................
 i=$( dialog.menu 'Package mirror server' "$list_menu" )
 mirror=${list_code[i]}
-[[ $mirror ]] && url=http://$mirror.mirror.archlinuxarm.org/os || url=http://os.archlinuxarm.org/os
+url=http://os.archlinuxarm.org/os
+[[ $mirror ]] && url=${url/os./$mirror.mirror.}
 if [[ -e $file ]]; then
 #............................
 	md5verify && dialog $opt_info "
@@ -289,27 +302,32 @@ else
 fi
 rm $file.md5
 size=$( stat -c %s $file )
-#............................
-(
-	pv -n -s $size $file \
+#............................ 
+( # -n force stdout line by line; -Y no cache; -F stdout: 12 1234567.890 0:01:23
+	pv -nY -s $size $file -F '%{progress-amount-only} %r %e' \
 		| pigz -dc \
 		| bsdtar xpf - -C ROOT --exclude=*fallback.img
-) 2>&1 | dialog $opt_gauge "
+) 2>&1 | awk -v file=$file '
+			{
+				rate = int( $2 / 1024 / 1024 )
+				split( $NF, t, ":" );
+				m = t[2] + 0
+				s = t[3] + 0
+
+				print "XXX"
+				print $1
+				print ""
+				print "  Decompress ..."
+				print "  \\Z1" file "\\Zn"
+  				printf "  Time left: %dm%ds (%dMB/s)\n", m, s, rate
+				print "XXX"
+
+				fflush()
+			}' \
+	| dialog $opt_gauge "
   Decompress ...
   \Z1$file\Zn
 " 9 $W 0
-dirty=$( memDirty )
-#........................
-( while true; do
-	left=$( memDirty )
-	(( $left < 1000 )) && break
-
-	echo $(( ( dirty - left ) * 100 / dirty ))
-	sleep 2
-done ) | dialog $opt_gauge "
-  Write remaining ...
-  \Z1$file\Zn
-" 9 $W
 mv ROOT/boot/* BOOT
 # fstab
 partid=( $( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' ) )
