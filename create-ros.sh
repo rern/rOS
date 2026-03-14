@@ -179,6 +179,7 @@ else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
 # system
+chpasswd <<< root:ros
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
@@ -206,3 +207,15 @@ $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
+dialog $opt_msg "
+$( alignCenter "
+$logo
+r A u d i o
+
+Created successfully
+$( runDuration )
+" )
+
+Press \Zr\Zb Enter \Zn to reboot
+" 12 $W
+reboot
