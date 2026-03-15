@@ -5,38 +5,9 @@
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
-for cmd in bsdtar dialog jq nmap pigz pv; do # required packages
-	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
-done
-if [[ $packages ]]; then
-	if [[ -e /usr/bin/pacman ]]; then
-		pacman -Sy --noconfirm $packages
-	else
-		apt install -y $packages
-	fi
-fi
-
-if [[ ${BASH_SOURCE[0]} == ${0} ]]; then
-	bash_run=1
-	. <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
-fi
+partitionsCreate() {
 #............................
-dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
-if [[ $bash_run ]]; then
-#............................
-	i=$( dialog.menu "Target $sd_usb" "
-Select already created partitions
-Wipe existings and create new
-" )
-	[[ $i == 1 ]] && select_part_BR=1
-fi
-
-trap 'BR.unmount; clear -x' EXIT
-
-. <( curl -sL $https_ros_branch/dialog_sdcard.sh ) # set $DEV $PART_B $PART_R
-if [[ ! $select_part_BR ]]; then # from +R.sh
-#............................
-    banner Partition SD Card ...
+    banner Create Partitions ...
     wipefs -a $DEV
     mb_B=300
     mb_R=6400
@@ -51,21 +22,54 @@ $PART_R : start= $start_R, size= $size_R, type=83
     mkfs.ext4 -F $PART_R
     fatlabel $PART_B BOOT
     e2label $PART_R ROOT
+}
+
+for cmd in bsdtar dialog jq nmap pigz pv; do # required packages
+	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
+done
+if [[ $packages ]]; then
+	if [[ -e /usr/bin/pacman ]]; then
+		pacman -Sy --noconfirm $packages
+	else
+		apt install -y $packages
+	fi
 fi
+
+[[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
+
+trap 'BR.unmount; clear -x' EXIT
+
+#............................
+dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
+#............................
+i=$( dialog.menu "Target $sd_usb" "
+Select existing partitions
+Select target and \Z1overwrite all\Zn
+" )
+[[ $i == 1 ]] && part_existing=1
+. <( curl -sL $https_ros_branch/dialog_sdcard.sh ) # set $DEV $PART_B $PART_R
+[[ ! $part_existing ]] && partitionsCreate
 BR.mount
-if [[ $select_part_BR ]]; then
+if [[ $part_existing ]]; then
 	read mp fs < <( findmnt -no target,fstype $PART_B )
-	[[ $( ls $mp ) ]] && err_B=', Empty'
-	[[ $fs != vfat ]] && err_B+=', VFAT'
+	[[ $( ls $mp ) ]] && warn_B=', Empty'
+	[[ $fs != vfat ]] && warn_B+=', VFAT'
 	read mp fs < <( findmnt -no target,fstype $PART_R )
-	[[ $( ls $mp | grep -v lost+found ) ]] && err_R=', Empty' 
-	[[ $fs != ext4 ]] &&                      err_R+=', Ext4'
-	[[ $err_B ]] && error="
-\Z1BOOT\Zn $PART_B not: ${err_B:2}" # :2 leading ,
-	[[ $err_R ]] && error+="
-\Z1ROOT\Zn $PART_R not: ${err_R:2}"
-	[[ $error ]] && dialog.error_exit "${error:1}" # :1 leading \n
+	[[ $( ls $mp | grep -v lost+found ) ]] && warn_R=', Empty' 
+	[[ $fs != ext4 ]] &&                      warn_R+=', Ext4'
+	[[ $warn_B ]] && warn="
+\Z1BOOT\Zn $PART_B not: ${warn_B:2}" # :2 leading ,
+	[[ $warn_R ]] && warn+="
+\Z1ROOT\Zn $PART_R not: ${warn_R:2}"
+	if [[ $warn ]]; then
+		dialog $opt_yesno "
+\Zr\Z3 ! \Zn Issues:
+${warn:1}
+
+\Z1Wipe existings\Zn and overwrite all?
+" 0 0 && partitionsCreate || exit
 #------------------------------------------------------------------------------
+	fi
 fi
 
 create_ros() {
