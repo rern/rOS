@@ -145,7 +145,13 @@ Required fonts:
 .monaco-icon-label::before,
 .monaco-workbench .codicon[class*="codicon-"],
 .monaco-action-bar .action-item .codicon {
-	width: 20px;
+	width: 22px;
+}
+.button.codicon {
+	font-size: 22px !important;
+}
+.replace-actions {
+	margin-top: -2px;
 }
 .replace-input .monaco-findInput { /* replace box */
 	width: 217px !important;
@@ -153,6 +159,10 @@ Required fonts:
 .monaco-custom-toggle { /* icons inside search boxes - fix 'exclude' bg */
 	background-color: unset !important;
     border: none;
+	font-size: 20px !important;
+}
+.monaco-custom-toggle::before {
+	font-size: 22px;
 }
 .monaco-editor .find-widget > .find-part,
 .monaco-text-button,

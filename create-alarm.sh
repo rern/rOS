@@ -74,29 +74,23 @@ create_ros() {
 }
 dialog.download() {
 #............................
-	( # 50K .......... .......... .......... .......... ..........  12%  123K 12m34s
-		wget -O $file $url/$file 2>&1 \
+	(       # stdbuf -oL: std out immediately > tr '\r' '\n': convert replace line to each new line
+		curl -LO $url/$file 2>&1 \
+			| stdbuf -oL tr '\r' '\n' \
 			| awk -v file=$file '
-				/%/ {
-					now = systime()
-					if ( now == last ) next
-
-					last = now
-					speed = $(NF-1)
-                    if ( substr( speed, length(speed), 1 ) == "T" ) next
-
-					pct = $(NF-2); sub( /%/, "", pct )
-
+				/^ *[1-9]/ {
+					if ( $1 == 100 ) next
+					
 					print "XXX"
-					print pct
+					print $1
 					print ""
 					print "  Download ..."
 					print "  \\Z1" file "\\Zn"
-					print "  Time left: " $NF " (" speed "/s)"
+					print "  Time left: " $11 " (" $7 "B/s)"
 					print "XXX"
 
 					fflush()
-				}' 
+				}'
 	 ) 2>&1 | dialog $opt_gauge "
   Connecting ...
 " 9 $W 0 && md5verify || dialog.retry "Download failed:\n$file"
@@ -305,17 +299,14 @@ fi
 rm $file.md5
 size=$( stat -c %s $file )
 #............................ 
-( # -n force stdout line by line; -Y no cache; -F stdout: 12 1234567.890 0:01:23
+( # -n: force stdout in each new line -Y: no buffer - std out immediately
 	pv -nY -s $size $file -F '%{progress-amount-only} %r %e' \
 		| pigz -dc \
 		| bsdtar xpf - -C ROOT --exclude=*fallback.img
 ) 2>&1 | awk -v file=$file '
 			{
-				speed = int( $2 / 1024 / 1024 )
-				split( $NF, t, ":" );
-				m = t[2] + 0
-				s = t[3] + 0
-				ms = ( m > 0 ) ? m "m" s "s" : s "s"
+				ms = $NF
+				sub( /^[^:]+:/, "", ms )
 
 				print "XXX"
 				print $1
@@ -435,7 +426,7 @@ $sd_usb : Unmounted
 if [[ $IP ]]; then
 #............................
 	(
-		for i in {1..10}; do
+		while read; do
 			echo "
 XXX
 $(( i * 10 ))
