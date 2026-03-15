@@ -78,7 +78,7 @@ create_ros() {
 }
 dialog.download() {
 #............................
-	(       # stdbuf -oL: std out immediately > tr '\r' '\n': convert replace line to each new line
+	(       # stdbuf -oL: std immediately > tr '\r' '\n': convert replace line to each new line
 		curl -LO $url/$file 2>&1 \
 			| stdbuf -oL tr '\r' '\n' \
 			| awk -v file=$file '
@@ -304,15 +304,15 @@ fi
 rm $file.md5
 size=$( stat -c %s $file )
 #............................ 
-( # -n: force stdout in each new line -Y: no buffer - std out immediately
+( # -n: force stdout in each new line -Y: std immediately (26 ETA 0:00:02 261569003.1868)
 	pv -nY -s $size $file -F '%{progress-amount-only} %e %r' \
 		| pigz -dc \
 		| bsdtar xpf - -C ROOT --exclude=*fallback.img
 ) 2>&1 | awk -v file=$file '
 			{
-				eta = $2
+				eta = $3
 				sub( /^[^:]+:/, "", eta )
-				speed = int( $3 / 1024 / 1024 )
+				speed = int( $4 / 1024 / 1024 )
 
 				print "XXX"
 				print $1
