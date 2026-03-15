@@ -432,7 +432,7 @@ $sd_usb : Unmounted
 if [[ $IP ]]; then
 #............................
 	(
-		while read; do
+		for i in {1..10}; do
 			echo "
 XXX
 $(( i * 10 ))
