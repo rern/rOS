@@ -93,7 +93,8 @@ dialog.download() {
 				}'
 	 ) 2>&1 | dialog $opt_gauge "
   Connecting ...
-" 9 $W 0 && md5verify || dialog.retry "Download failed:\n$file"
+" 9 $W 0 
+	[[ -e $file ]] && md5verify
 }
 list_features="\
 BlueALSA   - Bluetooth audio              : bluealsa bluez bluez-utils python-dbus python-gobject python-requests
@@ -218,7 +219,7 @@ md5verify() {
 	bar Verify $file ...
 	curl -skLO $url/$file.md5
 	[[ $? != 0 ]] && dialog.retry 'Download *.md5 failed.' && md5verify
-	if md5sum -c $file.md5; then
+	if md5sum --quiet -c $file.md5; then
 #............................
 		[[ $1 ]] && dialog $opt_info "
  Existing is the latest:
