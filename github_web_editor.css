@@ -153,6 +153,10 @@ Required fonts:
 .replace-actions {
 	margin-top: -2px;
 }
+.codicon-settings-editor-label-icon::before {
+	width: 28px !important;
+	text-align: center;
+}
 .replace-input .monaco-findInput { /* replace box */
 	width: 217px !important;
 }
