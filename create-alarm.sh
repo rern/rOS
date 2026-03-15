@@ -66,7 +66,7 @@ if [[ $part_existing ]]; then
 \Zr\Z3 ! \Zn Issues:
 ${warn:1}
 
-\Z1Wipe existings\Zn and overwrite all?
+\Z1Wipe existings\Zn and create new partitions?
 " 0 0 || exit
 #------------------------------------------------------------------------------
 		BR.unmount
@@ -331,6 +331,7 @@ size=$( stat -c %s $file )
   Decompress ...
   \Z1$file\Zn
 " 9 $W 0
+sync
 mv ROOT/boot/* BOOT
 # fstab
 partid=( $( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' ) )
