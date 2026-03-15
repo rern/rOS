@@ -411,7 +411,7 @@ Created successfully
 $( runDuration )"
 #............................
 dialog $opt_msg "
-\Z1Arch Linux ARM\Zn             : Ready
+\Z1Arch Linux ARM\Zn      : Ready
 $sd_usb : Unmounted
 
 » Move $sd_usb to Raspberry Pi
