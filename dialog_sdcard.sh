@@ -3,10 +3,10 @@
 # set global $DEV PART_B PART_R for create-alarm.sh, image-create.sh
 
 dev_partBR() {
+	[[ $1 == /dev/sd* ]] && dev=$1 || dev=${1}p
 	DEV=$1
-	[[ $DEV == /dev/mmc* ]] && DEV+=p
-	PART_B=${DEV}1
-	PART_R=${DEV}2
+	PART_B=${dev}1
+	PART_R=${dev}2
 }
 dialog.retrySD() {
 	dialog.retry "$@" && dialog.sdCard
@@ -83,10 +83,8 @@ $dev_part
 " 0 0 && dialog.sdCard $1
 	else
 		if [[ $part_existing ]]; then
-			part=( $dev_part )
-			PART_B=${part[0]}
-			PART_R=${part[1]}
-            [[ $sd_mmc == /dev/sd* ]] && DEV=${PART_B:0:-1} || DEV=${PART_B:0:-2}
+			read PART_B PART_R < <( echo $dev_part )
+            [[ $PART_B == /dev/sd* ]] && DEV=${PART_B:0:-1} || DEV=${PART_B:0:-2}
 		else
 	 		dev_partBR $dev_part
 		fi
