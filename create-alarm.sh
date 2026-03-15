@@ -67,8 +67,11 @@ if [[ $part_existing ]]; then
 ${warn:1}
 
 \Z1Wipe existings\Zn and overwrite all?
-" 0 0 && partitionsCreate || exit
+" 0 0
+		[[ $? != 0 ]] && exit
 #------------------------------------------------------------------------------
+		BR.unmount
+		partitionsCreate
 	fi
 fi
 
