@@ -92,7 +92,7 @@ dialog.download() {
 					fflush()
 				}'
 	 ) 2>&1 | dialog $opt_gauge "
-  Connecting ...
+  Connect ...
 " 9 $W 0 
 	[[ -e $file ]] && md5verify
 }
@@ -301,20 +301,21 @@ rm $file.md5
 size=$( stat -c %s $file )
 #............................ 
 ( # -n: force stdout in each new line -Y: no buffer - std out immediately
-	pv -nY -s $size $file -F '%{progress-amount-only} %r %e' \
+	pv -nY -s $size $file -F '%{progress-amount-only} %e %r' \
 		| pigz -dc \
 		| bsdtar xpf - -C ROOT --exclude=*fallback.img
 ) 2>&1 | awk -v file=$file '
 			{
-				ms = $NF
-				sub( /^[^:]+:/, "", ms )
+				eta = $2
+				sub( /^[^:]+:/, "", eta )
+				speed = int( $3 / 1024 / 1024 )
 
 				print "XXX"
 				print $1
 				print ""
 				print "  Decompress ..."
 				print "  \\Z1" file "\\Zn"
-  				print "  Time left: " ms " (" speed "MB/s)"
+  				print "  Time left: " eta " (" speed "MB/s)"
 				print "XXX"
 
 				fflush()
