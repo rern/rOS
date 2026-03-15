@@ -334,7 +334,7 @@ size=$( stat -c %s $file )
 sync
 mv ROOT/boot/* BOOT
 # fstab
-partid=( $( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' ) )
+partid=$( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' )
 read partid_B partid_R < <( echo $partid )
 echo "\
 $partid_B  /boot  vfat  defaults,noatime  0  0
