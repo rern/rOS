@@ -57,7 +57,7 @@ Insert $sd_usb
 	dev_part=$( dialog $opt_check "
 $list_colored
 
-Select $txt_confirm to comfirm:
+Press \Zr space \Zn to select $txt_confirm :
 " $H 0 0 "${list_check[@]}" | sed 's/ .*//' )
 	sL=$( awk NF <<< $dev_part | wc -l )
 	if (( $sL == 0 )); then
