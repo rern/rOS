@@ -334,8 +334,7 @@ size=$( stat -c %s $file )
 mv ROOT/boot/* BOOT
 # fstab
 partid=( $( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' ) )
-partid_B=${partid[0]}
-partid_R=${partid[1]}
+read partid_B partid_R < <( echo $partid )
 echo "\
 $partid_B  /boot  vfat  defaults,noatime  0  0
 $partid_R  /      ext4  defaults,noatime  0  0" > ROOT/etc/fstab
@@ -409,13 +408,12 @@ Arch Linux ARM
 
 Created successfully
 $( runDuration )"
-[[ ${partid_B:0:-1} != ${partid_R:0:-1} ]] && usb=' and USB drive'
 #............................
 dialog $opt_msg "
-\Z1Arch Linux ARM\Zn            : Ready
+\Z1Arch Linux ARM\Zn             : Ready
 $sd_usb : Unmounted
 
-» Move SD card$usb to RPi
+» Move $sd_usb to Raspberry Pi
 » Power on
 » Press \Zr\Zb Enter \Zn:
 	• Start boot timer

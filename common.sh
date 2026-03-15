@@ -115,7 +115,7 @@ https_ros_branch="$https_ros_raw/$branch"
 opt_ssh='-qtt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
 logo='\Zr\Z4+R\Zn'
-sd_usb='\Z1SD card\Zn \Z4or/and USB device\Zn'
+sd_usb='\Z1SD card\Zn / \Z4 USB drive\Zn'
 W=50
 # auto fit: 0 0
 #    0 0   - h w

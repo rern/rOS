@@ -46,7 +46,7 @@ Insert $sd_usb
 		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else # get dev
 		list_check=( "$( grep ^/dev/$sd_mmc <<< $line_lsblk )" off )
-		txt_confirm='\Z1SD card\Zn \Zb/ USB drive\Zn'
+		txt_confirm=$sd_usb
 	fi
 	list_colored=$( sed -E  -e '1 {s/^/\\\Zr\\\Zb/; s/$/\\\Zn/}
 					' -e "/^.dev.$sd_mmc/ {s/^/\\\Z1/; s/$/\\\Zn/}
