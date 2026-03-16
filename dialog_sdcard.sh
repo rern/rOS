@@ -40,7 +40,7 @@ Insert $sd_usb
 #..............................................................................
 	sleep 1
 	if (( $( blockdev --getsz $sd_mmc ) > 4294967296 )); then # 2TB sector limit
-		label=gpt
+		part_table=gpt
 		dialog $opt_msg "
 Target device larger than \Z12TB\Zn: /dev/$sd_mmc
 Only for Raspberry Pi 5, 4 and 3B+ (GPT)
@@ -77,9 +77,9 @@ Press \Zr ↑ \Zn \zr ↓ \Zn \Zr space \Zn to select $txt_confirm :
 		dev_partBR $dev_part
 		banner Create Partitions ...
 		wipefs -a $DEV
-		[[ ! $label ]] && label=dos # label=gpt
+		[[ ! $part_table ]] && part_table=dos
 		sfdisk $DEV <<EOF
-label: $label
+label: $part_table
 
 $PART_B : start=2048, size=300M,  type=c
 $PART_R :             size=6400M, type=83
