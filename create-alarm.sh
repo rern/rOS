@@ -264,8 +264,7 @@ size=$( stat -c %s $file )
 				if ( $1 < 100 ) {
 					eta = $3
 					sub( /^[^:]+:/, "", eta )
-					speed = int( $NF / 1024 / 1024 )
-					eta_speed = eta " (" speed "MB/s)"
+					eta_speed = eta " " sprintf( "(%.2fMB/s)", $NF / 1048576 )
 				} else {
 					eta_speed = "..."
 				}
