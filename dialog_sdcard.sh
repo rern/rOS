@@ -51,13 +51,14 @@ Continue?
 	fi
 	line_lsblk=$( lsblk -po name,label,size,mountpoint )
 	list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
-	if (( $( wc -l <<< $list_BR ) == 2 )); then
+	space_select='\Zr space \Zn to select'
+	if (( $( wc -l <<< $list_BR ) > 1 )); then
 		boot_root=1
-		txt_confirm='\Z1BOOT\Zn and \Z1ROOT\Zn'
+		txt_confirm="\Zr ↑ \Zn \Zr ↓ \Zn $space_select \Z1BOOT\Zn and \Z1ROOT\Zn"
 		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else
+		txt_confirm="Press $space_select $sd_usb"
 		list_check=( "$( grep ^/dev/$sd_mmc <<< $line_lsblk )" off )
-		txt_confirm=$sd_usb
 	fi
 	list_colored=$( sed -E  -e '1 {s/^/\\\Zr\\\Zb/; s/$/\\\Zn/}
 					' -e "/^.dev.$sd_mmc/ {s/^/\\\Z1/; s/$/\\\Zn/}
@@ -68,7 +69,7 @@ Continue?
 	dev_part=$( dialog $opt_check "
 $list_colored
 
-Press \Zr ↑ \Zn \zr ↓ \Zn \Zr space \Zn to select $txt_confirm :
+$txt_confirm :
 " $H 0 0 "${list_check[@]}" | sed 's/ .*//' )
 	if [[ $boot_root ]]; then
 		read PART_B PART_R < <( echo $dev_part )
