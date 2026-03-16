@@ -188,6 +188,7 @@ done
 echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 # upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
+	bar upmpdcli RSA key ...
 	dir=/var/cache/upmpdcli/ohcreds
 	file=$dir/credkey.pem
 	mkdir -p $dir
