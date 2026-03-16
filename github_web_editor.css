@@ -154,9 +154,12 @@ Required fonts:
 .replace-actions {
 	margin-top: -2px;
 }
-.codicon-settings-editor-label-icon::before {
+.codicon-settings-editor-label-icon::before { /* tab settings icon */
 	width: 28px !important;
 	text-align: center;
+}
+.monaco-icon-label-iconpath { /* tab pull request icon */
+	margin: 0 10px;
 }
 .replace-input .monaco-findInput { /* replace box */
 	width: 217px !important;
