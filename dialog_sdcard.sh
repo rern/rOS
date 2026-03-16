@@ -72,6 +72,7 @@ $list_colored
 $txt_confirm :
 $warn All data in selected will be \Z1deleted\Zn.
 " $H 0 0 "${list_check[@]}" | sed 's/ .*//' )
+clear -x
 	if [[ $boot_root ]]; then
 		read PART_B PART_R < <( echo $dev_part )
 		[[ $PART_B == /dev/sd* ]] && DEV=${PART_B:0:-1} || DEV=${PART_B:0:-2}
