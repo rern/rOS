@@ -51,6 +51,10 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 		- Might takes 10+ seconds longer: Detect no sd card » read boot loader » boot
 		- Remedy: Copy `/boot/*` to an SD card » Use for boot loader instead.
 
+Note: Device larger than 2TB will be setup as `GPT`
+- For Raspberry Pi 5, 4 and 3B+ only
+- Other models: Use the device as storage with rAudio on SD card
+
 **Run script**
 - Open terminal on Linux
 ```sh
