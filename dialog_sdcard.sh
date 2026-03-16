@@ -69,8 +69,8 @@ Continue?
 	dev_part=$( dialog $opt_check "
 $list_colored
 
-$warn All data in selected will be \Z1deleted\Zn.
 $txt_confirm :
+$warn All data in selected will be \Z1deleted\Zn.
 " $H 0 0 "${list_check[@]}" | sed 's/ .*//' )
 	if [[ $boot_root ]]; then
 		read PART_B PART_R < <( echo $dev_part )
