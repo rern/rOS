@@ -42,7 +42,7 @@ Insert $sd_usb
 	if (( $( blockdev --getsz $sd_mmc ) > 4294967296 )); then # 2TB sector limit
 		part_table=gpt
 		dialog $opt_msg "
-Target device larger than \Z12TB\Zn: /dev/$sd_mmc
+$sd_usb larger than \Z12TB\Zn: /dev/$sd_mmc
 Only for Raspberry Pi 5, 4 and 3B+ (GPT)
 
 Continue?
@@ -85,9 +85,9 @@ label: $part_table
 $PART_B : start=2048, size=300M,  type=c
 $PART_R :             size=6400M, type=83
 EOF
-		mkfs.vfat -F 32 -n BOOT $PART_B
-		mkfs.ext4 -L ROOT -F $PART_R
 	fi
+	mkfs.vfat -F 32 -n BOOT $PART_B
+	mkfs.ext4 -L ROOT -F $PART_R
 }
 
 dialog.sdCard
