@@ -47,9 +47,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- Suitable for much-faster-than-SD-card drives.
 	- Normal hard drive needs external power, e.g., powered USB hub, to have it spin up 5+ seconds before boot.
 	- [USB mass storage boot](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot) must be enabled on Raspberry.
-	- Boot
-		- Might takes 10+ seconds longer: Detect no sd card » read boot loader » boot
-		- Remedy: Copy `/boot/*` to an SD card » Use for boot loader instead.
+	- Boot might takes 10+ seconds longer: Detect no sd card » read boot loader » boot
 
 Note: Device larger than 2TB will be setup as `GPT`
 - For Raspberry Pi 5, 4 and 3B+ only
