@@ -74,6 +74,7 @@ $txt_confirm :
 	if [[ $boot_root ]]; then
 		read PART_B PART_R < <( echo $dev_part )
 		[[ $PART_B == /dev/sd* ]] && DEV=${PART_B:0:-1} || DEV=${PART_B:0:-2}
+		wipefs -a $PART_B $PART_R
 	else
 		dev_partBR $dev_part
 		banner Create Partitions ...
@@ -86,6 +87,7 @@ $PART_B : start=2048, size=300M,  type=c
 $PART_R :             size=6400M, type=83
 EOF
 	fi
+	bar Format BOOT and ROOT ...
 	mkfs.vfat -F 32 -n BOOT $PART_B
 	mkfs.ext4 -L ROOT -F $PART_R
 }
