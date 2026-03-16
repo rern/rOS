@@ -26,6 +26,7 @@ Required fonts:
 .part.editor .tab,
 .view-line,
 .statusbar > .items-container,
+.sticky-widget span,
 .tab-label a,
 .title-label h2 {
 	font-size: 18px !important;
