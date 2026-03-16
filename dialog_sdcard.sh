@@ -57,18 +57,19 @@ Continue?
 		txt_confirm="\Zr ↑ \Zn \Zr ↓ \Zn $space_select \Z1BOOT\Zn and \Z1ROOT\Zn"
 		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else
-		txt_confirm="Press $space_select $sd_usb"
+		txt_confirm="$space_select $sd_usb"
 		list_check=( "$( grep ^/dev/$sd_mmc <<< $line_lsblk )" off )
 	fi
 	list_colored=$( sed -E  -e '1 {s/^/\\\Zr\\\Zb/; s/$/\\\Zn/}
 					' -e "/^.dev.$sd_mmc/ {s/^/\\\Z1/; s/$/\\\Zn/}
 					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
-	H=$(( $( wc -l <<< $list_colored ) + 9 ))
+	H=$(( $( wc -l <<< $list_colored ) + 10 ))
 	dialog.maxH $H
 #............................
 	dev_part=$( dialog $opt_check "
 $list_colored
 
+$warn All data in selected will be \Z1deleted\Zn.
 $txt_confirm :
 " $H 0 0 "${list_check[@]}" | sed 's/ .*//' )
 	if [[ $boot_root ]]; then

@@ -39,7 +39,7 @@ BR.unmount() {
 }
 dialog.error_exit() {
 	dialog $opt_msg "
-\Zr\Z1 ! \Zn Error:
+$warn Error:
 
 $( echo -e "$@" )
 " 0 0
@@ -85,7 +85,7 @@ $1:
 }
 dialog.retry() {
 	dialog $opt_msg "
-\Zr\Z1 ! \Zn $( echo -e "$@" )
+$warn $( echo -e "$@" )
 
 Retry?
 " 0 0
@@ -115,6 +115,7 @@ https_ros_branch="$https_ros_raw/$branch"
 opt_ssh='-qtt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
 logo='\Zr\Z4+R\Zn'
+warn='\Zr\Z1 ! \Zn'
 sd_usb='\Z1SD card\Zn / \Z4USB drive\Zn'
 W=50
 # auto fit: 0 0
