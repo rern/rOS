@@ -201,10 +201,7 @@ $txt_confirm :
 $warn All data in selected will be \Z1deleted\Zn.
 " $H 0 0 "${list_check[@]}" | sed 's/ .*//' )
 clear -x
-	if [[ $? == 0 && $boot_root ]]; then
-		read PART_B PART_R < <( echo $dev_part )
-		wipefs -a $PART_B $PART_R
-	else
+	if [[ $? != 0 || ! $boot_root ]]; then
 		banner Create Partitions ...
 		wipefs -a $DEV
 		[[ ! $part_table ]] && part_table=dos
@@ -214,6 +211,9 @@ label: $part_table
 $PART_B : start=2048, size=300M,  type=c
 $PART_R :             size=6400M, type=83
 EOF
+	els
+		read PART_B PART_R < <( echo $dev_part )
+		wipefs -a $PART_B $PART_R
 	fi
 	bar Format BOOT and ROOT ...
 	mkfs.vfat -F 32 -n BOOT $PART_B
