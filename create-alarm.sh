@@ -203,9 +203,9 @@ $list_colored
 
  $txt_confirm :
  $warn All data in selected will be \Z1deleted\Zn.
-" $H 0 0 "${list_check[@]}" | sed 's/ .*//' )
+" $H 0 0 "${list_check[@]}" | sed 's/ .*//' ) || wipe=1
 clear -x
-	if [[ $? != 0 || ! $boot_root ]]; then
+	if [[ $wipe || ! $boot_root ]]; then
 		banner Create Partitions ...
 		wipefs -a $DEV
 		sfdisk $label_gpt $DEV <<< "\
