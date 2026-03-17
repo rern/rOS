@@ -271,6 +271,7 @@ trap 'BR.unmount; clear -x' EXIT
 #............................
 dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
 read DEV PART_B PART_R < <( dialog.sd )
+sleep 1
 dialog.sdCard
 BR.mount
 dialog.data

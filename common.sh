@@ -120,7 +120,6 @@ Insert $sd_usb
 		p=p
 	fi
 	echo $dev $dev${p}1 $dev${p}2
-
 }
 dialog.splash() {
 	tput civis # fix: hide cursor at corner
