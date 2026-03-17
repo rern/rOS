@@ -90,6 +90,37 @@ $warn $( echo -e "$@" )
 Retry?
 " 0 0
 }
+dialog.sd() {
+	local dev dev_gib l p s
+#............................ (no --sleep 1)
+	dialog $option --infobox "
+$logo
+
+Insert $sd_usb
+
+
+\Z4If already inserted, remove and reinsert.\Zn
+" 9 $W
+	s=15
+	while read l; do
+		dev_gib=$( grep -m1 -E '^(sd|mmcblk).* GiB' <<< $l )
+		[[ $dev_gib ]] && break
+	done < <( timeout $s dmesg -tW )
+	if [[ ! $dev_gib ]]; then
+		if dialog.retry "No devices inserted in ${s}s."; then
+			dialog.sdCard
+			return
+#..............................................................................
+		fi
+	fi
+	if [[ $dev_gib == sd* ]]; then
+		dev=/dev/$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
+	else
+		dev=/dev/${dev_gib/:*}                               # mmcblkN: mmcN:0001 SD32G 29.7 GiB
+		p=p
+	fi
+	echo $dev $dev${p}1 $dev${p}2
+}
 dialog.splash() {
 	tput civis # fix: hide cursor at corner
 #............................
@@ -106,7 +137,7 @@ ipBase() {
 	echo ${ip_router%.*}.
 }
 runDuration() {
-	echo \\Z4$( date -d@$SECONDS -u +%M:%S )\\Zn
+	echo \\Z4$( date -d@$1 -u +%M:%S )\\Zn
 }
 
 https_rern='https://github.com/rern'

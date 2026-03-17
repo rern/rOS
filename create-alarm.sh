@@ -2,6 +2,7 @@
 
 # branch=UPDATE bash <( curl -sL https://github.com/rern/rOS/raw/$branch/create-alarm.sh ) $branch
 
+SECONDS=0
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
@@ -22,75 +23,13 @@ create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
 	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect IP: \Z1$1\Zn"
 }
-dialog.download() {
-#............................
-	(       # stdbuf -oL: std immediately > tr '\r' '\n': convert replace line to each new line
-		curl -LO $url/$file 2>&1 \
-			| stdbuf -oL tr '\r' '\n' \
-			| awk -v file=$file '
-				/^ *[1-9]/ {
-					if ( $1 == 100 ) next
-					
-					print "XXX"
-					print $1
-					print ""
-					print "  Download ..."
-					print "  \\Z1" file "\\Zn"
-					print "  Time left: " $11 " (" $7 "B/s)"
-					print "XXX"
-
-					fflush()
-				}'
-	 ) 2>&1 | dialog $opt_gauge "
-  Connect ...
-" 9 $W 0 
-	[[ -e $file ]] && md5verify
-}
-list_features="\
-BlueALSA   - Bluetooth audio              : bluealsa bluez bluez-utils python-dbus python-gobject python-requests
-CamillaDSP - Digital signal processor     : camilladsp python-websocket-client
-Firefox    - Browser on RPi screen        : firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo
-iwd        - RPi access point             : iwd
-Samba      - File sharing                 : samba
-Shairport  - AirPlay renderer             : shairport-sync
-Snapcast   - Synchronous multiroom player : snapcast
-Spotifyd   - Spotify renderer             : spotifyd
-upmpdcli   - UPnP renderer                : upmpdcli python-upnpp"
-readarray -t list_check < <( awk -F' *:' '{print $1; print "on"}' <<< $list_features )
-dialog.feature() {
-#............................
-	checked=$( dialog $opt_check '
- \Z1Features to install:\Zn
-' 8 0 0 "${list_check[@]}" )
-	if [[ $checked ]]; then
-		features=
-		while read l; do
-			features+=$( sed -n "/^$l/ {s/.*://; p}" <<< $list_features )
-		done <<< $checked
-	else
-		checked='(none)'
-	fi
-#............................
-	dialog $opt_yesno "
-\Z1Confirm features to install:\Zn
-
-$checked
-" 0 0 && echo $features > BOOT/features || dialog.feature
-}
-dialog.scanIP() {
-	dialog $opt_msg "
-$@
-
-Scan all IPs?
-" 0 0 && scanIP
-}
-getData() {
+dialog.data() {
 	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
 #............................
 	release=$( dialog.input '\Z1r\ZnAudio release:' $latest )
 	if ! curl -sIfo /dev/null $https_rern/rAudio/releases/tag/$release; then
 		dialog.retry rAudio $release not found.
-		getData
+		dialog.data
 		return
 #..............................................................................
 	fi
@@ -162,7 +101,125 @@ $confirm_wifi
 $confirm_ip
 " 0 0
 	tput cup 0 0 && tput ed
-	[[ $? == 1 ]] && getData
+	[[ $? == 1 ]] && dialog.data
+}
+dialog.download() {
+#............................
+	(       # stdbuf -oL: std immediately > tr '\r' '\n': convert replace line to each new line
+		curl -LO $url/$file 2>&1 \
+			| stdbuf -oL tr '\r' '\n' \
+			| awk -v file=$file '
+				/^ *[1-9]/ {
+					if ( $1 == 100 ) next
+					
+					print "XXX"
+					print $1
+					print ""
+					print "  Download ..."
+					print "  \\Z1" file "\\Zn"
+					print "  Time left: " $11 " (" $7 "B/s)"
+					print "XXX"
+
+					fflush()
+				}'
+	 ) 2>&1 | dialog $opt_gauge "
+  Connect ...
+" 9 $W 0 
+	[[ -e $file ]] && md5verify
+}
+list_features="\
+BlueALSA   - Bluetooth audio              : bluealsa bluez bluez-utils python-dbus python-gobject python-requests
+CamillaDSP - Digital signal processor     : camilladsp python-websocket-client
+Firefox    - Browser on RPi screen        : firefox matchbox-window-manager plymouth-lite-rbp-git upower xf86-video-fbturbo
+iwd        - RPi access point             : iwd
+Samba      - File sharing                 : samba
+Shairport  - AirPlay renderer             : shairport-sync
+Snapcast   - Synchronous multiroom player : snapcast
+Spotifyd   - Spotify renderer             : spotifyd
+upmpdcli   - UPnP renderer                : upmpdcli python-upnpp"
+readarray -t list_check < <( awk -F' *:' '{print $1; print "on"}' <<< $list_features )
+dialog.feature() {
+#............................
+	checked=$( dialog $opt_check '
+ \Z1Features to install:\Zn
+' 8 0 0 "${list_check[@]}" )
+	if [[ $checked ]]; then
+		features=
+		while read l; do
+			features+=$( sed -n "/^$l/ {s/.*://; p}" <<< $list_features )
+		done <<< $checked
+	else
+		checked='(none)'
+	fi
+#............................
+	dialog $opt_yesno "
+\Z1Confirm features to install:\Zn
+
+$checked
+" 0 0 && echo $features > BOOT/features || dialog.feature
+}
+dialog.scanIP() {
+	dialog $opt_msg "
+$@
+
+Scan all IPs?
+" 0 0 && scanIP
+}
+dialog.sdCard() {
+	local error H line_lsblk list_BR list_check list_colored opt_check_sd part dev_part sL txt_confirm
+	if (( $( blockdev --getsz $DEV ) > 4294967296 )); then # 2TB sector limit
+		label_gpt='--label gpt'
+		dialog $opt_msg "
+$sd_usb larger than \Z12TB\Zn: $DEV
+Only for Raspberry Pi 5, 4 and 3B+ (GPT)
+
+Continue?
+" 0 0 || exit
+#------------------------------------------------------------------------------
+	fi
+	line_lsblk=$( lsblk -po name,label,size,mountpoint )
+	list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
+	space_select='\Zr space \Zn to select'
+	if (( $( wc -l <<< $list_BR ) > 1 )); then
+		boot_root=1
+		opt_check_sd=${opt_check/--nocancel/--cancel-label Wipe}
+		txt_confirm="\Zr ↑ \Zn \Zr ↓ \Zn $space_select \Z1BOOT\Zn and \Z1ROOT\Zn"
+		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
+	else
+		opt_check_sd=$opt_check
+		txt_confirm="$space_select $sd_usb"
+		list_check=( "$( grep ^$DEV <<< $line_lsblk )" off )
+	fi
+	list_colored=$( sed -E -e 's/^/ /
+						 ' -e '1 {s/^/\\\Zr\\\Zb/; s/$/ \\\Zn/}
+						 ' -e "\|^ *$DEV| {s/^/\\\Z1/; s/$/\\\Zn/}
+						 " -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
+	echo "$list_color"
+	H=$(( $( wc -l <<< $list_colored ) + 10 ))
+	dialog.maxH $H
+#............................
+	dev_part=$( dialog $opt_check_sd "
+$list_colored
+
+ $txt_confirm :
+ $warn All data in selected will be \Z1deleted\Zn.
+" $H 0 0 "${list_check[@]}" ) || wipe=1
+clear -x
+	if [[ $wipe || ! $boot_root ]]; then
+		bar Wipe disk ...
+		wipefs -a $DEV
+		banner Create partitions
+		sfdisk $label_gpt $DEV <<< "\
+$PART_B : start=2048, size=300M,  type=b
+$PART_R :             size=6000M, type=83"
+	else
+		read PART_B PART_R < <( awk '{print $1}' <<< $dev_part )
+		bar Wipe BOOT and ROOT ...
+		wipefs -a $PART_B $PART_R
+	fi
+	bar Format BOOT and ROOT ...
+	mkfs.vfat -F 32 -n BOOT $PART_B
+	mkfs.ext4 -L ROOT -F $PART_R
 }
 md5verify() {
 	clear -x
@@ -216,11 +273,12 @@ scanIP() {
 trap 'BR.unmount; clear -x' EXIT
 #............................
 dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
-. <( curl -sL $https_ros_branch/dialog_sdcard.sh ) # set $DEV $PART_B $PART_R
+read DEV PART_B PART_R < <( dialog.sd )
+sleep 1 # fix: label ready for read
+dialog.sdCard
 BR.mount
-getData
+dialog.data
 dialog.feature
-SECONDS=0
 # package mirror server
 lines=$( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
 			| sed -E -n '/^### Mirror/,$ {/^\s*$|^### Mirror/ d; s|.*//(.*)\.mirror.*|\1|; p}' )
@@ -360,7 +418,7 @@ BR.unmount
 Arch Linux ARM
 
 Created successfully
-$( runDuration )"
+$( runDuration $SECONDS )"
 #............................
 dialog $opt_msg "
 \Z1Arch Linux ARM\Zn      : Ready

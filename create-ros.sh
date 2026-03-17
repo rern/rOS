@@ -4,6 +4,7 @@ trap 'rm -f /var/lib/pacman/db.lck' EXIT
 
 . common.sh
 
+SECONDS=0
 dir_system=/etc/systemd/system
 features=$( < features )
 release=$( < release )
@@ -13,7 +14,6 @@ retryCreate() {
 }
 #............................
 dialog.splash r A u d i o
-SECONDS=0
 #............................
 banner Initialize Arch Linux ARM ...
 pacman-key --init
@@ -188,7 +188,6 @@ done
 echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 # upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
-	bar upmpdcli RSA key ...
 	dir=/var/cache/upmpdcli/ohcreds
 	file=$dir/credkey.pem
 	mkdir -p $dir
@@ -214,7 +213,7 @@ $logo
 r A u d i o
 
 Created successfully
-$( runDuration )
+$( runDuration $SECONDS )
 " )
 
 Press \Zr\Zb Enter \Zn to reboot

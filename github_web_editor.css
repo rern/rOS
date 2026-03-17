@@ -21,6 +21,7 @@ Required fonts:
 .action-label,
 .monaco-findInput .input,
 .monaco-inputbox,
+.monaco-inputbox .input,
 .monaco-workbench .part > .content,
 .pane-header h3,
 .part.editor .tab,
@@ -114,8 +115,15 @@ Required fonts:
 }
 .action-item.command-center-center, /* input box */
 .monaco-inputbox {
+    min-height: 28px;
     border-color: var(--cg) !important;
     background-color: #000;
+}
+.find-part textarea { /* tab find */
+    line-height: 22px !important;
+}
+.monaco-findInput > .controls {
+	top: 2px;
 }
 .badge-content,
 .monaco-count-badge { /* changes count */
@@ -148,12 +156,20 @@ Required fonts:
 .monaco-action-bar .action-item .codicon {
 	width: 22px;
 }
+.search-widget > .codicon { /* pane search arrows icon */
+	width: 17px !important;
+}
+.search-widget > .codicon::before { /* pane search arrows icon */
+	font-size: 22px;
+    line-height: 26px;
+}
 .button.codicon {
 	font-size: 22px !important;
 }
 .replace-actions {
 	margin-top: -2px;
 }
+.codicon-keybindings-editor-label-icon::before,
 .codicon-settings-editor-label-icon::before { /* tab settings icon */
 	width: 28px !important;
 	text-align: center;
@@ -166,7 +182,7 @@ Required fonts:
 }
 .monaco-custom-toggle { /* icons inside search boxes - fix 'exclude' bg */
 	background-color: unset !important;
-    border: none;
+/*    border: none;*/
 	font-size: 20px !important;
 }
 .monaco-custom-toggle::before {
