@@ -48,8 +48,7 @@ else
 fi
 #............................
 dialog.splash Image File
-image_create=1
-. <( curl -sL $https_ros_raw/$branch/dialog_sdcard.sh ) # set $DEV $PART_B $PART_R
+read DEV PART_B PART_R < <( dialog.sd )
 banner Check Partitions ...
 bar BOOT: $PART_B ...
 fsck.fat -taw $PART_B
@@ -57,13 +56,8 @@ bar ROOT: $PART_R ...
 e2fsck -p $PART_R
 BR.mount
 file_r1=ROOT/srv/http/data/addons/r1
-if [[ ! -e $file_r1 ]]; then
-#............................
-	dialog $opt_msg "
-SD card is not rAudio: \Z1$DEVZn
-" 0 0
-	dialog.sdCard
-fi
+[[ ! -e $file_r1 ]] && dialog.error_exit 'SD card is not rAudio: \Z1$DEVZn'
+#------------------------------------------------------------------------------
 release=$( < $file_r1 )
 if [[ -e BOOT/kernel8.img ]]; then
 	model=64bit
