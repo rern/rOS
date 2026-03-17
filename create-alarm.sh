@@ -191,7 +191,7 @@ Continue?
 		list_check=( "$( grep ^$DEV <<< $line_lsblk )" off )
 	fi
 	list_colored=$( sed -E -e 's/^/ /
-						 ' -e '1 {s/^/\\\Zr\\\Zb/; s/$/    \\\Zn/}
+						 ' -e '1 {s/^/\\\Zr\\\Zb/; s/$/ \\\Zn/}
 						 ' -e "\|^ *$DEV| {s/^/\\\Z1/; s/$/\\\Zn/}
 						 " -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	echo "$list_color"
