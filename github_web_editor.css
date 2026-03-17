@@ -21,6 +21,7 @@ Required fonts:
 .action-label,
 .monaco-findInput .input,
 .monaco-inputbox,
+.monaco-inputbox .input,
 .monaco-workbench .part > .content,
 .pane-header h3,
 .part.editor .tab,
@@ -168,6 +169,7 @@ Required fonts:
 .replace-actions {
 	margin-top: -2px;
 }
+.codicon-keybindings-editor-label-icon::before,
 .codicon-settings-editor-label-icon::before { /* tab settings icon */
 	width: 28px !important;
 	text-align: center;
