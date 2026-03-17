@@ -205,13 +205,15 @@ $list_colored
 " $H 0 0 "${list_check[@]}" ) || wipe=1
 clear -x
 	if [[ $wipe || ! $boot_root ]]; then
-		banner Create Partitions ...
+		bar Wipe disk ...
 		wipefs -a $DEV
+		banner Create BOOT and ROOT
 		sfdisk $label_gpt $DEV <<< "\
 $PART_B : start=2048, size=300M,  type=b
 $PART_R :             size=4000M, type=83"
 	else
 		read PART_B PART_R < <( awk '{print $1}' <<< $dev_part )
+		bar Wipe BOOT and ROOT ...
 		wipefs -a $PART_B $PART_R
 	fi
 	bar Format BOOT and ROOT ...
@@ -271,7 +273,7 @@ trap 'BR.unmount; clear -x' EXIT
 #............................
 dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
 read DEV PART_B PART_R < <( dialog.sd )
-sleep 1
+sleep 1 # fix: label ready for read
 dialog.sdCard
 BR.mount
 dialog.data
