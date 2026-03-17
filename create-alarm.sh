@@ -166,7 +166,6 @@ Scan all IPs?
 }
 dialog.sdCard() {
 	local error H line_lsblk list_BR list_check list_colored opt_check_sd part dev_part sL txt_confirm
-	sleep 1
 	if (( $( blockdev --getsz $DEV ) > 4294967296 )); then # 2TB sector limit
 		label_gpt='--label gpt'
 		dialog $opt_msg "
@@ -203,7 +202,7 @@ $list_colored
 
  $txt_confirm :
  $warn All data in selected will be \Z1deleted\Zn.
-" $H 0 0 "${list_check[@]}" | sed 's/ .*//' ) || wipe=1
+" $H 0 0 "${list_check[@]}" ) || wipe=1
 clear -x
 	if [[ $wipe || ! $boot_root ]]; then
 		banner Create Partitions ...
@@ -212,7 +211,7 @@ clear -x
 $PART_B : start=2048, size=300M,  type=b
 $PART_R :             size=4000M, type=83"
 	else
-		read PART_B PART_R < <( echo $dev_part )
+		read PART_B PART_R < <( awk '{print $1}' <<< $dev_part )
 		wipefs -a $PART_B $PART_R
 	fi
 	bar Format BOOT and ROOT ...
