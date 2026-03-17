@@ -165,12 +165,12 @@ Scan all IPs?
 " 0 0 && scanIP
 }
 dialog.sdCard() {
-	local error H line_lsblk list_BR list_check list_colored part dev_part sL txt_confirm
+	local error H line_lsblk list_BR list_check list_colored opt_check_sd part dev_part sL txt_confirm
 	sleep 1
 	if (( $( blockdev --getsz $DEV ) > 4294967296 )); then # 2TB sector limit
 		part_table=gpt
 		dialog $opt_msg "
-$sd_usb larger than \Z12TB\Zn: /dev/$DEV
+$sd_usb larger than \Z12TB\Zn: $DEV
 Only for Raspberry Pi 5, 4 and 3B+ (GPT)
 
 Continue?
@@ -182,23 +182,27 @@ Continue?
 	space_select='\Zr space \Zn to select'
 	if (( $( wc -l <<< $list_BR ) > 1 )); then
 		boot_root=1
+		opt_check_sd=${opt_check/--nocancel/--cancel-label Wipe}
 		txt_confirm="\Zr ↑ \Zn \Zr ↓ \Zn $space_select \Z1BOOT\Zn and \Z1ROOT\Zn"
 		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else
+		opt_check_sd=$opt_check
 		txt_confirm="$space_select $sd_usb"
-		list_check=( "$( grep ^/dev/$DEV <<< $line_lsblk )" off )
+		list_check=( "$( grep ^$DEV <<< $line_lsblk )" off )
 	fi
-	list_colored=$( sed -E  -e '1 {s/^/\\\Zr\\\Zb/; s/$/\\\Zn/}
-					' -e "/^.dev.$DEV/ {s/^/\\\Z1/; s/$/\\\Zn/}
-					" -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
+	list_colored=$( sed -E -e 's/^/ /
+						 ' -e '1 {s/^/\\\Zr\\\Zb/; s/$/ \\\Zn/}
+						 ' -e "\|^ *$DEV| {s/^/\\\Z1/; s/$/\\\Zn/}
+						 " -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
+	echo "$list_color"
 	H=$(( $( wc -l <<< $list_colored ) + 10 ))
 	dialog.maxH $H
 #............................
-	dev_part=$( dialog ${opt_check/--nocancel/--cancel-label Wipe} "
+	dev_part=$( dialog $opt_check_sd "
 $list_colored
 
-$txt_confirm :
-$warn All data in selected will be \Z1deleted\Zn.
+ $txt_confirm :
+ $warn All data in selected will be \Z1deleted\Zn.
 " $H 0 0 "${list_check[@]}" | sed 's/ .*//' )
 clear -x
 	if [[ $? != 0 || ! $boot_root ]]; then
