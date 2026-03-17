@@ -114,9 +114,9 @@ Insert $sd_usb
 		fi
 	fi
 	if [[ $dev_gib == sd* ]]; then
-		dev=$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
+		dev=/dev/$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
 	else
-		dev=${dev_gib/:*}                               # mmcblkN: mmcN:0001 SD32G 29.7 GiB
+		dev=/dev/${dev_gib/:*}                               # mmcblkN: mmcN:0001 SD32G 29.7 GiB
 		p=p
 	fi
 	echo $dev $dev${p}1 $dev${p}2
