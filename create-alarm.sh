@@ -191,7 +191,7 @@ Continue?
 		list_check=( "$( grep ^$DEV <<< $line_lsblk )" off )
 	fi
 	list_colored=$( sed -E -e 's/^/ /
-						 ' -e '1 {s/^/\\\Zr\\\Zb/; s/$/ \\\Zn/}
+						 ' -e '1 {s/^/\\\Zr\\\Zb/; s/$/    \\\Zn/}
 						 ' -e "\|^ *$DEV| {s/^/\\\Z1/; s/$/\\\Zn/}
 						 " -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	echo "$list_color"
@@ -215,7 +215,7 @@ label: $part_table
 $PART_B : start=2048, size=300M,  type=c
 $PART_R :             size=6400M, type=83
 EOF
-	els
+	else
 		read PART_B PART_R < <( echo $dev_part )
 		wipefs -a $PART_B $PART_R
 	fi
