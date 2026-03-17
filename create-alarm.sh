@@ -211,7 +211,7 @@ clear -x
 		banner Create partitions
 		sfdisk $label_gpt $DEV <<< "\
 $PART_B : start=2048, size=300M,  type=b
-$PART_R :             size=4000M, type=83"
+$PART_R :             size=6000M, type=83"
 	else
 		read PART_B PART_R < <( awk '{print $1}' <<< $dev_part )
 		bar Wipe BOOT and ROOT ...
