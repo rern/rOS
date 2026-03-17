@@ -2,6 +2,7 @@
 
 # branch=UPDATE bash <( curl -sL https://github.com/rern/rOS/raw/$branch/create-alarm.sh ) $branch
 
+SECONDS=0
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
@@ -278,7 +279,6 @@ dialog.sdCard
 BR.mount
 dialog.data
 dialog.feature
-SECONDS=0
 # package mirror server
 lines=$( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
 			| sed -E -n '/^### Mirror/,$ {/^\s*$|^### Mirror/ d; s|.*//(.*)\.mirror.*|\1|; p}' )
@@ -418,7 +418,7 @@ BR.unmount
 Arch Linux ARM
 
 Created successfully
-$( runDuration )"
+$( runDuration $SECONDS )"
 #............................
 dialog $opt_msg "
 \Z1Arch Linux ARM\Zn      : Ready

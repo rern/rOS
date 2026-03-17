@@ -137,7 +137,7 @@ ipBase() {
 	echo ${ip_router%.*}.
 }
 runDuration() {
-	echo \\Z4$( date -d@$SECONDS -u +%M:%S )\\Zn
+	echo \\Z4$( date -d@$1 -u +%M:%S )\\Zn
 }
 
 https_rern='https://github.com/rern'
