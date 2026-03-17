@@ -168,7 +168,7 @@ dialog.sdCard() {
 	local error H line_lsblk list_BR list_check list_colored opt_check_sd part dev_part sL txt_confirm
 	sleep 1
 	if (( $( blockdev --getsz $DEV ) > 4294967296 )); then # 2TB sector limit
-		part_table=gpt
+		label_gpt='--label gpt'
 		dialog $opt_msg "
 $sd_usb larger than \Z12TB\Zn: $DEV
 Only for Raspberry Pi 5, 4 and 3B+ (GPT)
@@ -208,13 +208,9 @@ clear -x
 	if [[ $? != 0 || ! $boot_root ]]; then
 		banner Create Partitions ...
 		wipefs -a $DEV
-		[[ ! $part_table ]] && part_table=dos
-		sfdisk $DEV <<EOF
-label: $part_table
-
-$PART_B : start=2048, size=300M,  type=c
-$PART_R :             size=6400M, type=83
-EOF
+		sfdisk $label_gpt $DEV <<< "\
+$PART_B : start=2048, size=300M,  type=b
+$PART_R :             size=4000M, type=83"
 	else
 		read PART_B PART_R < <( echo $dev_part )
 		wipefs -a $PART_B $PART_R
