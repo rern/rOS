@@ -207,7 +207,7 @@ clear -x
 	if [[ $wipe || ! $boot_root ]]; then
 		bar Wipe disk ...
 		wipefs -a $DEV
-		banner Create BOOT and ROOT
+		banner Create partitions
 		sfdisk $label_gpt $DEV <<< "\
 $PART_B : start=2048, size=300M,  type=b
 $PART_R :             size=4000M, type=83"
