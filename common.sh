@@ -132,9 +132,9 @@ $@" )" $(( 8 + $( wc -l <<< $@ ) )) $W
 	tput cnorm # restore cursor
 }
 ipBase() {
-	local ip_router
-	ip_router=$( ip r get 1 | head -1 | cut -d' ' -f3 )
-	echo ${ip_router%.*}.
+	local ip
+	ip=$( ip route get 1.1.1.1 | grep -oP 'src \K\S+' )
+	echo ${ipr%.*}.
 }
 runDuration() {
 	echo \\Z4$( date -d@$1 -u +%M:%S )\\Zn
