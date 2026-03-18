@@ -211,11 +211,29 @@ Required fonts:
 	color: var(--cw);
     background-color: #000;
 }
+.install.action-dropdown,
+.extension-editor *,
+.extension-list-item,
+.notification-container,
 .settings-editor,
 .monaco-menu-container,
 .monaco-button.monaco-text-button > span:not(.codicon),
 .monaco-menu-container .monaco-action-bar .action-item,
-.monaco-menu-container .monaco-action-bar .action-label { /* menus */
+.monaco-menu-container .monaco-action-bar .action-label,
+.vscode-dark { /* menus */
 	font-family: system-ui, Ubuntu, 'Droid Sans', sans-serif !important;
     font-size: 16px !important;
+}
+.extension-editor .codicon::before,
+.codicon-drop-down-button::before {
+	font-family: codicon;
+}
+.extension-list-item > .details > .footer > .monaco-action-bar > .actions-container .extension-action.label {
+	font-size: 16px !important;
+	line-height: 20px !important;
+}
+.message-action-button,
+.action-label.codicon.extension-action.label.prominent.reload,
+.action-label.codicon.extension-action.label.action-dropdown {
+	font-size: unset !important;
 }
