@@ -166,7 +166,6 @@ Scan all IPs?
 " 0 0 && scanIP
 }
 dialog.sdCard() {
-	local error H line_lsblk list_BR list_check list_colored opt_check_sd part dev_part sL txt_confirm
 	if (( $( blockdev --getsz $DEV ) > 4294967296 )); then # 2TB sector limit
 		label_gpt='--label gpt'
 		dialog $opt_msg "
@@ -197,6 +196,9 @@ Continue?
 	echo "$list_color"
 	H=$(( $( wc -l <<< $list_colored ) + 10 ))
 	dialog.maxH $H
+	dialog.sdCardSelect
+}
+dialog.sdCardSelect() {
 #............................
 	dev_part=$( dialog $opt_check_sd "
 $list_colored
@@ -213,11 +215,15 @@ clear -x
 $PART_B : start=2048, size=300M,  type=b
 $PART_R :             size=6000M, type=83"
 	else
-		read PART_B PART_R < <( awk '{print $1}' <<< $dev_part )
+		if (( $( wc -l <<< $dev_part ) != 2 )); then
+			dialog.retry Selected not both BOOT and ROOT && dialog.sdCardSelect
+			return
+#..............................................................................
+		fi
+		read PART_B PART_R < <( awk '{print $1}' <<< $dev_part | tr '\n' ' ' )
 		bar Wipe BOOT and ROOT ...
 		wipefs -a $PART_B $PART_R
 	fi
-	sleep 1
 	bar Format BOOT and ROOT ...
 	mkfs.vfat -F 32 -n BOOT $PART_B
 	mkfs.ext4 -L ROOT -F $PART_R
