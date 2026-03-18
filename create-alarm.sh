@@ -217,6 +217,7 @@ $PART_R :             size=6000M, type=83"
 		bar Wipe BOOT and ROOT ...
 		wipefs -a $PART_B $PART_R
 	fi
+	sleep 1
 	bar Format BOOT and ROOT ...
 	mkfs.vfat -F 32 -n BOOT $PART_B
 	mkfs.ext4 -L ROOT -F $PART_R
