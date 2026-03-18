@@ -207,6 +207,16 @@ $list_colored
  $warn All data in selected will be \Z1deleted\Zn.
 " $H 0 0 "${list_check[@]}" ) || wipe=1
 clear -x
+	if [[ $boot_root ]]; then
+		(( $( wc -l <<< $dev_part ) != 2 )) && txt_retry='Selected not both BOOT and ROOT'
+	else
+		[[ ! $dev_part ]] && txt_retry='None selected'
+	fi
+	if [[ $txt_retry ]]]]; then
+		dialog.retry $txt_retry && dialog.sdPartition
+		return
+#..............................................................................
+	fi
 	if [[ $wipe || ! $boot_root ]]; then
 		bar Wipe disk ...
 		wipefs -a $DEV
@@ -215,12 +225,6 @@ clear -x
 $PART_B : start=2048, size=300M,  type=b
 $PART_R :             size=6000M, type=83"
 	else
-		if (( $( wc -l <<< $dev_part ) != 2 )); then
-			dialog.retry Selected not both BOOT and ROOT && dialog.sdPartition
-			return
-#..............................................................................
-		fi
-		read PART_B PART_R < <( awk '{print $1}' <<< $dev_part | tr '\n' ' ' )
 		bar Wipe BOOT and ROOT ...
 		wipefs -a $PART_B $PART_R
 	fi
