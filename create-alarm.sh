@@ -196,9 +196,9 @@ Continue?
 	echo "$list_color"
 	H=$(( $( wc -l <<< $list_colored ) + 10 ))
 	dialog.maxH $H
-	dialog.sdCardSelect
+	dialog.sdPartition
 }
-dialog.sdCardSelect() {
+dialog.sdPartition() {
 #............................
 	dev_part=$( dialog $opt_check_sd "
 $list_colored
@@ -216,7 +216,7 @@ $PART_B : start=2048, size=300M,  type=b
 $PART_R :             size=6000M, type=83"
 	else
 		if (( $( wc -l <<< $dev_part ) != 2 )); then
-			dialog.retry Selected not both BOOT and ROOT && dialog.sdCardSelect
+			dialog.retry Selected not both BOOT and ROOT && dialog.sdPartition
 			return
 #..............................................................................
 		fi
