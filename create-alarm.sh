@@ -233,6 +233,7 @@ $warn All data will be \Z1deleted\Zn in:
 		return
 #..............................................................................
 	fi
+	clear -x
 	if [[ $wipe || $count == 1 ]]; then
 		bar Wipe disk ...
 		wipefs -a $DEV
