@@ -136,12 +136,12 @@ Shairport  - AirPlay renderer             : shairport-sync
 Snapcast   - Synchronous multiroom player : snapcast
 Spotifyd   - Spotify renderer             : spotifyd
 upmpdcli   - UPnP renderer                : upmpdcli python-upnpp"
-readarray -t list_check < <( awk -F' *:' '{print $1; print "on"}' <<< $list_features )
+readarray -t list_features_check < <( awk -F' *:' '{print $1; print "on"}' <<< $list_features )
 dialog.feature() {
 #............................
 	checked=$( dialog $opt_check '
  \Z1Features to install:\Zn
-' 8 0 0 "${list_check[@]}" )
+' 8 0 0 "${list_features_check[@]}" )
 	if [[ $checked ]]; then
 		features=
 		while read l; do
@@ -183,13 +183,13 @@ Continue?
 		opt_check_sd=${opt_check/--nocancel/--cancel-label Wipe}
 		txt_select="\Zr ↑ \Zn \Zr ↓ \Zn $space_select \Z1BOOT\Zn and \Z1ROOT\Zn"
 		txt_retry='Selected not both BOOT and ROOT'
-		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
+		readarray -t list_target_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else
 		count=1
 		opt_check_sd=$opt_check
 		txt_select="$space_select $sd_usb"
 		txt_retry='None selected'
-		list_check=( "$( grep ^$DEV <<< $line_lsblk )" off )
+		list_target_check=( "$( grep ^$DEV <<< $line_lsblk )" off )
 	fi
 	list_colored=$( sed -E -e 's/^/ /
 						 ' -e '1 {s/^/\\\Zr\\\Zb/; s/$/ \\\Zn/}
@@ -206,7 +206,7 @@ dialog.sdPartition() {
 $list_colored
 
  $txt_select :
-" $H 0 0 "${list_check[@]}" ) || wipe=1
+" $H 0 0 "${list_target_check[@]}" ) || wipe=1
 	clear -x
 	if [[ ! $wipe && $( wc -l <<< $dev_part ) != $count ]]; then
 		dialog.retry $txt_retry && dialog.sdPartition
