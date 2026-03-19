@@ -52,6 +52,11 @@ dialog.data() {
 			;;
 	esac
 	file+=latest.tar.gz
+	txt_confirm="
+\Z1Confirm data:\Zn
+Release      : $release
+Raspberry Pi : $bit
+"
 #............................
 	dialog $opt_yesno "
  RPi with \Z1pre-assigned\Zn IP?
@@ -61,7 +66,7 @@ dialog.data() {
 		(( sec_boot-=10 ))
 #............................
 		IP=$( dialog.ip 'Pre-assigned IP' )
-		confirm_ip="
+		txt_confirm+="
 Assigned IP  : $IP"
 	fi
 #............................
@@ -87,19 +92,13 @@ None" )
 			security=( '' wpa wep )
 			security=${security[i]}
 		fi
-		confirm_wifi="
+		txt_confirm+="
 SSID         : $essid
 Password     : $key
 Security     : ${security^^}"
 	fi
 #............................
-	dialog $opt_yesno "
-\Z1Confirm data:\Zn
-Release      : $release
-Raspberry Pi : $bit
-$confirm_wifi
-$confirm_ip
-" 0 0
+	dialog $opt_yesno "$txt_confirm" 0 0
 	tput cup 0 0 && tput ed
 	[[ $? == 1 ]] && dialog.data
 }
