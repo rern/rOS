@@ -182,13 +182,13 @@ Continue?
 	if (( $( wc -l <<< $list_BR ) > 1 )); then
 		count=2
 		opt_check_sd=${opt_check/--nocancel/--cancel-label Wipe}
-		txt_confirm="\Zr ↑ \Zn \Zr ↓ \Zn $space_select \Z1BOOT\Zn and \Z1ROOT\Zn"
+		txt_select="\Zr ↑ \Zn \Zr ↓ \Zn $space_select \Z1BOOT\Zn and \Z1ROOT\Zn"
 		txt_retry='Selected not both BOOT and ROOT'
 		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else
 		count=1
 		opt_check_sd=$opt_check
-		txt_confirm="$space_select $sd_usb"
+		txt_select="$space_select $sd_usb"
 		txt_retry='None selected'
 		list_check=( "$( grep ^$DEV <<< $line_lsblk )" off )
 	fi
@@ -197,7 +197,7 @@ Continue?
 						 ' -e "\|^ *$DEV| {s/^/\\\Z1/; s/$/\\\Zn/}
 						 " -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	echo "$list_color"
-	H=$(( $( wc -l <<< $list_colored ) + 10 ))
+	H=$(( $( wc -l <<< $list_colored ) + 9 ))
 	dialog.maxH $H
 	dialog.sdPartition
 }
@@ -206,12 +206,30 @@ dialog.sdPartition() {
 	dev_part=$( dialog $opt_check_sd "
 $list_colored
 
- $txt_confirm :
- $warn All data in selected will be \Z1deleted\Zn.
+ $txt_select :
 " $H 0 0 "${list_check[@]}" ) || wipe=1
-clear -x
-	if (( $( wc -l <<< $dev_part ) != $count )); then
+	clear -x
+	if [[ ! $wipe && $( wc -l <<< $dev_part ) != $count ]]; then
 		dialog.retry $txt_retry && dialog.sdPartition
+		return
+#..............................................................................
+	fi
+	if [[ $wipe || $count == 1 ]]; then
+		target=$DEV
+	else
+		target="\
+$PART_B BOOT
+$PART_R ROOT"
+	fi
+	dialog $opt_yesno "
+$warn All data will be \Z1deleted\Zn in:
+
+\Z1$target\Zn
+
+          Confirm?
+" 0 0
+	if [[ $? != 0 ]]; then
+		dialog.sdPartition
 		return
 #..............................................................................
 	fi
