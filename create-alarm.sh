@@ -177,17 +177,17 @@ Continue?
 	fi
 	line_lsblk=$( lsblk -po name,label,size,mountpoint )
 	list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
-	space_select='\Zr space \Zn to select'
+	space_select='» \Zr space \Zn to select'
 	if (( $( wc -l <<< $list_BR ) > 1 )); then
 		count=2
 		opt_check_sd=${opt_check/--nocancel/--cancel-label Wipe}
-		txt_select="\Zr ↑ \Zn \Zr ↓ \Zn $space_select \Z1BOOT\Zn and \Z1ROOT\Zn"
+		txt_select="\Zr ↑ \Zn \Zr ↓ \Zn $space_select \Z1BOOT\Zn and \Z1ROOT\Zn :"
 		txt_retry='Selected not both BOOT and ROOT'
 		readarray -t list_target_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else
 		count=1
 		opt_check_sd=$opt_check
-		txt_select="$space_select $sd_usb"
+		txt_select="$space_select $sd_usb :"
 		txt_retry='None selected'
 		list_target_check=( "$( grep ^$DEV <<< $line_lsblk )" off )
 	fi
@@ -225,7 +225,7 @@ $warn All data will be \Z1deleted\Zn in:
 
 \Z1$target\Zn
 
-           Confirm?
+\Zr ← \Zn » \Zr Enter \Zn to confirm :
 " 0 0
 	if [[ $? != 0 ]]; then
 		dialog.sdPartition
