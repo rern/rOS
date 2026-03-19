@@ -43,12 +43,12 @@ dialog.data() {
 		1 )
 			file+=aarch64-
 			bit=64bit
-			sec_boot=45
+			sec_boot=60
 			;;
 		2 )
 			file+=armv7-
 			bit=32bit
-			sec_boot=60
+			sec_boot=75
 			;;
 	esac
 	file+=latest.tar.gz
@@ -461,37 +461,22 @@ $sd_usb : Unmounted
 (
 	for (( i = 1; i < sec_boot; i++ )); do
 		echo $(( i * 100 / sec_boot ))
+		if [[ $IP ]]; then
+			pingIP $IP && ip_found=1 && break
+		fi
 		sleep 1
 	done 
 ) | dialog $opt_gauge "
   Boot ...
   \Z1Arch Linux ARM\Zn
 " 9 $W 0
-
-if [[ $IP ]]; then
-#............................
-	(
-		for i in {1..10}; do
-			echo "
-XXX
-$(( i * 10 ))
-
-  Ping Arch Linux ARM ...
-  \Z1$IP\Zn
-XXX"
-			pingIP $IP && break || sleep 2
-		done
-	) | dialog $opt_gauge '' 9 $W 0
-	if pingIP $IP; then
+if [[ $ip_found ]]; then
 #............................
 		dialog $opt_info "
   SSH Arch Linux ARM ...
   @ \Z1$IP\Zn
 " 9 $W
 		create_ros $IP
-	else
-		dialog.scanIP "\Z1Assigned IP\Zn not found: $IP"
-	fi
 else
-	scanIP
+	[[ $IP ]] && dialog.scanIP "\Z1Assigned IP\Zn not found: $IP" || scanIP
 fi
