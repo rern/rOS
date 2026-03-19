@@ -226,7 +226,7 @@ $warn All data will be \Z1deleted\Zn in:
 
 \Z1$target\Zn
 
-          Confirm?
+           Confirm?
 " 0 0
 	if [[ $? != 0 ]]; then
 		dialog.sdPartition
