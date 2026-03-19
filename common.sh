@@ -132,7 +132,7 @@ $@" )" $(( 8 + $( wc -l <<< $@ ) )) $W
 	tput cnorm # restore cursor
 }
 ipBase() {
-	ip route get 1.1.1.1 | sed -n -E '1 {s/.*src *(.*\.).*/\1/; p}'
+	ip route get 1.1.1.1 | grep -oP '(?<=src ).*\..*\..*\.'
 }
 runDuration() {
 	echo \\Z4$( date -d@$1 -u +%M:%S )\\Zn
