@@ -220,7 +220,7 @@ $list_colored
 $PART_B BOOT
 $PART_R ROOT"
 	fi
-	dialog $opt_yesno "
+	dialog --defaultno $opt_yesno "
 $warn All data will be \Z1deleted\Zn in:
 
 \Z1$target\Zn
