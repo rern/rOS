@@ -180,13 +180,16 @@ Continue?
 	list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
 	space_select='\Zr space \Zn to select'
 	if (( $( wc -l <<< $list_BR ) > 1 )); then
-		boot_root=1
+		count=2
 		opt_check_sd=${opt_check/--nocancel/--cancel-label Wipe}
 		txt_confirm="\Zr ↑ \Zn \Zr ↓ \Zn $space_select \Z1BOOT\Zn and \Z1ROOT\Zn"
+		txt_retry='Selected not both BOOT and ROOT'
 		readarray -t list_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else
+		count=1
 		opt_check_sd=$opt_check
 		txt_confirm="$space_select $sd_usb"
+		txt_retry='None selected'
 		list_check=( "$( grep ^$DEV <<< $line_lsblk )" off )
 	fi
 	list_colored=$( sed -E -e 's/^/ /
@@ -207,23 +210,18 @@ $list_colored
  $warn All data in selected will be \Z1deleted\Zn.
 " $H 0 0 "${list_check[@]}" ) || wipe=1
 clear -x
-	if [[ $boot_root ]]; then
-		(( $( wc -l <<< $dev_part ) != 2 )) && txt_retry='Selected not both BOOT and ROOT'
-	else
-		[[ ! $dev_part ]] && txt_retry='None selected'
-	fi
-	if [[ $txt_retry ]]]]; then
+	if (( $( wc -l <<< $dev_part ) != $count )); then
 		dialog.retry $txt_retry && dialog.sdPartition
 		return
 #..............................................................................
 	fi
-	if [[ $wipe || ! $boot_root ]]; then
+	if [[ $wipe || $count == 1 ]]; then
 		bar Wipe disk ...
 		wipefs -a $DEV
 		banner Create partitions
 		sfdisk $label_gpt $DEV <<< "\
-$PART_B : start=2048, size=300M,  type=b
-$PART_R :             size=6000M, type=83"
+size=300M, type=b
+size=6G,   type=83"
 	else
 		bar Wipe BOOT and ROOT ...
 		wipefs -a $PART_B $PART_R
