@@ -209,7 +209,11 @@ Required fonts:
     max-width: unset;
     padding: 0 10px 0 5px;
 	color: var(--cw);
-    background-color: #000;
+    background-color: #a5d6ff;
+}
+#status\.scm\.0 * { /* branch */
+    margin: 0;
+    color: #000 !important;   
 }
 .install.action-dropdown,
 .extension-editor *,
