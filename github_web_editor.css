@@ -115,7 +115,7 @@ Required fonts:
 }
 .action-item.command-center-center, /* input box */
 .monaco-inputbox {
-    min-height: 28px;
+    min-height: 28px !important;
     border-color: var(--cg) !important;
     background-color: #000;
 }

@@ -13,6 +13,7 @@ Create Image    : image-create
 Upload Images   : image-upload
 Distcc Client   : distcc-client
 Docker          : docker
+Repo Update     : repoupdate
 SSH             :"
 list_task=$( awk -F' *:' '{print $1}' <<< $list )
 #............................
