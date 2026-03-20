@@ -273,10 +273,6 @@ md5verify() {
 memDirty() {
 	awk '/Dirty:/{print $2}' /proc/meminfo
 }
-pingIP() {
-	[[ ! $1 ]] && return 1
-	ping -4 -c 1 -W 1 $1 &> /dev/null && return 0
-}
 scanIP() {
 #............................
 	dialog $opt_info "
@@ -462,24 +458,24 @@ $sd_usb : Unmounted
 	• Create $logo rAudio
 " 14 $W
 #............................
-(
+{
 	for (( i = 1; i < sec_boot; i++ )); do
-		pingIP $IP && break
+		ping -4 -c 1 -W 1 $IP &> /dev/null && ip_found=1 && break
 #..............................................................................
 		echo $(( i * 100 / sec_boot ))
 		sleep 1
-	done 
- ) | dialog $opt_gauge "
+	done
+} | dialog $opt_gauge "
   Boot ...
   \Z1Arch Linux ARM\Zn
 " 9 $W 0
-if pingIP $IP; then
-		dialog $opt_info "
-  SSH Arch Linux ARM ...
-  @ \Z1$IP\Zn
+if [[ $ip_found ]]; then
+	dialog $opt_info "
+SSH Arch Linux ARM ...
+@ \Z1$IP\Zn
 " 9 $W
-		sleep 1
-		create_ros $IP
+	sleep 1
+	create_ros $IP
 elif [[ $IP ]]; then
 #............................
 	dialog.scanIP "\Z1Assigned IP\Zn not found: $IP"
