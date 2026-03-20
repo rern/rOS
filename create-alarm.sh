@@ -21,7 +21,7 @@ fi
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
 
 create_ros() {
-	std=$( ssh $opt_ssh root@$1 /root/create-ros.sh )
+	ssh $opt_ssh root@$1 /root/create-ros.sh
 	[[ $? == 255 && $std == *'connect to host'* ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
 }
 dialog.data() {
