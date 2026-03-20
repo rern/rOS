@@ -10,6 +10,7 @@ for cmd in bsdtar dialog jq nmap pigz pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
 if [[ $packages ]]; then
+	$packages+=' gcc-libs libgcc'
 	if [[ -e /usr/bin/pacman ]]; then
 		pacman -Sy --noconfirm $packages
 	else
@@ -83,7 +84,8 @@ Connect \Z1Wi-Fi\Zn on boot?
 			essid=$( dialog.input 'Wi-Fi - \Z1SSID\Zn:' "$essid" )
 #............................
 			key=$( dialog.input 'Wi-Fi - \Z1Password\Zn:' "$key" )
-			tput cup 0 0 && tput ed
+			tput cup 0 0
+			tput ed
 #............................
 			i=$( dialog.menu 'Wi-Fi \Z1Security\Zn' "\
 WPA
@@ -98,9 +100,10 @@ Password     : $key
 Security     : ${security^^}"
 	fi
 #............................
-	dialog $opt_yesno "$txt_confirm" 0 0
-	tput cup 0 0 && tput ed
-	[[ $? == 1 ]] && dialog.data
+	dialog $opt_yesno "$txt_confirm" 0 0 && confirm_data=1
+	tput cup 0 0
+	tput ed
+	[[ ! $confirm_data ]] && dialog.data
 }
 dialog.download() {
 #............................
@@ -112,12 +115,12 @@ dialog.download() {
 					if ( $1 == 100 ) next
 					
 					print "XXX"
-					print $1
 					print ""
 					print "  Download ..."
 					print "  \\Z1" file "\\Zn"
 					print "  Time left: " $11 " (" $7 "B/s)"
 					print "XXX"
+					print $1
 
 					fflush()
 				}'
@@ -355,12 +358,12 @@ size=$( stat -c %s $file )
 				}
 
 				print "XXX"
-				print $1
 				print ""
 				print "  Decompress ..."
 				print "  \\Z1" file "\\Zn"
   				print "  Time left: " eta_speed
 				print "XXX"
+				print $1
 
 				fflush()
 			}' \
@@ -460,23 +463,26 @@ $sd_usb : Unmounted
 #............................
 (
 	for (( i = 1; i < sec_boot; i++ )); do
-		echo $(( i * 100 / sec_boot ))
-		if [[ $IP ]]; then
-			pingIP $IP && ip_found=1 && break
-		fi
-		sleep 1
-	done 
-) | dialog $opt_gauge "
-  Boot ...
-  \Z1Arch Linux ARM\Zn
-" 9 $W 0
-if [[ $ip_found ]]; then
-#............................
-		dialog $opt_info "
+		if [[ $IP ]] && pingIP $IP; then
+			dialog $opt_info "
   SSH Arch Linux ARM ...
   @ \Z1$IP\Zn
 " 9 $W
-		create_ros $IP
+			sleep 1
+			create_ros $IP
+			break
+#..............................................................................
+		fi
+		echo $(( i * 100 / sec_boot ))
+		sleep 1
+	done 
+ ) | dialog $opt_gauge "
+  Boot ...
+  \Z1Arch Linux ARM\Zn
+" 9 $W 0
+if [[ $IP ]]; then
+#............................
+	dialog.scanIP "\Z1Assigned IP\Zn not found: $IP"
 else
-	[[ $IP ]] && dialog.scanIP "\Z1Assigned IP\Zn not found: $IP" || scanIP
+	scanIP
 fi
