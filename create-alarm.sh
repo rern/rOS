@@ -458,14 +458,14 @@ $sd_usb : Unmounted
 	• Create $logo rAudio
 " 14 $W
 #............................
-{
+(
 	for (( i = 1; i < sec_boot; i++ )); do
 		ping -4 -c 1 -W 1 $IP &> /dev/null && touch ip_found && break
 #..............................................................................
 		echo $(( i * 100 / sec_boot ))
 		sleep 1
 	done
-} | dialog $opt_gauge "
+) | dialog $opt_gauge "
   Boot ...
   \Z1Arch Linux ARM\Zn
 " 9 $W 0
