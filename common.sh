@@ -68,8 +68,9 @@ dialog.input() {
 " 8 40 "$2"
 }
 dialog.maxH() {
-	(( $1 > $( tput lines ) )) && dialog $opt_msg "
-Drag set \Z1Terminal height\Zn > $1
+	h_terminal=$(( $1 + 4 ))
+	(( $h_terminal > $( tput lines ) )) && dialog $opt_msg "
+Drag set \Z1Terminal height\Zn > $h_terminal
 
 Then continue
 " 0 0
