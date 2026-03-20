@@ -144,7 +144,9 @@ runDuration() {
 https_rern='https://github.com/rern'
 https_ros_raw="$https_rern/rOS/raw"
 https_ros_branch="$https_ros_raw/$branch"
-opt_ssh='-qtt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+opt_ssh='-qtt -o ConnectionTimeout=3
+              -o StrictHostKeyChecking=no
+			  -o UserKnownHostsFile=/dev/null'
 
 logo='\Zr\Z4+R\Zn'
 warn='\Zr\Z1 ! \Zn'
