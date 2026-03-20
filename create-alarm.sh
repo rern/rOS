@@ -114,8 +114,8 @@ dialog.download() {
 				/^ *[1-9]/ {
 					if ( $1 == 100 ) next
 					
-					print $1
 					print "XXX"
+					print $1
 					print ""
 					print "  Download ..."
 					print "  \\Z1" file "\\Zn"
@@ -357,8 +357,8 @@ size=$( stat -c %s $file )
 					eta_speed = "..."
 				}
 
-				print $1
 				print "XXX"
+				print $1
 				print ""
 				print "  Decompress ..."
 				print "  \\Z1" file "\\Zn"
