@@ -134,6 +134,9 @@ $@" )" $(( 8 + $( wc -l <<< $@ ) )) $W
 ipBase() {
 	ip route get 1.1.1.1 | grep -oP '(?<=src ).*\..*\..*\.'
 }
+kbKey() {
+	echo "\Zr\Zb $1 \Zn"
+}
 runDuration() {
 	echo \\Z4$( date -d@$1 -u +%M:%S )\\Zn
 }

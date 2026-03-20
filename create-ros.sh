@@ -9,19 +9,30 @@ dir_system=/etc/systemd/system
 features=$( < features )
 release=$( < release )
 
-retryCreate() {
-	dialog.retry "$@" && ./create-ros.sh || exit
+packageInstall() {
+	pacman -S --noconfirm --needed $packages $features
+	if [[ $? != 0 ]]; then
+		dialog.retry Install packages incomplete. && packageInstall || exit 1
+#------------------------------------------------------------------------------
+	fi
+}
+packageUpdate() {
+	pacman -Syu --noconfirm
+	if [[ $? != 0 ]]; then
+		dialog.retry Upgrade system incomplete. && packageUpdate || exit 1
+#------------------------------------------------------------------------------
+	fi
 }
 #............................
 dialog.splash r A u d i o
 #............................
-banner Initialize Arch Linux ARM ...
+banner Initialize Arch Linux ARM
 pacman-key --init
 pacman-key --populate archlinuxarm
 systemctl restart systemd-timesyncd # force time sync
 systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy pool is not initialized)
 #............................
-banner Upgrade system and default packages ...
+banner Upgrade system and default packages
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs 
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns 
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
@@ -49,13 +60,7 @@ SigLevel = Optional TrustAll\
 Server = https://rern.github.io/$arch\
 ' /etc/pacman.conf
 fi
-pacman -Syu --noconfirm
-if [[ $? != 0 ]]; then
-	echo -e "\e[38;5;0m\e[48;5;3m ! \e[0m Retry upgrade system ..."
-	sleep 3
-	pacman -Syu --noconfirm
-	[[ $? != 0 ]] && retryCreate Upgrade system incomplete.
-fi
+packageUpdate
 if [[ -e /boot/cmdline.txt0 ]]; then
 	mv -f /boot/cmdline.txt{0,}
 	mv -f /boot/config.txt{0,}
@@ -63,15 +68,10 @@ fi
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 #............................
-banner Install packages ...
-pacman -S --noconfirm --needed $packages $features
-if [[ $? != 0 ]]; then
-	echo -e "\e[38;5;0m\e[48;5;3m ! \e[0m Retry download packages ..."
-	pacman -S --noconfirm --needed $packages $features
-	[[ $? != 0 ]] && retryCreate Install packages incomplete.
-fi
+banner Install packages
+packageInstall
 #............................
-banner Setup rAudio ...
+banner Setup rAudio
 mkdir -p /tmp/config
 curl -skL https://github.com/rern/rAudio/archive/$release.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
 curl -skL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
@@ -216,6 +216,6 @@ Created successfully
 $( runDuration $SECONDS )
 " )
 
-Press \Zr\Zb Enter \Zn to reboot
+Press $( kbKey Enter ) to reboot
 " 12 $W
 reboot

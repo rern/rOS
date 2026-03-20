@@ -177,11 +177,11 @@ Continue?
 	fi
 	line_lsblk=$( lsblk -po name,label,size,mountpoint )
 	list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
-	space_select='» \Zr space \Zn to select'
+	space_select="» $( kbKey space ) to select"
 	if (( $( wc -l <<< $list_BR ) > 1 )); then
 		count=2
 		opt_check_sd=${opt_check/--nocancel/--cancel-label Wipe}
-		txt_select="\Zr ↑ \Zn \Zr ↓ \Zn $space_select \Z1BOOT\Zn and \Z1ROOT\Zn :"
+		txt_select="$( kbKey ↑ ) $( kbKey ↓ ) $space_select \Z1BOOT\Zn and \Z1ROOT\Zn :"
 		txt_retry='Selected not both BOOT and ROOT'
 		readarray -t list_target_check < <( sed -E -e 's/^..|\s*$//;' -e 'a\off' <<< $list_BR )
 	else
@@ -225,7 +225,7 @@ $warn All data will be \Z1deleted\Zn in:
 
 \Z1$target\Zn
 
-\Zr ← \Zn » \Zr Enter \Zn to confirm :
+$( kbKey ← ) » $( kbKey Enter ) to confirm :
 " 0 0
 	if [[ $? != 0 ]]; then
 		dialog.sdPartition
@@ -453,7 +453,7 @@ $sd_usb : Unmounted
 
 » Move $sd_usb to Raspberry Pi
 » Power on
-» Press \Zr\Zb Enter \Zn:
+» Press $( kbKey Enter ):
 	• Start boot timer
 	• Create $logo rAudio
 " 14 $W

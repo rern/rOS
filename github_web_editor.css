@@ -209,7 +209,7 @@ Required fonts:
     max-width: unset;
     padding: 0 10px 0 5px;
 	color: var(--cw);
-    background-color: #79c0ff;
+    background-color: #f78166;
 }
 #status\.scm\.0 * { /* branch */
     margin: 0;
