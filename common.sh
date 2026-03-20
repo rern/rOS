@@ -67,17 +67,8 @@ dialog.input() {
 
 " 8 40 "$2"
 }
-dialog.maxH() {
-	h_terminal=$(( $1 + 4 ))
-	(( $h_terminal > $( tput lines ) )) && dialog $opt_msg "
-Drag set \Z1Terminal height\Zn > $h_terminal
-
-Then continue
-" 0 0
-}
 dialog.menu() { # dialog --menu $1=title $2=multiline list
 	local -a list
-	dialog.maxH $(( ${#list[@]} / 2 + 8 ))
 	readarray -t list < <( awk 'NF {print ++i; print}' <<< $2 )
 #............................
 	dialog $opt_menu "

@@ -6,7 +6,7 @@ SECONDS=0
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
-for cmd in bsdtar dialog jq nmap pigz pv; do # required packages
+for cmd in bsdtar dialog jq nmap pigz pv xterm; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
 if [[ $packages ]]; then
@@ -199,7 +199,6 @@ Continue?
 						 " -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	echo "$list_color"
 	H=$(( $( wc -l <<< $list_colored ) + 9 ))
-	dialog.maxH $H
 	dialog.sdPartition
 }
 dialog.sdPartition() {
@@ -297,6 +296,12 @@ scanIP() {
 }
 
 trap 'BR.unmount; clear -x' EXIT
+
+h=$( tput lines )
+w=$( tput cols )
+(( $h < 40 )) && h=40
+(( $w < 120 )) && w=120
+resize -s $h $w # set terminal size
 #............................
 dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
 read DEV PART_B PART_R < <( dialog.sd )
