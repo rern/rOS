@@ -100,7 +100,7 @@ Insert $sd_usb
 	done < <( timeout $s dmesg -tW )
 	if [[ ! $dev_gib ]]; then
 		if dialog.retry "No devices inserted in ${s}s."; then
-			dialog.sdCard
+			dialog.sd
 			return
 #..............................................................................
 		fi
