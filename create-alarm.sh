@@ -20,8 +20,8 @@ fi
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
 
 create_ros() {
-	ssh $opt_ssh root@$1 /root/create-ros.sh
-	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect IP: \Z1$1\Zn"
+	std=$( ssh $opt_ssh root@$1 /root/create-ros.sh )
+	[[ $? == 255 && $std == *'connect to host'* ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
 }
 dialog.data() {
 	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
