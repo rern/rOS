@@ -10,7 +10,6 @@ for cmd in bsdtar dialog jq nmap pigz pv; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
 if [[ $packages ]]; then
-	packages+=' gcc-libs libgcc'
 	if [[ -e /usr/bin/pacman ]]; then
 		pacman -Sy --noconfirm $packages
 	else
