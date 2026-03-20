@@ -468,7 +468,7 @@ $sd_usb : Unmounted
   Boot ...
   \Z1Arch Linux ARM\Zn
 " 9 $W 0
-if [[ -e ip_found ]]]]; then
+if [[ -e ip_found ]]; then
 	rm ip_found
 	dialog $opt_info "
   SSH Arch Linux ARM ...
