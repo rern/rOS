@@ -274,7 +274,8 @@ memDirty() {
 	awk '/Dirty:/{print $2}' /proc/meminfo
 }
 pingIP() {
-	ping -4 -c 1 -W 1 $1 &> /dev/null
+	[[ ! $1 ]] && return 1
+	ping -4 -c 1 -W 1 $1 &> /dev/null && return 0
 }
 scanIP() {
 #............................
@@ -463,16 +464,8 @@ $sd_usb : Unmounted
 #............................
 (
 	for (( i = 1; i < sec_boot; i++ )); do
-		if [[ $IP ]] && pingIP $IP; then
-			dialog $opt_info "
-  SSH Arch Linux ARM ...
-  @ \Z1$IP\Zn
-" 9 $W
-			sleep 1
-			create_ros $IP
-			break
+		pingIP $IP && break
 #..............................................................................
-		fi
 		echo $(( i * 100 / sec_boot ))
 		sleep 1
 	done 
@@ -480,7 +473,14 @@ $sd_usb : Unmounted
   Boot ...
   \Z1Arch Linux ARM\Zn
 " 9 $W 0
-if [[ $IP ]]; then
+if pingIP $IP; then
+		dialog $opt_info "
+  SSH Arch Linux ARM ...
+  @ \Z1$IP\Zn
+" 9 $W
+		sleep 1
+		create_ros $IP
+elif [[ $IP ]]; then
 #............................
 	dialog.scanIP "\Z1Assigned IP\Zn not found: $IP"
 else
