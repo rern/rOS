@@ -474,7 +474,6 @@ if [[ -e ip_found ]]; then
   SSH Arch Linux ARM ...
   @ \Z1$IP\Zn
 " 9 $W
-	sleep 1
 	create_ros $IP
 elif [[ $IP ]]; then
 #............................
