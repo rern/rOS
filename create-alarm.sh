@@ -5,6 +5,7 @@
 SECONDS=0
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
+export PATH=$PATH:/sbin
 
 for cmd in bsdtar dialog jq nmap pigz pv xterm; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
