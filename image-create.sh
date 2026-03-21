@@ -5,13 +5,13 @@ trap 'BR.unmount; clear -x' EXIT
 shrink() {
 	bar "Shrink Pass #$1 ..."
 	read b_used b_size b_count < <( tune2fs -l $PART_R | awk '
-								/^Block count/ { count=$NF }
-								/^Free blocks/ { free=$NF }
-								/^Block size/  { size=$NF }
-								END {print ( count - free ), size, count }' )
+										/^Block count/ { count=$NF }
+										/^Free blocks/ { free=$NF }
+										/^Block size/  { size=$NF }
+											END { print ( count - free ), size, count }' )
 	b_target=$(( ( b_used * 105 ) / 100 ))
 	if (( $b_count - b_target < 1024 )); then
-		echo Already reached minimum size.
+		bar Almost at minimum size already.
 	else
 		b_new=$(( ( b_target * b_size ) / 1024 ))
 		resize2fs -fp $PART_R ${b_new}K
