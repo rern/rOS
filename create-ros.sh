@@ -207,10 +207,15 @@ $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
-dialog.splash "\
+dialog $opt_msg "
+$( alignCenter "
+$logo
 r A u d i o
 
 Created successfully
 $( runDuration $SECONDS )
-\Z1   Reboot ...\Zn"
+" )
+
+Press $( kbKey Enter ) to reboot
+" 12 $W
 reboot
