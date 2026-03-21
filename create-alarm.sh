@@ -119,12 +119,14 @@ dialog.download() {
 				/^ *[1-9]/ {
 					if ( $1 == 100 ) next
 
+					eta = $11
+					sub( /^[^:]+:/, "", eta )
 					print "XXX"
 					print $1
 					print ""
 					print "  Download ..."
 					print "  \\Z1" file "\\Zn"
-					print "  Time left: " $11 " (" $7 "B/s)"
+					print "  Time left: " eta " (" $7 "B/s)"
 					print "XXX"
 
 					fflush()
