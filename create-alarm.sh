@@ -198,7 +198,6 @@ Continue?
 						 ' -e '1 {s/^/\\\Zr\\\Zb/; s/$/ \\\Zn/}
 						 ' -e "\|^ *$DEV| {s/^/\\\Z1/; s/$/\\\Zn/}
 						 " -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
-	echo "$list_color"
 	H=$(( $( wc -l <<< $list_colored ) + 9 ))
 	dialog.sdPartition
 }
