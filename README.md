@@ -55,8 +55,16 @@ Note: Device larger than 2TB will be setup as `GPT`
 
 **Run script**
 - Open terminal on Linux
+- Switch to user root
 ```sh
 su
+
+# on live usb: if password required
+su passwd root
+# set password and su again
+```
+- Run
+```sh
 bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
 ```
 ---
