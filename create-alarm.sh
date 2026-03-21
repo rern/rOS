@@ -18,9 +18,9 @@ if [[ $packages ]]; then
 		apt install -y $packages
 	fi
 fi
-if [[ ! -e /usr/bin/pacman ]]; then
-	export PATH=$PATH:/sbin
-	alias awk='gawk' # fix: awk on debian
+if [[ ! -e /usr/bin/pacman ]]; then # debian
+	export PATH+=:/sbin # sfdisk
+	alias awk=gawk      # fix: curl ... | awk - no stdout
 fi
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
