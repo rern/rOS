@@ -14,6 +14,7 @@ if [[ $packages ]]; then
 	if [[ -e /usr/bin/pacman ]]; then
 		pacman -Sy --noconfirm $packages
 	else
+		grep -q bsdtar <<< $packages && packages=${packages/bsdtar/libarchive-tools}
 		apt install -y $packages
 	fi
 fi
