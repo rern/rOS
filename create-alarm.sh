@@ -5,9 +5,8 @@
 SECONDS=0
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
-export PATH=$PATH:/sbin
 
-for cmd in bsdtar dialog jq nmap pigz pv xterm; do # required packages
+for cmd in bsdtar dialog gawk jq nmap pigz pv xterm; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
 if [[ $packages ]]; then
@@ -18,6 +17,10 @@ if [[ $packages ]]; then
 		grep -q bsdtar <<< $packages && packages=${packages/bsdtar/libarchive-tools}
 		apt install -y $packages
 	fi
+fi
+if [[ ! -e /usr/bin/pacman ]]; then
+	export PATH=$PATH:/sbin
+	alias awk='gawk' # fix: awk on debian
 fi
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
