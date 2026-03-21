@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# branch=UPDATE; . <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
+# branch=UPDATE; . <( curl -sL $https_ern/rOS/$branch/common.sh )
 
 alignCenter() {
 	local l line txt w
@@ -132,10 +132,10 @@ kbKey() {
 runDuration() {
 	echo \\Z4$( date -d@$1 -u +%M:%S )\\Zn
 }
-
-https_rern='https://github.com/rern'
-https_ros_raw="$https_rern/rOS/raw"
-https_ros_branch="$https_ros_raw/$branch"
+#         https://raw.githubusercontent.com/rern/REPO/BRANCH/file
+https_raw=https://raw.githubusercontent.com
+https_rern=https_raw/rern
+https_mirrorlist=$https_raw/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist
 opt_ssh='-qtt -o ConnectTimeout=3
 			  -o StrictHostKeyChecking=no
 			  -o UserKnownHostsFile=/dev/null'

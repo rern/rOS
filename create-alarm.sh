@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# branch=UPDATE bash <( curl -sL https://github.com/rern/rOS/raw/$branch/create-alarm.sh ) $branch
+# branch=UPDATE bash <( curl -skL $https_rern/rOS/$branch/create-alarm.sh ) $branch
 
 SECONDS=0
 [[ $1 ]] && branch=$1
@@ -20,17 +20,17 @@ if [[ $packages ]]; then
 	fi
 fi
 
-[[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
+[[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL $https_rern/rOS/$branch/common.sh )
 
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
 	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
 }
 dialog.data() {
-	latest=$( curl -sL $https_rern/rAudio-addons/raw/main/addonslist.json | jq -r .r1.version )
+	latest=$( curl -sL $https_rern/rAudio-addons/main/addonslist.json | jq -r .r1.version )
 #............................
 	release=$( dialog.input '\Z1r\ZnAudio release:' $latest )
-	if ! curl -sIfo /dev/null $https_rern/rAudio/releases/tag/$release; then
+	if ! curl -sIf /dev/null $https_rern/rAudio/releases/tag/$release; then
 		dialog.retry rAudio $release not found.
 		dialog.data
 		return
@@ -254,7 +254,7 @@ size=6G,   type=83"
 md5verify() {
 	clear -x
 	bar Verify $file ...
-	curl -skLO $url/$file.md5
+	curl -sLO $url/$file.md5
 	[[ $? != 0 ]] && dialog.retry 'Download *.md5 failed.' && md5verify
 	if md5sum --quiet -c $file.md5; then
 #............................
@@ -313,8 +313,7 @@ BR.mount
 dialog.data
 dialog.feature
 # package mirror server
-lines=$( curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
-			| sed -E -n '/^### Mirror/,$ {/^\s*$|^### Mirror/ d; s|.*//(.*)\.mirror.*|\1|; p}' )
+lines=$( curl -sL $https_mirrorlist | sed -E -n '/^### Mirror/,$ {/^\s*$|^### Mirror/ d; s|.*//(.*)\.mirror.*|\1|; p}' )
 list_menu="\
 Auto (By Geo-IP)"
 list_code=( '' '' )
@@ -441,7 +440,7 @@ sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
 # scripts
 mv BOOT/{features,release} ROOT/root
 for f in {common,create-ros}.sh; do
-	curl -sL $https_ros_branch/$f -o ROOT/root/$f
+	curl -sL $https_rern/rOS/$branch/$f -o ROOT/root/$f
 done
 chmod 755 ROOT/root/*.sh
 sync

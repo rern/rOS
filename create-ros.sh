@@ -33,8 +33,8 @@ systemctl restart systemd-timesyncd # force time sync
 systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy pool is not initialized)
 #............................
 banner Upgrade system and default packages
-packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs 
-i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns 
+packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs
+i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
 raspberrypi-utils sudo udevil websocat wget xorg-xset'
 pkgs=$( pacman -Q )
@@ -73,8 +73,8 @@ packageInstall
 #............................
 banner Setup rAudio
 mkdir -p /tmp/config
-curl -skL https://github.com/rern/rAudio/archive/$release.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
-curl -skL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
+curl -sL $https_rern/rAudio/archive/$release.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
+curl -sL $https_rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
 rm -f /tmp/config/{.*,*} 2> /dev/null
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
@@ -84,7 +84,7 @@ chown -R http:http /etc/netctl /etc/systemd/network
 dirbash=/srv/http/bash
 chmod -R 755 $dirbash
 mkdir /srv/http/assets/img/guide
-curl -skL https://github.com/rern/_assets/raw/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
+curl -sL $https_rern/_assets/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
 # alsa
 alsactl store
 # bluetooth

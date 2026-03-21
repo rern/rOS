@@ -48,7 +48,7 @@ for model in $models; do
 	(( i++ ))
 	notes+="
 | ${mdl_rpi[$model]} \
-| [$file](https://github.com/rern/rAudio/releases/download/i$release/$file) \
+| [$file]($https_rern/rAudio/releases/download/i$release/$file) \
 | [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file) |"
 done
 #............................

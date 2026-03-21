@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [[ $1 ]] && branch=UPDATE || branch=main
-. <( curl -sL https://github.com/rern/rOS/raw/$branch/+R.sh )
+. <( curl -sL $https_rern/rOS/$branch/+R.sh )
 #..........................................................
 # chmod +x +R.sh
 # echo 'export PATH="/root:$PATH"' >> .bashrc

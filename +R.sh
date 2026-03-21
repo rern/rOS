@@ -2,7 +2,7 @@
 
 trap 'clear -x' EXIT
 
-. <( curl -sL https://github.com/rern/rOS/raw/$branch/common.sh )
+. <( curl -sL $https_rern/rOS/$branch/common.sh )
 
 #............................
 dialog.splash U t i l i t i e s
@@ -21,7 +21,7 @@ i=$( dialog.menu Tasks "$list_task" )
 file_name=$( sed -n "$i {s/.*: *//; p}" <<< $list )
 if [[ $file_name ]]; then
 	(( $i < 5 )) && repo=rOS || repo=rern.github.io
-	. <( curl -sL "$https_rern/$repo/raw/$branch/$file_name.sh" )
+	. <( curl -sL "$https_rern/$repo/$branch/$file_name.sh" )
 else
 #............................
 	ip=$( dialog.ip 'rAudio IP' )

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. <( curl -sL $https_ros_raw/$branch/common.sh )
+. <( curl -sL $https_rern/rOS/$branch/common.sh )
 
 selected() {
 	grep -q $1 <<< $reset && return 0
@@ -58,7 +58,7 @@ if selected connection; then
 	fi
 fi
 if [[ ! -e /boot/kernel.img ]]; then # skip on rpi 0, 1
-	curl -skL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
+	curl -sL $https_mirrorlist -o /etc/pacman.d/mirrorlist
 fi
 rm -rf /root/.config/chromium
 bar 'rAudio reset done.
