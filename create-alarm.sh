@@ -39,7 +39,7 @@ dialog.data() {
 		return
 #..............................................................................
 	fi
-	echo $release > BOOT/release
+	echo $release > release
 #............................
 	i=$( dialog.menu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
@@ -163,7 +163,7 @@ dialog.feature() {
 \Z1Confirm features to install:\Zn
 
 $checked
-" 0 0 && echo $features > BOOT/features || dialog.feature
+" 0 0 && echo $features > features || dialog.feature
 }
 dialog.scanIP() {
 	dialog $opt_msg "
@@ -441,9 +441,11 @@ sed -i 's/#*\(PermitRootLogin \).*/\1yes/
 id=$( awk -F':' '/^root/ {print $3}' ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
 # scripts
-curl -sLO $https_ros/{common,create-ros}.sh
+for f in common create-ros; do
+	curl -sLO $https_ros/$f.sh
+done
 chmod +x create-ros.sh
-mv BOOT/{features,release} {common,create-ros}.sh ROOT/root
+mv common.sh create-ros.sh features release ROOT/root
 sync
 BR.unmount
 #............................
