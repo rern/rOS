@@ -6,7 +6,7 @@ alignCenter() {
 	local l line txt w
 	while read -r line; do # -r keep \
 		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
-		
+
 		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
 		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
 		txt+="
@@ -18,9 +18,9 @@ banner() { # should be used on start stdout to screen
 	local cols
 	clear -x
 	cols=$( tput cols )
-    printf "\n\e[44m%*s" $cols
-    printf "\n%-${cols}s" "  $( echo -e "$@" )"
-    printf "\n%*s\e[0m\n\n" $cols
+	printf "\n\e[44m%*s" $cols
+	printf "\n%-${cols}s" "  $( echo -e "$@" )"
+	printf "\n%*s\e[0m\n\n" $cols
 }
 bar() {
 	echo -e "\n\e[44m  \e[0m $@\n"
@@ -137,7 +137,7 @@ https_rern='https://github.com/rern'
 https_ros_raw="$https_rern/rOS/raw"
 https_ros_branch="$https_ros_raw/$branch"
 opt_ssh='-qtt -o ConnectTimeout=3
-              -o StrictHostKeyChecking=no
+			  -o StrictHostKeyChecking=no
 			  -o UserKnownHostsFile=/dev/null'
 
 logo='\Zr\Z4+R\Zn'
