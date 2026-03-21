@@ -1,3 +1,13 @@
+/* ==UserStyle==
+@name         github.dev - dark
+@version      20260319.23.55
+@namespace    https://userstyles.world/user/rern
+@description  GitHub web Editor - Dark mode large fonts
+@author       rern
+@license      No License
+==/UserStyle== */
+
+@-moz-document domain("github.dev") {
 /*
 [URLs on the domain] github.dev
 Required fonts:
@@ -47,10 +57,35 @@ Required fonts:
 .monaco-workbench .part.activitybar { /* left menu bar */
 	background-color: #000 !important;
 }
+.composite-bar-container .action-item {
+	background-color: var(--cg20);
+}
+.monaco-workbench .part.panel.bottom .composite.title .action-item {
+	border-radius: 5px 5px 0 0;
+}
+.parts\.activitybar .action-label {
+	border-radius: 0;
+}
+.action-item.checked {
+	background-color: var(--cg30);
+}
+.active-item-indicator {
+	display: none;
+}
+.monaco-workbench .part > .title {
+	padding-left: 0;
+    border-bottom: 1px solid var(--cg30);
+}
+.part.sidebar.left .title:first-child {
+	background-color: var(--cg30);
+}
+.part.sidebar.left .action-item.select-container {
+    display: none;
+}
 .pane-header h3.title, /* panel header - top */
 .title-label h2 {      /* panel headers - bottom */
-    font-family: Inconsolata, InconsolataGO;
-    letter-spacing: 5px;
+    font-weight: 600 !important;
+    letter-spacing: 2.5px;
 }
 .icon.checked > .action-label.codicon { /* current panel icon */
 	color: var(--cw) !important;
@@ -240,4 +275,5 @@ Required fonts:
 .action-label.codicon.extension-action.label.prominent.reload,
 .action-label.codicon.extension-action.label.action-dropdown {
 	font-size: unset !important;
+}
 }
