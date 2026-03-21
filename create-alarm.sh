@@ -113,7 +113,7 @@ dialog.download() {
 			| awk -v file=$file '
 				/^ *[1-9]/ {
 					if ( $1 == 100 ) next
-					
+
 					print "XXX"
 					print $1
 					print ""
@@ -126,7 +126,7 @@ dialog.download() {
 				}'
 	 ) 2>&1 | dialog $opt_gauge "
   Connect ...
-" 9 $W 0 
+" 9 $W
 	[[ -e $file ]] && md5verify
 }
 list_features="\
@@ -259,7 +259,7 @@ md5verify() {
 		[[ $1 ]] && dialog $opt_info "
  Existing is the latest:
  \Z1$file\Zn
- 
+
 
  No download required.
 " 9 $W
@@ -343,7 +343,7 @@ else
 fi
 rm $file.md5
 size=$( stat -c %s $file )
-#............................ 
+#............................
 ( # -n: force stdout in each new line -Y: std immediately (26 ETA 0:00:02 261569003.1868)
 	pv -nY -s $size $file -F '%{progress-amount-only} %e %r' \
 		| pigz -dc \
@@ -371,7 +371,7 @@ size=$( stat -c %s $file )
 	| dialog $opt_gauge "
   Decompress ...
   \Z1$file\Zn
-" 9 $W 0
+" 9 $W
 sync
 mv ROOT/boot/* BOOT
 # fstab
@@ -472,7 +472,7 @@ $sd_usb : Unmounted
 ) | dialog $opt_gauge "
   Boot ...
   \Z1Arch Linux ARM\Zn
-" 9 $W 0
+" 9 $W
 if [[ -e ip_found ]]; then
 	rm ip_found
 	dialog $opt_info "
