@@ -4,35 +4,21 @@ trap 'BR.unmount; clear -x' EXIT
 
 shrink() {
 	bar "Shrink Pass #$1 ..."
-	partinfo=$( tune2fs -l $PART_R )
-	blockcount=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
-	freeblocks=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
-	blocksize=$( awk '/Block size/ {print $NF}' <<< "$partinfo" )
-
-	sectorsize=$( sfdisk -l $DEV | awk '/Units/ {print $8}' )
-	startsector=$( fdisk -l $DEV | grep $PART_R | awk '{print $2}' )
-
-	usedblocks=$(( blockcount - freeblocks ))
-	targetblocks=$(( usedblocks * 105 / 100 ))
-	Kblock=$(( blocksize / 1024 ))
-	newsize=$(( ( targetblocks + Kblock - 1 ) / Kblock * Kblock ))
-	sectorsperblock=$(( blocksize / sectorsize  ))
-	endsector=$(( startsector + newsize * sectorsperblock ))
-
-	if (( $(( newsize - target )) < 10 )); then
+	read b_used b_size b_count < <( tune2fs -l $PART_R | awk '
+								/^Block count/ { count=$NF }
+								/^Free blocks/ { free=$NF }
+								/^Block size/  { size=$NF }
+								END {print ( count - free ), size, count }' )
+	b_target=$(( ( b_used * 105 ) / 100 ))
+	if (( $b_count - b_target < 1024 )); then
 		echo Already reached minimum size.
 	else
-		# shrink filesystem to minimum
-		resize2fs -fp $PART_R $(( newsize * Kblock ))K
-		parted $DEV ---pretend-input-tty <<EOF
-unit
-s
-resizepart
-2
-$endsector
-Yes
-quit
-EOF
+		b_new=$(( ( b_target * b_size ) / 1024 ))
+		resize2fs -fp $PART_R ${b_new}K
+		s_size=$( blockdev --getss $DEV )
+		s_start=$( cat /sys/class/block/${PART_R/*\/}/start )
+		s_needed=$(( ( b_target * b_size ) / s_size ))
+		sfdisk "$DEV" -N ${PART_R: -1} --force <<< "$s_start, $s_needed"
 	fi
 }
 
@@ -71,8 +57,6 @@ fi
 file_img=$( dialog.input 'Image filename:' rAudio-$model-$release.img.xz )
 touch BOOT/expand # auto expand root partition
 BR.unmount
-partsize=$( fdisk -l $PART_R | awk '/^Disk/ {print $2" "$3}' )
-used=$( df -k 2> /dev/null | grep $PART_R | awk '{print $3}' )
 #............................
 banner Shrink ROOT
 shrink 1
@@ -81,7 +65,7 @@ shrink 2
 banner Compressed to image file ...
 bar $file_img
 threads=$(( $( nproc ) - 2 ))
-dd if=$DEV bs=512 iflag=fullblock count=$endsector | nice -n 10 xz -v -T $threads > "$file_img"
+dd if=$DEV bs=512 iflag=fullblock count=$s_end | nice -n 10 xz -v -T $threads > "$file_img"
 size=$( xz -l --robot $file_img | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
 bar "Image file created:
 $file_img
