@@ -57,11 +57,10 @@ Note: Device larger than 2TB will be setup as `GPT`
 - Open terminal on Linux
 - Switch to user root
 ```sh
-su
-
-# on live usb: if password required
+# live usb: set root password (no need for manjaro)
 su passwd root
-# set password and su again
+
+su
 ```
 - Run
 ```sh
