@@ -58,7 +58,7 @@ Note: Device larger than 2TB will be setup as `GPT`
 - Switch to user root
 ```sh
 # live usb: set root password (no need for manjaro)
-su passwd root
+sudo passwd root
 
 su
 ```
