@@ -2,7 +2,7 @@
 
 trap 'clear -x' EXIT
 
-. <( curl -sL $https_rern/rOS/$branch/common.sh )
+. <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
 
 #............................
 dialog.splash U t i l i t i e s

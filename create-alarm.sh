@@ -20,7 +20,7 @@ if [[ $packages ]]; then
 	fi
 fi
 
-[[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL $https_rern/rOS/$branch/common.sh )
+[[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
 
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
