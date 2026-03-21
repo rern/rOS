@@ -439,8 +439,8 @@ id=$( awk -F':' '/^root/ {print $3}' ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
 # scripts
 curl -sLO $https_ros/{common,create-ros}.sh
+chmod +x create-ros.sh
 mv BOOT/{features,release} {common,create-ros}.sh ROOT/root
-chmod 755 ROOT/root/*.sh
 sync
 BR.unmount
 #............................
