@@ -10,8 +10,8 @@ for cmd in bsdtar dialog jq nmap pigz pv xterm; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
 if [[ $packages ]]; then
-	grep -q nmap <<< $packages && packages+='gcc-libs ' # fix: libgcc conflicts
 	if [[ -e /usr/bin/pacman ]]; then
+		grep -q nmap <<< $packages && packages+='gcc-libs ' # fix: libgcc conflicts
 		pacman -Sy --noconfirm $packages
 	else
 		grep -q bsdtar <<< $packages && packages=${packages/bsdtar/libarchive-tools}
