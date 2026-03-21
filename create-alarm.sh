@@ -227,7 +227,7 @@ $warn All data will be \Z1deleted\Zn in:
 
 \Z1$target\Zn
 
-$( kbKey ← ) » $( kbKey Enter ) to confirm :
+Press $( kbKey Y ) to confirm
 " 0 0
 	if [[ $? != 0 ]]; then
 		dialog.sdPartition
