@@ -37,14 +37,15 @@ EOF
 }
 
 # required packages
-if [[ -e /usr/bin/pacman ]]; then
-	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar '
-	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
-	[[ $packages ]] && pacman -Sy --noconfirm $packages
-else
-	[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar libarchive-tools '
-	[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
-	[[ $packages ]] && apt install -y $packages
+[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
+[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar '
+if [[ $packages ]]; then
+	if [[ -e /usr/bin/pacman ]]; then
+		pacman -Sy --noconfirm $packages
+	else
+		[[ ! -e /usr/bin/bsdtar ]] && packages+='libarchive-tools '
+		apt install -y $packages
+	fi
 fi
 #............................
 dialog.splash Image File

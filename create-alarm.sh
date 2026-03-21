@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# branch=UPDATE bash <( curl -skL $https_rern/rOS/$branch/create-alarm.sh ) $branch
+# branch=UPDATE bash <( curl -skL https://raw.githubusercontent.com/rern/$branch/create-alarm.sh ) $branch
 
 SECONDS=0
 [[ $1 ]] && branch=$1
@@ -440,7 +440,7 @@ sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
 # scripts
 mv BOOT/{features,release} ROOT/root
 for f in {common,create-ros}.sh; do
-	curl -sL $https_rern/rOS/$branch/$f -o ROOT/root/$f
+	curl -sL $https_ros/$f -o ROOT/root/$f
 done
 chmod 755 ROOT/root/*.sh
 sync
