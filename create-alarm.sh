@@ -438,10 +438,8 @@ sed -i 's/#*\(PermitRootLogin \).*/\1yes/
 id=$( awk -F':' '/^root/ {print $3}' ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
 # scripts
-mv BOOT/{features,release} ROOT/root
-for f in {common,create-ros}.sh; do
-	curl -sL $https_ros/$f -o ROOT/root/$f
-done
+curl -sLO $https_ros/{common,create-ros}.sh
+mv BOOT/{features,release} {common,create-ros}.sh ROOT/root
 chmod 755 ROOT/root/*.sh
 sync
 BR.unmount
