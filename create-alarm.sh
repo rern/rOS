@@ -23,7 +23,7 @@ fi
 if [[ ! -e /usr/bin/pacman ]]; then # not arch linux
 	export PATH+=:/sbin # sfdisk
 	alias awk=gawk      # fix: debian - awk<mawk - curl ... | awk - no stdout
-	ver_pv=$( printf '%s\n' 1.9.31 $(pv -V | awk '{print $2}') | sort -V | head -1 )
+	ver_pv=$( printf '%s\n' 1.9.31 $( pv -V | awk 'NR==1; {print $2}' ) | sort -V | head -1 )
 	[[ $ver_pv != 1.9.31 ]] && curl -sL $https_ros/pv -o /usr/bin/pv # fix: outdated pv
 fi
 
