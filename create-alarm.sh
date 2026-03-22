@@ -22,10 +22,10 @@ fi
 
 if [[ ! -e /usr/bin/pacman ]]; then # not arch linux
 	export PATH+=:/sbin # sfdisk
-	alias awk=gawk      # fix: debian - awk<mawk - curl ... | awk - no stdout
+	alias awk=gawk      # fix: debian - awk<mawk - no sub gsub
 	ver_min='pv 1.9.15'
 	ver_head=$( sort -V < <( echo -e "$ver_min\n$( pv -V | head -1 )" ) | head -1 )
-	[[ $ver_head != $ver_min ]] && curl -sL $https_ros/pv -o /usr/bin/pv # fix: outdated pv
+	[[ $ver_head != $ver_min ]] && curl -sL $https_ros/pv -o /usr/bin/pv # fix: pv - no %{progress-amount-only}
 fi
 
 create_ros() {
