@@ -56,6 +56,8 @@ Note: Use router pre-assigned IP address for Raspberry Pi if possible.
 
 **Run script**
 - Open terminal on Linux
+	- Ubuntu: Drag terminal height to at least 40 lines
+	- Others: Resized by script
 - Switch to user root
 ```sh
 # live usb: set root password (no need for manjaro)
