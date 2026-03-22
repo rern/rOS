@@ -17,9 +17,6 @@ if [[ $packages ]]; then
 		apt install -y $packages
 	fi
 fi
-if [[ $( pv -V | head -1 ) < 'pv 1.10.4' ]]; then
-
-fi
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
 
