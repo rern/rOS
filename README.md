@@ -17,24 +17,23 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- Exclude features (can be as light as possible in terms of build time and disk space)
 
 **Procedure**
-- [Create Arch Linux ARM + rAudio](#create-arch-linux-arm--raudio)
-	- Use router pre-assigned IP address if possible
-	- Run script:
-		- Setup
-		- Create Arch Linux ARM
-		- SSH to Raspberry Pi
-		- Create rAudio
-			- Upgrade kernel and default packages
-			- Install feature packages
-			- Install web user interface
-			- Configure
-			- Setup defaults
+- Download and create Arch Linux ARM
+- SSH to Raspberry Pi
+- Create rAudio
+	- Upgrade kernel and default packages
+	- Install feature packages
+	- Install web user interface
+	- Configure
+	- Setup defaults
 
 ![dialog1](https://github.com/rern/rOS/raw/main/select-hw.png)
 ![dialog2](https://github.com/rern/rOS/raw/main/select-features.png)
 
 **Need**
-- Linux or Linux on USB e.g., [Manjaro](https://itsfoss.com/create-live-usb-manjaro-linux/) *(Arch Linux)*
+- PC - Linux or Linux Live USB e.g.
+	, [Manjaro](https://itsfoss.com/create-live-usb-manjaro-linux/) *(Arch Linux)*
+	, [Debian](https://www.debian.org/CD/live/#choose_live)
+	, [Ubuntu](https://documentation.ubuntu.com/desktop/en/latest/tutorial/try-ubuntu-desktop)
 - Raspberry Pi
 - Micro SD card or USB drive
 
@@ -52,6 +51,8 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 Note: Device larger than 2TB will be setup as `GPT`
 - For Raspberry Pi 5, 4 and 3B+ only
 - Other models: Use the device as storage with rAudio on SD card
+
+Note: Use router pre-assigned IP address for Raspberry Pi if possible.
 
 **Run script**
 - Open terminal on Linux
