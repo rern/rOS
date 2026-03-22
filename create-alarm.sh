@@ -19,12 +19,17 @@ if [[ $packages ]]; then
 		apt install -y $packages
 	fi
 fi
-if [[ ! -e /usr/bin/pacman ]]; then # debian
-	export PATH+=:/sbin # sfdisk
-	alias awk=gawk      # fix: curl ... | awk - no stdout
+if [[ $( pv -V | head -1 ) < 'pv 1.10.4' ]]; then
+
 fi
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
+
+if [[ ! -e /usr/bin/pacman ]]; then # debian
+	export PATH+=:/sbin # sfdisk
+	alias awk=gawk      # fix: curl ... | awk - no stdout
+	[[ $( pv -V | head -1 ) < 'pv 1.10.4' ]] && curl -sL $https_rern/rOS/pv -o /usr/bin/pv
+fi
 
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
