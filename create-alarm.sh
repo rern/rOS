@@ -25,10 +25,10 @@ fi
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
 
-if [[ ! -e /usr/bin/pacman ]]; then # debian
+if [[ ! -e /usr/bin/pacman ]]; then # not arch linux
 	export PATH+=:/sbin # sfdisk
-	alias awk=gawk      # fix: curl ... | awk - no stdout
-	[[ $( pv -V | head -1 ) < 'pv 1.10.4' ]] && curl -sL $https_rern/rOS/pv -o /usr/bin/pv
+	alias awk=gawk      # fix: debian - awk<mawk - curl ... | awk - no stdout
+	[[ $( pv -V | head -1 ) < 'pv 1.10.3' ]] && curl -sL $https_ros/pv -o /usr/bin/pv # fix: outdated pv
 fi
 
 create_ros() {
