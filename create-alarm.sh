@@ -6,7 +6,7 @@ SECONDS=0
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
-for cmd in bsdtar dialog gawk jq nmap pigz pv xterm; do # required packages
+for cmd in bsdtar curl dialog gawk jq nmap pigz pv xterm; do # required packages
 	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
 done
 if [[ $packages ]]; then

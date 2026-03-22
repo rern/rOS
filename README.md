@@ -31,7 +31,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 			- Setup defaults
 
 ![dialog1](https://github.com/rern/rOS/raw/main/select-hw.png)
-![dialog2](https://github.com/rern/rOS/raw/main/select-features.png)  
+![dialog2](https://github.com/rern/rOS/raw/main/select-features.png)
 
 **Need**
 - Linux or Linux on USB e.g., [Manjaro](https://itsfoss.com/create-live-usb-manjaro-linux/) *(Arch Linux)*
@@ -64,7 +64,7 @@ su
 ```
 - Run
 ```sh
-bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
+bash <( wget -qO- https://github.com/rern/rOS/raw/main/create-alarm.sh )
 ```
 ---
 
@@ -85,7 +85,7 @@ bash <( curl -sL https://github.com/rern/rOS/raw/main/create-alarm.sh )
 		- Save it in BOOT
 - Move micro SD card to Raspberry Pi
 - Power on
-	
+
 **Create image file** (`BOOT` and `ROOT` on single device only)
 - Once started rAudio successfully
 - SSH to RPi
@@ -101,5 +101,5 @@ bash <( curl -sL https://github.com/rern/rOS/raw/main/image-reset.sh )
 bash <( curl -sL https://github.com/rern/rOS/raw/main/image-create.sh )
 ```
 
-**LED flashes - errors**  
+**LED flashes - errors**
 Decode: https://support.pishop.ca/article/33-raspberry-pi-act-led-error-patterns
