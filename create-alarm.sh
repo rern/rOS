@@ -15,6 +15,7 @@ if [[ $packages ]]; then
 		pacman -Sy --noconfirm $packages
 	else
 		grep -q bsdtar <<< $packages && packages=${packages/bsdtar/libarchive-tools}
+		apt update
 		apt install -y $packages
 	fi
 fi
@@ -185,7 +186,7 @@ Continue?
 " 0 0 || exit
 #------------------------------------------------------------------------------
 	fi
-	line_lsblk=$( lsblk -po name,label,size,mountpoint )
+	line_lsblk=$( lsblk -po name,label,size,mountpoint | grep -v ^/dev/loop )
 	list_BR=$( grep -E ' BOOT | ROOT ' <<< $line_lsblk )
 	space_select="» $( kbKey space ) to select"
 	if (( $( wc -l <<< $list_BR ) > 1 )); then
