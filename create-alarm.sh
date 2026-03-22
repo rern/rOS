@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# branch=UPDATE bash <( curl -skL https://raw.githubusercontent.com/rern/$branch/create-alarm.sh ) $branch
-
 SECONDS=0
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
