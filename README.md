@@ -65,7 +65,7 @@ su
 ```
 - Run
 ```sh
-bash <( wget -qO- https://github.com/rern/rOS/raw/main/create-alarm.sh )
+bash <( wget -qO- https://raw.githubusercontent.com/rern/rOS/main/create-alarm.sh )
 ```
 ---
 
