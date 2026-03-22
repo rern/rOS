@@ -33,7 +33,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 - PC - Linux or Linux Live USB e.g.
 	, [Manjaro](https://itsfoss.com/create-live-usb-manjaro-linux/) *(Arch Linux)*
 	, [Debian](https://www.debian.org/CD/live/#choose_live)
-	, [Ubuntu](https://documentation.ubuntu.com/desktop/en/latest/tutorial/try-ubuntu-desktop)
+	, [Mint](https://linuxmint-installation-guide.readthedocs.io/en/latest/)
 - Raspberry Pi
 - Micro SD card or USB drive
 
