@@ -241,6 +241,7 @@ Press $( kbKey Y ) to confirm
 #..............................................................................
 	fi
 	clear -x
+	umount -ql $PART_B $PART_R
 	if [[ $wipe || $count == 1 ]]; then
 		bar Wipe disk ...
 		wipefs -a $DEV
