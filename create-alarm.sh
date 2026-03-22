@@ -23,8 +23,9 @@ fi
 if [[ ! -e /usr/bin/pacman ]]; then # not arch linux
 	export PATH+=:/sbin # sfdisk
 	alias awk=gawk      # fix: debian - awk<mawk - curl ... | awk - no stdout
-	ver_pv=$( sort -V < <( echo -e "pv 1.9.15\n$( pv -V | head -1 )" | head -1 )
-	[[ $ver_pv != 1.9.15 ]] && curl -sL $https_ros/pv -o /usr/bin/pv # fix: outdated pv
+	ver_min='pv 1.9.15'
+	ver_head=$( sort -V < <( echo -e "$ver_min\n$( pv -V | head -1 )" ) | head -1 )
+	[[ $ver_head != $ver_min ]] && curl -sL $https_ros/pv -o /usr/bin/pv # fix: outdated pv
 fi
 
 create_ros() {
