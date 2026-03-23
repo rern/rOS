@@ -60,7 +60,7 @@ Note: Use router pre-assigned IP address for Raspberry Pi if possible.
 	- Others: Resized by script
 - Switch to user root
 ```sh
-# live usb: set root password (no need for manjaro)
+# set root password, if su requires one
 sudo passwd root
 
 su
