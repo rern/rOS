@@ -49,7 +49,7 @@ for model in $models; do
 	notes+="
 | ${mdl_rpi[$model]} \
 | [$file]($https_rern/rAudio/releases/download/i$release/$file) \
-| [< file](https://cloud.s-t-franz.de/s/kdFZXN9Na28nfD8/download?path=%2F&files=$file) |"
+| [< file](https://cloud.s-t-franz.de/public.php/dav/files/kdFZXN9Na28nfD8/$file) |"
 done
 #............................
 banner U p l o a d
