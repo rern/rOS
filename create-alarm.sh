@@ -32,6 +32,10 @@ fi
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
 	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
+	dialog $opt_yesno "
+Delete file?
+\Z1$file\Zn
+" 0 0 && rm $file
 }
 dialog.data() {
 	latest=$( curl -sL $https_rern/rAudio-addons/main/addonslist.json | jq -r .r1.version )
