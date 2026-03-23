@@ -208,7 +208,7 @@ Continue?
 	H=$(( $( wc -l <<< $list_colored ) + 9 ))
 	h_min=$(( H + 4 ))
 	(( $h_min > $( tput lines ) )) && dialog $opt_msg "
-» Drag set \Z1Terminal height\Zn at least \Z1$h_min\Zn lines
+» Drag / Set \Z1Terminal height\Zn at least \Z1$h_min\Zn lines
 
 Then continue
 " 0 0
