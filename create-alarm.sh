@@ -4,15 +4,19 @@ SECONDS=0
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
-for cmd in bsdtar curl dialog gawk jq nmap pigz pv xterm; do # required packages
-	[[ ! -e /usr/bin/$cmd ]] && packages+="$cmd "
+cmdNotExist() {
+	! command -v $1 &> /dev/null && return 0
+}
+for cmd in curl dialog gawk jq nmap pigz pv xterm; do # required packages
+	cmdNotExist $cmd && packages+="$cmd "
 done
+cmdNotExist sfdisk && packages+='fdisk ' # puppy linux: missing
 if [[ $packages ]]; then
 	if [[ -e /usr/bin/pacman ]]; then
-		grep -q nmap <<< $packages && packages+='gcc-libs ' # fix: libgcc conflicts
+		cmdNotExist nmap && packages+='gcc-libs ' # manjaro: libgcc conflicts
 		pacman -Sy --noconfirm $packages
 	else
-		grep -q bsdtar <<< $packages && packages=${packages/bsdtar/libarchive-tools}
+		cmdNotExist bsdtar && packages='libarchive-tools ' # non-arch linux: tar (default)
 		apt update
 		apt install -y $packages
 	fi
