@@ -13,7 +13,7 @@
 Required fonts:
 	Windows    - Inconsolata, Inconsolata SemiCondensed
 	Arch Linux - pacman -S ttf-inconsolata
-	Linux      - apt install fonts-inconsolata
+	Linux      - (https://fonts.google.com > download > install: Inconsolata font family)
 */
 :root {
 	--cw : hsl(   0, 0%, 90% );
@@ -247,7 +247,7 @@ Required fonts:
 }
 #status\.scm\.0 * { /* branch */
 	margin: 0;
-	color: #000 !important;   
+	color: #000 !important;
 }
 .install.action-dropdown,
 .extension-editor *,
