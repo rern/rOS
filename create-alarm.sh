@@ -120,17 +120,32 @@ dialog.download() {
 		curl -LO $url/$file 2>&1 \
 			| stdbuf -oL tr '\r' '\n' \
 			| awk -v file=$file '
+				function byte2kmg(val) {
+					unit = substr(val, length(val))
+					num  = substr(val, 1, length(val)-1)
+					switch (unit) {
+						case "G": bytes = num * 1073741824; break
+						case "M": bytes = num * 1048576;    break
+						case "k": bytes = num * 1024;       break
+						default:  bytes = val;              break
+					}
+					split(" B K M G", u, " ")
+					i = 1
+					while (bytes >= 1024 && i < 4) bytes /= 1024; i++
+					return sprintf("(%.2f%sB/s)", bytes, u[i])
+				}
 				/^ *[1-9]/ {
 					if ( $1 == 100 ) next
 
 					eta = $11
 					sub( /^[^:]+:/, "", eta )
+					speed = byte2kmg($7)
 					print "XXX"
 					print $1
 					print ""
 					print "  Download ..."
 					print "  \\Z1" file "\\Zn"
-					print "  Time left: " eta " (" $7 "B/s)"
+					print "  Time left: " eta " " speed
 					print "XXX"
 
 					fflush()
