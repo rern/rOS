@@ -31,9 +31,9 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 
 **Need**
 - PC - Linux or Linux Live USB e.g.
-	, [Puppy Linux](https://forum.puppylinux.com/puppy-linux-collection)
-	, [Debian](https://www.debian.org/CD/live/#choose_live)
-	, [Mint](https://linuxmint-installation-guide.readthedocs.io/en/latest/)
+	, [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) *(1.2GB)*
+	, [Linux Mint](https://linuxmint.com/download.php) *(2.9GB)*
+	, [Debian](https://www.debian.org/CD/live/#choose_live) *(3.6GB)*
 - Raspberry Pi
 - Micro SD card or USB drive
 
