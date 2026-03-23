@@ -120,32 +120,23 @@ dialog.download() {
 		curl -LO $url/$file 2>&1 \
 			| stdbuf -oL tr '\r' '\n' \
 			| awk -v file=$file '
-				function byte2kmg(val) {
-					unit = substr(val, length(val))
-					num  = substr(val, 1, length(val)-1)
-					switch (unit) {
-						case "G": bytes = num * 1073741824; break
-						case "M": bytes = num * 1048576;    break
-						case "k": bytes = num * 1024;       break
-						default:  bytes = val;              break
-					}
-					split(" B K M G", u, " ")
-					i = 1
-					while (bytes >= 1024 && i < 4) bytes /= 1024; i++
-					return sprintf("(%.2f%sB/s)", bytes, u[i])
-				}
 				/^ *[1-9]/ {
 					if ( $1 == 100 ) next
 
 					eta = $11
 					sub( /^[^:]+:/, "", eta )
-					speed = byte2kmg($7)
+					s = $7
+					unit = substr( s, length( s ) )
+					if ( unit == "k" ) {
+						num = substr( s, 1, length( s ) - 1 )
+						if ( num > 1023 ) s = sprintf( "%.2fM", num / 1024 )
+					}
 					print "XXX"
 					print $1
 					print ""
 					print "  Download ..."
 					print "  \\Z1" file "\\Zn"
-					print "  Time left: " eta " " speed
+					print "  Time left: " eta " (" s "iB/s)"
 					print "XXX"
 
 					fflush()
@@ -387,7 +378,7 @@ size=$( stat -c %s $file )
 				if ( $1 < 100 ) {
 					eta = $3
 					sub( /^[^:]+:/, "", eta )
-					eta_speed = eta " " sprintf( "(%.2fMB/s)", $NF / 1048576 )
+					eta_speed = eta " " sprintf( "(%.2fMiB/s)", $NF / 1048576 )
 				} else {
 					eta_speed = "..."
 				}
