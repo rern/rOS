@@ -410,7 +410,9 @@ cmdline="root=$partid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.
 config="\
 disable_overscan=1
 disable_splash=1
-dtparam=audio=on"
+dtparam=audio=on
+max_usb_current=1
+usb_max_current_enable=1"
 if [[ $features != *firefox* ]]; then
 	cmdline+='tty1'
 else
