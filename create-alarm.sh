@@ -58,7 +58,12 @@ dialog.data() {
 		1 )
 			file+=aarch64-
 			bit=64bit
-			sec_boot=60
+			cpu=$( awk '/^CPU part/ {print $NF}' /proc/cpuinfo )
+			case $cpu in
+				0xd0b ) sec_boot=30;; # 5
+				0xd08 ) sec_boot=40;; # 4
+				* )     sec_boot=60;;
+			esac
 			;;
 		2 )
 			file+=armv7-
