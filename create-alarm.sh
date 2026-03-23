@@ -32,9 +32,10 @@ fi
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
 	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
+	size=$( du -h $file | awk '{print $1"B"}' )
 	dialog $opt_yesno "
 Delete file?
-\Z1$file\Zn
+\Z1$file\Zn ($size)
 " 0 0 && rm $file
 }
 dialog.data() {
