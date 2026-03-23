@@ -31,7 +31,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 
 **Need**
 - PC - Linux or Linux Live USB e.g.
-	, [Manjaro](https://itsfoss.com/create-live-usb-manjaro-linux/) *(Arch Linux)*
+	, [Puppy Linux](https://forum.puppylinux.com/puppy-linux-collection)
 	, [Debian](https://www.debian.org/CD/live/#choose_live)
 	, [Mint](https://linuxmint-installation-guide.readthedocs.io/en/latest/)
 - Raspberry Pi
