@@ -58,13 +58,7 @@ dialog.data() {
 		1 )
 			file+=aarch64-
 			bit=64bit
-			revision=$( grep ^Revision /proc/cpuinfo )
-			case ${revision: -3:2} in
-				17 ) sec_boot=30;;           # 5
-				11 ) sec_boot=40;;           # 4
-				08 | 0d | 0e ) sec_boot=50;; # 3
-				* )  sec_boot=60;;
-			esac
+			sec_boot=60
 			;;
 		2 )
 			file+=armv7-
