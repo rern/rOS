@@ -16,7 +16,7 @@ if [[ $packages ]]; then
 		cmdNotExist nmap && packages+='gcc-libs ' # manjaro: libgcc conflicts
 		pacman -Sy --noconfirm $packages
 	else
-		cmdNotExist bsdtar && packages='libarchive-tools ' # non-arch linux: tar (default)
+		cmdNotExist bsdtar && packages+='libarchive-tools ' # non-arch linux: tar (default)
 		apt update
 		apt install -y $packages
 	fi
