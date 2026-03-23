@@ -251,7 +251,9 @@ Press $( kbKey Y ) to confirm
 #..............................................................................
 	fi
 	clear -x
-	umount -ql $PART_B $PART_R
+	for p in $PART_B $PART_R; do # some might auto mount
+		mp=$( findmnt $p ) && umount -l $mp
+	done
 	if [[ $wipe || $count == 1 ]]; then
 		bar Wipe disk ...
 		wipefs -a $DEV
