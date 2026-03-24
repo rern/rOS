@@ -30,8 +30,6 @@ if [[ ! -e /usr/bin/pacman ]]; then # not arch linux
 fi
 
 create_ros() {
-	#............................
-	dialog.splash r A u d i o
 	ssh $opt_ssh root@$1 /root/create-ros.sh
 	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
 }
