@@ -34,21 +34,17 @@ systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy po
 #............................
 banner Upgrade system and default packages
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs
-i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
+i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod linux-rpi mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
 raspberrypi-utils sudo udevil websocat wget xorg-xset'
 pkgs=$( pacman -Q )
-if grep -q 'linux-firmware ' <<< $pkgs; then
-	remove=linux-firmware
-	for n in amdgpu broadcom intel nvidia radeon; do
-		remove+=" linux-firmware-$n"
-	done
-fi
-if [[ -e /boot/kernel8.img ]]; then
-	grep -q linux-aarch64 <<< $pkgs && remove+=' linux-aarch64'
-	grep -q uboot-raspberrypi <<< $pkgs && remove+=' uboot-raspberrypi'
-	! grep -q linux-rpi <<< $pkgs && packages+=' linux-rpi'
-fi
+remove='linux-firmware '
+for n in amdgpu broadcom intel nvidia radeon; do
+	remove+="linux-firmware-$n "
+done
+for n in linux-aarch64 uboot-raspberrypi; do
+	grep -q $n <<< $pkgs && remove+="$n "
+done
 pacman -Rdd --noconfirm $remove
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
