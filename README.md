@@ -32,7 +32,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 **Need**
 - PC - Any Linux flavors:
 	- With package manager: `apt` or `pacman`
-	- Live USB can be used as well e.g,
+	- Live USB can be used as well e.g.,
 		- [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) - Trixie (1.2GB)
 		- [Linux Mint](https://linuxmint.com/download.php) (2.9GB)
 		- [Debian](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) (3.5GB+)
