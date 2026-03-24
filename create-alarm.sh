@@ -7,7 +7,7 @@ SECONDS=0
 cmdNotExist() {
 	! command -v $1 &> /dev/null && return 0
 }
-for cmd in curl dialog gawk jq nmap pigz pv xterm; do # required packages
+for cmd in curl dialog gawk jq nmap pigz pv; do # required packages
 	cmdNotExist $cmd && packages+="$cmd "
 done
 cmdNotExist sfdisk && packages+='fdisk ' # puppy linux: missing
@@ -216,9 +216,8 @@ Continue?
 						 ' -e "\|^ *$DEV| {s/^/\\\Z1/; s/$/\\\Zn/}
 						 " -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	H=$(( $( wc -l <<< $list_colored ) + 9 ))
-	h_min=$(( H + 4 ))
-	(( $h_min > $( tput lines ) )) && dialog $opt_msg "
-» Drag / Set \Z1Terminal height\Zn at least \Z1$h_min\Zn lines
+	(( $(( H + 4 )) > $( tput lines ) )) && dialog $opt_msg "
+» \Z1Maximize\Zn this Terminal window
 
 Then continue
 " 0 0
@@ -323,11 +322,6 @@ scanIP() {
 
 trap 'BR.unmount; clear -x' EXIT
 
-h=$( tput lines )
-w=$( tput cols )
-(( $h < 40 )) && h=40
-(( $w < 120 )) && w=120
-resize -s $h $w # set terminal size
 #............................
 dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
 read DEV PART_B PART_R < <( dialog.sd )
