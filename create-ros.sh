@@ -37,13 +37,12 @@ packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsi
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod linux-rpi mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
 raspberrypi-utils sudo udevil websocat wget xorg-xset'
-pkgs=$( pacman -Q )
 remove='linux-firmware '
 for n in amdgpu broadcom intel nvidia radeon; do
 	remove+="linux-firmware-$n "
 done
 for n in linux-aarch64 uboot-raspberrypi; do
-	grep -q $n <<< $pkgs && remove+="$n "
+	pacman -Qi $n &> /dev/null && remove+="$n "
 done
 pacman -Rdd --noconfirm $remove
 # add +R repo
