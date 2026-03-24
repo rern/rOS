@@ -35,7 +35,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- Live USB can be used as well e.g,
 		- [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) - Trixie (1.2GB)
 		- [Linux Mint](https://linuxmint.com/download.php) (2.9GB)
-		- [Debian](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) *(3.5GB+)*
+		- [Debian](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) (3.5GB+)
 		- Recommend: Create bootable USB drive with [Ventoy](https://www.ventoy.net) + Puppy Linux
 - Raspberry Pi
 - Micro SD card or USB drive
