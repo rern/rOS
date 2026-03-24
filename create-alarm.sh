@@ -1,5 +1,7 @@
 #!/bin/bash
 
+trap 'kill -TERM -$$ 2>/dev/null; BR.unmount' EXIT
+
 SECONDS=0
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
@@ -23,8 +25,6 @@ if [[ $packages ]]; then
 fi
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
-
-trap 'BR.unmount' EXIT
 
 if [[ ! -e /usr/bin/pacman ]]; then # not arch linux
 	export PATH+=:/sbin # sfdisk

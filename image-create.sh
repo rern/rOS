@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'BR.unmount' EXIT
+trap 'kill -TERM -$$ 2>/dev/null; BR.unmount' EXIT
 
 shrink() {
 	bar "Shrink Pass #$1 ..."

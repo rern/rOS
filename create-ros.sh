@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'rm -f /var/lib/pacman/db.lck' EXIT
+trap 'kill -TERM -$$ 2>/dev/null; rm -f /var/lib/pacman/db.lck' EXIT
 
 . common.sh
 
