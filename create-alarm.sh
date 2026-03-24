@@ -172,9 +172,9 @@ dialog.feature() {
 	fi
 #............................
 	dialog $opt_yesno "
-\Z1Confirm features to install:\Zn
+  \Z1Confirm features to install:\Zn
 
-$checked
+$( sed 's/^/  /' <<< $checked )
 " 0 0 && echo $features > features || dialog.feature
 }
 dialog.scanIP() {
