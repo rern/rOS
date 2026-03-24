@@ -23,6 +23,9 @@ packageUpdate() {
 #------------------------------------------------------------------------------
 	fi
 }
+
+#............................
+dialog.splash r A u d i o
 #............................
 banner Initialize Arch Linux ARM
 pacman-key --init
