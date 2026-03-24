@@ -30,10 +30,13 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 ![dialog2](https://github.com/rern/rOS/raw/main/select-features.png)
 
 **Need**
-- PC - Linux or Linux Live USB e.g.
-	, [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) *(1.2GB)*
-	, [Linux Mint](https://linuxmint.com/download.php) *(2.9GB)*
-	, [Debian](https://www.debian.org/CD/live/#choose_live) *(3.6GB)*
+- PC - Any Linux flavors:
+	- With package manager: `apt` or `pacman`
+	- Live USB can be used as well e.g,
+		- [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) - Trixie (1.2GB)
+		- [Linux Mint](https://linuxmint.com/download.php) (2.9GB)
+		- [Debian](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) *(3.5GB+)*
+		- Recommend: Create bootable USB drive with [Ventoy](https://www.ventoy.net) + Puppy Linux
 - Raspberry Pi
 - Micro SD card or USB drive
 
@@ -56,19 +59,18 @@ Note: Use router pre-assigned IP address for Raspberry Pi if possible.
 
 **Run script**
 - Open terminal on Linux
-	- Ubuntu: Drag terminal height to at least 40 lines
-	- Others: Resized by script
+	- Maximize terminal window
 - Switch to user root
-```sh
-# set root password, if su requires one
-sudo passwd root
+	```sh
+	# set root password, if not yet
+	sudo passwd root
 
-su
-```
+	su
+	```
 - Run
-```sh
-bash <( wget -qO- https://raw.githubusercontent.com/rern/rOS/main/create-alarm.sh )
-```
+	```sh
+	bash <( wget -qO- https://raw.githubusercontent.com/rern/rOS/main/create-alarm.sh )
+	```
 ---
 
 ### Optionals
