@@ -364,7 +364,7 @@ fi
 rm $file.md5
 size=$( stat -c %s $file )
 #............................
-( # -n: force stdout in each new line -Y: std immediately (26 ETA 0:00:02 261569003.1868)
+( # -n: force stdout in each new line -Y: no buffer (26 ETA 0:00:02 261569003.1868)
 	pv -nY -s $size $file -F '%{progress-amount-only} %e %r' \
 		| pigz -dc \
 		| bsdtar xpf - -C ROOT --exclude=*fallback.img
@@ -373,9 +373,9 @@ size=$( stat -c %s $file )
 				if ( $1 < 100 ) {
 					eta = $3
 					sub( /^[^:]+:/, "", eta )
-					eta_speed = eta " " sprintf( "(%.2fMiB/s)", $NF / 1048576 )
+					eta_speed = sprintf( "  Time left: %s (%.2fMiB/s)", eta, $NF / 1048576 )
 				} else {
-					eta_speed = "..."
+					eta_speed = "  Finish write ..."
 				}
 
 				print "XXX"
@@ -383,7 +383,7 @@ size=$( stat -c %s $file )
 				print ""
 				print "  Decompress ..."
 				print "  \\Z1" file "\\Zn"
-  				print "  Time left: " eta_speed
+  				print eta_speed
 				print "XXX"
 
 				fflush()
