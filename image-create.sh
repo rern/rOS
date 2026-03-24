@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'BR.unmount; clear -x' EXIT
+trap 'BR.unmount' EXIT
 
 shrink() {
 	bar "Shrink Pass #$1 ..."

@@ -24,6 +24,8 @@ fi
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
 
+trap 'BR.unmount' EXIT
+
 if [[ ! -e /usr/bin/pacman ]]; then # not arch linux
 	export PATH+=:/sbin # sfdisk
 	alias awk=gawk      # fix: debian - awk<mawk - no sub gsub
@@ -320,8 +322,6 @@ scanIP() {
 #------------------------------------------------------------------------------
 	create_ros $( awk 'NR=='$i' {print $1}' <<< $lines )
 }
-
-trap 'BR.unmount; clear -x' EXIT
 
 #............................
 dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
