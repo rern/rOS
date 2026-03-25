@@ -4,7 +4,6 @@ trap 'killChildProcess; rm -f /var/lib/pacman/db.lck' EXIT
 
 . common.sh
 
-SECONDS=0
 dir_system=/etc/systemd/system
 features=$( < features )
 release=$( < release )
@@ -203,16 +202,3 @@ $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
-#............................
-dialog $opt_msg "
-$( alignCenter "
-$logo
-r A u d i o
-
-Created successfully
-$( runDuration $SECONDS )
-" )
-
-Press $( kbKey Enter ) to reboot
-" 12 $W
-reboot

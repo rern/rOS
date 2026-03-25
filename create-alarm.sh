@@ -31,15 +31,21 @@ if [[ ! -e /usr/bin/pacman ]]; then # not arch linux
 fi
 # <<<
 create_ros() {
+	SECONDS=0
 	ssh $opt_ssh root@$1 /root/create-ros.sh
-	if [[ $? == 255 ]]; then
+	std=$?
+	if [[ $std == 255 ]]; then
 #............................
 		dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
-	elif ! grep -qE 'boot=(casper|live)' /proc/cmdline; then
-		dialog $opt_yesno "
-Delete the downloaed file?
-\Z1$file\Zn $( du -h $file | awk '{print "("$1"iB)"}' )
-" 0 0 && rm $file
+	elif [[ $std == 0 ]]; then
+		ssh $opt_ssh root@$1 reboot &> /dev/null & disown
+		[[ $file_delete ]] && rm $file &
+#............................
+		dialog.splash "
+r A u d i o
+
+Created successfully and \Z1reboot\Zn ...
+$( runDuration $SECONDS )"
 	fi
 }
 dialog.data() {
@@ -113,6 +119,11 @@ SSID         : $essid
 Password     : $key
 Security     : ${security^^}"
 	fi
+#............................
+	dialog $opt_yesno "
+Delete downloaded file on done?
+
+" 0 0 && file_delete=1
 #............................
 	dialog $opt_yesno "$txt_confirm" 0 0 && confirm_data=1
 	tput cup 0 0
