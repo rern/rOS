@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'kill -TERM -$$ 2>/dev/null; BR.unmount' EXIT
+trap 'killChildProcess; BR.unmount' EXIT
 
 shrink() {
 	bar "Shrink Pass #$1 ..."

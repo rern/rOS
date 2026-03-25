@@ -129,6 +129,9 @@ ipBase() {
 kbKey() {
 	echo "\Zr\Zb $1 \Zn"
 }
+killChildProcess() {
+	kill -TERM -$$ &> /dev/null
+}
 runDuration() {
 	echo \\Z4$( date -d@$1 -u +%M:%S )\\Zn
 }

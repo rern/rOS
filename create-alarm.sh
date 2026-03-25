@@ -1,11 +1,13 @@
 #!/bin/bash
 
-trap 'kill -TERM -$$ 2>/dev/null; BR.unmount' EXIT
+trap 'killChildProcess; BR.unmount' EXIT
 
 SECONDS=0
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
+[[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
+# command normalize >>>
 cmdNotExist() {
 	! command -v $1 &> /dev/null && return 0
 }
@@ -23,18 +25,22 @@ if [[ $packages ]]; then
 		apt install -y $packages
 	fi
 fi
-
-[[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
-
 if [[ ! -e /usr/bin/pacman ]]; then # not arch linux
 	export PATH+=:/sbin # sfdisk
 	alias awk=gawk      # fix: debian - awk<mawk - no sub gsub
 fi
-
+# <<<
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
+	if [[ $? == 255 ]]; then
 #............................
-	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
+		dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
+	elif ! grep -qE 'boot=(casper|live)' /proc/cmdline; then
+		dialog $opt_yesno "
+Delete the downloaed file?
+\Z1$file\Zn $( du -h $file | awk '{print "("$1"iB)"}' )
+" 0 0 && rm $file
+	fi
 }
 dialog.data() {
 	latest=$( curl -sL $https_rern/rAudio-addons/main/addonslist.json | jq -r .r1.version )
