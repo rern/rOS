@@ -21,7 +21,7 @@ i=$( dialog.menu Tasks "$list_task" )
 file_name=$( sed -n "$i {s/.*: *//; p}" <<< $list )
 if [[ $file_name ]]; then
 	(( $i < 5 )) && repo=rOS || repo=rern.github.io
-	. <( curl -sL "$https_rern/$repo/$branch/$file_name.sh" )
+	bash <( curl -sL "$https_rern/$repo/$branch/$file_name.sh" ) 2> /dev/null
 else
 #............................
 	ip=$( dialog.ip 'rAudio IP' )
