@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'killChildProcess; rm -f /var/lib/pacman/db.lck' EXIT
+trap 'rm -f /var/lib/pacman/db.lck' EXIT
 
 . common.sh
 
@@ -200,3 +200,4 @@ $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
+bar Done
