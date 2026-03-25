@@ -31,22 +31,8 @@ if [[ ! -e /usr/bin/pacman ]]; then # not arch linux
 fi
 # <<<
 create_ros() {
-	SECONDS=0
 	ssh $opt_ssh root@$1 /root/create-ros.sh
-	std=$?
-	if [[ $std == 255 ]]; then
-#............................
-		dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
-	elif [[ $std == 0 ]]; then
-		( ssh ${opt_ssh/tt} root@$1 'chpasswd <<< root:ros; reboot' & disown ) &> /dev/null
-		[[ $file_delete ]] && rm $file &
-#............................
-		dialog.splash "\
-r A u d i o
-
-Created successfully and \Z1reboot\Zn ...
-$( runDuration $SECONDS )"
-	fi
+	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
 }
 dialog.data() {
 	latest=$( curl -sL $https_rern/rAudio-addons/main/addonslist.json | jq -r .r1.version )

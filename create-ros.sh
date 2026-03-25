@@ -4,6 +4,7 @@ trap 'rm -f /var/lib/pacman/db.lck' EXIT
 
 . common.sh
 
+SECONDS=0
 dir_system=/etc/systemd/system
 features=$( < features )
 release=$( < release )
@@ -174,12 +175,13 @@ else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
 # system
+chpasswd <<< root:ros
+sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
 users=$( cut -d: -f1 /etc/passwd )
 for user in $users; do
 	chage -E -1 $user # set expire to none
 done
 echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
-sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # faster login
 # upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
@@ -201,4 +203,11 @@ $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
-bar Done
+#............................
+dialog.splash "\
+r A u d i o
+
+Created successfully
+$( runDuration $SECONDS )
+   \Z1Reboot ...\Zn"
+reboot
