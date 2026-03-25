@@ -209,5 +209,5 @@ r A u d i o
 
 Created successfully
 $( runDuration $SECONDS )
-   \Z1Reboot ...\Zn"
+    \Z1Reboot ...\Zn"
 reboot
