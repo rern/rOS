@@ -62,12 +62,10 @@ dialog.data() {
 		1 )
 			file+=aarch64-
 			bit=64bit
-			sec_boot=60
 			;;
 		2 )
 			file+=armv7-
 			bit=32bit
-			sec_boot=75
 			;;
 	esac
 	file+=latest.tar.gz
@@ -82,7 +80,6 @@ Raspberry Pi : $bit
 
 " 0 0
 	if [[ $? == 0 ]]; then
-		(( sec_boot-=10 ))
 #............................
 		IP=$( dialog.ip 'Pre-assigned IP' )
 		txt_confirm+="
@@ -94,7 +91,6 @@ Connect \Z1Wi-Fi\Zn on boot?
 
 " 0 0
 	if [[ $? == 0 ]]; then
-		(( sec_boot+=5 ))
 		if [[ -e wifi ]]; then
 			. <( sed -E -n '/^Security|^ESSID|^Key/ {s/^.*=/\L&/; p}' wifi )
 		else
@@ -491,10 +487,10 @@ $sd_usb : Unmounted
 " 14 $W
 #............................
 (
-	for (( i = 1; i < sec_boot; i++ )); do
+	for (( i = 1; i < 75; i++ )); do
 		ping -4 -c 1 -W 1 $IP &> /dev/null && touch ip_found && break
 #..............................................................................
-		echo $(( i * 100 / sec_boot ))
+		echo $i
 		sleep 1
 	done
 ) | dialog $opt_gauge "
