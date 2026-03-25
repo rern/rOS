@@ -106,11 +106,6 @@ Password     : $key
 Security     : ${security^^}"
 	fi
 #............................
-	dialog $opt_yesno "
-Delete downloaded file on done?
-
-" 0 0 && file_delete=1
-#............................
 	dialog $opt_yesno "$txt_confirm" 0 0 && confirm_data=1
 	tput cup 0 0
 	tput ed
