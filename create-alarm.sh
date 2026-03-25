@@ -2,7 +2,7 @@
 
 trap 'killChildProcess; BR.unmount' EXIT
 
-SECONDS=0
+sec_start=$( date +%s )
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
@@ -465,7 +465,7 @@ BR.unmount
 Arch Linux ARM
 
 Created successfully
-$( runDuration $SECONDS )"
+$( elapsed $sec_start )
 #............................
 dialog $opt_msg "
 \Z1Arch Linux ARM\Zn      : Ready

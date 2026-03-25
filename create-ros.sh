@@ -4,7 +4,7 @@ trap 'rm -f /var/lib/pacman/db.lck' EXIT
 
 . common.sh
 
-SECONDS=0
+sec_start=$( date +%s )
 dir_system=/etc/systemd/system
 features=$( < features )
 release=$( < release )
@@ -208,6 +208,6 @@ dialog.splash "\
 r A u d i o
 
 Created successfully
-$( runDuration $SECONDS )
-    \Z1Reboot ...\Zn"
+$( elapsed $sec_start )
+\Z1   Reboot ...\Zn"
 reboot

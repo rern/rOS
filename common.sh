@@ -123,6 +123,10 @@ $logo
 $@" )" $(( 8 + $( wc -l <<< $@ ) )) $W
 	tput cnorm # restore cursor
 }
+elapsed() {
+	local s=$(( $( date +%s ) - $1 ))
+	echo "\Z4$( date -d@$s -u +%M:%S )\Zn"
+}
 ipBase() {
 	ip route get 1.1.1.1 | grep -oP '(?<=src ).*\..*\..*\.'
 }
@@ -131,9 +135,6 @@ kbKey() {
 }
 killChildProcess() {
 	kill -TERM -$$ &> /dev/null
-}
-runDuration() {
-	echo \\Z4$( date -d@$1 -u +%M:%S )\\Zn
 }
 #         https://raw.githubusercontent.com/rern/REPO/BRANCH/file
 https_raw=https://raw.githubusercontent.com
