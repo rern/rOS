@@ -179,6 +179,7 @@ for user in $users; do
 	chage -E -1 $user # set expire to none
 done
 echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
+sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # faster login
 # upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
