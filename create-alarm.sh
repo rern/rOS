@@ -38,7 +38,11 @@ create_ros() {
 #............................
 		dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
 	elif [[ $std == 0 ]]; then
-		ssh $opt_ssh root@$1 reboot &> /dev/null & disown
+		ssh $opt_ssh root@$1 "
+chpasswd <<< root:ros
+sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config
+reboot
+" &> /dev/null & disown
 		[[ $file_delete ]] && rm $file &
 #............................
 		dialog.splash "
