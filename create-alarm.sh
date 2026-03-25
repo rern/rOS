@@ -131,17 +131,17 @@ dialog.download() {
 					eta = $11
 					sub( /^[^:]+:/, "", eta )
 					s = $7
+					num = substr( s, 1, length( s ) - 1 )
 					unit = substr( s, length( s ) )
-					if ( unit == "k" ) {
-						num = substr( s, 1, length( s ) - 1 )
-						if ( num > 1023 ) s = sprintf( "%.2fM", num / 1024 )
-					}
+					if ( unit == "k" && num > 1023 ) speed = sprintf( "%.2f M", num / 1024 )
+					else speed = num " " unit
+
 					print "XXX"
 					print $1
 					print ""
 					print "  Download ..."
 					print "  \\Z1" file "\\Zn"
-					print "  Time left: " eta " (" s "iB/s)"
+					print "  Time left: " eta " (" speed "iB/s)"
 					print "XXX"
 
 					fflush()
@@ -375,7 +375,7 @@ size=$( stat -c %s $file )
 				if ( $1 < 100 ) {
 					eta = $3
 					sub( /^[^:]+:/, "", eta )
-					eta_speed = sprintf( "  Time left: %s (%.2fMiB/s)", eta, $NF / 1048576 )
+					eta_speed = sprintf( "  Time left: %s (%.2f MiB/s)", eta, $NF / 1048576 )
 				} else {
 					eta_speed = "  Finish write ..."
 				}
