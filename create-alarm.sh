@@ -41,7 +41,7 @@ create_ros() {
 		( ssh ${opt_ssh/tt} root@$1 'chpasswd <<< root:ros; reboot' & disown ) &> /dev/null
 		[[ $file_delete ]] && rm $file &
 #............................
-		dialog.splash "
+		dialog.splash "\
 r A u d i o
 
 Created successfully and \Z1reboot\Zn ...
