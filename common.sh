@@ -111,9 +111,9 @@ done <<< "
 $logo
 
 $@"
-	h=$(( $( wc -l <<< $txt ) + 3 ));
+	h=$(( $( wc -l <<< $txt ) + 2 ));
 	tput civis # fix: hide cursor at corner
-	dialog $opt_info "\n$txt" $h $W;  tput cnorm # restore cursor
+	dialog $opt_info "$txt" $h $W;  tput cnorm # restore cursor
 }
 elapsed() {
 	local s=$(( $( date +%s ) - $1 ))
