@@ -364,16 +364,18 @@ size=$( stat -c %s $file )
 ) 2>&1 | awk -v file=$file '
 			{
 				if ( $1 < 100 ) {
+					title = "  Decompress ..."
 					eta = substr( $3, length( $3 ) - 4 )
 					eta_speed = sprintf( "  Time left: %s (%.2f MiB/s)", eta, $NF / 1048576 )
 				} else {
-					eta_speed = "  Finish write ..."
+					title = "  Write ..."
+					eta_speed = ""
 				}
 
 				print "XXX"
 				print $1
 				print ""
-				print "  Decompress ..."
+				print title
 				print "  \\Z1" file "\\Zn"
   				print eta_speed
 				print "XXX"
