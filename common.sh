@@ -2,18 +2,6 @@
 
 # . <( curl -sL https://raw.githubusercontent.com/rern/rOS/main/common.sh )
 
-alignCenter() {
-	local l line txt w
-	while read -r line; do # -r keep \
-		[[ $line != *[![:space:]]* ]] && txt+='\n' && continue
-
-		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
-		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
-		txt+="
-$( printf '%*s' $w )$line\n"
-	done <<< "$@"
-	echo "$txt"
-}
 banner() { # should be used on start stdout to screen
 	local cols
 	clear -x
@@ -114,14 +102,18 @@ Insert $sd_usb
 	echo $dev $dev${p}1 $dev${p}2
 }
 dialog.splash() {
-	tput civis # fix: hide cursor at corner
-#............................
-	dialog $opt_info "$( alignCenter "
-
+	local h l line txt w;   while read -r line; do # -r keep                [[ $line != *[![:space:]]* ]] && txt+='\n' && continue;
+		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
+		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
+		txt+="
+$( printf '%*s' $w )$line\n"
+done <<< "
 $logo
 
-$@" )" $(( 8 + $( wc -l <<< $@ ) )) $W
-	tput cnorm # restore cursor
+$@"
+	h=$(( $( wc -l <<< $txt ) + 3 ));
+	tput civis # fix: hide cursor at corner
+	dialog $opt_info "\n$txt" $h $W;  tput cnorm # restore cursor
 }
 elapsed() {
 	local s=$(( $( date +%s ) - $1 ))
