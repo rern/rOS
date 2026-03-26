@@ -46,8 +46,6 @@ for n in linux-aarch64 uboot-raspberrypi; do
 	pacman -Qi $n &> /dev/null && remove+="$n "
 done
 pacman -Rdd --noconfirm $remove
-# fix: debian standard /text mode - error linux-rpi: /boot/... exists in file system
-! pacman -Qi linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
 	sed -i -e '/community/,/^$/ d
@@ -59,6 +57,8 @@ Server = https://rern.github.io/$arch\
 ' /etc/pacman.conf
 fi
 packageUpdate
+# fix: debian standard /text mode - error linux-rpi: /boot/... exists in file system
+! pacman -Qi linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
 if [[ -e /boot/cmdline.txt0 ]]; then
 	mv -f /boot/cmdline.txt{0,}
 	mv -f /boot/config.txt{0,}
