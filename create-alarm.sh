@@ -120,8 +120,7 @@ dialog.download() {
 				/^ *[1-9]/ {
 					if ( $1 == 100 ) next
 
-					eta = $11
-					sub( /^[^:]+:/, "", eta )
+					eta = substr( $11, length( $11 ) - 4 )
 					s = $7
 					num = substr( s, 1, length( s ) - 1 )
 					unit = substr( s, length( s ) )
@@ -365,8 +364,7 @@ size=$( stat -c %s $file )
 ) 2>&1 | awk -v file=$file '
 			{
 				if ( $1 < 100 ) {
-					eta = $3
-					sub( /^[^:]+:/, "", eta )
+					eta = substr( $3, length( $3 ) - 4 )
 					eta_speed = sprintf( "  Time left: %s (%.2f MiB/s)", eta, $NF / 1048576 )
 				} else {
 					eta_speed = "  Finish write ..."
