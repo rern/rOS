@@ -432,7 +432,7 @@ fi
 # dhcpd - disable arp
 echo noarp >> ROOT/etc/dhcpcd.conf
 # mirror server
-[[ $mirror != 0 ]] && sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' ROOT/etc/pacman.d/mirrorlist
+[[ $mirror ]] && sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' ROOT/etc/pacman.d/mirrorlist
 # fix dns errors
 echo DNSSEC=no >> ROOT/etc/systemd/resolved.conf
 # fix: time not sync on wlan
