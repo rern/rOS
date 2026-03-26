@@ -116,8 +116,7 @@ $@"
 	dialog $opt_info "$txt" $h $W;  tput cnorm # restore cursor
 }
 elapsed() {
-	local s=$(( $( date +%s ) - $1 ))
-	echo "\Z4$( date -d@$s -u +%M:%S )\Zn"
+	date -d@$(( $( date +%s ) - $1 )) -u +%M:%S
 }
 ipBase() {
 	ip route get 1.1.1.1 | grep -oP '(?<=src ).*\..*\..*\.'

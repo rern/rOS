@@ -208,6 +208,6 @@ dialog.splash "\
 r A u d i o
 
 Created successfully
-$( elapsed $sec_start )
+\Z4$( elapsed $sec_start )\Zn
 \Z1   Reboot ...\Zn"
 reboot
