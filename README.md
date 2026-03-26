@@ -33,11 +33,10 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 - PC - Any Linux flavors:
 	- With package manager: `apt` or `pacman`
 	- Live USB can be used as well e.g.,
-		- [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) - Trixie (1.2 GB)
-		- [Debian standard](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) (1.9 GB)
-			- Fastest - Terminal only, no GUI
-			- If no wired LAN, see [how to](https://github.com/rern/tips_bash/blob/master/wifi.md#wpa_supplicant) connect Wi-Fi with `wpa_supplicat`.
-		- [Linux Mint](https://linuxmint.com/download.php) (2.9GB)
+		- [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) - Trixie (1.2 GB) - Lightest GUI
+		- [Debian **standard**](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) (1.9 GB) - Fastest and lightest - No GUI, Terminal only
+			- If no wired LAN, see [how to](https://github.com/rern/tips_bash/blob/master/wifi.md#wpa_supplicant) connect Wi-Fi.
+		- [Linux Mint](https://linuxmint.com/download.php) (2.9GB) - Light modern GUI
 		- Recommend: Create bootable USB drive with [Ventoy](https://www.ventoy.net)
 - Raspberry Pi
 - Micro SD card or USB drive (at least 8 GB)
