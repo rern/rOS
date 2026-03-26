@@ -69,7 +69,7 @@ Note: Use router pre-assigned IP address for Raspberry Pi if possible.
 	```
 - Run
 	```sh
-	bash <( wget -qO- https://raw.githubusercontent.com/rern/rOS/main/create-alarm.sh ) 2> /dev/null
+	bash <( wget -qO- https://raw.githubusercontent.com/rern/rOS/main/create-alarm.sh )
 	```
 ---
 
