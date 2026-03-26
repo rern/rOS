@@ -465,7 +465,7 @@ BR.unmount
 Arch Linux ARM
 
 Created successfully
-$( elapsed $sec_start )
+$( elapsed $sec_start )"
 #............................
 dialog $opt_msg "
 \Z1Arch Linux ARM\Zn      : Ready
