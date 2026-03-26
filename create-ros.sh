@@ -35,7 +35,7 @@ systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy po
 #............................
 banner Upgrade system and default packages
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs
-i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod linux-rpi mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
+i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
 raspberrypi-utils sudo udevil websocat wget xorg-xset'
 remove='linux-firmware '
@@ -46,6 +46,8 @@ for n in linux-aarch64 uboot-raspberrypi; do
 	pacman -Qi $n &> /dev/null && remove+="$n "
 done
 pacman -Rdd --noconfirm $remove
+# fix: debian standard /text mode - error linux-rpi: /boot/... exists in file system
+! pacman -Qi linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
 	sed -i -e '/community/,/^$/ d
