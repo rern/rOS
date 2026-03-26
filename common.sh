@@ -72,7 +72,10 @@ Retry?
 }
 dialog.sd() {
 	local dev dev_gib l p s
-	systemctl stop udisks2
+	if systemctl -q is-active udisks2; then
+		udisk2_active=1
+		udisk2Toggle stop
+	fi
 #............................ (no --sleep 1)
 	dialog $option --infobox "
 $logo
@@ -101,7 +104,7 @@ Insert $sd_usb
 		p=p
 	fi
 	echo $dev $dev${p}1 $dev${p}2
-	systemctl -q is-enabled udisks2 && systemctl start udisks2
+	[[ $udisk2_active ]] && udisk2Toggle start
 }
 dialog.splash() {
 	local h l line txt w;   while read -r line; do # -r keep                [[ $line != *[![:space:]]* ]] && txt+='\n' && continue;
@@ -128,6 +131,11 @@ kbKey() {
 }
 killChildProcess() {
 	kill -TERM -$$ &> /dev/null
+}
+udisk2Toggle() {
+	[[ $1 == start ]] && mask=unmask || mask=mask;;
+	systemctl $mask --runtime udisks2
+	systemctl $1 udisks2
 }
 #         https://raw.githubusercontent.com/rern/REPO/BRANCH/file
 https_raw=https://raw.githubusercontent.com
