@@ -290,7 +290,7 @@ md5verify() {
 	fi
 }
 memBuffer() {
-	awk '/Dirty:/{print $2}' /proc/meminfo
+	awk '/^(Dirty|Writeback):/ {sum += $2} END {print sum}' /proc/meminfo
 }
 scanIP() {
 #............................
@@ -366,13 +366,14 @@ size=$( stat -c %s $file )
 				if ( $1 == 100 ) exit
 
 				eta = substr( $3, length( $3 ) - 4 )
+				speed = sprintf( "%.2f", $NF / 1048576 )
 
 				print "XXX"
 				print $1
 				print ""
 				print "  Decompress ..."
 				print "  \\Z1" file "\\Zn"
-  				printf "  Time left: %s (%.2f MiB/s)" eta ( $NF / 1048576 )
+  				print "  Time left: " eta " (" speed " MiB/s)"
 				print "XXX"
 
 				fflush()
@@ -383,12 +384,14 @@ size=$( stat -c %s $file )
 " 9 $W
 mem_buffer=$( memBuffer )
 #........................
-( while (( $( memBuffer ) > 1000 )); do
+( while true; do
 	left=$( memBuffer )
+	(( $left < 1024 )) && echo 100 && break
+
 	echo $(( $(( mem_buffer - left )) * 100 / mem_buffer ))
 	sleep 1
 done ) \
-	| dialog $opt_guage "
+	| dialog $opt_gauge "
   Write ...
   \Z1$file\Zn
 " 9 $W
