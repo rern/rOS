@@ -325,30 +325,17 @@ BR.mount
 dialog.data
 dialog.feature
 # package mirror server
-lines=$( curl -sL $https_mirrorlist | sed -E -n '/^### Mirror/,$ {/^\s*$|^### Mirror/ d; s|.*//(.*)\.mirror.*|\1|; p}' )
-list_menu="\
-Auto (By Geo-IP)"
-list_code=( '' '' )
-while read line; do
-	if [[ $line == '###'* ]];then
-		city=
-		country=${line:4}
-	elif [[ $line == '## '* ]];then
-		city=${line:3}
-	else
-		[[ $city ]] && cc="$country - $city" || cc=$country
-		[[ $cc == $ccprev ]] && cc+=' 2'
-		ccprev=$cc
-		list_menu+="
-$cc"
-		list_code+=( $line )
-	fi
-done <<< $lines
-#............................
-i=$( dialog.menu 'Package mirror server' "$list_menu" )
-mirror=${list_code[i]}
-url=http://os.archlinuxarm.org/os
-[[ $mirror ]] && url=${url/os./$mirror.mirror.}
+bar Rank package servers ...
+if [[ ! -e rate_mirrors ]]; then
+	url_assets=$( curl -sL https://api.github.com/repos/westandskif/rate-mirrors/releases/latest | jq -r .assets )
+	url_latest=$( jq -r .[1].browser_download_url <<< $url_assets ) # x86_64
+	[[ $url_latest != *$( uname -m )* ]] && url_latest=$( jq -r .[0].browser_download_url <<< $url_assets ) # aarch64
+	curl -sL $url_latest | bsdtar xf - --strip-components=1 --exclude=LICENSE
+fi
+./rate_mirrors --allow-root --disable-comments-in-file --save mirrorlist archarm
+sub=$( sed -n -E '1 {s|.*//(.*\.*mirror)\..*|\1|; p}' mirrorlist )
+[[ $sub == mirror ]] && sub=os
+url=http://$sub.archlinuxarm.org/os
 if [[ -e $file ]]; then
 	md5verify existing
 else
@@ -397,6 +384,7 @@ done ) \
 " 9 $W
 sync
 mv ROOT/boot/* BOOT
+mv mirrorlist ROOT/etc/pacman.d/
 # fstab
 partid=$( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' )
 read partid_B partid_R < <( echo $partid )
@@ -440,8 +428,6 @@ After=sys-subsystem-net-devices-wlan0.device" > "$dir/profile.conf"
 fi
 # dhcpd - disable arp
 echo noarp >> ROOT/etc/dhcpcd.conf
-# mirror server
-[[ $mirror ]] && sed -i '/^Server/ s|//.*mirror|//'$mirror'.mirror|' ROOT/etc/pacman.d/mirrorlist
 # fix dns errors
 echo DNSSEC=no >> ROOT/etc/systemd/resolved.conf
 # fix: time not sync on wlan
