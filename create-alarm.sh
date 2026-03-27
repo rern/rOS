@@ -289,7 +289,7 @@ md5verify() {
 		dialog.retry "Verify failed:\n$file" && dialog.download
 	fi
 }
-memDirty() {
+memBuffer() {
 	awk '/Dirty:/{print $2}' /proc/meminfo
 }
 scanIP() {
@@ -363,27 +363,33 @@ size=$( stat -c %s $file )
 		| bsdtar xpf - -C ROOT --exclude=*fallback.img
 ) 2>&1 | awk -v file=$file '
 			{
-				if ( $1 < 100 ) {
-					title = "  Decompress ..."
-					eta = substr( $3, length( $3 ) - 4 )
-					eta_speed = sprintf( "  Time left: %s (%.2f MiB/s)", eta, $NF / 1048576 )
-				} else {
-					title = "  Write ..."
-					eta_speed = ""
-				}
+				if ( $1 == 100 ) exit
+
+				eta = substr( $3, length( $3 ) - 4 )
 
 				print "XXX"
 				print $1
 				print ""
-				print title
+				print "  Decompress ..."
 				print "  \\Z1" file "\\Zn"
-  				print eta_speed
+  				printf "  Time left: %s (%.2f MiB/s)" eta ( $NF / 1048576 )
 				print "XXX"
 
 				fflush()
 			}' \
 	| dialog $opt_gauge "
   Decompress ...
+  \Z1$file\Zn
+" 9 $W
+mem_buffer=$( memBuffer )
+#........................
+( while (( $( memBuffer ) > 1000 )); do
+	left=$( memBuffer )
+	echo $(( $(( mem_buffer - left )) * 100 / mem_buffer ))
+	sleep 1
+done ) \
+	| dialog $opt_guage "
+  Write ...
   \Z1$file\Zn
 " 9 $W
 sync

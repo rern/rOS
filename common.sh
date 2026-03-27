@@ -133,7 +133,7 @@ killChildProcess() {
 	kill -TERM -$$ &> /dev/null
 }
 udisk2Toggle() {
-	[[ $1 == start ]] && mask=unmask || mask=mask;;
+	[[ $1 == start ]] && mask=unmask || mask=mask
 	systemctl $mask --runtime udisks2
 	systemctl $1 udisks2
 }
