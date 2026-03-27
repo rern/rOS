@@ -117,6 +117,7 @@ $logo
 
 $@"
 	h=$(( $( wc -l <<< $txt ) + 2 ));
+	(( $( wc -l <<< $@ ) == 1 )) && (( h++ ))
 	tput civis # fix: hide cursor at corner
 	dialog $opt_info "$txt" $h $W;  tput cnorm # restore cursor
 }
