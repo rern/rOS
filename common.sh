@@ -135,7 +135,7 @@ killChildProcess() {
 }
 udisk2Toggle() {
 	[[ $1 == start ]] && mask=unmask || mask=mask
-	systemctl $mask --runtime udisks2
+	systemctl $mask --runtime udisks2 &> /dev/null
 	systemctl $1 udisks2
 }
 #         https://raw.githubusercontent.com/rern/REPO/BRANCH/file
