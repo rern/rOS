@@ -333,9 +333,11 @@ if [[ ! -e rate_mirrors ]]; then
 	curl -sL $url_latest | bsdtar xf - --strip-components=1 --exclude=LICENSE
 fi
 ./rate_mirrors --allow-root --disable-comments-in-file --save mirrorlist archarm
-sub=$( sed -n -E '1 {s|.*//(.*\.*mirror)\..*|\1|; p}' mirrorlist )
-[[ $sub == mirror ]] && sub=os
-url=http://$sub.archlinuxarm.org/os
+while read sub; do # verify file exists
+	[[ $sub == mirror ]] && sub=os
+	url=http://$sub.archlinuxarm.org/os
+	curl -sIfo /dev/null $url/$file && break
+done < <( sed -E 's|.*//(.*\.*mirror)\..*|\1|' mirrorlist )
 if [[ -e $file ]]; then
 	md5verify existing
 else
