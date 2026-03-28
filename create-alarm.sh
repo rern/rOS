@@ -389,7 +389,6 @@ done ) \
 " 9 $W
 sync
 mv ROOT/boot/* BOOT
-mv mirrorlist ROOT/etc/pacman.d/
 # fstab
 partid=$( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' )
 read partid_B partid_R < <( echo $partid )
@@ -458,6 +457,8 @@ for f in common create-ros; do
 done
 chmod +x create-ros.sh
 mv common.sh create-ros.sh features release ROOT/root
+mv ROOT/etc/pacman.d/mirrorlist{,.bak}
+mv mirrorlist ROOT/etc/pacman.d/
 sync
 BR.unmount
 #............................
