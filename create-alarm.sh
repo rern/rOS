@@ -8,25 +8,25 @@ sec_start=$( date +%s )
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
 # required packages
-for cmd in bsdtar curl dialog gawk jq nmap pigz sfdisk pv; do # required packages
-	cmdNotExist $cmd && packages+="$cmd "
+for cmd in bsdtar curl dialog gawk jq nmap pigz sfdisk pv; do # required pkgs
+	cmdNotExist $cmd && pkgs+="$cmd "
 done
-if [[ $packages ]]; then
+if [[ $pkgs ]]; then
 	cmd=$( packageCommand )
-	if [[ $packages == *bsdtar* && ${cmd:0:1} != [dy] ]]; then
+	if [[ $pkgs == *bsdtar* && ${cmd:0:1} != [dy] ]]; then # not dnf / yum
 		pkg_lib=libarchive
 		[[ $cmd == apt ]] && pkg_lib+=-tools
-		packages=${packages/bsdtar/$pkg_lib}
+		pkgs=${pkgs/bsdtar/$pkg_lib}
 	fi
-	if [[ $packages == *sfdisk* ]]; then
+	if [[ $pkgs == *sfdisk* ]]; then
 		pkg_sfdisk=util-linux
 		if [[ $cmd == apt ]]; then
 			! dpkg -L util-linux | grep -q sfdisk && pkg_sfdisk=fdisk # newer debian: in fdisk
 		fi
-		packages=${packages/sfdisk/$pkg_sfdisk}
+		pkgs=${pkgs/sfdisk/$pkg_sfdisk}
 	fi
-	[[ $packages == *nmap* && $cmd == pacman ]] && packages+='gcc-libs ' # manjaro: libgcc conflicts
-	packageInstall $cmd $packages
+	[[ $pkgs == *nmap* && $cmd == pacman ]] && pkgs+='gcc-libs ' # manjaro: libgcc conflicts
+	packageInstall $cmd $pkgs
 fi
 export PATH+=:/sbin # debian - sfdisk
 alias awk=gawk      # debian - awk<mawk - no sub gsub
