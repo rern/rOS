@@ -14,6 +14,9 @@ done
 cmdNotExist sfdisk && packages+='util-linux ' # puppy linux: missing
 if [[ $packages ]]; then
 	cmd=$( packageCommand )
+	if [[ $cmd == apt ]] && cmdNotExist sfdisk; then
+		! dpkg -L util-linux | grep -q sfdisk && packages=${packages/util-linux/fdisk} # newer debian: in fdisk
+	fi
 	[[ $cmd == pacman ]] && cmdNotExist nmap && packages+='gcc-libs ' # manjaro: libgcc conflicts
 	if cmdNotExist bsdtar && [[ ${cmd:0:1} != [dy] ]]; then
 		pkg_lib=libarchive
