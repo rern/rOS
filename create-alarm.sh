@@ -16,13 +16,21 @@ for cmd in curl dialog gawk jq nmap pigz pv; do # required packages
 done
 cmdNotExist sfdisk && packages+='fdisk ' # puppy linux: missing
 if [[ $packages ]]; then
-	if [[ -e /usr/bin/pacman ]]; then
+	if cmdNotExist pacman; then
+		cmdNotExist bsdtar && packages+='libarchive-tools ' # non-arch linux: tar (default)
+		for cmd in apt brew dnf yum zypper; do
+			cmdNotExist $cmd || break
+		done
+		case $cmd in
+			apt )    apt update     && apt install -y $packages;;
+			dnf )                      dnf install -y $packages;;
+			yum )                      yum install -y $packages;;
+			zypper ) zypper refresh && zypper install -y $packages;;
+			brew )   brew update    && brew install $packages
+		esac
+	else
 		cmdNotExist nmap && packages+='gcc-libs ' # manjaro: libgcc conflicts
 		pacman -Sy --noconfirm $packages
-	else
-		cmdNotExist bsdtar && packages+='libarchive-tools ' # non-arch linux: tar (default)
-		apt update
-		apt install -y $packages
 	fi
 fi
 if [[ ! -e /usr/bin/pacman ]]; then # not arch linux

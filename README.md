@@ -31,7 +31,6 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 
 **Need**
 - PC - Any Linux distros:
-	- With package manager: `apt` or `pacman`
 	- Live USB can be used as well e.g.,
 		- [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) - Trixie (1.2 GB) - Lightest GUI
 		- [Debian **standard**](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) (1.9 GB) - Fastest and lightest - No GUI, Terminal only
@@ -70,7 +69,11 @@ Note: Use router pre-assigned IP address for Raspberry Pi if possible.
 	```
 - Run
 	```sh
-	bash <( wget -qO- https://raw.githubusercontent.com/rern/rOS/main/create-alarm.sh )
+	bash <( curl -sL https://raw.githubusercontent.com/rern/rOS/main/create-alarm.sh )
+	```
+- If `curl: command not found`
+	```sh
+	apt install curl -y
 	```
 ---
 
