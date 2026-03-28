@@ -13,7 +13,6 @@ nextServerRetry() {
 	dialog.retry Package server not ready. || exit 1
 #------------------------------------------------------------------------------
 	file_mirrorlist=/etc/pacman.d/mirrorlist
-	cp $file_mirrorlist .
 	(( $( wc -l < $file_mirrorlist ) == 1 )) && dialog.error_exit All package servers not responsive.
 #------------------------------------------------------------------------------
 	sed -i '1 d' $file_mirrorlist
@@ -25,12 +24,12 @@ nextServerRetry() {
 }
 packageInstall() {
 	pacman -S --noconfirm --needed $packages $features
+	pacman -S --noconfirm pacman-mirrorlist
 	[[ $? != 0 ]] && nextServerRetry packageInstall
 }
 systemUpgrade() {
 	pacman -Su --noconfirm
-	# fix: debian standard /text mode - error linux-rpi: /boot/... exists in file system
-	! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
+	! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*' # fix: debian standard - /boot/... exists
 	[[ $? != 0 ]] && nextServerRetry systemUpgrade
 }
 
@@ -210,7 +209,6 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
-[[ -e mirrorlist ]] && mv mirrorlist $file_mirrorlist
 touch /boot/expand
 #............................
 dialog.splash "\
