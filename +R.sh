@@ -4,8 +4,11 @@ trap 'clear -x' EXIT
 
 . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
 
+title='U t i l i t i e s'
+[[ $branch != main ]] && title+="
+\Z4$branch\Zn"
 #............................
-dialog.splash U t i l i t i e s
+dialog.splash "$title"
 list="\
 Create OS       : create-alarm
 Reset for Image :
