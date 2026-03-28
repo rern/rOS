@@ -199,11 +199,9 @@ sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # pam - fix freede
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
 echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
 alsactl store
-# default startup services
 systemctl daemon-reload
-systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
-# data - settings directories
-$dirbash/settings/system-datadefault.sh $release
+systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
+$dirbash/settings/system-datadefault.sh $release # data - settings directories
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
