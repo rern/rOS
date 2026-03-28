@@ -325,7 +325,7 @@ BR.mount
 dialog.data
 dialog.feature
 # package mirror server
-banner Rank Package Servers
+banner Rank Servers
 if [[ ! -e rate_mirrors ]]; then
 	url_assets=$( curl -sL https://api.github.com/repos/westandskif/rate-mirrors/releases/latest | jq -r .assets )
 	url_latest=$( jq -r .[1].browser_download_url <<< $url_assets ) # x86_64
