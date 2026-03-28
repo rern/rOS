@@ -69,7 +69,7 @@ Note: Use router pre-assigned IP address for Raspberry Pi if possible.
 	```
 - Run
 	```sh
-	bash <( curl -sL https://raw.githubusercontent.com/rern/rOS/main/create-alarm.sh )
+	bash <( curl -sL https://raw.githubusercontent.com/rern/rOS/main/create.sh )
 	```
 - If `curl: command not found`
 	```sh
