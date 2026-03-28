@@ -2,11 +2,7 @@
 
 trap 'killChildProcess; BR.unmount' EXIT
 
-# required packages
-for cmd in bsdtar dialog; do
-	cmdNotExist $cmd && packages+="$cmd "
-done
-[[ $packages ]] && packageInstall $( packageCommand ) $packages
+packageInstall bsdtar dialog # required packages
 
 shrink() {
 	bar "Shrink Pass #$1 ..."

@@ -7,29 +7,10 @@ sec_start=$( date +%s )
 [[ ! $branch ]] && branch=main
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
-# required packages
-for cmd in bsdtar curl dialog gawk jq nmap pigz sfdisk pv; do # required pkgs
-	cmdNotExist $cmd && pkgs+="$cmd "
-done
-if [[ $pkgs ]]; then
-	cmd=$( packageCommand )
-	if [[ $pkgs == *bsdtar* && ${cmd:0:1} != [dy] ]]; then # not dnf / yum
-		pkg_lib=libarchive
-		[[ $cmd == apt ]] && pkg_lib+=-tools
-		pkgs=${pkgs/bsdtar/$pkg_lib}
-	fi
-	if [[ $pkgs == *sfdisk* ]]; then
-		pkg_sfdisk=util-linux
-		if [[ $cmd == apt ]]; then
-			! dpkg -L util-linux | grep -q sfdisk && pkg_sfdisk=fdisk # newer debian: in fdisk
-		fi
-		pkgs=${pkgs/sfdisk/$pkg_sfdisk}
-	fi
-	[[ $pkgs == *nmap* && $cmd == pacman ]] && pkgs+='gcc-libs ' # manjaro: libgcc conflicts
-	packageInstall $cmd $pkgs
-fi
+
+packageInstall bsdtar curl dialog gawk jq nmap pigz sfdisk pv # required pkgs
 export PATH+=:/sbin # debian - sfdisk
-alias awk=gawk      # debian - awk<mawk - no sub gsub
+alias awk=gawk      # debian - awk=mawk - no sub gsub
 
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
