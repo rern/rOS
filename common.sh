@@ -13,7 +13,7 @@ banner() { # should be used on start stdout to screen
 bar() {
 	echo -e "\n\e[44m  \e[0m $@\n"
 }
-BR.mount() { # create-alarm.sh, image-create.sh
+BR.mount() { # create.sh, image-create.sh
 	mkdir -p BOOT ROOT
 	mount -o rw,noatime,nodiratime $PART_B BOOT
 	mount -o rw,noatime,nodiratime $PART_R ROOT
