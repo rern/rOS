@@ -136,7 +136,7 @@ kbKey() {
 killChildProcess() {
 	kill -TERM -$$ &> /dev/null
 }
-packageInstall() {
+packageRequired() {
 	local p pkgs
 	for p in $@; do # required pkgs
 		cmdNotExist $p && pkgs+="$p "
@@ -170,6 +170,9 @@ packageInstall() {
 		zypper ) zypper refresh && zypper $install_pkgs;;
 		pacman )                   pacman -Sy --noconfirm $pkgs;;
 	esac
+#............................
+	[[ $? != 0 ]] && dialog.retry Install packages failed. || exit
+#------------------------------------------------------------------------------
 }
 udisk2Toggle() {
 	[[ $1 == start ]] && mask=unmask || mask=mask

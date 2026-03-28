@@ -1,23 +1,30 @@
 #!/bin/bash
 
-trap 'rm -f /var/lib/pacman/db.lck' EXIT
+trap 'rm -f /var/lib/pacman/db.lck; mv $file_mirrorlist{.bak,}' EXIT
 
 . common.sh
 
 sec_start=$( date +%s )
 dir_system=/etc/systemd/system
+file_mirrorlist=/etc/pacman.d/mirrorlist
 features=$( < features )
 release=$( < release )
 
+currentServer() {
+	sed -n '1 {s|.*= ||; s|$.*|...|; p}' $file_mirrorlist
+}
 nextServerRetry() {
-	dialog.retry Package server not responsive. || exit 1
+	dialog.retry "Package server not responsive.
+$( currentServer )" || exit 1
 #------------------------------------------------------------------------------
-	file_mirrorlist=/etc/pacman.d/mirrorlist
-	(( $( wc -l < $file_mirrorlist ) == 1 )) && dialog.error_exit \Z1All package servers\Zn not responsive.
+	if (( $( wc -l < $file_mirrorlist ) == 1 )); then
+		mv $file_mirrorlist{.bak,}
+		dialog.error_exit '\Z1All package servers\Zn not responsive.'
 #------------------------------------------------------------------------------
+	fi
 	sed -i '1 d' $file_mirrorlist
-	bar Switch package server ...
-	sed -n '1 {s/.*= //; p}' $file_mirrorlist
+	bar Switch package server...
+	currentServer
 	rm -f /var/lib/pacman/db.lck
 	pacman -Sy
 	$1
@@ -185,7 +192,7 @@ else
 fi
 # system
 bar Restore default mirrorlist
-mv /etc/pacman.d/mirrorlist{.bak,}
+mv $file_mirrorlist{.bak,}
 bar Set root password
 chpasswd <<< root:ros
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
