@@ -337,7 +337,10 @@ while read sub; do # verify file exists
 	[[ $sub == mirror ]] && sub=os
 	url=http://$sub.archlinuxarm.org/os
 	curl -sIfo /dev/null $url/$file && break
+
+	sed -i '1 d' mirrorlist
 done < <( sed -E 's|.*//(.*\.*mirror)\..*|\1|' mirrorlist )
+[[ ! -s mirrorlist ]] && dialog.error_exit All package servers not responsive.
 if [[ -e $file ]]; then
 	md5verify existing
 else

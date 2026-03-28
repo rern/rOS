@@ -9,19 +9,28 @@ dir_system=/etc/systemd/system
 features=$( < features )
 release=$( < release )
 
+nextServerRetry() {
+	dialog.retry Package server not ready. || exit 1
+#------------------------------------------------------------------------------
+	file_mirrorlist=/etc/pacman.d/mirrorlist
+	(( $( wc -l < $file_mirrorlist ) == 1 )) && dialog.error_exit All package servers not responsive.
+#------------------------------------------------------------------------------
+	sed -i '1 d' $file_mirrorlist
+	bar Switch package server ...
+	sed -n '1 {s/.*= //; p}' $file_mirrorlist
+	rm -f /var/lib/pacman/db.lck
+	pacman -Sy
+	$1
+}
 packageInstall() {
 	pacman -S --noconfirm --needed $packages $features
-	if [[ $? != 0 ]]; then
-		dialog.retry Install packages incomplete. && packageInstall || exit 1
-#------------------------------------------------------------------------------
-	fi
+	[[ $? != 0 ]] && nextServerRetry packageInstall
 }
-packageUpdate() {
-	pacman -Syu --noconfirm
-	if [[ $? != 0 ]]; then
-		dialog.retry Upgrade system incomplete. && packageUpdate || exit 1
-#------------------------------------------------------------------------------
-	fi
+systemUpgrade() {
+	pacman -Su --noconfirm
+	# fix: debian standard /text mode - error linux-rpi: /boot/... exists in file system
+	! pacman -Qi linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
+	[[ $? != 0 ]] && nextServerRetry systemUpgrade
 }
 
 #............................
@@ -56,9 +65,8 @@ SigLevel = Optional TrustAll\
 Server = https://rern.github.io/$arch\
 ' /etc/pacman.conf
 fi
-packageUpdate
-# fix: debian standard /text mode - error linux-rpi: /boot/... exists in file system
-! pacman -Qi linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
+pacman -Sy
+systemUpgrade
 if [[ -e /boot/cmdline.txt0 ]]; then
 	mv -f /boot/cmdline.txt{0,}
 	mv -f /boot/config.txt{0,}
