@@ -25,6 +25,9 @@ BR.unmount() {
 		rmdir BOOT ROOT &> /dev/null
 	fi
 }
+cmdNotExist() {
+	! command -v $1 &> /dev/null && return 0
+}
 dialog.error_exit() {
 	dialog $opt_msg "
 $warn Error:
@@ -132,6 +135,44 @@ kbKey() {
 }
 killChildProcess() {
 	kill -TERM -$$ &> /dev/null
+}
+packageRequired() {
+	local p pkgs
+	for p in $@; do # required pkgs
+		cmdNotExist $p && pkgs+="$p "
+	done
+	[[ ! $pkgs ]] && return
+
+	local cmd install_pkgs
+	for cmd in apk apt brew dnf pacman yum zypper; do
+		cmdNotExist $cmd || break
+	done
+	if [[ $pkgs == *bsdtar* && ${cmd:0:1} != [dy] ]]; then # not dnf / yum
+		pkg_lib=libarchive
+		[[ $cmd == apt ]] && pkg_lib+=-tools
+		pkgs=${pkgs/bsdtar/$pkg_lib}
+	fi
+	if [[ $pkgs == *sfdisk* ]]; then
+		pkg_sfdisk=util-linux
+		if [[ $cmd == apt ]]; then
+			! dpkg -L util-linux | grep -q sfdisk && pkg_sfdisk=fdisk # puppy linux: in fdisk
+		fi
+		pkgs=${pkgs/sfdisk/$pkg_sfdisk}
+	fi
+	[[ $pkgs == *nmap* && $cmd == pacman ]] && pkgs+='gcc-libs ' # manjaro: libgcc conflicts
+	install_pkgs="install -y $pkgs"
+	case $cmd in
+		apk )    apk update     && apk add $pkgs;;
+		apt )    apt update     && apt    $install_pkgs;;
+		brew )   brew update    && brew   ${install_pkgs/ -y};;
+		dnf )                      dnf    $install_pkgs;;
+		yum )                      yum    $install_pkgs;;
+		zypper ) zypper refresh && zypper $install_pkgs;;
+		pacman )                   pacman -Sy --noconfirm $pkgs;;
+	esac
+#............................
+	[[ $? != 0 ]] && dialog.retry Install packages failed. || exit
+#------------------------------------------------------------------------------
 }
 udisk2Toggle() {
 	[[ $1 == start ]] && mask=unmask || mask=mask

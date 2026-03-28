@@ -1,23 +1,30 @@
 #!/bin/bash
 
-trap 'rm -f /var/lib/pacman/db.lck' EXIT
+trap 'rm -f /var/lib/pacman/db.lck; mv $file_mirrorlist{.bak,}' EXIT
 
 . common.sh
 
 sec_start=$( date +%s )
 dir_system=/etc/systemd/system
+file_mirrorlist=/etc/pacman.d/mirrorlist
 features=$( < features )
 release=$( < release )
 
+currentServer() {
+	sed -n '1 {s|.*= ||; s|$.*|...|; p}' $file_mirrorlist
+}
 nextServerRetry() {
-	dialog.retry Package server not responsive. || exit 1
+	dialog.retry "Package server not responsive.
+$( currentServer )" || exit 1
 #------------------------------------------------------------------------------
-	file_mirrorlist=/etc/pacman.d/mirrorlist
-	(( $( wc -l < $file_mirrorlist ) == 1 )) && dialog.error_exit \Z1All package servers\Zn not responsive.
+	if (( $( wc -l < $file_mirrorlist ) == 1 )); then
+		mv $file_mirrorlist{.bak,}
+		dialog.error_exit '\Z1All package servers\Zn not responsive.'
 #------------------------------------------------------------------------------
+	fi
 	sed -i '1 d' $file_mirrorlist
-	bar Switch package server ...
-	sed -n '1 {s/.*= //; p}' $file_mirrorlist
+	bar Switch package server...
+	currentServer
 	rm -f /var/lib/pacman/db.lck
 	pacman -Sy
 	$1
@@ -94,14 +101,14 @@ chmod -R 755 $dirbash
 mkdir /srv/http/assets/img/guide
 curl -sL $https_rern/_assets/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
 # bluetooth
-if [[ -e /usr/bin/bluetoothctl ]]; then
+if cmdNotExist bluetoothctl; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
 else
 	rm -rf $dir_system/{bluealsa,bluetooth}.service.d
 	rm -f $dir_system/blue*
 fi
 # camilladsp
-if [[ -e /usr/bin/camilladsp ]]; then
+if cmdNotExist camilladsp; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
 	dirconfigs=/srv/http/data/camilladsp/configs
 	mkdir -p $dirconfigs
@@ -115,7 +122,7 @@ fi
 ln -s /etc/cava.conf .config
 echo VISUAL=nano >> /etc/environment
 # firefox
-if [[ -e /usr/bin/firefox ]]; then
+if cmdNotExist firefox; then
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
@@ -126,7 +133,7 @@ else
 	rm -f $dir_system/{bootsplash,localbrowser}*
 fi
 # iwd
-if [[ -e /usr/bin/iwctl ]]; then
+if cmdNotExist iwctl; then
 	mkdir -p /var/lib/iwd/ap
 	echo "\
 [Security]
@@ -150,30 +157,30 @@ fi
 # mpd
 chsh -s /bin/bash mpd
 # samba
-if [[ -e /usr/bin/smbd ]]; then
+if cmdNotExist smbd; then
 	( echo ros; echo ros ) | smbpasswd -s -a root
 else
 	rm -rf /etc/samba
 fi
 # shairport-sync
-if [[ ! -e /usr/bin/shairport-sync ]]; then
+if cmdNotExist shairport-sync; then
 	rm /etc/shairport-sync.conf $dir_system/shairport.service
 	rm -rf $dir_system/shairport-sync.service.d/
 fi
 # snapcast
-if [[ -e /usr/bin/snapserver ]]; then
+if cmdNotExist snapserver; then
 	sed -i '/^#bind_to_address/ a\
 bind_to_address = 0.0.0.0
 ' /etc/snapserver.conf
 fi
 # spotifyd
-if [[ -e /usr/bin/spotifyd ]]; then
+if cmdNotExist spotifyd; then
 	ln -s /lib/systemd/{user,system}/spotifyd.service
 else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
 # upmpdcli
-if [[ -e /usr/bin/upmpdcli ]]; then
+if cmdNotExist upmpdcli; then
 	dir=/var/cache/upmpdcli/ohcreds
 	file=$dir/credkey.pem
 	mkdir -p $dir
@@ -185,7 +192,7 @@ else
 fi
 # system
 bar Restore default mirrorlist
-mv /etc/pacman.d/mirrorlist{.bak,}
+mv $file_mirrorlist{.bak,}
 bar Set root password
 chpasswd <<< root:ros
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster

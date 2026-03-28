@@ -7,37 +7,11 @@ sec_start=$( date +%s )
 [[ ! $branch ]] && branch=main
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
-# command normalize >>>
-cmdNotExist() {
-	! command -v $1 &> /dev/null && return 0
-}
-for cmd in curl dialog gawk jq nmap pigz pv; do # required packages
-	cmdNotExist $cmd && packages+="$cmd "
-done
-cmdNotExist sfdisk && packages+='fdisk ' # puppy linux: missing
-if [[ $packages ]]; then
-	if cmdNotExist pacman; then
-		cmdNotExist bsdtar && packages+='libarchive-tools ' # non-arch linux: tar (default)
-		for cmd in apt brew dnf yum zypper; do
-			cmdNotExist $cmd || break
-		done
-		case $cmd in
-			apt )    apt update     && apt install -y $packages;;
-			dnf )                      dnf install -y $packages;;
-			yum )                      yum install -y $packages;;
-			zypper ) zypper refresh && zypper install -y $packages;;
-			brew )   brew update    && brew install $packages
-		esac
-	else
-		cmdNotExist nmap && packages+='gcc-libs ' # manjaro: libgcc conflicts
-		pacman -Sy --noconfirm $packages
-	fi
-fi
-if [[ ! -e /usr/bin/pacman ]]; then # not arch linux
-	export PATH+=:/sbin # sfdisk
-	alias awk=gawk      # fix: debian - awk<mawk - no sub gsub
-fi
-# <<<
+
+packageRequired bsdtar curl dialog gawk jq nmap pigz sfdisk pv # required pkgs
+export PATH+=:/sbin # debian - sfdisk
+alias awk=gawk      # debian - awk=mawk - no sub gsub
+
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
 	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
