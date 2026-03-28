@@ -94,14 +94,14 @@ chmod -R 755 $dirbash
 mkdir /srv/http/assets/img/guide
 curl -sL $https_rern/_assets/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
 # bluetooth
-if [[ -e /usr/bin/bluetoothctl ]]; then
+if cmdNotExist bluetoothctl; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
 else
 	rm -rf $dir_system/{bluealsa,bluetooth}.service.d
 	rm -f $dir_system/blue*
 fi
 # camilladsp
-if [[ -e /usr/bin/camilladsp ]]; then
+if cmdNotExist camilladsp; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
 	dirconfigs=/srv/http/data/camilladsp/configs
 	mkdir -p $dirconfigs
@@ -115,7 +115,7 @@ fi
 ln -s /etc/cava.conf .config
 echo VISUAL=nano >> /etc/environment
 # firefox
-if [[ -e /usr/bin/firefox ]]; then
+if cmdNotExist firefox; then
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
@@ -126,7 +126,7 @@ else
 	rm -f $dir_system/{bootsplash,localbrowser}*
 fi
 # iwd
-if [[ -e /usr/bin/iwctl ]]; then
+if cmdNotExist iwctl; then
 	mkdir -p /var/lib/iwd/ap
 	echo "\
 [Security]
@@ -150,30 +150,30 @@ fi
 # mpd
 chsh -s /bin/bash mpd
 # samba
-if [[ -e /usr/bin/smbd ]]; then
+if cmdNotExist smbd; then
 	( echo ros; echo ros ) | smbpasswd -s -a root
 else
 	rm -rf /etc/samba
 fi
 # shairport-sync
-if [[ ! -e /usr/bin/shairport-sync ]]; then
+if cmdNotExist shairport-sync; then
 	rm /etc/shairport-sync.conf $dir_system/shairport.service
 	rm -rf $dir_system/shairport-sync.service.d/
 fi
 # snapcast
-if [[ -e /usr/bin/snapserver ]]; then
+if cmdNotExist snapserver; then
 	sed -i '/^#bind_to_address/ a\
 bind_to_address = 0.0.0.0
 ' /etc/snapserver.conf
 fi
 # spotifyd
-if [[ -e /usr/bin/spotifyd ]]; then
+if cmdNotExist spotifyd; then
 	ln -s /lib/systemd/{user,system}/spotifyd.service
 else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
 # upmpdcli
-if [[ -e /usr/bin/upmpdcli ]]; then
+if cmdNotExist upmpdcli; then
 	dir=/var/cache/upmpdcli/ohcreds
 	file=$dir/credkey.pem
 	mkdir -p $dir

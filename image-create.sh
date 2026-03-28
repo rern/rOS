@@ -2,6 +2,12 @@
 
 trap 'killChildProcess; BR.unmount' EXIT
 
+# required packages
+for cmd in bsdtar dialog; do
+	cmdNotExist $cmd && packages+="$cmd "
+done
+[[ $packages ]] && packageInstall $( packageCommand ) $packages
+
 shrink() {
 	bar "Shrink Pass #$1 ..."
 	read b_used b_size b_count < <( tune2fs -l $PART_R | awk '
@@ -22,17 +28,6 @@ shrink() {
 	fi
 }
 
-# required packages
-[[ ! -e /usr/bin/dialog ]] && packages+='dialog '
-[[ ! -e /usr/bin/bsdtar ]] && packages+='bsdtar '
-if [[ $packages ]]; then
-	if [[ -e /usr/bin/pacman ]]; then
-		pacman -Sy --noconfirm $packages
-	else
-		[[ ! -e /usr/bin/bsdtar ]] && packages+='libarchive-tools '
-		apt install -y $packages
-	fi
-fi
 #............................
 dialog.splash Image File
 read DEV PART_B PART_R < <( dialog.sd )

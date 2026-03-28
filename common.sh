@@ -25,6 +25,9 @@ BR.unmount() {
 		rmdir BOOT ROOT &> /dev/null
 	fi
 }
+cmdNotExist() {
+	! command -v $1 &> /dev/null && return 0
+}
 dialog.error_exit() {
 	dialog $opt_msg "
 $warn Error:
@@ -132,6 +135,26 @@ kbKey() {
 }
 killChildProcess() {
 	kill -TERM -$$ &> /dev/null
+}
+packageCommand() {
+	for cmd in apt brew dnf pacman yum zypper; do
+		cmdNotExist $cmd || break
+	done
+	echo $cmd
+}
+packageInstall() {
+	local cmd install_pkgs packages
+	cmd=$1
+	packages=$2
+	install_pkgs="install -y $packages"
+	case $cmd in
+		apt )    apt update     && apt    $install_pkgs;;
+		brew )   brew update    && brew   ${install_pkgs/ -y};;
+		dnf )                      dnf    $install_pkgs;;
+		yum )                      yum    $install_pkgs;;
+		zypper ) zypper refresh && zypper $install_pkgs;;
+		pacman )                   pacman -Sy --noconfirm $packages;;
+	esac
 }
 udisk2Toggle() {
 	[[ $1 == start ]] && mask=unmask || mask=mask
