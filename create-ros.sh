@@ -208,6 +208,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
+bar Restore default mirrorlist
 mv /etc/pacman.d/mirrorlist{.bak,}
 touch /boot/expand
 #............................
