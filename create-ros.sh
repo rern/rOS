@@ -93,8 +93,6 @@ dirbash=/srv/http/bash
 chmod -R 755 $dirbash
 mkdir /srv/http/assets/img/guide
 curl -sL $https_rern/_assets/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
-# alsa
-alsactl store
 # bluetooth
 if [[ -e /usr/bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
@@ -115,8 +113,6 @@ else
 fi
 # cava
 ln -s /etc/cava.conf .config
-# cron - for addons updates
-echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
 echo VISUAL=nano >> /etc/environment
 # firefox
 if [[ -e /usr/bin/firefox ]]; then
@@ -153,10 +149,6 @@ if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
 fi
 # mpd
 chsh -s /bin/bash mpd
-# motd
-ln -sf $dirbash/motd.sh /etc/profile.d/
-# pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
-sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth
 # samba
 if [[ -e /usr/bin/smbd ]]; then
 	( echo ros; echo ros ) | smbpasswd -s -a root
@@ -180,14 +172,6 @@ if [[ -e /usr/bin/spotifyd ]]; then
 else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
-# system
-chpasswd <<< root:ros
-sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
-users=$( cut -d: -f1 /etc/passwd )
-for user in $users; do
-	chage -E -1 $user # set expire to none
-done
-echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 # upmpdcli
 if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
@@ -199,8 +183,20 @@ if [[ -e /usr/bin/upmpdcli ]]; then
 else
 	rm -rf /etc/upmpdcli.conf $dir_system/upmpdcli.service
 fi
-# wireless-regdom
+# system
+bar Set root password
+chpasswd <<< root:ros
+sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
+users=$( cut -d: -f1 /etc/passwd )
+for user in $users; do
+	chage -E -1 $user # set expire to none
+done
+ln -sf $dirbash/motd.sh /etc/profile.d/ # motd
+echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
+sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
 echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
+echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
+alsactl store
 # default startup services
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
