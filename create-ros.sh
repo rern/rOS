@@ -47,11 +47,8 @@ packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsi
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
 raspberrypi-utils sudo udevil websocat wget xorg-xset'
-remove='linux-firmware '
-for n in amdgpu broadcom intel nvidia radeon; do
-	remove+="linux-firmware-$n "
-done
-for n in linux-aarch64 uboot-raspberrypi; do
+for n in amdgpu broadcom intel nvidia radeon  linux-aarch64 linux-firmware uboot-raspberrypi; do
+	[[ ${n:0:1} != [lu] ]] && n="linux-firmware-$n"
 	pacman -Qi $n &> /dev/null && remove+="$n "
 done
 pacman -Rdd --noconfirm $remove
@@ -65,6 +62,12 @@ SigLevel = Optional TrustAll\
 Server = https://rern.github.io/$arch\
 ' /etc/pacman.conf
 fi
+# initramfs disable
+dirhooks=/etc/pacman.d/hooks
+mkdir -p $dirhooks
+for file in linux-rpi mkinitcpio-install; do
+	ln -s /dev/null $dirhooks/90-$file.hook
+done
 pacman -Sy
 systemUpgrade
 if [[ -e /boot/cmdline.txt0 ]]; then
@@ -127,12 +130,6 @@ if [[ -e /usr/bin/firefox ]]; then
 else
 	rm -f $dir_system/{bootsplash,localbrowser}*
 fi
-# initramfs disable
-dirhooks=/etc/pacman.d/hooks
-mkdir -p $dirhooks
-for file in linux-rpi mkinitcpio-install; do
-	ln -s /dev/null $dirhooks/90-$file.hook
-done
 # iwd
 if [[ -e /usr/bin/iwctl ]]; then
 	mkdir -p /var/lib/iwd/ap
