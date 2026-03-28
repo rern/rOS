@@ -29,7 +29,7 @@ packageInstall() {
 systemUpgrade() {
 	pacman -Su --noconfirm
 	# fix: debian standard /text mode - error linux-rpi: /boot/... exists in file system
-	! pacman -Qi linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
+	! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
 	[[ $? != 0 ]] && nextServerRetry systemUpgrade
 }
 
@@ -49,7 +49,7 @@ parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-clien
 raspberrypi-utils sudo udevil websocat wget xorg-xset'
 for n in amdgpu broadcom intel nvidia radeon  linux-aarch64 linux-firmware uboot-raspberrypi; do
 	[[ ${n:0:1} != [lu] ]] && n="linux-firmware-$n"
-	pacman -Qi $n &> /dev/null && remove+="$n "
+	pacman -Qq $n &> /dev/null && remove+="$n "
 done
 pacman -Rdd --noconfirm $remove
 # add +R repo
