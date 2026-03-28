@@ -24,7 +24,6 @@ nextServerRetry() {
 }
 packageInstall() {
 	pacman -S --noconfirm --needed $packages $features
-	pacman -S --noconfirm pacman-mirrorlist
 	[[ $? != 0 ]] && nextServerRetry packageInstall
 }
 systemUpgrade() {
@@ -209,6 +208,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
+mv /etc/pacman.d/mirrorlist{.bak,}
 touch /boot/expand
 #............................
 dialog.splash "\
