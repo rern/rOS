@@ -10,7 +10,7 @@ title='U t i l i t i e s'
 #............................
 dialog.splash "$title"
 list="\
-Create OS       : create-alarm
+Create OS       : create
 Reset for Image :
 Create Image    : image-create
 Upload Images   : image-upload
