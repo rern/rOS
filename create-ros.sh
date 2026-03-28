@@ -10,10 +10,10 @@ features=$( < features )
 release=$( < release )
 
 nextServerRetry() {
-	dialog.retry Package server not ready. || exit 1
+	dialog.retry Package server not responsive. || exit 1
 #------------------------------------------------------------------------------
 	file_mirrorlist=/etc/pacman.d/mirrorlist
-	(( $( wc -l < $file_mirrorlist ) == 1 )) && dialog.error_exit All package servers not responsive.
+	(( $( wc -l < $file_mirrorlist ) == 1 )) && dialog.error_exit \Z1All package servers\Zn not responsive.
 #------------------------------------------------------------------------------
 	sed -i '1 d' $file_mirrorlist
 	bar Switch package server ...
