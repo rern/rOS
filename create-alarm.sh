@@ -18,7 +18,7 @@ if [[ $packages ]]; then
 	if cmdNotExist bsdtar && [[ ${cmd:0:1} != [dy] ]]; then
 		pkg_lib=libarchive
 		[[ $cmd == apt ]] && pkg_lib+=-tools
-		packages+=${packages/bsdtar/$pkg_lib}
+		packages=${packages/bsdtar/$pkg_lib}
 	fi
 	packageInstall $cmd $packages
 fi
