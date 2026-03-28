@@ -13,6 +13,7 @@ nextServerRetry() {
 	dialog.retry Package server not ready. || exit 1
 #------------------------------------------------------------------------------
 	file_mirrorlist=/etc/pacman.d/mirrorlist
+	cp $file_mirrorlist .
 	(( $( wc -l < $file_mirrorlist ) == 1 )) && dialog.error_exit All package servers not responsive.
 #------------------------------------------------------------------------------
 	sed -i '1 d' $file_mirrorlist
@@ -209,6 +210,7 @@ systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 $dirbash/settings/system-datadefault.sh $release
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
+[[ -e mirrorlist ]] && mv mirrorlist $file_mirrorlist
 touch /boot/expand
 #............................
 dialog.splash "\
