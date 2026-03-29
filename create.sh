@@ -17,7 +17,7 @@ create_ros() {
 	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
 }
 dialog.data() {
-	latest=$( curl -sL $https_raudio-addons/main/addonslist.json | jq -r .r1.version )
+	latest=$( curl -sL $https_rern/rAudio-addons/main/addonslist.json | jq -r .r1.version )
 #............................
 	release=$( dialog.input '\Z1r\ZnAudio release:' $latest )
 	if ! curl -sIfo /dev/null $https_raudio/releases/tag/$release; then
