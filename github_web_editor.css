@@ -238,15 +238,22 @@ Required fonts:
 #workbench\.parts\.statusbar * {
 	color: var(--cw) !important;
 }
+#status\.scm\.0 * {
+	margin: 0;
+	color: #000 !important;
+}
 #status\.scm\.0 { /* branch */
 	max-width: unset;
 	padding: 0 10px 0 5px;
 	color: var(--cw);
-	background-color: #f78166;
 }
-#status\.scm\.0 * { /* branch */
-	margin: 0;
-	color: #000 !important;
+#status\.scm\.0,
+#status\.scm\.0 > a {
+	background-color: #f78166 !important;
+}
+#status\.scm\.0:hover,
+#status\.scm\.0 > a:hover {
+	background-color: #f26748 !important;
 }
 .install.action-dropdown,
 .extension-editor *,
