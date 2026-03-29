@@ -181,8 +181,9 @@ udisk2Toggle() {
 #         https://raw.githubusercontent.com/rern/REPO/BRANCH/file
 https_raw=https://raw.githubusercontent.com
 https_rern=$https_raw/rern
+https_raudio=$https_rern/rAudio
 https_ros=$https_rern/rOS/$branch
-https_io=$https_rern/rern.github.io/main
+https_io=$https_rern/rern.github.io/$branch
 https_mirrorlist=$https_raw/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist
 opt_ssh='-qtt -o ConnectTimeout=3
 			  -o StrictHostKeyChecking=no

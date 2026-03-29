@@ -9,6 +9,10 @@ dir_system=/etc/systemd/system
 file_mirrorlist=/etc/pacman.d/mirrorlist
 features=$( < features )
 release=$( < release )
+packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs
+i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
+parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
+raspberrypi-utils sudo udevil websocat wget xorg-xset'
 
 currentServer() {
 	sed -n '1 {s|.*= ||; s|$.*|...|; p}' $file_mirrorlist
@@ -48,11 +52,7 @@ pacman-key --populate archlinuxarm
 systemctl restart systemd-timesyncd # force time sync
 systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy pool is not initialized)
 #............................
-banner Upgrade system and default packages
-packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs
-i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
-parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
-raspberrypi-utils sudo udevil websocat wget xorg-xset'
+banner Upgrade Arch Linux ARM
 for n in amdgpu broadcom intel nvidia radeon  linux-aarch64 linux-firmware uboot-raspberrypi; do
 	[[ ${n:0:1} != [lu] ]] && n="linux-firmware-$n"
 	pacman -Qq $n &> /dev/null && remove+="$n "
@@ -83,13 +83,13 @@ fi
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 #............................
-banner Install packages
+banner Install Packages for rAudio
 packageInstall
 #............................
 banner Setup rAudio
 mkdir -p /tmp/config
-curl -sL https://github.com/rern/rAudio/archive/$release.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
-curl -sL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip 1 -C /tmp/config
+curl -sL $https_raudio/archive/$release.tar.gz | bsdtar xvf - --strip-components=1 -C /tmp/config
+curl -sL $https_rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip-components=1 -C /tmp/config
 rm -f /tmp/config/{.*,*} 2> /dev/null
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
@@ -191,15 +191,9 @@ else
 	rm -rf /etc/upmpdcli.conf $dir_system/upmpdcli.service
 fi
 # system
-bar Restore default mirrorlist
-mv $file_mirrorlist{.bak,}
 bar Set root password
 chpasswd <<< root:ros
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
-users=$( cut -d: -f1 /etc/passwd )
-for user in $users; do
-	chage -E -1 $user # set expire to none
-done
 ln -sf $dirbash/motd.sh /etc/profile.d/ # motd
 echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
@@ -209,6 +203,12 @@ alsactl store
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
 $dirbash/settings/system-datadefault.sh $release # data - settings directories
+if [[ -e $file_mirrorlist.pacnew ]]; then
+	mv $file_mirrorlist{.pacnew,}
+	rm $file_mirrorlist.bak
+else
+	mv $file_mirrorlist{.bak,}
+fi
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
