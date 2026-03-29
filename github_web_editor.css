@@ -1,13 +1,3 @@
-/* ==UserStyle==
-@name         github.dev - dark
-@version      20260319.23.55
-@namespace    https://userstyles.world/user/rern
-@description  GitHub web Editor - Dark mode large fonts
-@author       rern
-@license      No License
-==/UserStyle== */
-
-@-moz-document domain("github.dev") {
 /*
 [URLs on the domain] github.dev
 Required fonts:
@@ -100,6 +90,7 @@ Required fonts:
 	margin-right: 10px !important;
 }
 .search-icon,
+.action-item.disabled .action-label::before,
 .action-label.codicon { /* icons */
 	width: 26px;
 	font-size: 26px !important;
@@ -180,7 +171,7 @@ Required fonts:
 	letter-spacing: unset;
 	text-transform: none;
 }
-.monaco-workbench .codicon[class*="codicon-"] { /* icons inside input */
+.monaco-workbench .codicon[class*="codicon-"]:not(.codicon-remote) { /* icons inside input */
 	margin-right: 3px;
 	height: fit-content;
 	padding: 0 !important;
@@ -244,6 +235,9 @@ Required fonts:
 .current-line.current-line-margin-both {
 	background-color: var(--cg20);
 }
+#workbench\.parts\.statusbar * {
+	color: var(--cw) !important;
+}
 #status\.scm\.0 { /* branch */
 	max-width: unset;
 	padding: 0 10px 0 5px;
@@ -279,5 +273,4 @@ Required fonts:
 .action-label.codicon.extension-action.label.prominent.reload,
 .action-label.codicon.extension-action.label.action-dropdown {
 	font-size: unset !important;
-}
 }
