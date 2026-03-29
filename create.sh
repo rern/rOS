@@ -20,7 +20,7 @@ dialog.data() {
 	latest=$( curl -sL $https_rern/rAudio-addons/main/addonslist.json | jq -r .r1.version )
 #............................
 	release=$( dialog.input '\Z1r\ZnAudio release:' $latest )
-	if ! curl -sIfo /dev/null $https_raudio/releases/tag/$release; then
+	if ! curl -sIfo /dev/null $https_raudio/releases/$release; then
 		dialog.retry rAudio $release not found. && dialog.data
 		return
 #..............................................................................
