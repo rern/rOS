@@ -143,6 +143,7 @@ package.commandNotFound() {
 }
 package.install() {
 	local install_pkgs="install -y $2"
+	bar Install packages: $2
 	case $1 in
 		apk )    apk update     && apk add $2;;
 		apt )    apt update     && apt    $install_pkgs;;
@@ -158,7 +159,7 @@ package.install() {
 	dialog.retry Missing commands:"\n$pkgs" && package.install $cmd "$pkgs"
 }
 package.required() {
-	local cmd pkg_bsdtar pkg_sfdisk pkgs
+	local cmd pkg_bsdtar pkgs
 	pkgs=$( package.commandNotFound $@ ) || return
 #..............................................................................
 	for cmd in apk apt brew dnf pacman yum zypper; do
@@ -169,13 +170,7 @@ package.required() {
 		[[ $cmd == apt ]] && pkg_bsdtar+=-tools
 		pkgs=${pkgs/bsdtar/$pkg_bsdtar}
 	fi
-	if [[ $pkgs == *sfdisk* ]]; then
-		pkg_sfdisk=util-linux
-		if [[ $cmd == apt ]]; then
-			! dpkg -L util-linux | grep -q sfdisk && pkg_sfdisk=fdisk # puppy linux: in fdisk
-		fi
-		pkgs=${pkgs/sfdisk/$pkg_sfdisk}
-	fi
+	[[ $pkgs == *sfdisk* ]] && pkgs=${pkgs/sfdisk/fdisk}
 	[[ $pkgs == *nmap* && $cmd == pacman ]] && pkgs+='gcc-libs ' # manjaro: libgcc conflicts
 	package.install $cmd "$pkgs"
 }

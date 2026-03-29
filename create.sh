@@ -8,8 +8,8 @@ sec_start=$( date +%s )
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
 
-package.required bsdtar curl dialog gawk jq nmap pigz sfdisk pv # required pkgs
 export PATH+=:/sbin # debian - sfdisk
+package.required bsdtar curl dialog gawk jq nmap pigz sfdisk pv # required pkgs
 alias awk=gawk      # debian - awk=mawk - no sub gsub
 
 create_ros() {
