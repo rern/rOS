@@ -135,11 +135,25 @@ killChildProcess() {
 	kill -TERM -$$ &> /dev/null
 }
 package.commandNotFound() {
-	for c in $cmd_reqired; do
-		commandNotFound $c && cmd_notfound+="$c "
+	local c cmd
+	for c in $@; do
+		commandNotFound $c && cmd+="$c "
 	done
+	[[ $cmd ]] && echo $cmd || return 1
 }
-package.install() {
+package.required() {
+	pkgs=$( package.commandNotFound $@ ) || return
+#..............................................................................
+	for cmd_pm in apk apt brew dnf pacman yum zypper; do
+		commandNotFound $cmd_pm || break
+	done
+	if [[ $pkgs == *bsdtar* && ${cmd_pm:0:1} != [dy] ]]; then # not dnf / yum
+		pkg_bsdtar=libarchive
+		[[ $cmd_pm == apt ]] && pkg_bsdtar+=-tools
+		pkgs=${pkgs/bsdtar/$pkg_bsdtar}
+	fi
+	[[ $pkgs == *sfdisk* ]] && pkgs=${pkgs/sfdisk/fdisk} # puppy linux
+	[[ $pkgs == *nmap* && $cmd_pm == pacman ]] && pkgs+='gcc-libs ' # manjaro: libgcc conflicts
 	install_pkgs="install -y $pkgs"
 	bar Install packages: $pkgs
 	case $cmd_pm in
@@ -151,27 +165,13 @@ package.install() {
 		yum )                      yum    $install_pkgs;;
 		zypper ) zypper refresh && zypper $install_pkgs;;
 	esac
-	package.commandNotFound $@
-#............................
-	[[ $cmd_notfound ]] && dialog.retry Missing commands:"\n$cmd_notfound" && package.install
-}
-package.required() {
-	cmd_reqired=$@
-	package.commandNotFound
-	[[ ! $cmd_notfound ]] && return
+	cmd_notfound=$( package.commandNotFound $@ ) || return
 #..............................................................................
-	for cmd_pm in apk apt brew dnf pacman yum zypper; do
-		commandNotFound $cmd_pm || break
-	done
-	pkgs=$cmd_notfound
-	if [[ $pkgs == *bsdtar* && ${cmd_pm:0:1} != [dy] ]]; then # not dnf / yum
-		pkg_bsdtar=libarchive
-		[[ $cmd_pm == apt ]] && pkg_bsdtar+=-tools
-		pkgs=${pkgs/bsdtar/$pkg_bsdtar}
-	fi
-	[[ $pkgs == *sfdisk* ]] && pkgs=${pkgs/sfdisk/fdisk}
-	[[ $pkgs == *nmap* && $cmd_pm == pacman ]] && pkgs+='gcc-libs ' # manjaro: libgcc conflicts
-	package.install
+#............................
+	dialog.error_exit "\
+Missing commands:
+$cmd_notfound
+Unable to continue."
 }
 udisk2Toggle() {
 	[[ $1 == start ]] && mask=unmask || mask=mask
