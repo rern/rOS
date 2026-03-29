@@ -8,8 +8,8 @@ sec_start=$( date +%s )
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
 
-packageRequired bsdtar curl dialog gawk jq nmap pigz sfdisk pv # required pkgs
 export PATH+=:/sbin # debian - sfdisk
+package.required bsdtar curl dialog gawk jq nmap pigz sfdisk pv # required pkgs
 alias awk=gawk      # debian - awk=mawk - no sub gsub
 
 create_ros() {
@@ -21,8 +21,7 @@ dialog.data() {
 #............................
 	release=$( dialog.input '\Z1r\ZnAudio release:' $latest )
 	if ! curl -sIfo /dev/null https://github.com/rern/rAudio/releases/tag/$release; then
-		dialog.retry rAudio $release not found.
-		dialog.idata
+		dialog.retry rAudio $release not found. && dialog.data
 		return
 #..............................................................................
 	fi
@@ -306,7 +305,6 @@ dialog.sdCard
 BR.mount
 dialog.data
 dialog.feature
-# package mirror server
 banner Rank Servers
 if [[ ! -e rate_mirrors ]]; then
 	url_assets=$( curl -sL https://api.github.com/repos/westandskif/rate-mirrors/releases/latest | jq -r .assets )

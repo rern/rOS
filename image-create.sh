@@ -2,7 +2,7 @@
 
 trap 'killChildProcess; BR.unmount' EXIT
 
-packageRequired bsdtar dialog
+package.required bsdtar dialog
 
 shrink() {
 	bar "Shrink Pass #$1 ..."
