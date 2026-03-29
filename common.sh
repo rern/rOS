@@ -75,7 +75,7 @@ Retry?
 }
 dialog.sd() {
 	local dev dev_gib l p s
-	if systemctl -q is-active udisks2; then
+	if systemctl -q is-system-running && systemctl -q is-active udisks2; then
 		udisk2_active=1
 		udisk2Toggle stop
 	fi
