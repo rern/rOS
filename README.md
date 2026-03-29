@@ -71,10 +71,7 @@ Note: Use router pre-assigned IP address for Raspberry Pi if possible.
 	```sh
 	bash <( curl -sL https://raw.githubusercontent.com/rern/rOS/main/create.sh )
 	```
-- If `curl: command not found`
-	```sh
-	apt install curl -y
-	```
+- If `curl: command not found`, replace `curl -sL` with `wget -qO-`
 ---
 
 ### Optionals
