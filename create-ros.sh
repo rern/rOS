@@ -101,14 +101,14 @@ chmod -R 755 $dirbash
 mkdir /srv/http/assets/img/guide
 curl -sL $https_rern/_assets/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
 # bluetooth
-if cmdNotExist bluetoothctl; then
+if commandNotFound bluetoothctl; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
 else
 	rm -rf $dir_system/{bluealsa,bluetooth}.service.d
 	rm -f $dir_system/blue*
 fi
 # camilladsp
-if cmdNotExist camilladsp; then
+if commandNotFound camilladsp; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
 	dirconfigs=/srv/http/data/camilladsp/configs
 	mkdir -p $dirconfigs
@@ -122,7 +122,7 @@ fi
 ln -s /etc/cava.conf .config
 echo VISUAL=nano >> /etc/environment
 # firefox
-if cmdNotExist firefox; then
+if commandNotFound firefox; then
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
@@ -133,7 +133,7 @@ else
 	rm -f $dir_system/{bootsplash,localbrowser}*
 fi
 # iwd
-if cmdNotExist iwctl; then
+if commandNotFound iwctl; then
 	mkdir -p /var/lib/iwd/ap
 	echo "\
 [Security]
@@ -157,30 +157,30 @@ fi
 # mpd
 chsh -s /bin/bash mpd
 # samba
-if cmdNotExist smbd; then
+if commandNotFound smbd; then
 	( echo ros; echo ros ) | smbpasswd -s -a root
 else
 	rm -rf /etc/samba
 fi
 # shairport-sync
-if cmdNotExist shairport-sync; then
+if commandNotFound shairport-sync; then
 	rm /etc/shairport-sync.conf $dir_system/shairport.service
 	rm -rf $dir_system/shairport-sync.service.d/
 fi
 # snapcast
-if cmdNotExist snapserver; then
+if commandNotFound snapserver; then
 	sed -i '/^#bind_to_address/ a\
 bind_to_address = 0.0.0.0
 ' /etc/snapserver.conf
 fi
 # spotifyd
-if cmdNotExist spotifyd; then
+if commandNotFound spotifyd; then
 	ln -s /lib/systemd/{user,system}/spotifyd.service
 else
 	rm /etc/spotifyd.conf $dir_system/spotifyd.service
 fi
 # upmpdcli
-if cmdNotExist upmpdcli; then
+if commandNotFound upmpdcli; then
 	dir=/var/cache/upmpdcli/ohcreds
 	file=$dir/credkey.pem
 	mkdir -p $dir

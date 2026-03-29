@@ -25,7 +25,7 @@ BR.unmount() {
 		rmdir BOOT ROOT &> /dev/null
 	fi
 }
-cmdNotExist() {
+commandNotFound() {
 	! command -v $1 &> /dev/null && return 0
 }
 dialog.error_exit() {
@@ -94,11 +94,9 @@ Insert $sd_usb
 		[[ $dev_gib ]] && break
 	done < <( timeout $s dmesg -tW )
 	if [[ ! $dev_gib ]]; then
-		if dialog.retry "No devices inserted in ${s}s."; then
-			dialog.sd
-			return
+		dialog.retry "No devices inserted in ${s}s." && dialog.sd
+		return
 #..............................................................................
-		fi
 	fi
 	if [[ $dev_gib == sd* ]]; then
 		dev=/dev/$( awk -F'[][]' '{print $2}' <<< $dev_gib ) # sd 5:0:0:0: [sdX] ... (31.9 GB/29.7 GiB)
@@ -136,21 +134,40 @@ kbKey() {
 killChildProcess() {
 	kill -TERM -$$ &> /dev/null
 }
-packageRequired() {
+package.commandNotFound() {
 	local p pkgs
-	for p in $@; do # required pkgs
-		cmdNotExist $p && pkgs+="$p "
+	for p in $@; do
+		commandNotFound $p && pkgs+="$p "
 	done
-	[[ ! $pkgs ]] && return
-
-	local cmd install_pkgs
+	[[ $pkgs ]] && echo $pkgs || return 1
+}
+package.install() {
+	local install_pkgs="install -y $2"
+	case $1 in
+		apk )    apk update     && apk add $2;;
+		apt )    apt update     && apt    $install_pkgs;;
+		brew )   brew update    && brew   ${install_pkgs/ -y};;
+		dnf )                      dnf    $install_pkgs;;
+		pacman )                   pacman -Sy --noconfirm $2;;
+		yum )                      yum    $install_pkgs;;
+		zypper ) zypper refresh && zypper $install_pkgs;;
+	esac
+	pkgs=$( package.commandNotFound $@ ) || return
+#..............................................................................
+#............................
+	dialog.retry Missing commands:"\n$pkgs" && package.install $cmd "$pkgs"
+}
+package.required() {
+	local cmd pkg_bsdtar pkg_sfdisk pkgs
+	pkgs=$( package.commandNotFound $@ ) || return
+#..............................................................................
 	for cmd in apk apt brew dnf pacman yum zypper; do
-		cmdNotExist $cmd || break
+		commandNotFound $cmd || break
 	done
 	if [[ $pkgs == *bsdtar* && ${cmd:0:1} != [dy] ]]; then # not dnf / yum
-		pkg_lib=libarchive
-		[[ $cmd == apt ]] && pkg_lib+=-tools
-		pkgs=${pkgs/bsdtar/$pkg_lib}
+		pkg_bsdtar=libarchive
+		[[ $cmd == apt ]] && pkg_bsdtar+=-tools
+		pkgs=${pkgs/bsdtar/$pkg_bsdtar}
 	fi
 	if [[ $pkgs == *sfdisk* ]]; then
 		pkg_sfdisk=util-linux
@@ -160,19 +177,7 @@ packageRequired() {
 		pkgs=${pkgs/sfdisk/$pkg_sfdisk}
 	fi
 	[[ $pkgs == *nmap* && $cmd == pacman ]] && pkgs+='gcc-libs ' # manjaro: libgcc conflicts
-	install_pkgs="install -y $pkgs"
-	case $cmd in
-		apk )    apk update     && apk add $pkgs;;
-		apt )    apt update     && apt    $install_pkgs;;
-		brew )   brew update    && brew   ${install_pkgs/ -y};;
-		dnf )                      dnf    $install_pkgs;;
-		yum )                      yum    $install_pkgs;;
-		zypper ) zypper refresh && zypper $install_pkgs;;
-		pacman )                   pacman -Sy --noconfirm $pkgs;;
-	esac
-#............................
-	[[ $? != 0 ]] && dialog.retry Install packages failed. || exit
-#------------------------------------------------------------------------------
+	package.install $cmd "$pkgs"
 }
 udisk2Toggle() {
 	[[ $1 == start ]] && mask=unmask || mask=mask
