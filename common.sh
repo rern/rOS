@@ -135,44 +135,43 @@ killChildProcess() {
 	kill -TERM -$$ &> /dev/null
 }
 package.commandNotFound() {
-	local p pkgs
-	for p in $@; do
-		commandNotFound $p && pkgs+="$p "
+	for c in $cmd_reqired; do
+		commandNotFound $c && cmd_notfound+="$c "
 	done
-	[[ $pkgs ]] && echo $pkgs || return 1
 }
 package.install() {
-	local install_pkgs="install -y $2"
-	bar Install packages: $2
-	case $1 in
-		apk )    apk update     && apk add $2;;
+	install_pkgs="install -y $pkgs"
+	bar Install packages: $pkgs
+	case $cmd_pm in
+		apk )    apk update     && apk add $pkgs;;
 		apt )    apt update     && apt    $install_pkgs;;
 		brew )   brew update    && brew   ${install_pkgs/ -y};;
 		dnf )                      dnf    $install_pkgs;;
-		pacman )                   pacman -Sy --noconfirm $2;;
+		pacman )                   pacman -Sy --noconfirm $pkgs;;
 		yum )                      yum    $install_pkgs;;
 		zypper ) zypper refresh && zypper $install_pkgs;;
 	esac
-	pkgs=$( package.commandNotFound $@ ) || return
-#..............................................................................
+	package.commandNotFound $@
 #............................
-	dialog.retry Missing commands:"\n$pkgs" && package.install $cmd "$pkgs"
+	[[ $cmd_notfound ]] && dialog.retry Missing commands:"\n$cmd_notfound" && package.install
 }
 package.required() {
-	local cmd pkg_bsdtar pkgs
-	pkgs=$( package.commandNotFound $@ ) || return
+	cmd_reqired=$@
+	package.commandNotFound
+	[[ ! $cmd_notfound ]] && return
 #..............................................................................
-	for cmd in apk apt brew dnf pacman yum zypper; do
-		commandNotFound $cmd || break
+	for cmd_pm in apk apt brew dnf pacman yum zypper; do
+		commandNotFound $cmd_pm || break
 	done
-	if [[ $pkgs == *bsdtar* && ${cmd:0:1} != [dy] ]]; then # not dnf / yum
+	pkgs=$cmd_notfound
+	if [[ $pkgs == *bsdtar* && ${cmd_pm:0:1} != [dy] ]]; then # not dnf / yum
 		pkg_bsdtar=libarchive
-		[[ $cmd == apt ]] && pkg_bsdtar+=-tools
+		[[ $cmd_pm == apt ]] && pkg_bsdtar+=-tools
 		pkgs=${pkgs/bsdtar/$pkg_bsdtar}
 	fi
 	[[ $pkgs == *sfdisk* ]] && pkgs=${pkgs/sfdisk/fdisk}
-	[[ $pkgs == *nmap* && $cmd == pacman ]] && pkgs+='gcc-libs ' # manjaro: libgcc conflicts
-	package.install $cmd "$pkgs"
+	[[ $pkgs == *nmap* && $cmd_pm == pacman ]] && pkgs+='gcc-libs ' # manjaro: libgcc conflicts
+	package.install
 }
 udisk2Toggle() {
 	[[ $1 == start ]] && mask=unmask || mask=mask
