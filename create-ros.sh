@@ -191,15 +191,9 @@ else
 	rm -rf /etc/upmpdcli.conf $dir_system/upmpdcli.service
 fi
 # system
-bar Restore default mirrorlist
-mv $file_mirrorlist{.bak,}
 bar Set root password
 chpasswd <<< root:ros
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
-users=$( cut -d: -f1 /etc/passwd )
-for user in $users; do
-	chage -E -1 $user # set expire to none
-done
 ln -sf $dirbash/motd.sh /etc/profile.d/ # motd
 echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
@@ -209,6 +203,12 @@ alsactl store
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
 $dirbash/settings/system-datadefault.sh $release # data - settings directories
+if [[ -e $file_mirrorlist.pacnew ]]; then
+	mv $file_mirrorlist{.pacnew,}
+	rm $file_mirrorlist.bak
+else
+	mv $file_mirrorlist{.bak,}
+fi
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
 touch /boot/expand
