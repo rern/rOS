@@ -89,7 +89,7 @@ packageInstall
 banner Setup rAudio
 mkdir -p /tmp/config
 curl -sL $https_raudio/archive/$release.tar.gz | bsdtar xvf - --strip-components=1 -C /tmp/config
-curl -sL $https_rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip-components=1 -C /tmp/config
+curl -sL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip-components=1 -C /tmp/config
 rm -f /tmp/config/{.*,*} 2> /dev/null
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
