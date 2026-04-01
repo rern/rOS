@@ -1,7 +1,5 @@
 #!/bin/bash
 
-trap 'clear -x' EXIT
-
 . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
 
 #............................
