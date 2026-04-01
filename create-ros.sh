@@ -9,11 +9,11 @@ cleanup() {
 [[ -e branch ]] && branch=$( < branch )
 . common.sh
 
-sec_start=$( date +%s )
 dir_system=/etc/systemd/system
 file_mirrorlist=/etc/pacman.d/mirrorlist
 features=$( < features )
 release=$( < release )
+sec_start=$( < sec_start )
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
