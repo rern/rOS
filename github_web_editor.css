@@ -185,7 +185,12 @@ Required fonts:
 .monaco-icon-label::before,
 .monaco-workbench .codicon[class*="codicon-"],
 .monaco-action-bar .action-item .codicon {
-	width: 22px;
+	width: 24px;
+}
+.monaco-custom-toggle.codicon.checked {
+    margin-top: 1px;
+	background-color: var(--cg30) !important;
+	border: none;
 }
 .search-widget > .codicon { /* pane search arrows icon */
 	width: 17px !important;
