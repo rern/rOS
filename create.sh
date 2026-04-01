@@ -86,10 +86,13 @@ SSID         : $essid
 Password     : $key
 Security     : ${security^^}"
 	fi
+	file_gib=$( curl -sIL -L http://os.archlinuxarm.org/os/ArchLinuxARM-rpi-aarch64-latest.tar.gz \
+					| awk '/^Content-Length/ {val=$2} END {printf "(%.2f GiB)", val/1073741824}' )
 #............................
 	dialog --defaultno $opt_yesno "
  Keep file once done?
  \Z1$file\Zn
+$file_gib
 
 " 0 0 && file_keep=Yes || file_keep=No
 	txt_confirm+="
