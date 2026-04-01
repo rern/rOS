@@ -409,8 +409,8 @@ $partid_R  /      ext4  $opt_fstab
 EOF
 # wifi
 if [[ $essid ]]; then
-	profile="ROOT/etc/netctl/$essid"
-	cat << EOF > "$profile"
+	file_essid="ROOT/etc/netctl/$essid"
+	cat << EOF > "$file_essid"
 Interface=wlan0
 Connection=wireless
 IP=dhcp
@@ -418,7 +418,7 @@ ESSID="$essid"
 Security=$security
 Key="$key"
 EOF
-	[[ ! $security ]] && sed -E -i '/^Security|^Key/ d' "$profile"
+	[[ ! $security ]] && sed -E -i '/^Security|^Key/ d' "$file_essid"
 	dir="ROOT/etc/systemd/system/netctl@$essid.service.d"
 	mkdir -p "$dir"
 	cat << EOF > "$dir/profile.conf"
