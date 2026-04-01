@@ -88,7 +88,8 @@ Security     : ${security^^}"
 	fi
 #............................
 	dialog --defaultno $opt_yesno "
- Keep \Z1$file\Zn once done?
+ Keep file once done?
+ \Z1$file\Zn
 
 " 0 0
 	if [[ $? == 0 ]]; then
