@@ -15,6 +15,7 @@ alias awk=gawk      # debian - awk=mawk - no sub gsub
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
 	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
+	[[ ! $file_keep ]] && rm $file
 }
 dialog.data() {
 	latest=$( curl -sL $https_rern/rAudio-addons/main/addonslist.json | jq -r .r1.version )
@@ -25,7 +26,6 @@ dialog.data() {
 		return
 #..............................................................................
 	fi
-	echo $release > release
 #............................
 	i=$( dialog.menu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
@@ -87,6 +87,17 @@ Password     : $key
 Security     : ${security^^}"
 	fi
 #............................
+	dialog --defaultno $opt_yesno "
+ Keep \Z1$file\Zn once done?
+
+" 0 0
+	if [[ $? == 0 ]]; then
+		file_keep=1
+		txt_confirm+="
+
+Keep file    : Yes"
+	fi
+#............................
 	dialog $opt_yesno "$txt_confirm" 0 0 && confirm_data=1
 	tput cup 0 0
 	tput ed
@@ -120,6 +131,7 @@ dialog.download() {
 				}'
 	 ) 2>&1 | dialog $opt_gauge "
   Connect ...
+  \Z1$url\Zn
 " 9 $W
 	[[ -e $file ]] && md5verify
 }
@@ -152,7 +164,7 @@ dialog.feature() {
   \Z1Confirm features to install:\Zn
 
 $( sed 's/^/  /' <<< $checked )
-" 0 0 && echo $features > features || dialog.feature
+" 0 0 || dialog.feature
 }
 dialog.scanIP() {
 	dialog $opt_msg "
@@ -354,6 +366,7 @@ size=$( stat -c %s $file )
   Decompress ...
   \Z1$file\Zn
 " 9 $W
+sleep 1
 mem_buffer=$( memBuffer )
 #........................
 ( while true; do
@@ -369,12 +382,6 @@ done ) \
 " 9 $W
 sync
 mv ROOT/boot/* BOOT
-# fstab
-partid=$( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' )
-read partid_B partid_R < <( echo $partid )
-echo "\
-$partid_B  /boot  vfat  defaults,noatime  0  0
-$partid_R  /      ext4  defaults,noatime  0  0" > ROOT/etc/fstab
 # cmdline.txt, config.txt
 cmdline="root=$partid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
 config="\
@@ -392,6 +399,11 @@ hdmi_force_hotplug=1'
 fi
 echo $cmdline > BOOT/cmdline.txt0
 echo "$config" > BOOT/config.txt0
+# fstab
+read partid_B partid_R < <( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' )
+echo "\
+$partid_B  /boot  vfat  defaults,noatime  0  0
+$partid_R  /      ext4  defaults,noatime  0  0" > ROOT/etc/fstab
 # wifi
 if [[ $essid ]]; then
 	profile=ROOT/etc/netctl/$essid
@@ -431,14 +443,20 @@ sed -i 's/#*\(PermitRootLogin \).*/\1yes/
 ' ROOT/etc/ssh/sshd_config
 id=$( awk -F':' '/^root/ {print $3}' ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
+# ranked mirrorlist
+mv ROOT/etc/pacman.d/mirrorlist{,.bak}
+mv mirrorlist ROOT/etc/pacman.d/
 # scripts
+cd ROOT/root
 for f in common create-ros; do
 	curl -sLO $https_ros/$f.sh
 done
 chmod +x create-ros.sh
-mv common.sh create-ros.sh features release ROOT/root
-mv ROOT/etc/pacman.d/mirrorlist{,.bak}
-mv mirrorlist ROOT/etc/pacman.d/
+for f in features release; do
+	echo ${!f} > $f
+done
+[[ $branch == UPDATE ]] && touch UPDATE
+cd ../..
 sync
 BR.unmount
 #............................
@@ -452,16 +470,16 @@ dialog $opt_msg "
 \Z1Arch Linux ARM\Zn      : Ready
 $sd_usb : Unmounted
 
-» Move $sd_usb to Raspberry Pi
-» Power on
-» Press $( kbKey Enter ):
+» \Z1Move\Zn SD card / USB drive to Raspberry Pi
+» \Z1Power\Zn on
+» \Z1Press\Zn $( kbKey Enter ):
 	• Start boot timer
 	• Create $logo rAudio
 " 14 $W
 #............................
 (
 	for (( i = 1; i < 75; i++ )); do
-		ping -4 -c 1 -W 1 $IP &> /dev/null && touch ip_found && break
+		ping -4 -c 1 -W 1 $IP &> /dev/null && touch ping_success && break
 #..............................................................................
 		echo $i
 		sleep 1
@@ -470,8 +488,8 @@ $sd_usb : Unmounted
   Boot ...
   \Z1Arch Linux ARM\Zn
 " 9 $W
-if [[ -e ip_found ]]; then
-	rm ip_found
+if [[ -e ping_success ]]; then
+	rm ping_success
 	dialog $opt_info "
   SSH Arch Linux ARM ...
   @ \Z1$IP\Zn

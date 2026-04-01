@@ -1,6 +1,10 @@
 #!/bin/bash
 
-trap 'rm -f /var/lib/pacman/db.lck; mv $file_mirrorlist{.bak,}' EXIT
+trap cleanup EXIT
+cleanup() {
+	rm -f /var/lib/pacman/db.lck
+	[[ -e $file_mirrorlist.bak ]] && mv $file_mirrorlist{.bak,}
+}
 
 . common.sh
 
@@ -43,6 +47,7 @@ systemUpgrade() {
 	[[ $? != 0 ]] && nextServerRetry systemUpgrade
 }
 
+[[ -e UPDATE ]] && branch=UPDATE
 #............................
 dialog.splash r A u d i o
 #............................
@@ -86,20 +91,16 @@ fi
 banner Install Packages for rAudio
 packageInstall
 #............................
-banner Setup rAudio
+banner r A u d i o
 mkdir -p /tmp/config
-curl -sL $https_raudio/archive/$release.tar.gz | bsdtar xvf - --strip-components=1 -C /tmp/config
-curl -sL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip-components=1 -C /tmp/config
-rm -f /tmp/config/{.*,*} 2> /dev/null
+for repo in rAudio rAudio-assets rOS; do
+	[[ $repo == rAudio ]] && file=$release || file=main
+	curl -sL https://github.com/rern/$repo/archive/$file.tar.gz | bsdtar xvf - --strip-components=1 -C /tmp/config
+done
+find /tmp/config -maxdepth 1 -type f -delete
 chmod -R go-wx /tmp/config
 chmod -R u+rwX,go+rX /tmp/config
 cp -r /tmp/config/* /
-chown http:http /etc/fstab
-chown -R http:http /etc/netctl /etc/systemd/network
-dirbash=/srv/http/bash
-chmod -R 755 $dirbash
-mkdir /srv/http/assets/img/guide
-curl -sL $https_rern/_assets/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
 # bluetooth
 if commandNotFound bluetoothctl; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
@@ -108,7 +109,7 @@ else
 	rm -f $dir_system/blue*
 fi
 # camilladsp
-if commandNotFound camilladsp; then
+if [[ -e /usr/bin/camilladsp ]]; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
 	dirconfigs=/srv/http/data/camilladsp/configs
 	mkdir -p $dirconfigs
@@ -122,7 +123,7 @@ fi
 ln -s /etc/cava.conf .config
 echo VISUAL=nano >> /etc/environment
 # firefox
-if commandNotFound firefox; then
+if [[ -e /usr/bin/firefox ]]; then
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
@@ -133,7 +134,7 @@ else
 	rm -f $dir_system/{bootsplash,localbrowser}*
 fi
 # iwd
-if commandNotFound iwctl; then
+if [[ -e /usr/bin/iwctl ]]; then
 	mkdir -p /var/lib/iwd/ap
 	echo "\
 [Security]
@@ -146,41 +147,29 @@ Address=192.168.5.1
 else
 	rm -f /etc/iwd/main.conf
 fi
-# locale
-if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
-	if ! grep -q ^C.UTF-8 /etc/locale.gen; then
-		echo 'C.UTF-8 UTF-8' >> /etc/locale.gen
-		locale-gen
-	fi
-	localectl set-locale LANG=C.UTF-8
-fi
 # mpd
 chsh -s /bin/bash mpd
 # samba
-if commandNotFound smbd; then
+if [[ -e /usr/bin/smbd ]]; then
 	( echo ros; echo ros ) | smbpasswd -s -a root
 else
 	rm -rf /etc/samba
 fi
 # shairport-sync
-if commandNotFound shairport-sync; then
+if [[ ! -e /usr/bin/shairport-sync ]]; then
 	rm /etc/shairport-sync.conf $dir_system/shairport.service
 	rm -rf $dir_system/shairport-sync.service.d/
 fi
 # snapcast
-if commandNotFound snapserver; then
+if [[ -e /usr/bin/snapserver ]]; then
 	sed -i '/^#bind_to_address/ a\
 bind_to_address = 0.0.0.0
 ' /etc/snapserver.conf
 fi
 # spotifyd
-if commandNotFound spotifyd; then
-	ln -s /lib/systemd/{user,system}/spotifyd.service
-else
-	rm /etc/spotifyd.conf $dir_system/spotifyd.service
-fi
+[[ -e /usr/bin/spotifyd ]] && ln -s /lib/systemd/{user,system}/spotifyd.service
 # upmpdcli
-if commandNotFound upmpdcli; then
+if [[ -e /usr/bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
 	file=$dir/credkey.pem
 	mkdir -p $dir
@@ -193,24 +182,35 @@ fi
 # system
 bar Set root password
 chpasswd <<< root:ros
+chown -R http:http /etc/fstab /etc/netctl /etc/systemd/network
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
-ln -sf $dirbash/motd.sh /etc/profile.d/ # motd
-echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
-echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
-echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
 alsactl store
-systemctl daemon-reload
-systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
-$dirbash/settings/system-datadefault.sh $release # data - settings directories
+if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
+	if ! grep -q ^C.UTF-8 /etc/locale.gen; then
+		echo 'C.UTF-8 UTF-8' >> /etc/locale.gen
+		locale-gen
+	fi
+	localectl set-locale LANG=C.UTF-8
+fi
 if [[ -e $file_mirrorlist.pacnew ]]; then
 	mv $file_mirrorlist{.pacnew,}
 	rm $file_mirrorlist.bak
 else
 	mv $file_mirrorlist{.bak,}
 fi
+# data - settings directories
+dir_bash=/srv/http/bash
+dir_settings=$dir_bash/settings
+ln -sf $dir_bash/motd.sh /etc/profile.d/ # motd
+echo ". $dir_bash/bashrc" >> /etc/bash.bashrc # prompt
+echo "00 01 * * * $dir_settings/addons-data.sh" | crontab -
+$dir_settings/system-datadefault.sh
+mv release /srv/http/data/addons/r1
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
+systemctl daemon-reload
+systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
 touch /boot/expand
 #............................
 dialog.splash "\

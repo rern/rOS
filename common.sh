@@ -108,17 +108,20 @@ Insert $sd_usb
 	[[ $udisk2_active ]] && udisk2Toggle start
 }
 dialog.splash() {
-	local h l line txt w;   while read -r line; do # -r keep                [[ $line != *[![:space:]]* ]] && txt+='\n' && continue;
+	local h l line lines txt w
+	lines="
+$logo
+
+$@"
+	[[ $branch != main ]] && lines+="
+\Z1$branch\Zn"
+	while read -r line; do # -r keep backslash
 		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
 		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
 		txt+="
 $( printf '%*s' $w )$line\n"
-done <<< "
-$logo
-
-$@"
-	h=$(( $( wc -l <<< $txt ) + 2 ));
-	(( $( wc -l <<< $@ ) == 1 )) && (( h++ ))
+	done <<< $lines
+	h=$(( $( wc -l <<< $txt ) + 1 ))
 	tput civis # fix: hide cursor at corner
 	dialog $opt_info "$txt" $h $W;  tput cnorm # restore cursor
 }
