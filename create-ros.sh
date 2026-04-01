@@ -143,13 +143,13 @@ fi
 # iwd
 if [[ -e /usr/bin/iwctl ]]; then
 	mkdir -p /var/lib/iwd/ap
-	echo "\
+	cat << EOF > /var/lib/iwd/ap/rAudio.ap
 [Security]
 Passphrase=raudioap
 
 [IPv4]
 Address=192.168.5.1
-" > /var/lib/iwd/ap/rAudio.ap
+EOF
 	groupadd netdev # fix: group for iwd
 else
 	rm -f /etc/iwd/main.conf

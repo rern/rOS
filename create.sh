@@ -384,43 +384,48 @@ done ) \
 sync
 mv ROOT/boot/* BOOT
 # cmdline.txt, config.txt
+read partid_B partid_R < <( blkid -o value -s PARTUUID $PART_B $PART_R | awk '{printf "PARTUUID=%s ", $0}' )
 cmdline="root=$partid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
-config="\
+if [[ $features == *firefox* ]]; then
+	cmdline+='tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0'
+	hdmi='hdmi_force_hotplug=1'
+else
+	cmdline+=tty1
+fi
+echo $cmdline > BOOT/cmdline.txt0
+cat << EOF > BOOT/config.txt0
 disable_overscan=1
 disable_splash=1
 dtparam=audio=on
 max_usb_current=1
-usb_max_current_enable=1"
-if [[ $features != *firefox* ]]; then
-	cmdline+='tty1'
-else
-	cmdline+='tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0'
-	config+='
-hdmi_force_hotplug=1'
-fi
-echo $cmdline > BOOT/cmdline.txt0
-echo "$config" > BOOT/config.txt0
+usb_max_current_enable=1
+$hdmi
+EOF
 # fstab
-read partid_B partid_R < <( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' )
-echo "\
-$partid_B  /boot  vfat  defaults,noatime  0  0
-$partid_R  /      ext4  defaults,noatime  0  0" > ROOT/etc/fstab
+opt_fstab='defaults,noatime  0  0'
+cat << EOF > ROOT/etc/fstab
+$partid_B  /boot  vfat  $opt_fstab
+$partid_R  /      ext4  $opt_fstab
+EOF
 # wifi
 if [[ $essid ]]; then
-	profile=ROOT/etc/netctl/$essid
-	echo 'Interface=wlan0
+	profile="ROOT/etc/netctl/$essid"
+	cat << EOF > "$profile"
+Interface=wlan0
 Connection=wireless
 IP=dhcp
-ESSID="'$essid'"
-Security='$security'
-Key="'$key'"' > $profile
+ESSID="$essid"
+Security=$security
+Key="$key"
+EOF
 	[[ ! $security ]] && sed -E -i '/^Security|^Key/ d' "$profile"
 	dir="ROOT/etc/systemd/system/netctl@$essid.service.d"
-	mkdir -p $dir
-	echo "\
+	mkdir -p "$dir"
+	cat << EOF > "$dir/profile.conf"
 [Unit]
 BindsTo=sys-subsystem-net-devices-wlan0.device
-After=sys-subsystem-net-devices-wlan0.device" > "$dir/profile.conf"
+After=sys-subsystem-net-devices-wlan0.device
+EOF
 	ln -sr ROOT/usr/lib/systemd/system/netctl@.service "ROOT/etc/systemd/system/multi-user.target.wants/netctl@$essid.service"
 fi
 # dhcpd - disable arp
