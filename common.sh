@@ -113,8 +113,6 @@ dialog.splash() {
 $logo
 
 $@"
-	[[ $branch != main ]] && lines+="
-\Z1$branch\Zn"
 	while read -r line; do # -r keep backslash
 		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
 		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
@@ -201,7 +199,7 @@ W=50
 #    8 0 0 - hf h w - checklist / menu (hf=8 - frame + button)
                  # keep spaces/tabs
 option='--colors --no-collapse --no-shadow --stdout'
-[[ $branch != main ]] && option+=" --backtitle '$branch'"
+[[ $branch != main ]] && option+=" --title $branch"
 opt_gauge="$option --gauge"                                  # no buttons
  opt_info="$option --sleep 2 --infobox"                      # no buttons
   opt_msg="$option --msgbox"                                 # <OK> only
