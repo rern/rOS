@@ -43,7 +43,8 @@ $( echo -e "$@" )
 dialog.ip() {
 	local ip
 	[[ ! $ip_base ]] && ip_base=$( ipBase )
-	ip=$( dialog.input "\Z1$1:\Zn" $ip_base )
+	[[ $2 ]] && ip_input=$2 || ip_input=$ip_base
+	ip=$( dialog.input "\Z1$1:\Zn" $ip_input )
 	[[ ${ip%.*}. == $ip_base ]] && ip_oct4=${ip/$ip_base}
 	if [[ $ip_oct4 && $ip_oct4 == [0-9]* ]] && (( $ip_oct4 > 0 && $ip_oct4 < 255 )); then
 		echo $ip

@@ -54,9 +54,9 @@ Raspberry Pi : $bit
 " 0 0
 	if [[ $? == 0 ]]; then
 #............................
-		IP=$( dialog.ip 'Pre-assigned IP' )
+		ip=$( dialog.ip 'Pre-assigned IP' $ip )
 		txt_confirm+="
-Assigned IP  : $IP"
+Assigned IP  : $ip"
 	fi
 #............................
 	dialog $opt_yesno "
@@ -488,7 +488,7 @@ $sd_usb : Unmounted
 #............................
 (
 	for (( i = 1; i < 75; i++ )); do
-		ping -4 -c 1 -W 1 $IP &> /dev/null && touch ping_success && break
+		ping -4 -c 1 -W 1 $ip &> /dev/null && touch ping_ok && break
 #..............................................................................
 		echo $i
 		sleep 1
@@ -497,16 +497,16 @@ $sd_usb : Unmounted
   Boot ...
   \Z1Arch Linux ARM\Zn
 " 9 $W
-if [[ -e ping_success ]]; then
-	rm ping_success
+if [[ -e ping_ok ]]; then
+	rm ping_ok
 	dialog $opt_info "
   SSH Arch Linux ARM ...
-  @ \Z1$IP\Zn
+  @ \Z1$ip\Zn
 " 9 $W
-	create_ros $IP
-elif [[ $IP ]]; then
+	create_ros $ip
+elif [[ $ip ]]; then
 #............................
-	dialog.scanIP "\Z1Assigned IP\Zn not found: $IP"
+	dialog.scanIP "\Z1Assigned IP\Zn not found: $ip"
 else
 	scanIP
 fi
