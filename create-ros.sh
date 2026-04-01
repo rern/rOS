@@ -11,6 +11,7 @@ cleanup() {
 
 dir_bash=/srv/http/bash
 dir_config=/tmp/config
+dir_data=/srv/http/data
 dir_hooks=/etc/pacman.d/hooks
 dir_settings=$dir_bash/settings
 dir_system=/etc/systemd/system
@@ -123,13 +124,13 @@ fi
 # camilladsp
 if [[ -e /usr/bin/camilladsp ]]; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
-	dirconfigs=/srv/http/data/camilladsp/configs
+	dirconfigs=$dir_data/camilladsp/configs
 	mkdir -p $dirconfigs
 	sed -e '/  Volume:/,/type: Volume/ d
 ' -e '/- Volume/ d
 ' /etc/camilladsp/configs/camilladsp.yml > $dirconfigs/camilladsp.yml
 else
-	rm -f /srv/http/data/mpdconf/conf/camilladsp.conf
+	rm -f $dir_data/mpdconf/conf/camilladsp.conf
 fi
 # cava
 ln -s /etc/cava.conf .config
@@ -215,9 +216,17 @@ fi
 ln -sf $dir_bash/motd.sh /etc/profile.d/ # motd
 echo ". $dir_bash/bashrc" >> /etc/bash.bashrc # prompt
 echo "00 01 * * * $dir_settings/addons-data.sh" | crontab -
-mv release /srv/http/data/addons/r1
 chmod -R 755 $dir_bash
 $dir_settings/system-datadefault.sh
+mv release $dir_data/addons/r1
+webradio=$( find $dir_data/webradio/ -maxdepth 1 -type f | wc -l )
+cat << EOF > $dir_data/mpd/counts
+{
+  "song"      : 0
+, "playlists" : 0
+, "webradio"  : $webradio
+}
+EOF
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
 rm -f /boot/{cmdline,config}.txt.pacnew
