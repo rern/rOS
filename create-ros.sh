@@ -9,7 +9,12 @@ cleanup() {
 [[ -e branch ]] && branch=$( < branch )
 . common.sh
 
+dir_bash=/srv/http/bash
+dir_config=/tmp/config
+dir_hooks=/etc/pacman.d/hooks
+dir_settings=$dir_bash/settings
 dir_system=/etc/systemd/system
+file_cmdline=/boot/cmdline.txt
 file_mirrorlist=/etc/pacman.d/mirrorlist
 features=$( < features )
 release=$( < release )
@@ -21,6 +26,9 @@ raspberrypi-utils sudo udevil websocat wget xorg-xset'
 
 currentServer() {
 	sed -n '1 {s|.*= ||; s|$.*|...|; p}' $file_mirrorlist
+}
+deleteFilesInDir() {
+	find $1 -maxdepth 1 -type f -delete
 }
 nextServerRetry() {
 	dialog.retry "Package server not responsive.
@@ -74,16 +82,15 @@ Server = https://rern.github.io/$arch\
 ' /etc/pacman.conf
 fi
 # initramfs disable
-dirhooks=/etc/pacman.d/hooks
-mkdir -p $dirhooks
+mkdir -p $dir_hooks
 for file in linux-rpi mkinitcpio-install; do
-	ln -s /dev/null $dirhooks/90-$file.hook
+	ln -s /dev/null $dir_hooks/90-$file.hook
 done
 pacman -Sy
 systemUpgrade
-if [[ -e /boot/cmdline.txt0 ]]; then
-	mv -f /boot/cmdline.txt{0,}
-	mv -f /boot/config.txt{0,}
+if [[ -e ${file_cmdline}0 ]]; then
+	mv $file_cmdline{0,}
+	mv $file_cmdline{0,}
 fi
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
@@ -92,15 +99,15 @@ banner Install Packages for rAudio
 packageInstall
 #............................
 banner r A u d i o
-mkdir -p /tmp/config
+mkdir -p $dir_config
 for repo in rAudio rAudio-assets rOS; do
 	[[ $repo == rAudio ]] && file=$release || file=main
-	curl -sL https://github.com/rern/$repo/archive/$file.tar.gz | bsdtar xvf - --strip-components=1 -C /tmp/config
+	curl -sL https://github.com/rern/$repo/archive/$file.tar.gz | bsdtar xvf - --strip-components=1 -C $dir_config
 done
-find /tmp/config -maxdepth 1 -type f -delete
-chmod -R go-wx /tmp/config
-chmod -R u+rwX,go+rX /tmp/config
-cp -r /tmp/config/* /
+deleteFilesInDir $dir_config
+chmod -R go-wx $dir_config
+chmod -R u+rwX,go+rX $dir_config
+cp -r $dir_config/* /
 # bluetooth
 if commandNotFound bluetoothctl; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
@@ -200,18 +207,16 @@ else
 	mv $file_mirrorlist{.bak,}
 fi
 # data - settings directories
-dir_bash=/srv/http/bash
-dir_settings=$dir_bash/settings
 ln -sf $dir_bash/motd.sh /etc/profile.d/ # motd
 echo ". $dir_bash/bashrc" >> /etc/bash.bashrc # prompt
 echo "00 01 * * * $dir_settings/addons-data.sh" | crontab -
 mv release /srv/http/data/addons/r1
-rm -f /boot/{cmdline,config}.txt.pacnew
-rm * &> /dev/null
 chmod -R 755 $dir_bash
 $dir_settings/system-datadefault.sh
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
+rm -f /boot/{cmdline,config}.txt.pacnew
+deleteFilesInDir .
 touch /boot/expand
 #............................
 dialog.splash "\
