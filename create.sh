@@ -340,10 +340,10 @@ else
 	dialog.download
 fi
 rm $file.md5
-size=$( stat -c %s $file )
+file_size=$( stat -c %s $file )
 #............................
 ( # -n: force stdout in each new line -Y: no buffer (26 ETA 0:00:02 261569003.1868)
-	pv -nY -s $size $file -F '%{progress-amount-only} %e %r' \
+	pv -nY -s $file_size $file -F '%{progress-amount-only} %e %r' \
 		| pigz -dc \
 		| bsdtar xpf - -C ROOT --exclude=*fallback.img
 ) 2>&1 | awk -v file=$file '
