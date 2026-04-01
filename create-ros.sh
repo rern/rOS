@@ -6,6 +6,7 @@ cleanup() {
 	[[ -e $file_mirrorlist.bak ]] && mv $file_mirrorlist{.bak,}
 }
 
+[[ -e branch ]] && branch=$( < branch )
 . common.sh
 
 sec_start=$( date +%s )
@@ -47,7 +48,6 @@ systemUpgrade() {
 	[[ $? != 0 ]] && nextServerRetry systemUpgrade
 }
 
-[[ -e UPDATE ]] && branch=UPDATE
 #............................
 dialog.splash r A u d i o
 #............................

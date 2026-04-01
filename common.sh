@@ -2,6 +2,8 @@
 
 # . <( curl -sL https://raw.githubusercontent.com/rern/rOS/main/common.sh )
 
+[[ ! $branch ]] && branch=main
+
 banner() { # should be used on start stdout to screen
 	local cols
 	clear -x

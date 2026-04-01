@@ -453,7 +453,7 @@ chmod +x create-ros.sh
 for f in features release; do
 	echo ${!f} > $f
 done
-[[ $branch == UPDATE ]] && touch UPDATE
+[[ $branch != main ]] && echo $branch > branch
 cd ../..
 sync
 BR.unmount
