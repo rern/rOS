@@ -201,6 +201,7 @@ W=50
 #    8 0 0 - hf h w - checklist / menu (hf=8 - frame + button)
                  # keep spaces/tabs
 option='--colors --no-collapse --no-shadow --stdout'
+[[ $branch != main ]] && option+=" --title '$branch'"
 opt_gauge="$option --gauge"                                  # no buttons
  opt_info="$option --sleep 2 --infobox"                      # no buttons
   opt_msg="$option --msgbox"                                 # <OK> only
