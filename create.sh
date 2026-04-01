@@ -263,14 +263,17 @@ size=6G,   type=83"
 }
 md5verify() {
 	clear -x
-	bar Verify $file ...
+	dialog $opt_info "
+  Verify ...
+  \Z1$file\Zn
+" 5 $W
 	curl -sLO $url/$file.md5
 	[[ $? != 0 ]] && dialog.retry 'Download *.md5 failed.' && md5verify
 	if md5sum --quiet -c $file.md5; then
 #............................
 		[[ $1 ]] && dialog $opt_info "
- Existing is the latest:
- \Z1$file\Zn
+  Existing is the latest:
+  \Z1$file\Zn
 
 
  No download required.
