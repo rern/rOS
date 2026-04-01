@@ -205,11 +205,11 @@ dir_settings=$dir_bash/settings
 ln -sf $dir_bash/motd.sh /etc/profile.d/ # motd
 echo ". $dir_bash/bashrc" >> /etc/bash.bashrc # prompt
 echo "00 01 * * * $dir_settings/addons-data.sh" | crontab -
-chmod -R +x $dir_settings
-$dir_settings/system-datadefault.sh
 mv release /srv/http/data/addons/r1
 rm -f /boot/{cmdline,config}.txt.pacnew
 rm * &> /dev/null
+chmod -R 755 $dir_bash
+$dir_settings/system-datadefault.sh
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
 touch /boot/expand
