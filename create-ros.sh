@@ -30,30 +30,35 @@ currentServer() {
 deleteFilesInDir() {
 	find $1 -maxdepth 1 -type f -delete
 }
-nextServerRetry() {
-	dialog.retry "Package server not responsive.
-$( currentServer )" || exit 1
-#------------------------------------------------------------------------------
+nextServer() {
 	if (( $( wc -l < $file_mirrorlist ) == 1 )); then
 		mv $file_mirrorlist{.bak,}
+#............................
 		dialog.error_exit '\Z1All package servers\Zn not responsive.'
 #------------------------------------------------------------------------------
 	fi
+#............................
+	dialog $opt_info "
+  $warn Package server not responsive:
+  $( currentServer )
+
+  Try next server ...
+
+" 0 0
 	sed -i '1 d' $file_mirrorlist
-	bar Switch package server...
-	currentServer
+	bar Package server: $( currentServer )
 	rm -f /var/lib/pacman/db.lck
 	pacman -Sy
 	$1
 }
 packageInstall() {
 	pacman -S --noconfirm --needed $packages $features
-	[[ $? != 0 ]] && nextServerRetry packageInstall
+	[[ $? != 0 ]] && nextServer packageInstall
 }
 systemUpgrade() {
 	pacman -Su --noconfirm
 	! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*' # fix: debian standard - /boot/... exists
-	[[ $? != 0 ]] && nextServerRetry systemUpgrade
+	[[ $? != 0 ]] && nextServer systemUpgrade
 }
 
 #............................
