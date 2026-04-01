@@ -20,7 +20,8 @@ i=$( dialog.menu Tasks "$list_task" )
 file_name=$( sed -n "$i {s/.*: *//; p}" <<< $list )
 if [[ $file_name ]]; then
 	(( $i < 5 )) && repo=rOS || repo=rern.github.io
-	bash <( curl -sL "$https_rern/$repo/$branch/$file_name.sh" )
+	[[ $branch != main ]] && arg_branch=$branch
+	bash <( curl -sL "$https_rern/$repo/$branch/$file_name.sh" ) $arg_branch
 else
 	title=$( sed -n "$i {s/ .*//; p}" <<< $list )
 	if [[ $title == Get ]]; then
