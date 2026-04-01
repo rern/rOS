@@ -456,6 +456,7 @@ chmod +x create-ros.sh
 for f in features release; do
 	echo ${!f} > $f
 done
+echo $sec_start > sec_start
 [[ $branch != main ]] && echo $branch > branch
 cd ../..
 sync
@@ -464,8 +465,7 @@ BR.unmount
 	dialog.splash "\
 Arch Linux ARM
 
-Created successfully
-\Z4$( elapsed $sec_start )\Zn"
+Created successfully"
 #............................
 dialog $opt_msg "
 \Z1Arch Linux ARM\Zn      : Ready
