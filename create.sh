@@ -95,7 +95,6 @@ Security     : ${security^^}"
 	txt_confirm+="
 
 Keep file    : $file_keep"
-	fi
 #............................
 	dialog $opt_yesno "$txt_confirm" 0 0 && confirm_data=1
 	tput cup 0 0
