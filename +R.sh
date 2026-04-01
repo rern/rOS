@@ -26,11 +26,9 @@ else
 	if [[ $title == Get ]]; then
 		url=$( dialog.input 'URL:' rOS/UPDATE/create.sh )
 		line=$( dialog.input 'Line 0 to:' )
-		[[ $line ]] && cmd_head=
+		[[ ! $line ]] && line=1000
 		banner $https_rern/$url
-		std=$( curl -sL $https_rern/$url )
-		[[ $line ]] && std=$( head -$line <<< $std )
-		cat -n <<< $std
+		curl -sL $https_rern/$url | head -$line | cat -n
 	else
 #............................
 		ip=$( dialog.ip 'rAudio IP' )
