@@ -40,6 +40,12 @@ $( echo -e "$@" )
 	exit
 #-------------------------------------------------------------------------------
 }
+dialog.info() {
+	dialog $opt_info "
+$@
+" 9 $W
+
+}
 dialog.ip() {
 	local ip
 	[[ ! $ip_base ]] && ip_base=$( ipBase )

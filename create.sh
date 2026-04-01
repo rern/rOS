@@ -266,21 +266,19 @@ size=6G,   type=83"
 }
 md5verify() {
 	clear -x
-	dialog $opt_info "
+	dialog.info "
   Verify ...
-  \Z1$file\Zn
-" 5 $W
+  \Z1$file\Zn"
 	curl -sLO $url/$file.md5
 	[[ $? != 0 ]] && dialog.retry 'Download *.md5 failed.' && md5verify
 	if md5sum --quiet -c $file.md5; then
 #............................
-		[[ $1 ]] && dialog $opt_info "
+		[[ $1 ]] && dialog.info "
   Existing is the latest:
   \Z1$file\Zn
 
 
- No download required.
-" 9 $W
+ No download required."
 	else
 		rm $file
 		dialog.retry "Verify failed:\n$file" && dialog.download
@@ -291,9 +289,8 @@ memBuffer() {
 }
 scanIP() {
 #............................
-	dialog $opt_info "
-  Scan hosts in network ...
-" 5 $W
+	dialog.info '
+  Scan hosts in network ...'
 	ip_base=$( ipBase )
 	lines=$( nmap -sn "$ip_base*" \
 				| awk '
@@ -499,10 +496,9 @@ $sd_usb : Unmounted
 " 9 $W
 if [[ -e ping_ok ]]; then
 	rm ping_ok
-	dialog $opt_info "
+	dialog.info "
   SSH Arch Linux ARM ...
-  @ \Z1$ip\Zn
-" 9 $W
+  @ \Z1$ip\Zn"
 	create_ros $ip
 elif [[ $ip ]]; then
 #............................

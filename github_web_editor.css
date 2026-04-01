@@ -234,6 +234,9 @@ Required fonts:
 	line-height: 24px;
 	margin: 0;
 }
+.monaco-editor .find-widget.visible {
+    min-width: 480px;
+}
 .monaco-editor-background { /* code window */
 	background-color: #000;
 }
