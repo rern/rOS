@@ -119,9 +119,9 @@ $@"
 		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
 		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
 		txt+="
-$( printf '%*s' $w )$line\n"
+$( printf '%*s' $w )$line"
 	done <<< $lines
-	h=$(( $( wc -l <<< $txt ) + 1 ))
+	h=$(( $( wc -l <<< $txt ) + 3 ))
 	tput civis # fix: hide cursor at corner
 	dialog $opt_info "$txt" $h $W;  tput cnorm # restore cursor
 }
