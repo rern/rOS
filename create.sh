@@ -92,7 +92,7 @@ Security     : ${security^^}"
 	dialog --defaultno $opt_yesno "
  Keep file once done?
  \Z1$file\Zn
-$file_gib
+ $file_gib
 
 " 0 0 && file_keep=Yes || file_keep=No
 	txt_confirm+="
