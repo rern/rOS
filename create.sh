@@ -2,11 +2,11 @@
 
 trap 'killChildProcess; BR.unmount' EXIT
 
-start=$( date +%s )
-[[ $1 ]] && branch=$1
-[[ ! $branch ]] && branch=main
+START=$( date +%s )
+[[ $1 ]] && BRANCH=$1
+[[ ! $BRANCH ]] && BRANCH=main
 
-[[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
+[[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
 
 export PATH+=:/sbin # debian - sfdisk
 package.required bsdtar curl dialog gawk jq nmap pigz sfdisk pv # required pkgs
@@ -20,9 +20,9 @@ create_ros() {
 dialog.data() {
 	latest=$( curl -sL $https_rern/rAudio-addons/main/addonslist.json | jq -r .r1.version )
 #............................
-	release=$( dialog.input '\Z1r\ZnAudio release:' $latest )
-	if ! curl -sIfo /dev/null $https_raudio/releases/$release; then
-		dialog.retry rAudio $release not found. && dialog.data
+	RELEASE=$( dialog.input '\Z1r\ZnAudio release:' $latest )
+	if ! curl -sIfo /dev/null $https_raudio/releases/$RELEASE; then
+		dialog.retry rAudio $RELEASE not found. && dialog.data
 		return
 #..............................................................................
 	fi
@@ -44,7 +44,7 @@ dialog.data() {
 	file+=latest.tar.gz
 	txt_confirm="
 \Z1Confirm data:\Zn
-Release      : $release
+Release      : $RELEASE
 Raspberry Pi : $bit
 "
 #............................
@@ -153,9 +153,9 @@ dialog.feature() {
  \Z1Features to install:\Zn
 ' 8 0 0 "${list_features_check[@]}" )
 	if [[ $checked ]]; then
-		features=
+		FEATURES=
 		while read l; do
-			features+=$( sed -n "/^$l/ {s/.*://; p}" <<< $list_features )
+			FEATURES+=$( sed -n "/^$l/ {s/.*://; p}" <<< $list_features )
 		done <<< $checked
 	else
 		checked='(none)'
@@ -386,7 +386,7 @@ mv ROOT/boot/* BOOT
 # cmdline.txt, config.txt
 read partid_B partid_R < <( blkid -o value -s PARTUUID $PART_B $PART_R | awk '{printf "PARTUUID=%s ", $0}' )
 cmdline="root=$partid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
-if [[ $features == *firefox* ]]; then
+if [[ $FEATURES == *firefox* ]]; then
 	cmdline+='tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0'
 	hdmi='hdmi_force_hotplug=1'
 else
@@ -459,7 +459,7 @@ for f in common create-ros; do
 	curl -sLO $https_ros/$f.sh
 done
 chmod +x create-ros.sh
-for f in branch features release start; do
+for f in BRANCH FEATURES RELEASE START; do
 	echo ${!f} > $f
 done
 cd ../..

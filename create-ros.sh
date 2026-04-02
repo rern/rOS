@@ -6,8 +6,8 @@ cleanup() {
 	[[ -e $file_mirrorlist.bak ]] && mv $file_mirrorlist{.bak,}
 }
 
-for f in branch features release start; do
-	declare $f=$(< $f)
+for f in BRANCH FEATURES RELEASE START; do
+	declare $f=$( < $f )
 done
 
 . common.sh
@@ -49,7 +49,7 @@ nextServer() {
 	$1
 }
 packageInstall() {
-	pacman -S --noconfirm --needed $packages $features
+	pacman -S --noconfirm --needed $packages $FEATURES
 	[[ $? != 0 ]] && nextServer packageInstall
 }
 systemUpgrade() {
@@ -104,7 +104,7 @@ packageInstall
 banner r A u d i o
 mkdir -p $dir_config
 for repo in rAudio rAudio-assets rOS; do
-	[[ $repo == rAudio ]] && file=$release || file=main
+	[[ $repo == rAudio ]] && file=$RELEASE || file=main
 	curl -sL https://github.com/rern/$repo/archive/$file.tar.gz | bsdtar xvf - --strip-components=1 -C $dir_config
 done
 find $dir_config -maxdepth 1 -type f -delete
@@ -219,7 +219,7 @@ EOF
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
 systemctl disable systemd-homed # fix freedesktop.home1.service not found
-mv /root/release $dir_data/addons/r1
+mv /root/RELEASE $dir_data/addons/r1
 rm -rf /root/*
 touch /boot/expand
 #............................
@@ -227,6 +227,6 @@ dialog.splash "\
 r A u d i o
 
 Created successfully
-\Z4$( elapsed $start )\Zn
+\Z4$( elapsed $START )\Zn
 \Z1   Reboot ...\Zn"
 reboot
