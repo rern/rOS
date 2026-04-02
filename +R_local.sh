@@ -1,7 +1,7 @@
 #!/bin/bash
 
-[[ $1 ]] && branch=$1 || branch=main
-. <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/+R.sh )
+[[ $1 ]] && BRANCH=$1 || BRANCH=main
+. <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/+R.sh )
 #..........................................................
 # chmod +x +R.sh
 # echo 'export PATH="/root:$PATH"' >> .bashrc

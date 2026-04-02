@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
+. <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
 
 #............................
 dialog.splash U t i l i t i e s
@@ -20,8 +20,8 @@ i=$( dialog.menu Tasks "$list_task" )
 file_name=$( sed -n "$i {s/.*: *//; p}" <<< $list )
 if [[ $file_name ]]; then
 	(( $i < 5 )) && repo=rOS || repo=rern.github.io
-	[[ $branch != main ]] && arg_branch=$branch
-	bash <( curl -sL "$https_rern/$repo/$branch/$file_name.sh" ) $arg_branch
+	[[ $BRANCH != main ]] && arg_branch=$BRANCH
+	bash <( curl -sL "$https_rern/$repo/$BRANCH/$file_name.sh" ) $arg_branch
 else
 	title=$( sed -n "$i {s/ .*//; p}" <<< $list )
 	if [[ $title == Get ]]; then
