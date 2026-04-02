@@ -7,7 +7,7 @@ cleanup() {
 }
 
 for f in branch features release start; do
-	printf -v $f '%s' $( < $f )
+	declare $f=$(< $f)
 done
 
 . common.sh
