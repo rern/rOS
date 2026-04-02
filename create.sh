@@ -2,7 +2,7 @@
 
 trap 'killChildProcess; BR.unmount' EXIT
 
-sec_start=$( date +%s )
+start=$( date +%s )
 [[ $1 ]] && branch=$1
 [[ ! $branch ]] && branch=main
 
@@ -459,11 +459,9 @@ for f in common create-ros; do
 	curl -sLO $https_ros/$f.sh
 done
 chmod +x create-ros.sh
-for f in features release; do
+for f in branch features release start; do
 	echo ${!f} > $f
 done
-echo $sec_start > sec_start
-[[ $branch != main ]] && echo $branch > branch
 cd ../..
 sync
 BR.unmount
