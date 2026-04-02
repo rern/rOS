@@ -6,7 +6,10 @@ cleanup() {
 	[[ -e $file_mirrorlist.bak ]] && mv $file_mirrorlist{.bak,}
 }
 
-[[ -e /root/branch ]] && branch=$( < /root/branch )
+for f in branch features release start; do
+	printf -v $f '%s' $( < $f )
+done
+
 . common.sh
 
 dir_bash=/srv/http/bash
@@ -16,9 +19,6 @@ dir_hooks=/etc/pacman.d/hooks
 dir_settings=$dir_bash/settings
 dir_systemd=/etc/systemd/system
 file_mirrorlist=/etc/pacman.d/mirrorlist
-features=$( < /root/features )
-release=$( < /root/release )
-sec_start=$( < /root/sec_start )
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
@@ -227,6 +227,6 @@ dialog.splash "\
 r A u d i o
 
 Created successfully
-\Z4$( elapsed $sec_start )\Zn
+\Z4$( elapsed $start )\Zn
 \Z1   Reboot ...\Zn"
 reboot
