@@ -101,14 +101,14 @@ chmod -R 755 $dirbash
 mkdir /srv/http/assets/img/guide
 curl -sL $https_rern/_assets/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
 # bluetooth
-if commandNotFound bluetoothctl; then
+if [[ -e /bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
 else
 	rm -rf $dir_system/{bluealsa,bluetooth}.service.d
 	rm -f $dir_system/blue*
 fi
 # camilladsp
-if commandNotFound camilladsp; then
+if [[ -e /bin/camilladsp ]]; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
 	dirconfigs=/srv/http/data/camilladsp/configs
 	mkdir -p $dirconfigs
@@ -122,7 +122,7 @@ fi
 ln -s /etc/cava.conf .config
 echo VISUAL=nano >> /etc/environment
 # firefox
-if commandNotFound firefox; then
+if [[ -e /bin/firefox ]]; then
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
@@ -133,7 +133,7 @@ else
 	rm -f $dir_system/{bootsplash,localbrowser}*
 fi
 # iwd
-if commandNotFound iwctl; then
+if [[ -e /bin/iwctl ]]; then
 	mkdir -p /var/lib/iwd/ap
 	echo "\
 [Security]
@@ -157,30 +157,26 @@ fi
 # mpd
 chsh -s /bin/bash mpd
 # samba
-if commandNotFound smbd; then
+if [[ -e /bin/smbd ]]; then
 	( echo ros; echo ros ) | smbpasswd -s -a root
 else
 	rm -rf /etc/samba
 fi
 # shairport-sync
-if commandNotFound shairport-sync; then
+if [[ ! -e /bin/shairport-sync ]]; then
 	rm /etc/shairport-sync.conf $dir_system/shairport.service
 	rm -rf $dir_system/shairport-sync.service.d/
 fi
 # snapcast
-if commandNotFound snapserver; then
+if [[ -e /bin/snapserver ]]; then
 	sed -i '/^#bind_to_address/ a\
 bind_to_address = 0.0.0.0
 ' /etc/snapserver.conf
 fi
 # spotifyd
-if commandNotFound spotifyd; then
-	ln -s /lib/systemd/{user,system}/spotifyd.service
-else
-	rm /etc/spotifyd.conf $dir_system/spotifyd.service
-fi
+[[ -e /bin/spotifyd ]] && ln -s /lib/systemd/{user,system}/spotifyd.service
 # upmpdcli
-if commandNotFound upmpdcli; then
+if [[ -e /bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
 	file=$dir/credkey.pem
 	mkdir -p $dir
