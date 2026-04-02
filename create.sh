@@ -426,7 +426,7 @@ EOF
 BindsTo=sys-subsystem-net-devices-wlan0.device
 After=sys-subsystem-net-devices-wlan0.device
 EOF
-	ln -sr ROOT/usr/lib/systemd/system/netctl@.service "ROOT/etc/systemd/system/multi-user.target.wants/netctl@$essid.service"
+	ln -sr ROOT/lib/systemd/system/netctl@.service "ROOT/etc/systemd/system/multi-user.target.wants/netctl@$essid.service"
 fi
 # dhcpd - disable arp
 echo noarp >> ROOT/etc/dhcpcd.conf
@@ -452,6 +452,7 @@ sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
 # ranked mirrorlist
 mv ROOT/etc/pacman.d/mirrorlist{,.bak}
 mv mirrorlist ROOT/etc/pacman.d/
+################################################################################
 # scripts
 cd ROOT/root
 for f in common create-ros; do

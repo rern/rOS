@@ -58,7 +58,7 @@ if selected connection; then
 	fi
 fi
 if [[ ! -e /boot/kernel.img ]]; then # skip on rpi 0, 1
-	curl -sL $https_mirrorlist -o /etc/pacman.d/mirrorlist
+	curl -sL $https_raw/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist -o /etc/pacman.d/mirrorlist
 fi
 rm -rf /root/.config/chromium
 bar 'rAudio reset done.

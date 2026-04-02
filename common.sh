@@ -194,7 +194,6 @@ https_raudio=https://github.com/rern/rAudio
 https_rern=$https_raw/rern
 https_ros=$https_rern/rOS/$branch
 https_io=$https_rern/rern.github.io/$branch
-https_mirrorlist=$https_raw/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist
 opt_ssh='-qtt -o ConnectTimeout=3
 			  -o StrictHostKeyChecking=no
 			  -o UserKnownHostsFile=/dev/null'

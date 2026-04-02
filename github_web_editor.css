@@ -237,6 +237,9 @@ Required fonts:
 .find-widget.visible {
     min-width: 480px;
 }
+.find-widget.visible.replaceToggled {
+        height: 67px !important;
+}
 .monaco-editor-background { /* code window */
 	background-color: #000;
 }

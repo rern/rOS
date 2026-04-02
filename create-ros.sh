@@ -6,7 +6,7 @@ cleanup() {
 	[[ -e $file_mirrorlist.bak ]] && mv $file_mirrorlist{.bak,}
 }
 
-[[ -e branch ]] && branch=$( < branch )
+[[ -e /root/branch ]] && branch=$( < /root/branch )
 . common.sh
 
 dir_bash=/srv/http/bash
@@ -14,12 +14,11 @@ dir_config=/tmp/config
 dir_data=/srv/http/data
 dir_hooks=/etc/pacman.d/hooks
 dir_settings=$dir_bash/settings
-dir_system=/etc/systemd/system
-file_cmdline=/boot/cmdline.txt
+dir_systemd=/etc/systemd/system
 file_mirrorlist=/etc/pacman.d/mirrorlist
-features=$( < features )
-release=$( < release )
-sec_start=$( < sec_start )
+features=$( < /root/features )
+release=$( < /root/release )
+sec_start=$( < /root/sec_start )
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs
 i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
@@ -27,9 +26,6 @@ raspberrypi-utils sudo udevil websocat wget xorg-xset'
 
 currentServer() {
 	sed -n '1 {s|.*= ||; s|$.*|...|; p}' $file_mirrorlist
-}
-deleteFilesInDir() {
-	find $1 -maxdepth 1 -type f -delete
 }
 nextServer() {
 	if (( $( wc -l < $file_mirrorlist ) == 1 )); then
@@ -94,10 +90,11 @@ for file in linux-rpi mkinitcpio-install; do
 done
 pacman -Sy
 systemUpgrade
-if [[ -e ${file_cmdline}0 ]]; then
-	mv $file_cmdline{0,}
-	mv $file_cmdline{0,}
-fi
+for f in cmdline config; do
+	file=/boot/$f.txt
+	[[ -e ${file}0 ]] && mv $file{0,}
+	rm -f $file.pacnew
+done
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 #............................
@@ -110,19 +107,19 @@ for repo in rAudio rAudio-assets rOS; do
 	[[ $repo == rAudio ]] && file=$release || file=main
 	curl -sL https://github.com/rern/$repo/archive/$file.tar.gz | bsdtar xvf - --strip-components=1 -C $dir_config
 done
-deleteFilesInDir $dir_config
+find $dir_config -maxdepth 1 -type f -delete
 chmod -R go-wx $dir_config
 chmod -R u+rwX,go+rX $dir_config
 cp -r $dir_config/* /
 # bluetooth
-if commandNotFound bluetoothctl; then
+if [[ -e /bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
 else
-	rm -rf $dir_system/{bluealsa,bluetooth}.service.d
-	rm -f $dir_system/blue*
+	rm -rf $dir_systemd/{bluealsa,bluetooth}.service.d
+	rm -f $dir_systemd/blue*
 fi
 # camilladsp
-if [[ -e /usr/bin/camilladsp ]]; then
+if [[ -e /bin/camilladsp ]]; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
 	dirconfigs=$dir_data/camilladsp/configs
 	mkdir -p $dirconfigs
@@ -133,10 +130,10 @@ else
 	rm -f $dir_data/mpdconf/conf/camilladsp.conf
 fi
 # cava
-ln -s /etc/cava.conf .config
+ln -s /etc/cava.conf /root/.config/
 echo VISUAL=nano >> /etc/environment
 # firefox
-if [[ -e /usr/bin/firefox ]]; then
+if [[ -e /bin/firefox ]]; then
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
@@ -144,10 +141,10 @@ if [[ -e /usr/bin/firefox ]]; then
 	systemctl disable getty@tty1                                 # disable login prompt
 	systemctl enable bootsplash localbrowser
 else
-	rm -f $dir_system/{bootsplash,localbrowser}*
+	rm -f $dir_systemd/{bootsplash,localbrowser}*
 fi
 # iwd
-if [[ -e /usr/bin/iwctl ]]; then
+if [[ -e /bin/iwctl ]]; then
 	mkdir -p /var/lib/iwd/ap
 	cat << EOF > /var/lib/iwd/ap/rAudio.ap
 [Security]
@@ -163,26 +160,26 @@ fi
 # mpd
 chsh -s /bin/bash mpd
 # samba
-if [[ -e /usr/bin/smbd ]]; then
+if [[ -e /bin/smbd ]]; then
 	( echo ros; echo ros ) | smbpasswd -s -a root
 else
 	rm -rf /etc/samba
 fi
 # shairport-sync
-if [[ ! -e /usr/bin/shairport-sync ]]; then
-	rm /etc/shairport-sync.conf $dir_system/shairport.service
-	rm -rf $dir_system/shairport-sync.service.d/
+if [[ ! -e /bin/shairport-sync ]]; then
+	rm /etc/shairport-sync.conf $dir_systemd/shairport.service
+	rm -rf $dir_systemd/shairport-sync.service.d/
 fi
 # snapcast
-if [[ -e /usr/bin/snapserver ]]; then
+if [[ -e /bin/snapserver ]]; then
 	sed -i '/^#bind_to_address/ a\
 bind_to_address = 0.0.0.0
 ' /etc/snapserver.conf
 fi
 # spotifyd
-[[ -e /usr/bin/spotifyd ]] && ln -s /lib/systemd/{user,system}/spotifyd.service
+[[ -e /bin/spotifyd ]] && ln -s /lib/systemd/{user,system}/spotifyd.service
 # upmpdcli
-if [[ -e /usr/bin/upmpdcli ]]; then
+if [[ -e /bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
 	file=$dir/credkey.pem
 	mkdir -p $dir
@@ -190,15 +187,13 @@ if [[ -e /usr/bin/upmpdcli ]]; then
 	openssl rsa -in $file -RSAPublicKey_out
 	chown upmpdcli:root $file
 else
-	rm -rf /etc/upmpdcli.conf $dir_system/upmpdcli.service
+	rm -rf /etc/upmpdcli.conf $dir_systemd/upmpdcli.service
 fi
 # system
 bar Set root password
 chpasswd <<< root:ros
 chown -R http:http /etc/fstab /etc/netctl /etc/systemd/network
-sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
-sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
-alsactl store
+echo ". $dir_bash/bashrc" >> /etc/bash.bashrc # prompt
 if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
 	if ! grep -q ^C.UTF-8 /etc/locale.gen; then
 		echo 'C.UTF-8 UTF-8' >> /etc/locale.gen
@@ -206,19 +201,13 @@ if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
 	fi
 	localectl set-locale LANG=C.UTF-8
 fi
-if [[ -e $file_mirrorlist.pacnew ]]; then
-	mv $file_mirrorlist{.pacnew,}
-	rm $file_mirrorlist.bak
-else
-	mv $file_mirrorlist{.bak,}
-fi
-# data - settings directories
 ln -sf $dir_bash/motd.sh /etc/profile.d/ # motd
-echo ". $dir_bash/bashrc" >> /etc/bash.bashrc # prompt
+sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
+alsactl store
+# data - settings directories
 echo "00 01 * * * $dir_settings/addons-data.sh" | crontab -
 chmod -R 755 $dir_bash
 $dir_settings/system-datadefault.sh
-mv release $dir_data/addons/r1
 webradio=$( find $dir_data/webradio/ -maxdepth 1 -type f | wc -l )
 cat << EOF > $dir_data/mpd/counts
 {
@@ -229,8 +218,9 @@ cat << EOF > $dir_data/mpd/counts
 EOF
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
-rm -f /boot/{cmdline,config}.txt.pacnew
-deleteFilesInDir .
+systemctl disable systemd-homed # fix freedesktop.home1.service not found
+mv /root/release $dir_data/addons/r1
+rm -rf /root/*
 touch /boot/expand
 #............................
 dialog.splash "\
