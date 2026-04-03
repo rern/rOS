@@ -7,7 +7,7 @@ cleanup() {
 }
 
 for f in BRANCH FEATURES RELEASE START; do
-	declare $f=$( < $f )
+	declare "$f=$( < $f )"
 done
 
 . common.sh
