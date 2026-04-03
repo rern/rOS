@@ -41,7 +41,7 @@ nextServer() {
 	sed -i '1 d' $file_mirrorlist
 	bar Package server: $( currentServer )
 	rm -f /var/lib/pacman/db.lck
-	pacman -Sy
+	pacman -Syy
 	$1
 }
 packageInstall() {
@@ -68,8 +68,6 @@ for n in amdgpu broadcom intel nvidia radeon  linux-aarch64 linux-firmware uboot
 	pacman -Qq $n &> /dev/null && remove+="$n "
 done
 [[ $remove ]] && pacman -Rdd --noconfirm $remove
-#                                                                        fix: debian standard - /boot/... exists
-! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
 	sed -i -e '/community/,/^$/ d
@@ -87,6 +85,8 @@ for file in linux-rpi mkinitcpio-install; do
 	ln -s /dev/null $dir_hooks/90-$file.hook
 done
 pacman -Sy
+#                                                                        fix: debian standard - /boot/... exists
+! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
 systemUpgrade
 for f in cmdline config; do
 	file=/boot/$f.txt
