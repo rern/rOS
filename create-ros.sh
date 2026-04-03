@@ -15,8 +15,10 @@ dir_hooks=/etc/pacman.d/hooks
 dir_settings=$dir_bash/settings
 dir_systemd=/etc/systemd/system
 file_mirrorlist=/etc/pacman.d/mirrorlist
-packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs
-i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod libupnp mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
+
+packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest
+gifsicle hdparm hfsprogs i2c-tools imagemagick inetutils iwd jq kid3-common
+libgpiod libupnp linux-rpi mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
 raspberrypi-utils sudo udevil websocat wget xorg-xset'
 
@@ -44,12 +46,9 @@ nextServer() {
 	pacman -Syy && $1 || nextServer $1
 }
 packageInstall() {
-	local p pkg
-	pacman -S --noconfirm --needed $packages $FEATURES
-	for p in $FEATURES; do
-		! pacman -Qq $p &> /dev/null && pkg+="$p "
-	done
-	[[ $pkg ]] && FEATURES=$pkg && nextServer packageInstall
+#                                                        fix: debian standard - /boot/... exists
+	pacman -S --noconfirm --needed $packages $FEATURES --overwrite '/boot/*'
+	[[ $? != 0 ]] && nextServer systemUpgrade
 }
 systemUpgrade() {
 	pacman -Su --noconfirm
@@ -66,7 +65,7 @@ systemctl restart systemd-timesyncd # force time sync
 systemctl start systemd-random-seed # fill entropy pool (fix - kernel entropy pool is not initialized)
 #............................
 banner Upgrade Arch Linux ARM
-for n in amdgpu broadcom intel nvidia radeon  linux-aarch64 linux-firmware uboot-raspberrypi; do
+for n in amdgpu broadcom intel nvidia radeon linux-aarch64 linux-firmware uboot-raspberrypi; do
 	[[ ${n:0:1} != [lu] ]] && n="linux-firmware-$n"
 	pacman -Qq $n &> /dev/null && remove+="$n "
 done
@@ -85,7 +84,7 @@ cp $file_mirrorlist /tmp
 # initramfs disable
 mkdir -p $dir_hooks
 for file in linux-rpi mkinitcpio-install; do
-	ln -s /dev/null $dir_hooks/90-$file.hook
+	ln -sf /dev/null $dir_hooks/90-$file.hook
 done
 pacman -Sy
 systemUpgrade
@@ -99,8 +98,6 @@ done
 #............................
 banner Install Packages for rAudio
 packageInstall
-#                                                                        fix: debian standard - /boot/... exists
-! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
 #............................
 banner r A u d i o
 mkdir -p $dir_config
