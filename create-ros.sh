@@ -43,16 +43,13 @@ nextServer() {
 	sed -i '1 d' $file_mirrorlist
 	bar Package server: $( currentServer )
 	rm -f /var/lib/pacman/db.lck
-	pacman -Syy && $1 || nextServer $1
 }
-packageInstall() {
-#                                                        fix: debian standard - /boot/... exists
-	pacman -S --noconfirm --needed $packages $FEATURES --overwrite '/boot/*'
-	[[ $? != 0 ]] && nextServer systemUpgrade
-}
-systemUpgrade() {
-	pacman -Su --noconfirm
-	[[ $? != 0 ]] && nextServer systemUpgrade
+packageInstall() { #                                        fix: debian standard - /boot/... exists
+	pacman -Syyu --noconfirm --needed $packages $FEATURES --overwrite '/boot/*'
+	if [[ $? != 0 ]]; then
+		nextServer
+		packageInstall
+	fi
 }
 
 #............................
@@ -86,8 +83,6 @@ mkdir -p $dir_hooks
 for file in linux-rpi mkinitcpio-install; do
 	ln -sf /dev/null $dir_hooks/90-$file.hook
 done
-pacman -Sy
-systemUpgrade
 for f in cmdline config; do
 	file=/boot/$f.txt
 	[[ -e ${file}0 ]] && mv $file{0,}
