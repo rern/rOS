@@ -72,7 +72,7 @@ for n in amdgpu broadcom intel nvidia radeon  linux-aarch64 linux-firmware uboot
 	[[ ${n:0:1} != [lu] ]] && n="linux-firmware-$n"
 	pacman -Qq $n &> /dev/null && remove+="$n "
 done
-pacman -Rdd --noconfirm $remove
+[[ $remove ]] && pacman -Rdd --noconfirm $remove
 ! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*' # --overwrite - fix: debian standard - /boot/... exists
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
