@@ -311,7 +311,6 @@ scanIP() {
 
 #............................
 dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
-BR.mount
 dialog.data
 dialog.feature
 read DEV PART_B PART_R < <( dialog.sd )
@@ -339,6 +338,7 @@ else
 	dialog.download
 fi
 rm $file.md5
+BR.mount
 file_size=$( stat -c %s $file )
 #............................
 ( # -n: force stdout in each new line -Y: no buffer (26 ETA 0:00:02 261569003.1868)
