@@ -1,11 +1,6 @@
 #!/bin/bash
 
-trap cleanup EXIT
-cleanup() {
-	pkill pacman
-	rm -f /var/lib/pacman/db.lck
-	[[ -e $file_mirrorlist.bak ]] && mv $file_mirrorlist{.bak,}
-}
+trap 'pkill -P $$; rm -f /var/lib/pacman/db.lck' EXIT
 
 for f in BRANCH FEATURES RELEASE START; do
 	declare "$f=$( < $f )"

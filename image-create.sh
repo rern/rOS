@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'killChildProcess; BR.unmount' EXIT
+trap 'pkill -P $$; BR.unmount' EXIT
 
 package.required bsdtar dialog
 

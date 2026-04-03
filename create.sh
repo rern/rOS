@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'killChildProcess; BR.unmount' EXIT
+trap 'pkill -P $$; BR.unmount' EXIT
 
 START=$( date +%s )
 BRANCH=${1:-main}
