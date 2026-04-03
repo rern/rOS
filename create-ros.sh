@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'pkill pacman; rm -f /var/lib/pacman/db.lck' EXIT
+trap 'pkill dialog pacman; rm -f /var/lib/pacman/db.lck' EXIT SIGINT SIGTERM
 
 for f in BRANCH FEATURES RELEASE START; do
 	declare "$f=$( < $f )"
