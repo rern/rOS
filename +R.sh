@@ -30,7 +30,10 @@ else
 		line=$( dialog.input 'Line 0 to:' )
 		line=${line:-1000}
 		banner $https_rern/$url
-		curl -sL $https_rern/$url | head -$line | cat -n
+		cmd="curl -sL $https_rern/$url | head -$line | cat -n"
+		eval $cmd
+		echo "
+$cmd"
 	else
 #............................
 		ip=$( dialog.ip 'rAudio IP' )
