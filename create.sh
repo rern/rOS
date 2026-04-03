@@ -449,7 +449,6 @@ sed -i 's/#*\(PermitRootLogin \).*/\1yes/
 id=$( awk -F':' '/^root/ {print $3}' ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
 # ranked mirrorlist
-mv ROOT/etc/pacman.d/mirrorlist{,.bak}
 mv mirrorlist ROOT/etc/pacman.d/
 ################################################################################
 # scripts
