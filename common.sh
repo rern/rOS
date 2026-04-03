@@ -185,9 +185,9 @@ udisk2Toggle() {
 	systemctl $mask --runtime udisks2 &> /dev/null
 	systemctl $1 udisks2
 }
+https_raudio=https://github.com/rern/rAudio
 #         https://raw.githubusercontent.com/rern/REPO/BRANCH/file
 https_raw=https://raw.githubusercontent.com
-https_raudio=https://github.com/rern/rAudio
 https_rern=$https_raw/rern
 https_ros=$https_rern/rOS/$BRANCH
 https_io=$https_rern/rern.github.io/$BRANCH

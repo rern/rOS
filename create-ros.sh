@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'rm -f /var/lib/pacman/db.lck; exit 1' EXIT
+trap 'pkill pacman; rm -f /var/lib/pacman/db.lck' EXIT
 
 for f in BRANCH FEATURES RELEASE START; do
 	declare "$f=$( < $f )"
@@ -89,8 +89,6 @@ for file in linux-rpi mkinitcpio-install; do
 done
 pacman -Sy
 systemUpgrade
-#                                                                        fix: debian standard - /boot/... exists
-! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
 for f in cmdline config; do
 	file=/boot/$f.txt
 	[[ -e ${file}0 ]] && mv $file{0,}
@@ -101,6 +99,8 @@ done
 #............................
 banner Install Packages for rAudio
 packageInstall
+#                                                                        fix: debian standard - /boot/... exists
+! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
 #............................
 banner r A u d i o
 mkdir -p $dir_config
