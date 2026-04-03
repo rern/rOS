@@ -5,7 +5,7 @@ trap 'BR.unmount; exit 1' EXIT
 START=$( date +%s )
 BRANCH=${1:-main}
 
-[[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
+[[ ! $logo ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
 
 export PATH+=:/sbin # debian - sfdisk
 package.required bsdtar curl dialog gawk jq nmap pigz sfdisk pv # required pkgs
