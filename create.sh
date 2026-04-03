@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'pkill awk bsdtar curl dialog nmap pigz pv stdbuf tac; BR.unmount' EXIT SIGINT SIGTERM
+trap 'killProcess awk bsdtar curl dialog nmap pigz pv stdbuf tac; BR.unmount' EXIT SIGINT SIGTERM
 
 START=$( date +%s )
 BRANCH=${1:-main}

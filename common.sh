@@ -141,6 +141,12 @@ ipBase() {
 kbKey() {
 	echo "\Zr\Zb $1 \Zn"
 }
+killProcess() {
+	for p in $@; do
+		pkill $p
+	done
+}
+
 package.commandNotFound() {
 	local c cmd
 	for c in $@; do

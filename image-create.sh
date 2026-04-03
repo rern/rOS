@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'pkill dd resize2fs sfdisk xz; BR.unmount' EXIT SIGINT SIGTERM
+trap 'killProcess dd resize2fs sfdisk xz; BR.unmount' EXIT SIGINT SIGTERM
 
 package.required bsdtar dialog
 
