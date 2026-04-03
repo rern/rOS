@@ -25,7 +25,7 @@ currentServer() {
 }
 nextServer() {
 	if (( $( wc -l < $file_mirrorlist ) == 1 )); then
-		mv $file_mirrorlist{.bak,}
+		mv /tmp/mirrorlist $file_mirrorlist
 #............................
 		dialog.error_exit '\Z1All package servers\Zn not responsive.'
 #------------------------------------------------------------------------------
@@ -80,6 +80,7 @@ SigLevel = Optional TrustAll\
 Server = https://rern.github.io/$arch\
 ' /etc/pacman.conf
 fi
+cp $file_mirrorlist /tmp
 # initramfs disable
 mkdir -p $dir_hooks
 for file in linux-rpi mkinitcpio-install; do
