@@ -2,6 +2,7 @@
 
 trap cleanup EXIT
 cleanup() {
+	pkill pacman 2>/dev/null
 	rm -f /var/lib/pacman/db.lck
 	[[ -e $file_mirrorlist.bak ]] && mv $file_mirrorlist{.bak,}
 }
