@@ -45,8 +45,12 @@ nextServer() {
 	$1
 }
 packageInstall() {
+	local p pkg
 	pacman -S --noconfirm --needed $packages $FEATURES
-	[[ $? != 0 ]] && nextServer packageInstall
+	for p in $FEATURES; do
+		! pacman -Qq $p && pkg+="$p "
+	done
+	[[ $pkg ]] && FEATURES=$pkg && nextServer packageInstall
 }
 systemUpgrade() {
 	pacman -Su --noconfirm
