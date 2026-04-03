@@ -311,12 +311,12 @@ scanIP() {
 
 #............................
 dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
-read DEV PART_B PART_R < <( dialog.sd )
-sleep 1 # fix: label ready for read
-dialog.sdCard
 BR.mount
 dialog.data
 dialog.feature
+read DEV PART_B PART_R < <( dialog.sd )
+sleep 1 # fix: label ready for read
+dialog.sdCard
 banner Rank Servers
 if [[ ! -e rate_mirrors ]]; then
 	url_assets=$( curl -sL https://api.github.com/repos/westandskif/rate-mirrors/releases/latest | jq -r .assets )
