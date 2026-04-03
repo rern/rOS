@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'pkill -P $$; pkill pacman; rm -f /var/lib/pacman/db.lck' EXIT
+trap 'pkill pacman; rm -f /var/lib/pacman/db.lck' EXIT
 
 for f in BRANCH FEATURES RELEASE START; do
 	declare "$f=$( < $f )"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'pkill -P $$; BR.unmount' EXIT
+trap 'pkill awk bsdtar curl nmap pigz pv stdbuf; BR.unmount' EXIT
 
 START=$( date +%s )
 BRANCH=${1:-main}

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'pkill -P $$; BR.unmount' EXIT
+trap 'pkill dd resize2fs sfdisk xz; BR.unmount' EXIT
 
 package.required bsdtar dialog
 
