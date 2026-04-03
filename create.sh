@@ -470,8 +470,8 @@ Arch Linux ARM
 Created successfully"
 #............................
 dialog $opt_msg "
-\Z1Arch Linux ARM\Zn      : Ready
-$sd_usb : Unmounted
+Arch Linux ARM      : Ready
+SD card / USB drive : Unmounted
 
 » \Z1Move\Zn SD card / USB drive to Raspberry Pi
 » \Z1Power\Zn on
