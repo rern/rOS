@@ -2,7 +2,7 @@
 
 # . <( curl -sL https://raw.githubusercontent.com/rern/rOS/main/common.sh )
 
-[[ ! $branch ]] && branch=main
+BRANCH="${BRANCH:=main}"
 
 banner() { # should be used on start stdout to screen
 	local cols
@@ -48,7 +48,7 @@ $@
 }
 dialog.ip() {
 	local ip
-	[[ ! $ip_base ]] && ip_base=$( ipBase )
+	ip_base=${ip_base:=$( ipBase )}
 	[[ $2 ]] && ip_input=$2 || ip_input=$ip_base
 	ip=$( dialog.input "\Z1$1:\Zn" $ip_input )
 	[[ ${ip%.*}. == $ip_base ]] && ip_oct4=${ip/$ip_base}
@@ -192,8 +192,8 @@ udisk2Toggle() {
 https_raw=https://raw.githubusercontent.com
 https_raudio=https://github.com/rern/rAudio
 https_rern=$https_raw/rern
-https_ros=$https_rern/rOS/$branch
-https_io=$https_rern/rern.github.io/$branch
+https_ros=$https_rern/rOS/$BRANCH
+https_io=$https_rern/rern.github.io/$BRANCH
 opt_ssh='-qtt -o ConnectTimeout=3
 			  -o StrictHostKeyChecking=no
 			  -o UserKnownHostsFile=/dev/null'
@@ -207,7 +207,7 @@ W=50
 #    8 0 0 - hf h w - checklist / menu (hf=8 - frame + button)
                  # keep spaces/tabs
 option='--colors --no-collapse --no-shadow --stdout'
-[[ $branch != main ]] && option+=" --title $branch"
+[[ $BRANCH != main ]] && option+=" --title $BRANCH"
 opt_gauge="$option --gauge"                                  # no buttons
  opt_info="$option --sleep 2 --infobox"                      # no buttons
   opt_msg="$option --msgbox"                                 # <OK> only

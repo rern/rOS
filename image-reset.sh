@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
+. <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
 
 selected() {
 	grep -q $1 <<< $reset && return 0

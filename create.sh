@@ -3,8 +3,7 @@
 trap 'killChildProcess; BR.unmount' EXIT
 
 START=$( date +%s )
-[[ $1 ]] && BRANCH=$1
-[[ ! $BRANCH ]] && BRANCH=main
+BRANCH=${1:-main}
 
 [[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
 
