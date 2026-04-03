@@ -2,7 +2,7 @@
 
 # . <( curl -sL https://raw.githubusercontent.com/rern/rOS/main/common.sh )
 
-BRANCH="${BRANCH:=main}"
+BRANCH="${BRANCH:-main}"
 
 banner() { # should be used on start stdout to screen
 	local cols
@@ -47,8 +47,8 @@ $@
 
 }
 dialog.ip() {
-	local ip
-	ip_base=${ip_base:=$( ipBase )}
+	local ip ip_oct4
+	ip_base=${ip_base:-$( ipBase )}
 	[[ $2 ]] && ip_input=$2 || ip_input=$ip_base
 	ip=$( dialog.input "\Z1$1:\Zn" $ip_input )
 	[[ ${ip%.*}. == $ip_base ]] && ip_oct4=${ip/$ip_base}
