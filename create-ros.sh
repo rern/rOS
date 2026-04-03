@@ -65,7 +65,7 @@ banner Initialize Arch Linux ARM
 pacman-key --init
 pacman-key --populate archlinuxarm
 systemctl restart systemd-timesyncd # force time sync
-systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy pool is not initialized)
+systemctl start systemd-random-seed # fill entropy pool (fix - kernel entropy pool is not initialized)
 #............................
 banner Upgrade Arch Linux ARM
 for n in amdgpu broadcom intel nvidia radeon  linux-aarch64 linux-firmware uboot-raspberrypi; do
