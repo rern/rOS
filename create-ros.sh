@@ -104,6 +104,17 @@ find $dir_config -maxdepth 1 -type f -delete
 chmod -R go-wx $dir_config
 chmod -R u+rwX,go+rX $dir_config
 cp -r $dir_config/* /
+chmod -R 755 $dir_bash
+$dir_settings/system-datadefault.sh
+mv /root/RELEASE $dir_data/addons/r1
+webradio=$( find $dir_data/webradio/ -maxdepth 1 -type f | wc -l )
+cat << EOF > $dir_data/mpd/counts
+{
+  "song"      : 0
+, "playlists" : 0
+, "webradio"  : $webradio
+}
+EOF
 # bluetooth
 if [[ -e /bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
@@ -197,22 +208,10 @@ fi
 ln -sf $dir_bash/motd.sh /etc/profile.d/ # motd
 sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
 alsactl store
-# data - settings directories
 echo "00 01 * * * $dir_settings/addons-data.sh" | crontab -
-chmod -R 755 $dir_bash
-$dir_settings/system-datadefault.sh
-webradio=$( find $dir_data/webradio/ -maxdepth 1 -type f | wc -l )
-cat << EOF > $dir_data/mpd/counts
-{
-  "song"      : 0
-, "playlists" : 0
-, "webradio"  : $webradio
-}
-EOF
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
 systemctl disable systemd-homed # fix freedesktop.home1.service not found
-mv /root/RELEASE $dir_data/addons/r1
 rm -rf /root/*
 touch /boot/expand
 #............................
