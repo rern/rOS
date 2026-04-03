@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'pkill -P $$; rm -f /var/lib/pacman/db.lck' EXIT
+trap 'pkill -P $$; pkill pacman; rm -f /var/lib/pacman/db.lck' EXIT
 
 for f in BRANCH FEATURES RELEASE START; do
 	declare "$f=$( < $f )"
@@ -32,7 +32,7 @@ nextServer() {
 	fi
 #............................
 	dialog $opt_info "
-  $warn Package server not responsive:
+  $warn Package server issue:
   $( currentServer )
 
   Try next server ...
@@ -41,14 +41,13 @@ nextServer() {
 	sed -i '1 d' $file_mirrorlist
 	bar Package server: $( currentServer )
 	rm -f /var/lib/pacman/db.lck
-	pacman -Syy
-	$1
+	pacman -Syy && $1 || nextServer $1
 }
 packageInstall() {
 	local p pkg
 	pacman -S --noconfirm --needed $packages $FEATURES
 	for p in $FEATURES; do
-		! pacman -Qq $p && pkg+="$p "
+		! pacman -Qq $p &> /dev/null && pkg+="$p "
 	done
 	[[ $pkg ]] && FEATURES=$pkg && nextServer packageInstall
 }
@@ -89,9 +88,9 @@ for file in linux-rpi mkinitcpio-install; do
 	ln -s /dev/null $dir_hooks/90-$file.hook
 done
 pacman -Sy
+systemUpgrade
 #                                                                        fix: debian standard - /boot/... exists
 ! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*'
-systemUpgrade
 for f in cmdline config; do
 	file=/boot/$f.txt
 	[[ -e ${file}0 ]] && mv $file{0,}
