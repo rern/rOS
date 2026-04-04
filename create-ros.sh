@@ -195,8 +195,8 @@ alsactl store
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
 systemctl disable systemd-homed # fix freedesktop.home1.service not found
-for f in cmdline config; do
-	[[ -e $f ]] && mv $f /boot/$f.txt
+for f in CMDLINE CONFIG; do
+	[[ -e $f ]] && mv $f /boot/${f,,}.txt
 done
 rm -rf /boot/*.pacnew /root/*
 touch /boot/expand
