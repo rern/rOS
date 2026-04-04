@@ -384,22 +384,20 @@ sync
 mv ROOT/boot/* BOOT
 # cmdline.txt, config.txt
 read partid_B partid_R < <( blkid -o value -s PARTUUID $PART_B $PART_R | awk '{printf "PARTUUID=%s ", $0}' )
-cmdline="root=$partid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
-if [[ $FEATURES == *firefox* ]]; then
-	cmdline+='tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0'
-	hdmi='hdmi_force_hotplug=1'
-else
-	cmdline+=tty1
-fi
-echo $cmdline > ROOT/cmdline
-cat << EOF > ROOT/config
+cmdline="root=$partid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console=tty1"
+config="\
 disable_overscan=1
 disable_splash=1
 dtparam=audio=on
 max_usb_current=1
-usb_max_current_enable=1
-$hdmi
-EOF
+usb_max_current_enable=1"
+if [[ $FEATURES == *firefox* ]]; then
+	cmdline="${cmdline/tty1/tty3} quiet loglevel=0 logo.nologo vt.global_cursor_default=0"
+	config+='
+hdmi_force_hotplug=1'
+fi
+[[ $DEV != /dev/mmcblk* ]] && config+='
+dtoverlay=sdtweak,poll_once'
 # fstab
 opt_fstab='defaults,noatime  0  0'
 cat << EOF > ROOT/etc/fstab
@@ -461,7 +459,7 @@ for f in common create-ros; do
 	curl -sLO $https_ros/$f.sh
 done
 chmod +x create-ros.sh
-for f in BRANCH FEATURES RELEASE START; do
+for f in cmdline config BRANCH FEATURES RELEASE START; do
 	echo ${!f} > $f
 done
 cd ../..

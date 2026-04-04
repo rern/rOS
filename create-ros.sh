@@ -174,11 +174,6 @@ else
 	rm -rf /etc/upmpdcli.conf $dir_systemd/upmpdcli.service
 fi
 # system
-for f in cmdline config; do
-	[[ -e $f ]] && mv $f /boot/$f.txt
-done
-# usb boot - disable sd card polling
-! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 bar Set root password
 chpasswd <<< root:ros
 while read user; do
@@ -200,6 +195,9 @@ alsactl store
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
 systemctl disable systemd-homed # fix freedesktop.home1.service not found
+for f in cmdline config; do
+	[[ -e $f ]] && mv $f /boot/$f.txt
+done
 rm -rf /boot/*.pacnew /root/*
 touch /boot/expand
 #............................
