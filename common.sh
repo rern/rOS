@@ -180,6 +180,7 @@ Unable to continue."
 trapExit() {
 	kill -TERM -$$ &> /dev/null
 	BR.unmount
+	exit
 }
 udisk2Toggle() {
 	[[ $1 == start ]] && mask=unmask || mask=mask
