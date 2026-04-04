@@ -466,6 +466,7 @@ chmod +x create-ros.sh
 for F in BRANCH FEATURES RELEASE START; do
 	DATA+="
 $F=\"${!F}\""
+done
 for F in CMDLINE CONFIG DATA; do
 	echo "${!F}" > $F
 done
