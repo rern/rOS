@@ -459,8 +459,8 @@ for f in common create-ros; do
 	curl -sLO $https_ros/$f.sh
 done
 chmod +x create-ros.sh
-for f in CMDLINE CONFIG BRANCH FEATURES RELEASE START; do
-	echo ${!f} > $f
+for F in CMDLINE CONFIG BRANCH FEATURES RELEASE START; do
+	echo ${!F} > $F
 done
 cd ../..
 sync
