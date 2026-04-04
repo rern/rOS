@@ -171,11 +171,14 @@ Required fonts:
 	letter-spacing: unset;
 	text-transform: none;
 }
-.monaco-workbench .codicon[class*="codicon-"]:not(.codicon-remote) { /* icons inside input */
+.monaco-workbench .codicon[class*="codicon-"]:not(.codicon-remote, .codicon-drop-down-button) { /* icons inside input */
 	margin-right: 3px;
 	height: fit-content;
 	padding: 0 !important;
 	color: var(--cg60) !important;
+}
+.codicon-drop-down-button {
+    padding-left: 0;
 }
 .scm-view .monaco-list-row .actions .action-label { /* icons after commit-changed files*/
 	font-size: 18px !important;
