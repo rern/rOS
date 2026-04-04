@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap trapExit EXIT
+trap trapExit EXIT SIGINT
 
 START=$( date +%s )
 BRANCH=${1:-main}

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'START=; rm -f /var/lib/pacman/db.lck; exit 1' EXIT
+trap 'START=; rm -f /var/lib/pacman/db.lck; exit 1' EXIT SIGINT
 
 . DATA
 . common.sh
