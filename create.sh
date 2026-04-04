@@ -464,7 +464,7 @@ for f in common create-ros; do
 done
 chmod +x create-ros.sh
 for F in CMDLINE CONFIG BRANCH FEATURES RELEASE START; do
-	echo "${!F}" > $F
+	echo "${!F}" > $F # CONFIG - multiple lines
 done
 cd ../..
 sync
