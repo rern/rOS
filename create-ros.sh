@@ -5,11 +5,8 @@ trap 'START=; rm -f /var/lib/pacman/db.lck; exit 1' EXIT SIGINT
 . DATA
 . common.sh
 
-dir_bash=/srv/http/bash
 dir_config=/tmp/config
-dir_data=/srv/http/data
 dir_hooks=/etc/pacman.d/hooks
-dir_settings=$dir_bash/settings
 dir_systemd=/etc/systemd/system
 file_mirrorlist=/etc/pacman.d/mirrorlist
 
@@ -81,11 +78,11 @@ find $dir_config -maxdepth 1 -type f -delete
 chmod -R go-wx $dir_config
 chmod -R u+rwX,go+rX $dir_config
 cp -r $dir_config/* /
-chmod -R 755 $dir_bash
-$dir_settings/system-datadefault.sh
-echo $RELEASE > $dir_data/addons/r1
-webradio=$( find $dir_data/webradio/ -maxdepth 1 -type f | wc -l )
-cat << EOF > $dir_data/mpd/counts
+/srv/http/bash/settings/system-datadefault.sh
+chmod -R 755 $dirbash
+echo $RELEASE > $diraddons/r1
+webradio=$( find $dirwebradio/ -maxdepth 1 -type f | wc -l )
+cat << EOF > $dirmpd/counts
 {
   "song"      : 0
 , "playlists" : 0
@@ -102,13 +99,13 @@ fi
 # camilladsp
 if [[ -e /bin/camilladsp ]]; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
-	dirconfigs=$dir_data/camilladsp/configs
+	dirconfigs=$dircamilladsp/configs
 	mkdir -p $dirconfigs
 	sed -e '/  Volume:/,/type: Volume/ d
 ' -e '/- Volume/ d
 ' /etc/camilladsp/configs/camilladsp.yml > $dirconfigs/camilladsp.yml
 else
-	rm -f $dir_data/mpdconf/conf/camilladsp.conf
+	rm -f $dirmpdconf/conf/camilladsp.conf
 fi
 # cava
 ln -s /etc/cava.conf /root/.config/
@@ -140,6 +137,9 @@ else
 fi
 # mpd
 chsh -s /bin/bash mpd
+systemctl start mpd
+mpc rescan &> /dev/null # init mpd.db
+alsactl store
 # samba
 if [[ -e /bin/smbd ]]; then
 	( echo ros; echo ros ) | smbpasswd -s -a root
@@ -185,14 +185,13 @@ if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
 	fi
 	localectl set-locale LANG=C.UTF-8
 fi
-ln -sf $dir_bash/motd.sh /etc/profile.d/ # motd
-echo ". $dir_bash/bashrc" >> /etc/bash.bashrc # prompt
-echo "00 01 * * * $dir_settings/addons-data.sh" | crontab -
-alsactl store
-systemctl daemon-reload
-systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
+ln -sf $dirbash/motd.sh /etc/profile.d/ # motd
+echo ". $dirbash/bashrc" >> /etc/bash.bashrc # prompt
+echo "00 01 * * * $dirsettings/addons-data.sh" | crontab -
 systemctl disable systemd-homed
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # fix freedesktop.home1.service not found
+systemctl daemon-reload
+systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 for F in CMDLINE CONFIG; do
 	mv $F /boot/${F,,}.txt
 done
