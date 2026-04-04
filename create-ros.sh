@@ -35,7 +35,7 @@ upgrade_install() {
 #------------------------------------------------------------------------------
 		fi
 		sed -i '1 d' $file_mirrorlist
-		bar Package server: $( sed -n '1 {s|.*= ||; s|$.*|...|; p}' $file_mirrorlist )
+		bar Package server: $( awk -F'[ $]' 'NR==1 {print $3}' $file_mirrorlist )
 		sleep 1
 		upgrade_install
 	fi
