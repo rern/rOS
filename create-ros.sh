@@ -191,7 +191,8 @@ echo "00 01 * * * $dir_settings/addons-data.sh" | crontab -
 alsactl store
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
-systemctl disable systemd-homed # fix freedesktop.home1.service not found
+systemctl disable systemd-homed
+sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # fix freedesktop.home1.service not found
 for F in CMDLINE CONFIG; do
 	mv $F /boot/${F,,}.txt
 done
