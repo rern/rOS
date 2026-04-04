@@ -184,8 +184,8 @@ chpasswd <<< root:ros
 while read user; do
 	chage -E -1 $user # set expire to none
 done < <( cut -d: -f1 /etc/passwd )
+sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
 chown -R http:http /etc/fstab /etc/netctl /etc/systemd/network
-echo ". $dir_bash/bashrc" >> /etc/bash.bashrc # prompt
 if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
 	if ! grep -q ^C.UTF-8 /etc/locale.gen; then
 		echo 'C.UTF-8 UTF-8' >> /etc/locale.gen
@@ -194,9 +194,9 @@ if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
 	localectl set-locale LANG=C.UTF-8
 fi
 ln -sf $dir_bash/motd.sh /etc/profile.d/ # motd
-sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
-alsactl store
+echo ". $dir_bash/bashrc" >> /etc/bash.bashrc # prompt
 echo "00 01 * * * $dir_settings/addons-data.sh" | crontab -
+alsactl store
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
 systemctl disable systemd-homed # fix freedesktop.home1.service not found

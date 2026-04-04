@@ -430,13 +430,17 @@ fi
 # dhcpd - disable arp
 echo noarp >> ROOT/etc/dhcpcd.conf
 # fix dns errors
-echo DNSSEC=no >> ROOT/etc/systemd/resolved.conf
+cat << EOF >> ROOT/etc/systemd/resolved.conf
+MulticastDNS=no
+DNSSEC=no
+EOF
 # fix: time not sync on wlan
 files=$( ls ROOT/etc/systemd/network/* )
 for file in $files; do
-	! grep -q RequiredForOnline=no $file && echo '
+	! grep -q RequiredForOnline=no $file && cat << EOF >> $file
 [Link]
-RequiredForOnline=no' >> $file
+RequiredForOnline=no
+EOF
 done
 # disable wait-online
 rm -r ROOT/etc/systemd/system/network-online.target.wants
