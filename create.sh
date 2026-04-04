@@ -14,7 +14,7 @@ alias awk=gawk      # debian - awk=mawk - no sub gsub
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
 	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
-	[[ $file_keep == No ]] && rm $file
+	[[ $file_del ]] && rm $file_del
 }
 dialog.data() {
 	latest=$( curl -sL $https_rern/rAudio-addons/main/addonslist.json | jq -r .r1.version )
@@ -93,10 +93,14 @@ Security     : ${security^^}"
  \Z1$file\Zn
  $file_gib
 
-" 0 0 && file_keep=Yes || file_keep=No
-	txt_confirm+="
+" 0 0
+	if [[ $? == 0 ]]; then
+		txt_confirm+="
 
-Keep file    : $file_keep"
+Keep file    : Yes"
+	else
+		file_del=$file
+	fi
 #............................
 	dialog $opt_yesno "$txt_confirm" 0 0 && confirm_data=1
 	tput cup 0 0
