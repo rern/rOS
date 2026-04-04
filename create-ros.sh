@@ -83,7 +83,7 @@ chmod -R u+rwX,go+rX $dir_config
 cp -r $dir_config/* /
 chmod -R 755 $dir_bash
 $dir_settings/system-datadefault.sh
-mv /root/RELEASE $dir_data/addons/r1
+echo $RELEASE > $dir_data/addons/r1
 webradio=$( find $dir_data/webradio/ -maxdepth 1 -type f | wc -l )
 cat << EOF > $dir_data/mpd/counts
 {
