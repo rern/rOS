@@ -85,7 +85,7 @@ SSID         : $essid
 Password     : $key
 Security     : ${security^^}"
 	fi
-	file_gib=$( curl -sIL -L http://os.archlinuxarm.org/os/ArchLinuxARM-rpi-aarch64-latest.tar.gz \
+	file_gib=$( curl -sIL -L http://os.archlinuxarm.org/os/$file \
 					| awk '/^Content-Length/ {val=$2} END {printf "(%.2f GiB)", val/1073741824}' )
 #............................
 	dialog --defaultno $opt_yesno "
@@ -391,8 +391,8 @@ if [[ $FEATURES == *firefox* ]]; then
 else
 	cmdline+=tty1
 fi
-echo $cmdline > BOOT/cmdline.txt0
-cat << EOF > BOOT/config.txt0
+echo $cmdline > ROOT/cmdline
+cat << EOF > ROOT/config
 disable_overscan=1
 disable_splash=1
 dtparam=audio=on

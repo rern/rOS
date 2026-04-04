@@ -69,24 +69,16 @@ fi
 cp $file_mirrorlist /tmp
 # initramfs disable
 mkdir -p $dir_hooks
-for file in linux-rpi mkinitcpio-install; do
-	ln -sf /dev/null $dir_hooks/90-$file.hook
+for f in linux-rpi mkinitcpio-install; do
+	ln -sf /dev/null $dir_hooks/90-$f.hook
 done
-for f in cmdline config; do
-	file=/boot/$f.txt
-	file0=${file}0
-	[[ -e $file0 ]] && mv $file0 $file
-	rm -f $file.pacnew
-done
-# usb boot - disable sd card polling
-! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 upgrade_install
 #............................
 banner r A u d i o
 mkdir -p $dir_config
 for repo in rAudio rAudio-assets rOS; do
-	[[ $repo == rAudio ]] && file=$RELEASE || file=main
-	curl -sL https://github.com/rern/$repo/archive/$file.tar.gz | bsdtar xvf - --strip-components=1 -C $dir_config
+	[[ $repo == rAudio ]] && f=$RELEASE || f=main
+	curl -sL https://github.com/rern/$repo/archive/$f.tar.gz | bsdtar xvf - --strip-components=1 -C $dir_config
 done
 find $dir_config -maxdepth 1 -type f -delete
 chmod -R go-wx $dir_config
@@ -173,17 +165,25 @@ fi
 # upmpdcli
 if [[ -e /bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
-	file=$dir/credkey.pem
+	file_pem=$dir/credkey.pem
 	mkdir -p $dir
-	openssl genrsa -out $file 4096
-	openssl rsa -in $file -RSAPublicKey_out
-	chown upmpdcli:root $file
+	openssl genrsa -out $file_pem 4096
+	openssl rsa -in $file_pem -RSAPublicKey_out
+	chown upmpdcli:root $file_pem
 else
 	rm -rf /etc/upmpdcli.conf $dir_systemd/upmpdcli.service
 fi
 # system
+for f in cmdline config; do
+	[[ -e $f ]] && mv $f /boot/$f.txt
+done
+# usb boot - disable sd card polling
+! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
 bar Set root password
 chpasswd <<< root:ros
+while read user; do
+	chage -E -1 $user # set expire to none
+done < <( cut -d: -f1 /etc/passwd )
 chown -R http:http /etc/fstab /etc/netctl /etc/systemd/network
 echo ". $dir_bash/bashrc" >> /etc/bash.bashrc # prompt
 if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
@@ -200,7 +200,7 @@ echo "00 01 * * * $dir_settings/addons-data.sh" | crontab -
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
 systemctl disable systemd-homed # fix freedesktop.home1.service not found
-rm -rf /root/*
+rm -rf /boot/*.pacnew /root/*
 touch /boot/expand
 #............................
 dialog.splash "\
