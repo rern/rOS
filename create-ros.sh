@@ -2,9 +2,8 @@
 
 trap 'START=; rm -f /var/lib/pacman/db.lck; exit 1' EXIT
 
-. common.sh
-
 . DATA
+. common.sh
 
 dir_bash=/srv/http/bash
 dir_config=/tmp/config
