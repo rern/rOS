@@ -2,11 +2,9 @@
 
 trap 'START=; rm -f /var/lib/pacman/db.lck; exit 1' EXIT
 
-for f in BRANCH FEATURES RELEASE START; do
-	declare "$f=$( < $f )"
-done
-
 . common.sh
+
+. DATA
 
 dir_bash=/srv/http/bash
 dir_config=/tmp/config
