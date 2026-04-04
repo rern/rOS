@@ -37,7 +37,7 @@ $warn Error:
 $( echo -e "$@" )
 " 0 0
 	clear -x
-	exit
+	exit 1
 #-------------------------------------------------------------------------------
 }
 dialog.info() {
@@ -132,21 +132,12 @@ $( printf '%*s' $w )$line"
 	tput civis # fix: hide cursor at corner
 	dialog $opt_info "$txt" $h $W;  tput cnorm # restore cursor
 }
-elapsed() {
-	date -d@$(( $( date +%s ) - $1 )) -u +%M:%S
-}
 ipBase() {
 	ip route get 1.1.1.1 | grep -oP '(?<=src ).*\..*\..*\.'
 }
 kbKey() {
 	echo "\Zr\Zb $1 \Zn"
 }
-killProcess() {
-	for p in $@; do
-		pkill $p
-	done
-}
-
 package.commandNotFound() {
 	local c cmd
 	for c in $@; do
@@ -185,6 +176,10 @@ package.required() {
 Missing commands:
 $cmd_notfound
 Unable to continue."
+}
+trapExit() {
+	kill -TERM -$$ &> /dev/null
+	BR.unmount
 }
 udisk2Toggle() {
 	[[ $1 == start ]] && mask=unmask || mask=mask

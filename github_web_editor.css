@@ -246,6 +246,9 @@ Required fonts:
 .current-line.current-line-margin-both {
 	background-color: var(--cg20);
 }
+.monaco-editor .view-line {
+	padding-left: 3px;
+}
 #workbench\.parts\.statusbar * {
 	color: var(--cw) !important;
 }

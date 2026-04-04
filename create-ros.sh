@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'killProcess dialog pacman; rm -f /var/lib/pacman/db.lck' EXIT SIGINT SIGTERM
+trap 'START=; rm -f /var/lib/pacman/db.lck; exit 1' EXIT
 
 for f in BRANCH FEATURES RELEASE START; do
 	declare "$f=$( < $f )"
@@ -22,33 +22,22 @@ libgpiod libupnp linux-rpi mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline n
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
 raspberrypi-utils sudo udevil websocat wget xorg-xset'
 
-currentServer() {
-	sed -n '1 {s|.*= ||; s|$.*|...|; p}' $file_mirrorlist
-}
-nextServer() {
-	if (( $( wc -l < $file_mirrorlist ) == 1 )); then
-		mv /tmp/mirrorlist $file_mirrorlist
-#............................
-		dialog.error_exit '\Z1All package servers\Zn not responsive.'
-#------------------------------------------------------------------------------
-	fi
-#............................
-	dialog $opt_info "
-  $warn Package server issue:
-  $( currentServer )
-
-  Try next server ...
-
-" 0 0
-	sed -i '1 d' $file_mirrorlist
-	bar Package server: $( currentServer )
-	rm -f /var/lib/pacman/db.lck
-}
-packageInstall() { #                                        fix: debian standard - /boot/... exists
+upgrade_install() {
+	[[ ! $START ]] && return
+#..............................................................................
+#                                                           fix: debian standard - /boot/... exists
 	pacman -Syyu --noconfirm --needed $packages $FEATURES --overwrite '/boot/*'
 	if [[ $? != 0 ]]; then
-		nextServer
-		packageInstall
+		if (( $( wc -l < $file_mirrorlist ) == 1 )); then
+			mv /tmp/mirrorlist $file_mirrorlist
+#............................
+			dialog.error_exit '\Z1All package servers\Zn not responsive.'
+#------------------------------------------------------------------------------
+		fi
+		sed -i '1 d' $file_mirrorlist
+		bar Package server: $( sed -n '1 {s|.*= ||; s|$.*|...|; p}' $file_mirrorlist )
+		sleep 1
+		upgrade_install
 	fi
 }
 
@@ -91,7 +80,7 @@ for f in cmdline config; do
 done
 # usb boot - disable sd card polling
 ! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
-packageInstall
+upgrade_install
 #............................
 banner r A u d i o
 mkdir -p $dir_config
@@ -218,6 +207,6 @@ dialog.splash "\
 r A u d i o
 
 Created successfully
-\Z4$( elapsed $START )\Zn
+\Z4$( date -d@$(( $( date +%s ) - $START )) -u +%M:%S )\Zn
 \Z1   Reboot ...\Zn"
 reboot
