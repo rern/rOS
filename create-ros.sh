@@ -72,7 +72,7 @@ banner r A u d i o
 mkdir -p $dir_config
 for repo in rAudio rAudio-assets rOS; do
 	[[ $repo == rAudio ]] && f=$RELEASE || f=main
-	curl -sL https://github.com/rern/$repo/archive/$f.tar.gz | bsdtar xvf - --strip-components=1 -C $dir_config
+	curl -sL https://github.com/rern/$repo/archive/refs/tags/$f.tar.gz | bsdtar xvf - --strip-components=1 -C $dir_config
 done
 find $dir_config -maxdepth 1 -type f -delete
 chmod -R go-wx $dir_config

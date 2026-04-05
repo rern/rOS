@@ -17,14 +17,9 @@ create_ros() {
 	[[ $file_del ]] && rm $file_del
 }
 dialog.data() {
-	latest=$( curl -sL $https_rern/rAudio-addons/main/addonslist.json | jq -r .r1.version )
+	latest=$( curl -L https://api.github.com/repos/rern/rAudio/releases/latest | jq -r .tag_name )
 #............................
 	RELEASE=$( dialog.input '\Z1r\ZnAudio release:' $latest )
-	if ! curl -sIfo /dev/null $https_raudio/releases/$RELEASE; then
-		dialog.retry rAudio $RELEASE not found. && dialog.data
-		return
-#..............................................................................
-	fi
 #............................
 	i=$( dialog.menu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
