@@ -78,8 +78,9 @@ find $dir_config -maxdepth 1 -type f -delete
 chmod -R go-wx $dir_config
 chmod -R u+rwX,go+rX $dir_config
 cp -r $dir_config/* /
+
+chmod -R 755 /srv/http/bash
 /srv/http/bash/settings/system-datadefault.sh
-chmod -R 755 $dirbash
 echo $RELEASE > $diraddons/r1
 cat << EOF > $dirmpd/counts
 {
@@ -138,8 +139,6 @@ else
 fi
 # mpd
 chsh -s /bin/bash mpd
-systemctl start mpd
-mpc rescan &> /dev/null # init mpd.db
 alsactl store
 # samba
 if [[ -e /bin/smbd ]]; then
