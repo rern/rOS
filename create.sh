@@ -386,23 +386,8 @@ done ) \
 " 9 $W
 sync
 mv ROOT/boot/* BOOT
-# cmdline.txt, config.txt
-read partid_B partid_R < <( blkid -o value -s PARTUUID $PART_B $PART_R | awk '{printf "PARTUUID=%s ", $0}' )
-CMDLINE="root=$partid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console=tty1"
-CONFIG="\
-disable_overscan=1
-disable_splash=1
-dtparam=audio=on
-max_usb_current=1
-usb_max_current_enable=1"
-if [[ $FEATURES == *firefox* ]]; then
-	CMDLINE="${CMDLINE/tty1/tty3} quiet loglevel=0 logo.nologo vt.global_cursor_default=0"
-	CONFIG+='
-hdmi_force_hotplug=1'
-fi
-[[ $DEV != /dev/mmcblk* ]] && CONFIG+='
-dtoverlay=sdtweak,poll_once'
 # fstab
+read partid_B partid_R < <( blkid -o value -s PARTUUID $PART_B $PART_R | awk '{printf "PARTUUID=%s ", $0}' )
 opt_fstab='defaults,noatime  0  0'
 cat << EOF > ROOT/etc/fstab
 $partid_B  /boot  vfat  $opt_fstab
@@ -463,10 +448,25 @@ for f in common create-ros; do
 	curl -sLO $https_ros/$f.sh
 done
 chmod +x create-ros.sh
-for F in BRANCH CMDLINE CONFIG FEATURES RELEASE START; do
+for v in BRANCH FEATURES RELEASE START; do
 	DATA+="
-$F=\"${!F}\""
+$v=\"${!v}\""
 done
+# cmdline.txt, config.txt
+DATA+='
+cmdline_txt="\
+root='$partid_R' rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console=tty3 \
+quiet loglevel=0 logo.nologo vt.global_cursor_default=0
+"
+config_txt="\
+disable_overscan=1
+disable_splash=1
+dtparam=audio=on
+dtparam=sd_poll_once=on
+hdmi_force_hotplug=1
+max_usb_current=1
+usb_max_current_enable=1
+"'
 echo "$DATA" > DATA
 cd ../..
 sync

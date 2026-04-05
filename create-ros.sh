@@ -118,6 +118,8 @@ if [[ -e /bin/firefox ]]; then
 	systemctl disable getty@tty1                                 # disable login prompt
 	systemctl enable bootsplash localbrowser
 else
+	cmdline_txt=${cmdline_txt/tty3*/tty1}
+	config_txt=$( sed '/hdmi_force_hotplug/ d' <<< $config_txt )
 	rm -f $dir_systemd/{bootsplash,localbrowser}*
 fi
 # iwd
@@ -191,8 +193,8 @@ systemctl disable systemd-homed
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # fix freedesktop.home1.service not found
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
-for F in CMDLINE CONFIG; do
-	echo "$F" /boot/${F,,}.txt
+for v in cmdline_txt config_txt; do
+	echo -n "${!v}" /boot/${v/_/.}
 done
 rm -rf /boot/*.pacnew /root/*
 touch /boot/expand
