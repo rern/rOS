@@ -463,13 +463,11 @@ for f in common create-ros; do
 	curl -sLO $https_ros/$f.sh
 done
 chmod +x create-ros.sh
-for F in BRANCH FEATURES RELEASE START; do
+for F in BRANCH CMDLINE CONFIG FEATURES RELEASE START; do
 	DATA+="
 $F=\"${!F}\""
 done
-for F in CMDLINE CONFIG DATA; do
-	echo "${!F}" > $F
-done
+echo "$DATA" > DATA
 cd ../..
 sync
 BR.unmount

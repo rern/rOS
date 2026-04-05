@@ -81,12 +81,11 @@ cp -r $dir_config/* /
 /srv/http/bash/settings/system-datadefault.sh
 chmod -R 755 $dirbash
 echo $RELEASE > $diraddons/r1
-webradio=$( find $dirwebradio/ -maxdepth 1 -type f | wc -l )
 cat << EOF > $dirmpd/counts
 {
   "song"      : 0
 , "playlists" : 0
-, "webradio"  : $webradio
+, "webradio"  : $( find $dirwebradio/ -maxdepth 1 -type f | wc -l )
 }
 EOF
 # bluetooth
@@ -193,7 +192,7 @@ sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # fix freedesktop.
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 for F in CMDLINE CONFIG; do
-	mv $F /boot/${F,,}.txt
+	echo "$F" /boot/${F,,}.txt
 done
 rm -rf /boot/*.pacnew /root/*
 touch /boot/expand
