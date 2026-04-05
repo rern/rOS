@@ -71,8 +71,8 @@ upgrade_install
 banner r A u d i o
 mkdir -p $dir_config
 for repo in rAudio rAudio-assets rOS; do
-	[[ $repo == rAudio ]] && f=$RELEASE || f=main
-	curl -sL https://github.com/rern/$repo/archive/refs/tags/$f.tar.gz | bsdtar xvf - --strip-components=1 -C $dir_config
+	[[ $repo == rAudio ]] && f=tags/$RELEASE || f=heads/main
+	curl -sL https://github.com/rern/$repo/archive/refs/$f.tar.gz | bsdtar xvf - --strip-components=1 -C $dir_config
 done
 find $dir_config -maxdepth 1 -type f -delete
 chmod -R go-wx $dir_config
@@ -194,7 +194,7 @@ sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # fix freedesktop.
 systemctl daemon-reload
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
 for v in cmdline_txt config_txt; do
-	echo -n "${!v}" /boot/${v/_/.}
+	echo -n "${!v}" > /boot/${v/_/.}
 done
 rm -rf /boot/*.pacnew /root/*
 touch /boot/expand
