@@ -89,7 +89,7 @@ Security     : ${security^^}"
  $file_gib
 
 " 0 0 && keep=Yes || keep=No
-	[[ $keep == No ]] && file_del=$file
+	[[ $keep == No ]] && file_del=$PWD/$file
 	txt_confirm+="
 
 Keep file    : $keep"
@@ -379,11 +379,11 @@ done ) \
 sync
 mv ROOT/boot/* BOOT
 # fstab
-read partid_B partid_R < <( blkid -o value -s PARTUUID $PART_B $PART_R | awk '{printf "PARTUUID=%s ", $0}' )
+read PARTID_B PARTID_R < <( blkid -o value -s PARTUUID $PART_B $PART_R | awk '{printf "PARTUUID=%s ", $0}' )
 opt_fstab='defaults,noatime  0  0'
 cat << EOF > ROOT/etc/fstab
-$partid_B  /boot  vfat  $opt_fstab
-$partid_R  /      ext4  $opt_fstab
+$PARTID_B  /boot  vfat  $opt_fstab
+$PARTID_R  /      ext4  $opt_fstab
 EOF
 # wifi
 if [[ $essid ]]; then
@@ -426,8 +426,8 @@ rm -r ROOT/etc/systemd/system/network-online.target.wants
 # fix: slow login
 sed -i '/^-.*pam_systemd/ s/^/#/' ROOT/etc/pam.d/system-login
 # ssh create-ros.sh without password
-sed -i 's/#*\(PermitRootLogin \).*/\1yes/
-		s/#*\(PermitEmptyPasswords \).*/\1yes/
+sed -i 's/^#*\(PermitRootLogin \).*/\1yes/
+		s/^#*\(PermitEmptyPasswords \).*/\1yes/
 ' ROOT/etc/ssh/sshd_config
 id=$( awk -F':' '/^root/ {print $3}' ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
@@ -440,27 +440,10 @@ for f in common create-ros; do
 	curl -sLO $https_ros/$f.sh
 done
 chmod +x create-ros.sh
-for v in BRANCH FEATURES RELEASE START; do
-	DATA+="
-$v=\"${!v}\""
+for v in BRANCH FEATURES PARTID_R RELEASE START; do
+	DATA+="$v=\"${!v}\""$'\n'
 done
-# cmdline.txt, config.txt
-DATA+='
-cmdline_txt="\
-root='$partid_R' rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console=tty3 \
-quiet loglevel=0 logo.nologo vt.global_cursor_default=0
-"
-config_txt="\
-disable_overscan=1
-disable_splash=1
-dtparam=audio=on
-dtparam=sd_poll_once=on
-hdmi_force_hotplug=1
-max_usb_current=1
-usb_max_current_enable=1
-"'
 echo "$DATA" > DATA
-cd ../..
 sync
 BR.unmount
 #............................
@@ -482,7 +465,7 @@ SD card / USB drive : Unmounted
 #............................
 (
 	for (( i = 1; i < 75; i++ )); do
-		ping -4 -c 1 -W 1 $ip &> /dev/null && touch ping_ok && break
+		ping -4 -c 1 -W 1 $ip &> /dev/null && touch /tmp/ping_ok && break
 #..............................................................................
 		echo $i
 		sleep 1
@@ -491,8 +474,8 @@ SD card / USB drive : Unmounted
   Boot ...
   \Z1Arch Linux ARM\Zn
 " 9 $W
-if [[ -e ping_ok ]]; then
-	rm ping_ok
+if [[ -e /tmp/ping_ok ]]; then
+	rm /tmp/ping_ok
 	dialog.info "
   SSH Arch Linux ARM ...
   @ \Z1$ip\Zn"

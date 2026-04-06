@@ -3,6 +3,20 @@
 trap 'START=; rm -f /var/lib/pacman/db.lck; exit 1' EXIT SIGINT
 
 . DATA
+cmdline_txt="\
+root=$PARTID_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console=tty3 \
+quiet loglevel=0 logo.nologo vt.global_cursor_default=0
+"
+config_txt="\
+disable_overscan=1
+disable_splash=1
+dtparam=audio=on
+dtparam=sd_poll_once=on
+hdmi_force_hotplug=1
+max_usb_current=1
+usb_max_current_enable=1
+"
+
 . common.sh
 
 dir_config=/tmp/config
@@ -75,8 +89,6 @@ for repo in rAudio rAudio-assets rOS; do
 	curl -sL https://github.com/rern/$repo/archive/refs/$f.tar.gz | bsdtar xvf - --strip-components=1 -C $dir_config
 done
 find $dir_config -maxdepth 1 -type f -delete
-chmod -R go-wx $dir_config
-chmod -R u+rwX,go+rX $dir_config
 cp -r $dir_config/* /
 # default dirs
 . /srv/http/bash/settings/system-datadefault.sh
@@ -184,7 +196,8 @@ curl -sL https://raw.githubusercontent.com/archlinuxarm/PKGBUILDs/master/core/pa
 	-o /etc/pacman.d/mirrorlist
 ln -sf $dirbash/motd.sh /etc/profile.d/ # motd
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # fix freedesktop.home1.service not found
-sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
+sed -i -E 's/^#*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
+sed -i -E 's/^#*(SystemMaxUse=)/\199M/' /etc/systemd/journald.conf
 sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
 systemctl daemon-reload
 systemctl disable systemd-homed
@@ -212,8 +225,8 @@ r A u d i o
 Created successfully
 \Z4$( date -d@$(( $( date +%s ) - $START )) -u +%M:%S )\Zn
 \Z1   Reboot ...\Zn"
-# reset root dir
+# reset all data
+rm -rf /var/log/journal/*
 find . -mindepth 1 -delete
 cp /etc/skel/.* .
-history -c && history -w
 reboot
