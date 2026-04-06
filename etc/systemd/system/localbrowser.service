@@ -4,6 +4,7 @@ After=startup.service
 
 [Service]
 Type=idle
+User=root
 ExecStart=/usr/bin/startx /srv/http/bash/startx.sh
 
 [Install]

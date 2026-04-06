@@ -83,7 +83,6 @@ done
 upgrade_install
 #............................
 banner r A u d i o
-mkdir -p $dir_config
 for repo in rAudio rAudio-assets rOS; do
 	case $repo in
 		rAudio )        d_f=tags/$RELEASE;;
@@ -91,10 +90,9 @@ for repo in rAudio rAudio-assets rOS; do
 		rOS )           d_f=heads/$BRANCH;;
 	esac
 	curl -sL https://github.com/rern/$repo/archive/refs/$d_f.tar.gz \
-		| bsdtar xvf - --strip-components=1 -C $dir_config
+		| bsdtar xvf - --strip-components=1 -C /
 done
-find $dir_config -maxdepth 1 -type f -delete
-cp -r $dir_config/* /
+find / -maxdepth 1 -type f -delete
 # default dirs
 . /srv/http/bash/settings/system-datadefault.sh
 echo $RELEASE > $diraddons/r1
