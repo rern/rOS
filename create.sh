@@ -88,14 +88,11 @@ Security     : ${security^^}"
  \Z1$file\Zn
  $file_gib
 
-" 0 0
-	if [[ $? == 0 ]]; then
-		txt_confirm+="
+" 0 0 && keep=Yes || keep=No
+	[[ $keep == No ]] && file_del=$file
+	txt_confirm+="
 
-Keep file    : Yes"
-	else
-		file_del=$file
-	fi
+Keep file    : $keep"
 #............................
 	dialog $opt_yesno "$txt_confirm" 0 0 && confirm_data=1
 	tput cup 0 0
