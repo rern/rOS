@@ -235,7 +235,7 @@ Required fonts:
 }
 .scm-view .button-container > .monaco-button-dropdown > .monaco-dropdown-button { /* dropdown arrow - commit button */
 	line-height: 24px;
-	margin: 0;
+	margin-right: -5px;
 }
 .find-widget.visible {
     min-width: 480px;
