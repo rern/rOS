@@ -85,8 +85,13 @@ upgrade_install
 banner r A u d i o
 mkdir -p $dir_config
 for repo in rAudio rAudio-assets rOS; do
-	[[ $repo == rAudio ]] && f=tags/$RELEASE || f=heads/main
-	curl -sL https://github.com/rern/$repo/archive/refs/$f.tar.gz | bsdtar xvf - --strip-components=1 -C $dir_config
+	case $repo in
+		rAudio )        d_f=tags/$RELEASE;;
+		rAudio-assets ) d_f=heads/main;;
+		rOS )           d_f=heads/$BRANCH;;
+	esac
+	curl -sL https://github.com/rern/$repo/archive/refs/$d_f.tar.gz \
+		| bsdtar xvf - --strip-components=1 -C $dir_config
 done
 find $dir_config -maxdepth 1 -type f -delete
 cp -r $dir_config/* /
