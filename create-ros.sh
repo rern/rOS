@@ -131,11 +131,7 @@ if [[ -e /bin/firefox ]]; then
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
-	firefox --headless &> /dev/null &                            # init .config/mozilla/firefox/...
-	for i in {0..5}; do
-		sleep 1
-		[[ $( find /root -type d -path '/root/*mozilla' ) ]] && pkill firefox && break
-	done
+	timeout 3 firefox --headless &> /dev/null                    # init .config/mozilla/firefox/...
 else
 	cmdline_txt=${cmdline_txt/tty3*/tty1}
 	config_txt=$( sed '/hdmi_force_hotplug/ d' <<< $config_txt )
