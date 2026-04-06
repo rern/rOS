@@ -80,7 +80,7 @@ chmod -R u+rwX,go+rX $dir_config
 cp -r $dir_config/* /
 
 chmod -R 755 /srv/http/bash
-/srv/http/bash/settings/system-datadefault.sh
+. /srv/http/bash/settings/system-datadefault.sh
 echo $RELEASE > $diraddons/r1
 cat << EOF > $dirmpd/counts
 {
@@ -152,7 +152,8 @@ if [[ ! -e /bin/shairport-sync ]]; then
 	rm -rf $dir_systemd/shairport-sync.service.d/
 fi
 # snapcast
-if [[ -e /bin/snapserver ]]; then
+if [[ -e /bin/snapclient ]]; then
+	echo 'SNAPCLIENT_OPTS="--latency=800"' > /etc/default/snapclient
 	sed -i '/^#bind_to_address/ a\
 bind_to_address = 0.0.0.0
 ' /etc/snapserver.conf
