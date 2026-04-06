@@ -129,7 +129,7 @@ if [[ -e /bin/firefox ]]; then
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
-	timeout 1 firefox --headless &> /dev/null                    # init .mozilla/firefox
+	timeout 1 firefox --headless &> /dev/null                    # init .config/mozilla/firefox/...
 	systemctl disable getty@tty1                                 # disable login prompt
 	systemctl enable bootsplash localbrowser
 else
