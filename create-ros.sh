@@ -139,7 +139,7 @@ if [[ -e /bin/firefox ]]; then
 else
 	cmdline_txt=${cmdline_txt/tty3*/tty1}
 	config_txt=$( sed '/hdmi_force_hotplug/ d' <<< $config_txt )
-	rm -f $dir_systemd/{bootsplash,localbrowser}*
+	rm -f $dir_systemd/{bootsplash,localbrowser}* $dirsystem/localbrowser.conf
 fi
 # iwd
 if [[ -e /bin/iwctl ]]; then

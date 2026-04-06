@@ -20,13 +20,11 @@ reset=$( dialog $opt_check '
  \Z1Tasks:\Zn
 ' 8 $W 0 "${list_check[@]}" )
 systemctl stop mpd
-dirnas=/mnt/MPD/NAS
-dirusb=/mnt/MPD/USB
 mount | grep $dirnas && umount -l "$dirnas/"*
 mount | grep $dirusb && udevil umount -l "$dirusb/"*
 if selected database; then
 	bar Reset MPD database ...
-	rm -f $dirdata/mpd/*
+	rm -f $dirmpd/*
 fi
 if selected directory; then
 	bar Reset user data directory ...
