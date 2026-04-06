@@ -126,6 +126,8 @@ ln -s /etc/cava.conf /root/.config/
 echo VISUAL=nano >> /etc/environment
 # firefox
 if [[ -e /bin/firefox ]]; then
+	disable=getty@tty1
+	enable='bootsplash localbrowser'
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
@@ -134,8 +136,6 @@ if [[ -e /bin/firefox ]]; then
 		sleep 1
 		[[ $( find /root -type d -path '/root/*mozilla' ) ]] && pkill firefox && break
 	done
-systemctl disable getty@tty1                                 # disable login prompt
-	systemctl enable bootsplash localbrowser
 else
 	cmdline_txt=${cmdline_txt/tty3*/tty1}
 	config_txt=$( sed '/hdmi_force_hotplug/ d' <<< $config_txt )
@@ -207,8 +207,8 @@ sed -i -E 's/^#*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login fa
 sed -i -E 's/^#*(SystemMaxUse=)/\199M/' /etc/systemd/journald.conf
 sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
 systemctl daemon-reload
-systemctl disable systemd-homed
-systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
+systemctl disable systemd-homed $disable
+systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket $enable
 hostnamectl set-hostname rAudio
 timedatectl set-timezone UTC
 # users
