@@ -203,7 +203,7 @@ chown -R http:http /etc/fstab /etc/netctl /etc/systemd/network
 for v in cmdline_txt config_txt; do
 	echo -n "${!v}" > /boot/${v/_/.}
 done
-rm -f /boot/*.pacnew /root/*
+rm -f /boot/*.pacnew
 touch /boot/expand
 #............................
 dialog.splash "\
@@ -212,5 +212,8 @@ r A u d i o
 Created successfully
 \Z4$( date -d@$(( $( date +%s ) - $START )) -u +%M:%S )\Zn
 \Z1   Reboot ...\Zn"
+# reset root dir
+find . -mindepth 1 -delete
+cp /etc/skel/.* .
 history -c && history -w
 reboot
