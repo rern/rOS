@@ -78,8 +78,7 @@ find $dir_config -maxdepth 1 -type f -delete
 chmod -R go-wx $dir_config
 chmod -R u+rwX,go+rX $dir_config
 cp -r $dir_config/* /
-
-chmod -R 755 /srv/http/bash
+# default dirs
 . /srv/http/bash/settings/system-datadefault.sh
 echo $RELEASE > $diraddons/r1
 cat << EOF > $dirmpd/counts
@@ -172,13 +171,8 @@ else
 	rm -rf /etc/upmpdcli.conf $dir_systemd/upmpdcli.service
 fi
 # system
-bar Set root password
-chpasswd <<< root:ros
-while read user; do
-	chage -E -1 $user # set expire to none
-done < <( cut -d: -f1 /etc/passwd )
-sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
-chown -R http:http /etc/fstab /etc/netctl /etc/systemd/network
+echo "00 01 * * * $dirsettings/addons-data.sh" | crontab -
+echo ". $dirbash/bashrc" >> /etc/bash.bashrc # prompt
 if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
 	if ! grep -q ^C.UTF-8 /etc/locale.gen; then
 		echo 'C.UTF-8 UTF-8' >> /etc/locale.gen
@@ -186,17 +180,30 @@ if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
 	fi
 	localectl set-locale LANG=C.UTF-8
 fi
+curl -sL https://raw.githubusercontent.com/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist \
+	-o /etc/pacman.d/mirrorlist
 ln -sf $dirbash/motd.sh /etc/profile.d/ # motd
-echo ". $dirbash/bashrc" >> /etc/bash.bashrc # prompt
-echo "00 01 * * * $dirsettings/addons-data.sh" | crontab -
-systemctl disable systemd-homed
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # fix freedesktop.home1.service not found
+sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
+sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
 systemctl daemon-reload
+systemctl disable systemd-homed
 systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket
+hostnamectl set-hostname rAudio
+timedatectl set-timezone UTC
+# users
+bar Set root password
+chpasswd <<< root:ros
+while read user; do
+	chage -E -1 $user # set expire to none
+done < <( cut -d: -f1 /etc/passwd )
+usermod -a -G root http # add user http to group root to allow /dev/gpiomem access
+chown -R http:http /etc/fstab /etc/netctl /etc/systemd/network
+# cmdline.txt config.txt
 for v in cmdline_txt config_txt; do
 	echo -n "${!v}" > /boot/${v/_/.}
 done
-rm -rf /boot/*.pacnew /root/*
+rm -f /boot/*.pacnew /root/*
 touch /boot/expand
 #............................
 dialog.splash "\
@@ -205,4 +212,5 @@ r A u d i o
 Created successfully
 \Z4$( date -d@$(( $( date +%s ) - $START )) -u +%M:%S )\Zn
 \Z1   Reboot ...\Zn"
+history -c && history -w
 reboot
