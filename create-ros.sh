@@ -134,7 +134,7 @@ if [[ -e /bin/firefox ]]; then
 		sleep 1
 		[[ $( find /root -type d -path '/root/*mozilla' ) ]] && pkill firefox && break
 	done
-	systemctl disable getty@tty1                                 # disable login prompt
+systemctl disable getty@tty1                                 # disable login prompt
 	systemctl enable bootsplash localbrowser
 else
 	cmdline_txt=${cmdline_txt/tty3*/tty1}
