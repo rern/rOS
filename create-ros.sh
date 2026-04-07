@@ -131,6 +131,22 @@ if [[ -e /bin/firefox ]]; then
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
+	cat << EOF > /lib/firefox/distribution/policies.json
+{
+	"policies": {
+		"DisableAppUpdate": true,
+		"DontCheckDefaultBrowser": true,
+		"OverrideFirstRunPage": "",
+		"SkipOnboarding": true,
+		"Preferences": {
+			"browser.startup.homepage_override.mstone": "ignore",
+			"browser.sessionstore.resume_from_crash": false,
+			"layout.css.prefers-color-scheme.content-override": 0,
+			"layout.css.devPixelsPerPx": "1.00"
+		}
+	}
+}
+EOF
 else
 	cmdline_txt=${cmdline_txt/tty3*/tty1}
 	config_txt=$( sed '/hdmi_force_hotplug/ d' <<< $config_txt )
