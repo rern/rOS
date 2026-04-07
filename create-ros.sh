@@ -90,7 +90,8 @@ for repo in rAudio rAudio-assets rOS; do
 		rOS )           d_f=heads/$BRANCH;;
 	esac
 	curl -sL https://github.com/rern/$repo/archive/refs/$d_f.tar.gz \
-		| bsdtar xvf - --strip-components=1 -C /
+		| bsdtar xvf - --strip-components=1 -C / 2>&1 \
+		| grep '/.*/'
 done
 find / -maxdepth 1 -type f -delete
 # default dirs
