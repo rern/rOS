@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'killChildProcess; BR.unmount' EXIT
+trap trapExit EXIT
 
 package.required bsdtar dialog
 

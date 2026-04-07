@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
+. <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
 
 selected() {
 	grep -q $1 <<< $reset && return 0
@@ -20,31 +20,27 @@ reset=$( dialog $opt_check '
  \Z1Tasks:\Zn
 ' 8 $W 0 "${list_check[@]}" )
 systemctl stop mpd
-dirnas=/mnt/MPD/NAS
-dirusb=/mnt/MPD/USB
 mount | grep $dirnas && umount -l "$dirnas/"*
 mount | grep $dirusb && udevil umount -l "$dirusb/"*
-clear -x
 if selected database; then
 	bar Reset MPD database ...
-	rm -f $dirdata/mpd/*
+	rm -f $dirmpd/*
 fi
 if selected directory; then
 	bar Reset user data directory ...
 	rm -rf /root/.cache/*
 	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists}/*
-	echo '{
-  "playlists" : 0
-, "webradio"  : '$( find -L $dirdata/webradio -type f ! -path '*/img/*' | wc -l )'
-}' > $dirdata/mpd/counts
+	cat << EOF > $dirmpd/counts
+{
+  "song"      : 0
+, "playlists" : 0
+, "webradio"  : $( find $dirwebradio/ -maxdepth 1 -type f | wc -l )
+}
+EOF
 fi
 if selected cache; then
 	bar Clear package cache ...
 	rm -f /var/cache/pacman/pkg/*
-fi
-if selected log; then
-	bar Clear system log ...
-	rm -rf /var/log/journal/*
 fi
 if selected connection; then
 	bar Clear Bluetooth and Wi-Fi connection ...
@@ -57,10 +53,10 @@ if selected connection; then
 		rm /etc/netctl/* 2> /dev/null
 	fi
 fi
-if [[ ! -e /boot/kernel.img ]]; then # skip on rpi 0, 1
-	curl -sL $https_mirrorlist -o /etc/pacman.d/mirrorlist
+if selected log; then
+	bar Clear system log ...
+	rm -rf /var/log/journal/*
 fi
-rm -rf /root/.config/chromium
 bar 'rAudio reset done.
 
 Shutdown ...
@@ -68,5 +64,8 @@ Shutdown ...
 Before disconnecting power, observe \e[32;5m■\e[0m LED:
   - Stop services - Blips
   - Shutdown      - 10 steady flashes » off'
+
+find /root -mindepth 1 -delete
+cp /etc/skel/.* /root
 nohup sh -c 'sleep 2 && poweroff' &> /dev/null &
 exit

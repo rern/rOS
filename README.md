@@ -59,7 +59,6 @@ Note: Use router pre-assigned IP address for Raspberry Pi if possible.
 
 **Run script**
 - Open terminal on Linux
-	- Maximize terminal window
 - Switch to user root
 	```sh
 	# set root password, if not yet

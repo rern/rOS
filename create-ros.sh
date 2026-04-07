@@ -1,46 +1,52 @@
 #!/bin/bash
 
-trap 'rm -f /var/lib/pacman/db.lck; mv $file_mirrorlist{.bak,}' EXIT
+trap 'START=; rm -f /var/lib/pacman/db.lck; exit 1' EXIT SIGINT
+
+. DATA
+cmdline_txt="\
+root=$PARTID_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console=tty3 \
+quiet loglevel=0 logo.nologo vt.global_cursor_default=0
+"
+config_txt="\
+disable_overscan=1
+disable_splash=1
+dtparam=audio=on
+dtparam=sd_poll_once=on
+hdmi_force_hotplug=1
+max_usb_current=1
+usb_max_current_enable=1
+"
 
 . common.sh
 
-sec_start=$( date +%s )
-dir_system=/etc/systemd/system
+dir_config=/tmp/config
+dir_hooks=/etc/pacman.d/hooks
+dir_systemd=/etc/systemd/system
 file_mirrorlist=/etc/pacman.d/mirrorlist
-features=$( < features )
-release=$( < release )
-packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest gifsicle hdparm hfsprogs
-i2c-tools imagemagick inetutils iwd jq kid3-common libgpiod mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
+
+packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest
+gifsicle hdparm hfsprogs i2c-tools imagemagick inetutils iwd jq kid3-common
+libgpiod libupnp linux-rpi mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
 raspberrypi-utils sudo udevil websocat wget xorg-xset'
 
-currentServer() {
-	sed -n '1 {s|.*= ||; s|$.*|...|; p}' $file_mirrorlist
-}
-nextServerRetry() {
-	dialog.retry "Package server not responsive.
-$( currentServer )" || exit 1
+upgrade_install() {
+	[[ ! $START ]] && return
+#..............................................................................
+#                                                           fix: debian standard - /boot/... exists
+	pacman -Syyu --noconfirm --needed $packages $FEATURES --overwrite '/boot/*'
+	if [[ $? != 0 ]]; then
+		if (( $( wc -l < $file_mirrorlist ) == 1 )); then
+			mv /tmp/mirrorlist $file_mirrorlist
+#............................
+			dialog.error_exit '\Z1All package servers\Zn not responsive.'
 #------------------------------------------------------------------------------
-	if (( $( wc -l < $file_mirrorlist ) == 1 )); then
-		mv $file_mirrorlist{.bak,}
-		dialog.error_exit '\Z1All package servers\Zn not responsive.'
-#------------------------------------------------------------------------------
+		fi
+		sed -i '1 d' $file_mirrorlist
+		bar Package server: $( awk -F'[ $]' 'NR==1 {print $3}' $file_mirrorlist )
+		sleep 1
+		upgrade_install
 	fi
-	sed -i '1 d' $file_mirrorlist
-	bar Switch package server...
-	currentServer
-	rm -f /var/lib/pacman/db.lck
-	pacman -Sy
-	$1
-}
-packageInstall() {
-	pacman -S --noconfirm --needed $packages $features
-	[[ $? != 0 ]] && nextServerRetry packageInstall
-}
-systemUpgrade() {
-	pacman -Su --noconfirm
-	! pacman -Qq linux-rpi &> /dev/null && pacman -S --noconfirm linux-rpi --overwrite '/boot/*' # fix: debian standard - /boot/... exists
-	[[ $? != 0 ]] && nextServerRetry systemUpgrade
 }
 
 #............................
@@ -50,14 +56,14 @@ banner Initialize Arch Linux ARM
 pacman-key --init
 pacman-key --populate archlinuxarm
 systemctl restart systemd-timesyncd # force time sync
-systemctl start systemd-random-seed # fill entropy pool (fix - Kernel entropy pool is not initialized)
+systemctl start systemd-random-seed # fill entropy pool (fix - kernel entropy pool is not initialized)
 #............................
-banner Upgrade Arch Linux ARM
-for n in amdgpu broadcom intel nvidia radeon  linux-aarch64 linux-firmware uboot-raspberrypi; do
+banner Upgrade and Install Packages
+for n in amdgpu broadcom intel nvidia radeon linux-aarch64 linux-firmware uboot-raspberrypi; do
 	[[ ${n:0:1} != [lu] ]] && n="linux-firmware-$n"
 	pacman -Qq $n &> /dev/null && remove+="$n "
 done
-pacman -Rdd --noconfirm $remove
+[[ $remove ]] && pacman -Rdd --noconfirm $remove
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
 	sed -i -e '/community/,/^$/ d
@@ -68,94 +74,102 @@ SigLevel = Optional TrustAll\
 Server = https://rern.github.io/$arch\
 ' /etc/pacman.conf
 fi
+cp $file_mirrorlist /tmp
 # initramfs disable
-dirhooks=/etc/pacman.d/hooks
-mkdir -p $dirhooks
-for file in linux-rpi mkinitcpio-install; do
-	ln -s /dev/null $dirhooks/90-$file.hook
+mkdir -p $dir_hooks
+for f in linux-rpi mkinitcpio-install; do
+	ln -sf /dev/null $dir_hooks/90-$f.hook
 done
-pacman -Sy
-systemUpgrade
-if [[ -e /boot/cmdline.txt0 ]]; then
-	mv -f /boot/cmdline.txt{0,}
-	mv -f /boot/config.txt{0,}
-fi
-# usb boot - disable sd card polling
-! df | grep -q /dev/mmcblk && echo 'dtoverlay=sdtweak,poll_once' >> /boot/config.txt
+upgrade_install
 #............................
-banner Install Packages for rAudio
-packageInstall
-#............................
-banner Setup rAudio
-mkdir -p /tmp/config
-curl -sL $https_raudio/archive/$release.tar.gz | bsdtar xvf - --strip-components=1 -C /tmp/config
-curl -sL https://github.com/rern/rOS/archive/main.tar.gz | bsdtar xvf - --strip-components=1 -C /tmp/config
-rm -f /tmp/config/{.*,*} 2> /dev/null
-chmod -R go-wx /tmp/config
-chmod -R u+rwX,go+rX /tmp/config
-cp -r /tmp/config/* /
-chown http:http /etc/fstab
-chown -R http:http /etc/netctl /etc/systemd/network
-dirbash=/srv/http/bash
-chmod -R 755 $dirbash
-mkdir /srv/http/assets/img/guide
-curl -sL $https_rern/_assets/master/guide/guide.tar.xz | bsdtar xf - -C /srv/http/assets/img/guide
+banner r A u d i o
+for repo in rAudio rAudio-assets rOS; do
+	case $repo in
+		rAudio )        d_f=tags/$RELEASE;;
+		rAudio-assets ) d_f=heads/main;;
+		rOS )           d_f=heads/$BRANCH;;
+	esac
+	curl -sL https://github.com/rern/$repo/archive/refs/$d_f.tar.gz \
+		| bsdtar xvf - --strip-components=1 -C / 2>&1 \
+		| grep '/.*/'
+done
+find / -maxdepth 1 -type f -delete
+# default dirs
+. /srv/http/bash/settings/system-datadefault.sh
+echo $RELEASE > $diraddons/r1
+cat << EOF > $dirmpd/counts
+{
+  "song"      : 0
+, "playlists" : 0
+, "webradio"  : $( find $dirwebradio/ -maxdepth 1 -type f | wc -l )
+}
+EOF
 # bluetooth
 if [[ -e /bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AutoEnable=\).*/\1true/' /etc/bluetooth/main.conf
 else
-	rm -rf $dir_system/{bluealsa,bluetooth}.service.d
-	rm -f $dir_system/blue*
+	rm -rf $dir_systemd/{bluealsa,bluetooth}.service.d
+	rm -f $dir_systemd/blue*
 fi
 # camilladsp
 if [[ -e /bin/camilladsp ]]; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
-	dirconfigs=/srv/http/data/camilladsp/configs
+	dirconfigs=$dircamilladsp/configs
 	mkdir -p $dirconfigs
 	sed -e '/  Volume:/,/type: Volume/ d
 ' -e '/- Volume/ d
 ' /etc/camilladsp/configs/camilladsp.yml > $dirconfigs/camilladsp.yml
 else
-	rm -f /srv/http/data/mpdconf/conf/camilladsp.conf
+	rm -f $dirmpdconf/conf/camilladsp.conf
 fi
 # cava
-ln -s /etc/cava.conf .config
+ln -s /etc/cava.conf /root/.config/
 echo VISUAL=nano >> /etc/environment
 # firefox
 if [[ -e /bin/firefox ]]; then
+	disable=getty@tty1
+	enable='bootsplash localbrowser'
 	echo MOZ_USE_XINPUT2 DEFAULT=1 >> /etc/security/pam_env.conf # fix touch scroll
 	chmod 775 /etc/X11/xorg.conf.d                               # fix permission for rotate file
 	mv /usr/share/X11/xorg.conf.d/{10,45}-evdev.conf             # reorder
-	timeout 1 firefox --headless &> /dev/null                    # init .mozilla/firefox
-	systemctl disable getty@tty1                                 # disable login prompt
-	systemctl enable bootsplash localbrowser
+	cat << EOF > /lib/firefox/distribution/policies.json
+{
+	"policies": {
+		"DisableAppUpdate": true,
+		"DontCheckDefaultBrowser": true,
+		"OverrideFirstRunPage": "",
+		"SkipOnboarding": true,
+		"Preferences": {
+			"browser.startup.homepage_override.mstone": "ignore",
+			"browser.sessionstore.resume_from_crash": false,
+			"layout.css.prefers-color-scheme.content-override": 0,
+			"layout.css.devPixelsPerPx": "1.00"
+		}
+	}
+}
+EOF
 else
-	rm -f $dir_system/{bootsplash,localbrowser}*
+	cmdline_txt=${cmdline_txt/tty3*/tty1}
+	config_txt=$( sed '/hdmi_force_hotplug/ d' <<< $config_txt )
+	rm -f $dir_systemd/{bootsplash,localbrowser}* $dirsystem/localbrowser.conf
 fi
 # iwd
 if [[ -e /bin/iwctl ]]; then
 	mkdir -p /var/lib/iwd/ap
-	echo "\
+	cat << EOF > /var/lib/iwd/ap/rAudio.ap
 [Security]
 Passphrase=raudioap
 
 [IPv4]
 Address=192.168.5.1
-" > /var/lib/iwd/ap/rAudio.ap
+EOF
 	groupadd netdev # fix: group for iwd
 else
 	rm -f /etc/iwd/main.conf
 fi
-# locale
-if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
-	if ! grep -q ^C.UTF-8 /etc/locale.gen; then
-		echo 'C.UTF-8 UTF-8' >> /etc/locale.gen
-		locale-gen
-	fi
-	localectl set-locale LANG=C.UTF-8
-fi
 # mpd
 chsh -s /bin/bash mpd
+alsactl store
 # samba
 if [[ -e /bin/smbd ]]; then
 	( echo ros; echo ros ) | smbpasswd -s -a root
@@ -164,11 +178,12 @@ else
 fi
 # shairport-sync
 if [[ ! -e /bin/shairport-sync ]]; then
-	rm /etc/shairport-sync.conf $dir_system/shairport.service
-	rm -rf $dir_system/shairport-sync.service.d/
+	rm /etc/shairport-sync.conf $dir_systemd/shairport.service
+	rm -rf $dir_systemd/shairport-sync.service.d/
 fi
 # snapcast
-if [[ -e /bin/snapserver ]]; then
+if [[ -e /bin/snapclient ]]; then
+	echo 'SNAPCLIENT_OPTS="--latency=800"' > /etc/default/snapclient
 	sed -i '/^#bind_to_address/ a\
 bind_to_address = 0.0.0.0
 ' /etc/snapserver.conf
@@ -178,41 +193,59 @@ fi
 # upmpdcli
 if [[ -e /bin/upmpdcli ]]; then
 	dir=/var/cache/upmpdcli/ohcreds
-	file=$dir/credkey.pem
+	file_pem=$dir/credkey.pem
 	mkdir -p $dir
-	openssl genrsa -out $file 4096
-	openssl rsa -in $file -RSAPublicKey_out
-	chown upmpdcli:root $file
+	openssl genrsa -out $file_pem 4096
+	openssl rsa -in $file_pem -RSAPublicKey_out
+	chown upmpdcli:root $file_pem
 else
-	rm -rf /etc/upmpdcli.conf $dir_system/upmpdcli.service
+	rm -rf /etc/upmpdcli.conf $dir_systemd/upmpdcli.service
 fi
 # system
+echo "00 01 * * * $dirsettings/addons-data.sh" | crontab -
+echo ". $dirbash/bashrc" >> /etc/bash.bashrc # prompt
+if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
+	if ! grep -q ^C.UTF-8 /etc/locale.gen; then
+		echo 'C.UTF-8 UTF-8' >> /etc/locale.gen
+		locale-gen
+	fi
+	localectl set-locale LANG=C.UTF-8
+fi
+curl -sL https://raw.githubusercontent.com/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist \
+	-o /etc/pacman.d/mirrorlist
+ln -sf $dirbash/motd.sh /etc/profile.d/ # motd
+sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # fix freedesktop.home1.service not found
+sed -i -E 's/^#*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
+sed -i -E 's/^#*(SystemMaxUse=)/\199M/' /etc/systemd/journald.conf
+sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
+systemctl daemon-reload
+systemctl disable systemd-homed $disable
+systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket $enable
+hostnamectl set-hostname rAudio
+timedatectl set-timezone UTC
+# users
 bar Set root password
 chpasswd <<< root:ros
-sed -i -E 's/.*(PermitEmptyPasswords ).*/\1no/' /etc/ssh/sshd_config # login faster
-ln -sf $dirbash/motd.sh /etc/profile.d/ # motd
-echo '. /srv/http/bash/bashrc' >> /etc/bash.bashrc # prompt
-sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # pam - fix freedesktop.home1.service not found (upgrade somehow overwrite)
-echo 'WIRELESS_REGDOM="00"' > /etc/conf.d/wireless-regdom
-echo "00 01 * * * $dirbash/settings/addons-data.sh" | crontab -
-alsactl store
-systemctl daemon-reload
-systemctl enable avahi-daemon cronie devmon@http nginx php-fpm startup websocket # default startup services
-$dirbash/settings/system-datadefault.sh $release # data - settings directories
-if [[ -e $file_mirrorlist.pacnew ]]; then
-	mv $file_mirrorlist{.pacnew,}
-	rm $file_mirrorlist.bak
-else
-	mv $file_mirrorlist{.bak,}
-fi
-rm -f /boot/{cmdline,config}.txt.pacnew
-rm * &> /dev/null
+while read user; do
+	chage -E -1 $user # set expire to none
+done < <( cut -d: -f1 /etc/passwd )
+usermod -a -G root http # add user http to group root to allow /dev/gpiomem access
+chown -R http:http /etc/fstab /etc/netctl /etc/systemd/network
+# cmdline.txt config.txt
+for v in cmdline_txt config_txt; do
+	echo -n "${!v}" > /boot/${v/_/.}
+done
+rm -f /boot/*.pacnew
 touch /boot/expand
 #............................
 dialog.splash "\
 r A u d i o
 
 Created successfully
-\Z4$( elapsed $sec_start )\Zn
+\Z4$( date -d@$(( $( date +%s ) - $START )) -u +%M:%S )\Zn
 \Z1   Reboot ...\Zn"
+# reset all data
+rm -rf /var/log/journal/*
+find . -mindepth 1 -delete
+cp /etc/skel/.* .
 reboot

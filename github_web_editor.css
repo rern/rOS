@@ -171,11 +171,14 @@ Required fonts:
 	letter-spacing: unset;
 	text-transform: none;
 }
-.monaco-workbench .codicon[class*="codicon-"]:not(.codicon-remote) { /* icons inside input */
+.monaco-workbench .codicon[class*="codicon-"]:not(.codicon-remote, .codicon-drop-down-button) { /* icons inside input */
 	margin-right: 3px;
 	height: fit-content;
 	padding: 0 !important;
 	color: var(--cg60) !important;
+}
+.codicon-drop-down-button {
+    padding-left: 0;
 }
 .scm-view .monaco-list-row .actions .action-label { /* icons after commit-changed files*/
 	font-size: 18px !important;
@@ -185,7 +188,12 @@ Required fonts:
 .monaco-icon-label::before,
 .monaco-workbench .codicon[class*="codicon-"],
 .monaco-action-bar .action-item .codicon {
-	width: 22px;
+	width: 24px;
+}
+.monaco-custom-toggle.codicon.checked {
+    margin-top: 1px;
+	background-color: var(--cg30) !important;
+	border: none;
 }
 .search-widget > .codicon { /* pane search arrows icon */
 	width: 17px !important;
@@ -227,7 +235,13 @@ Required fonts:
 }
 .scm-view .button-container > .monaco-button-dropdown > .monaco-dropdown-button { /* dropdown arrow - commit button */
 	line-height: 24px;
-	margin: 0;
+	margin-right: -5px;
+}
+.find-widget.visible {
+    min-width: 480px;
+}
+.find-widget.visible.replaceToggled {
+        height: 67px !important;
 }
 .monaco-editor-background { /* code window */
 	background-color: #000;
@@ -235,8 +249,15 @@ Required fonts:
 .current-line.current-line-margin-both {
 	background-color: var(--cg20);
 }
+.monaco-editor .view-line {
+	padding-left: 3px;
+}
 #workbench\.parts\.statusbar * {
 	color: var(--cw) !important;
+}
+#status\.host:hover,
+#status\.host > a:hover {
+    background-color: #004275 !important;
 }
 #status\.scm\.0 * {
 	margin: 0;

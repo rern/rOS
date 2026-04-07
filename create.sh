@@ -1,12 +1,11 @@
 #!/bin/bash
 
-trap 'killChildProcess; BR.unmount' EXIT
+trap trapExit EXIT SIGINT
 
-sec_start=$( date +%s )
-[[ $1 ]] && branch=$1
-[[ ! $branch ]] && branch=main
+START=$( date +%s )
+BRANCH=${1:-main}
 
-[[ ${BASH_SOURCE[0]} == ${0} ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$branch/common.sh )
+[[ ! $logo ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
 
 export PATH+=:/sbin # debian - sfdisk
 package.required bsdtar curl dialog gawk jq nmap pigz sfdisk pv # required pkgs
@@ -15,17 +14,12 @@ alias awk=gawk      # debian - awk=mawk - no sub gsub
 create_ros() {
 	ssh $opt_ssh root@$1 /root/create-ros.sh
 	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
+	[[ $file_del ]] && rm $file_del
 }
 dialog.data() {
-	latest=$( curl -sL $https_rern/rAudio-addons/main/addonslist.json | jq -r .r1.version )
+	latest=$( curl -sL https://api.github.com/repos/rern/rAudio/releases/latest | jq -r .tag_name )
 #............................
-	release=$( dialog.input '\Z1r\ZnAudio release:' $latest )
-	if ! curl -sIfo /dev/null $https_raudio/releases/$release; then
-		dialog.retry rAudio $release not found. && dialog.data
-		return
-#..............................................................................
-	fi
-	echo $release > release
+	RELEASE=$( dialog.input '\Z1r\ZnAudio release:' $latest )
 #............................
 	i=$( dialog.menu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
@@ -44,7 +38,7 @@ dialog.data() {
 	file+=latest.tar.gz
 	txt_confirm="
 \Z1Confirm data:\Zn
-Release      : $release
+Release      : $RELEASE
 Raspberry Pi : $bit
 "
 #............................
@@ -54,9 +48,9 @@ Raspberry Pi : $bit
 " 0 0
 	if [[ $? == 0 ]]; then
 #............................
-		IP=$( dialog.ip 'Pre-assigned IP' )
+		ip=$( dialog.ip 'Pre-assigned IP' $ip )
 		txt_confirm+="
-Assigned IP  : $IP"
+Assigned IP  : $ip"
 	fi
 #............................
 	dialog $opt_yesno "
@@ -86,6 +80,19 @@ SSID         : $essid
 Password     : $key
 Security     : ${security^^}"
 	fi
+	file_gib=$( curl -sIL -L http://os.archlinuxarm.org/os/$file \
+					| awk '/^Content-Length/ {val=$2} END {printf "(%.2f GiB)", val/1073741824}' )
+#............................
+	dialog --defaultno $opt_yesno "
+ Keep file once done?
+ \Z1$file\Zn
+ $file_gib
+
+" 0 0 && keep=Yes || keep=No
+	[[ $keep == No ]] && file_del=$PWD/$file
+	txt_confirm+="
+
+Keep file    : $keep"
 #............................
 	dialog $opt_yesno "$txt_confirm" 0 0 && confirm_data=1
 	tput cup 0 0
@@ -120,6 +127,7 @@ dialog.download() {
 				}'
 	 ) 2>&1 | dialog $opt_gauge "
   Connect ...
+  \Z1$url\Zn
 " 9 $W
 	[[ -e $file ]] && md5verify
 }
@@ -140,9 +148,9 @@ dialog.feature() {
  \Z1Features to install:\Zn
 ' 8 0 0 "${list_features_check[@]}" )
 	if [[ $checked ]]; then
-		features=
+		FEATURES=
 		while read l; do
-			features+=$( sed -n "/^$l/ {s/.*://; p}" <<< $list_features )
+			FEATURES+=$( sed -n "/^$l/ {s/.*://; p}" <<< $list_features )
 		done <<< $checked
 	else
 		checked='(none)'
@@ -152,7 +160,7 @@ dialog.feature() {
   \Z1Confirm features to install:\Zn
 
 $( sed 's/^/  /' <<< $checked )
-" 0 0 && echo $features > features || dialog.feature
+" 0 0 || dialog.feature
 }
 dialog.scanIP() {
 	dialog $opt_msg "
@@ -253,18 +261,19 @@ size=6G,   type=83"
 }
 md5verify() {
 	clear -x
-	bar Verify $file ...
+	dialog.info "
+  Verify ...
+  \Z1$file\Zn"
 	curl -sLO $url/$file.md5
 	[[ $? != 0 ]] && dialog.retry 'Download *.md5 failed.' && md5verify
 	if md5sum --quiet -c $file.md5; then
 #............................
-		[[ $1 ]] && dialog $opt_info "
- Existing is the latest:
- \Z1$file\Zn
+		[[ $1 ]] && dialog.info "
+  Existing is the latest:
+  \Z1$file\Zn
 
 
- No download required.
-" 9 $W
+ No download required."
 	else
 		rm $file
 		dialog.retry "Verify failed:\n$file" && dialog.download
@@ -275,9 +284,8 @@ memBuffer() {
 }
 scanIP() {
 #............................
-	dialog $opt_info "
-  Scan hosts in network ...
-" 5 $W
+	dialog.info '
+  Scan hosts in network ...'
 	ip_base=$( ipBase )
 	lines=$( nmap -sn "$ip_base*" \
 				| awk '
@@ -299,12 +307,11 @@ scanIP() {
 
 #............................
 dialog.splash 'Arch Linux ARM \Z1»\Zn rAudio'
+dialog.data
+dialog.feature
 read DEV PART_B PART_R < <( dialog.sd )
 sleep 1 # fix: label ready for read
 dialog.sdCard
-BR.mount
-dialog.data
-dialog.feature
 banner Rank Servers
 if [[ ! -e rate_mirrors ]]; then
 	url_assets=$( curl -sL https://api.github.com/repos/westandskif/rate-mirrors/releases/latest | jq -r .assets )
@@ -327,10 +334,11 @@ else
 	dialog.download
 fi
 rm $file.md5
-size=$( stat -c %s $file )
+BR.mount
+file_size=$( stat -c %s $file )
 #............................
 ( # -n: force stdout in each new line -Y: no buffer (26 ETA 0:00:02 261569003.1868)
-	pv -nY -s $size $file -F '%{progress-amount-only} %e %r' \
+	pv -nY -s $file_size $file -F '%{progress-amount-only} %e %r' \
 		| pigz -dc \
 		| bsdtar xpf - -C ROOT --exclude=*fallback.img
 ) 2>&1 | awk -v file=$file '
@@ -354,6 +362,7 @@ size=$( stat -c %s $file )
   Decompress ...
   \Z1$file\Zn
 " 9 $W
+sleep 1
 mem_buffer=$( memBuffer )
 #........................
 ( while true; do
@@ -370,98 +379,93 @@ done ) \
 sync
 mv ROOT/boot/* BOOT
 # fstab
-partid=$( blkid -o value -s PARTUUID $PART_B $PART_R | sed 's/^/PARTUUID=/' )
-read partid_B partid_R < <( echo $partid )
-echo "\
-$partid_B  /boot  vfat  defaults,noatime  0  0
-$partid_R  /      ext4  defaults,noatime  0  0" > ROOT/etc/fstab
-# cmdline.txt, config.txt
-cmdline="root=$partid_R rw rootwait plymouth.enable=0 dwc_otg.lpm_enable=0 fsck.repair=yes isolcpus=3 console="
-config="\
-disable_overscan=1
-disable_splash=1
-dtparam=audio=on
-max_usb_current=1
-usb_max_current_enable=1"
-if [[ $features != *firefox* ]]; then
-	cmdline+='tty1'
-else
-	cmdline+='tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0'
-	config+='
-hdmi_force_hotplug=1'
-fi
-echo $cmdline > BOOT/cmdline.txt0
-echo "$config" > BOOT/config.txt0
+read PARTID_B PARTID_R < <( blkid -o value -s PARTUUID $PART_B $PART_R | awk '{printf "PARTUUID=%s ", $0}' )
+opt_fstab='defaults,noatime  0  0'
+cat << EOF > ROOT/etc/fstab
+$PARTID_B  /boot  vfat  $opt_fstab
+$PARTID_R  /      ext4  $opt_fstab
+EOF
 # wifi
 if [[ $essid ]]; then
-	profile=ROOT/etc/netctl/$essid
-	echo 'Interface=wlan0
+	file_essid="ROOT/etc/netctl/$essid"
+	cat << EOF > "$file_essid"
+Interface=wlan0
 Connection=wireless
 IP=dhcp
-ESSID="'$essid'"
-Security='$security'
-Key="'$key'"' > $profile
-	[[ ! $security ]] && sed -E -i '/^Security|^Key/ d' "$profile"
+ESSID="$essid"
+Security=$security
+Key="$key"
+EOF
+	[[ ! $security ]] && sed -E -i '/^Security|^Key/ d' "$file_essid"
 	dir="ROOT/etc/systemd/system/netctl@$essid.service.d"
-	mkdir -p $dir
-	echo "\
+	mkdir -p "$dir"
+	cat << EOF > "$dir/profile.conf"
 [Unit]
 BindsTo=sys-subsystem-net-devices-wlan0.device
-After=sys-subsystem-net-devices-wlan0.device" > "$dir/profile.conf"
-	ln -sr ROOT/usr/lib/systemd/system/netctl@.service "ROOT/etc/systemd/system/multi-user.target.wants/netctl@$essid.service"
+After=sys-subsystem-net-devices-wlan0.device
+EOF
+	ln -sr ROOT/lib/systemd/system/netctl@.service "ROOT/etc/systemd/system/multi-user.target.wants/netctl@$essid.service"
 fi
 # dhcpd - disable arp
 echo noarp >> ROOT/etc/dhcpcd.conf
 # fix dns errors
-echo DNSSEC=no >> ROOT/etc/systemd/resolved.conf
+cat << EOF >> ROOT/etc/systemd/resolved.conf
+MulticastDNS=no
+DNSSEC=no
+EOF
 # fix: time not sync on wlan
 files=$( ls ROOT/etc/systemd/network/* )
 for file in $files; do
-	! grep -q RequiredForOnline=no $file && echo '
+	! grep -q RequiredForOnline=no $file && cat << EOF >> $file
 [Link]
-RequiredForOnline=no' >> $file
+RequiredForOnline=no
+EOF
 done
 # disable wait-online
 rm -r ROOT/etc/systemd/system/network-online.target.wants
 # fix: slow login
 sed -i '/^-.*pam_systemd/ s/^/#/' ROOT/etc/pam.d/system-login
 # ssh create-ros.sh without password
-sed -i 's/#*\(PermitRootLogin \).*/\1yes/
-		s/#*\(PermitEmptyPasswords \).*/\1yes/
+sed -i 's/^#*\(PermitRootLogin \).*/\1yes/
+		s/^#*\(PermitEmptyPasswords \).*/\1yes/
 ' ROOT/etc/ssh/sshd_config
 id=$( awk -F':' '/^root/ {print $3}' ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
+# ranked mirrorlist
+mv mirrorlist ROOT/etc/pacman.d/
+################################################################################
 # scripts
+cd ROOT/root
 for f in common create-ros; do
 	curl -sLO $https_ros/$f.sh
 done
 chmod +x create-ros.sh
-mv common.sh create-ros.sh features release ROOT/root
-mv ROOT/etc/pacman.d/mirrorlist{,.bak}
-mv mirrorlist ROOT/etc/pacman.d/
+for v in BRANCH FEATURES PARTID_R RELEASE START; do
+	DATA+="$v=\"${!v}\""$'\n'
+done
+echo "$DATA" > DATA
 sync
 BR.unmount
 #............................
 	dialog.splash "\
 Arch Linux ARM
 
-Created successfully
-\Z4$( elapsed $sec_start )\Zn"
+Created successfully"
 #............................
 dialog $opt_msg "
-\Z1Arch Linux ARM\Zn      : Ready
-$sd_usb : Unmounted
+Arch Linux ARM      : Ready
+SD card / USB drive : Unmounted
 
-» Move $sd_usb to Raspberry Pi
-» Power on
-» Press $( kbKey Enter ):
+» \Z1Move\Zn SD card / USB drive to Raspberry Pi
+» \Z1Power\Zn on
+» \Z1Press\Zn $( kbKey Enter ):
 	• Start boot timer
 	• Create $logo rAudio
 " 14 $W
 #............................
 (
 	for (( i = 1; i < 75; i++ )); do
-		ping -4 -c 1 -W 1 $IP &> /dev/null && touch ip_found && break
+		ping -4 -c 1 -W 1 $ip &> /dev/null && touch /tmp/ping_ok && break
 #..............................................................................
 		echo $i
 		sleep 1
@@ -470,16 +474,15 @@ $sd_usb : Unmounted
   Boot ...
   \Z1Arch Linux ARM\Zn
 " 9 $W
-if [[ -e ip_found ]]; then
-	rm ip_found
-	dialog $opt_info "
+if [[ -e /tmp/ping_ok ]]; then
+	rm /tmp/ping_ok
+	dialog.info "
   SSH Arch Linux ARM ...
-  @ \Z1$IP\Zn
-" 9 $W
-	create_ros $IP
-elif [[ $IP ]]; then
+  @ \Z1$ip\Zn"
+	create_ros $ip
+elif [[ $ip ]]; then
 #............................
-	dialog.scanIP "\Z1Assigned IP\Zn not found: $IP"
+	dialog.scanIP "\Z1Assigned IP\Zn not found: $ip"
 else
 	scanIP
 fi

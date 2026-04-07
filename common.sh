@@ -2,6 +2,8 @@
 
 # . <( curl -sL https://raw.githubusercontent.com/rern/rOS/main/common.sh )
 
+BRANCH="${BRANCH:-main}"
+
 banner() { # should be used on start stdout to screen
 	local cols
 	clear -x
@@ -35,13 +37,20 @@ $warn Error:
 $( echo -e "$@" )
 " 0 0
 	clear -x
-	exit
+	exit 1
 #-------------------------------------------------------------------------------
 }
+dialog.info() {
+	dialog $opt_info "
+$@
+" 9 $W
+
+}
 dialog.ip() {
-	local ip
-	[[ ! $ip_base ]] && ip_base=$( ipBase )
-	ip=$( dialog.input "\Z1$1:\Zn" $ip_base )
+	local ip ip_oct4
+	ip_base=${ip_base:-$( ipBase )}
+	[[ $2 ]] && ip_input=$2 || ip_input=$ip_base
+	ip=$( dialog.input "\Z1$1:\Zn" $ip_input )
 	[[ ${ip%.*}. == $ip_base ]] && ip_oct4=${ip/$ip_base}
 	if [[ $ip_oct4 && $ip_oct4 == [0-9]* ]] && (( $ip_oct4 > 0 && $ip_oct4 < 255 )); then
 		echo $ip
@@ -108,31 +117,26 @@ Insert $sd_usb
 	[[ $udisk2_active ]] && udisk2Toggle start
 }
 dialog.splash() {
-	local h l line txt w;   while read -r line; do # -r keep                [[ $line != *[![:space:]]* ]] && txt+='\n' && continue;
-		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
-		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
-		txt+="
-$( printf '%*s' $w )$line\n"
-done <<< "
+	local h l line lines txt w
+	lines="
 $logo
 
 $@"
-	h=$(( $( wc -l <<< $txt ) + 2 ));
-	(( $( wc -l <<< $@ ) == 1 )) && (( h++ ))
+	while read -r line; do # -r keep backslash
+		l=$( sed 's/\\Z.//g' <<< $line ) # remove text color \Zn
+		w=$(( ( W - ${#l} ) / 2 - 2 )) # -2: l/r border
+		txt+="
+$( printf '%*s' $w )$line"
+	done <<< $lines
+	h=$(( $( wc -l <<< $txt ) + 3 ))
 	tput civis # fix: hide cursor at corner
 	dialog $opt_info "$txt" $h $W;  tput cnorm # restore cursor
-}
-elapsed() {
-	date -d@$(( $( date +%s ) - $1 )) -u +%M:%S
 }
 ipBase() {
 	ip route get 1.1.1.1 | grep -oP '(?<=src ).*\..*\..*\.'
 }
 kbKey() {
 	echo "\Zr\Zb $1 \Zn"
-}
-killChildProcess() {
-	kill -TERM -$$ &> /dev/null
 }
 package.commandNotFound() {
 	local c cmd
@@ -173,18 +177,22 @@ Missing commands:
 $cmd_notfound
 Unable to continue."
 }
+trapExit() {
+	kill -TERM -$$ &> /dev/null
+	BR.unmount
+	exit
+}
 udisk2Toggle() {
 	[[ $1 == start ]] && mask=unmask || mask=mask
 	systemctl $mask --runtime udisks2 &> /dev/null
 	systemctl $1 udisks2
 }
+https_raudio=https://github.com/rern/rAudio
 #         https://raw.githubusercontent.com/rern/REPO/BRANCH/file
 https_raw=https://raw.githubusercontent.com
-https_raudio=https://github.com/rern/rAudio
 https_rern=$https_raw/rern
-https_ros=$https_rern/rOS/$branch
-https_io=$https_rern/rern.github.io/$branch
-https_mirrorlist=$https_raw/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist
+https_ros=$https_rern/rOS/$BRANCH
+https_io=$https_rern/rern.github.io/$BRANCH
 opt_ssh='-qtt -o ConnectTimeout=3
 			  -o StrictHostKeyChecking=no
 			  -o UserKnownHostsFile=/dev/null'
@@ -198,6 +206,7 @@ W=50
 #    8 0 0 - hf h w - checklist / menu (hf=8 - frame + button)
                  # keep spaces/tabs
 option='--colors --no-collapse --no-shadow --stdout'
+[[ $BRANCH != main ]] && option+=" --title $BRANCH"
 opt_gauge="$option --gauge"                                  # no buttons
  opt_info="$option --sleep 2 --infobox"                      # no buttons
   opt_msg="$option --msgbox"                                 # <OK> only
