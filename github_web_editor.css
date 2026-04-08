@@ -257,7 +257,7 @@ Required fonts:
 }
 #status\.host:hover,
 #status\.host > a:hover {
-    background-color: #004275 !important;
+    background-color: #0068b7 !important;
 }
 #status\.scm\.0 * {
 	margin: 0;
