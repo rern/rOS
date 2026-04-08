@@ -17,7 +17,9 @@ create_ros() {
 	[[ $file_del ]] && rm $file_del
 }
 dialog.data() {
-	latest=$( githubLatest rern rAudio tag_name )
+	latest=$( curl -sI https://github.com/rern/rAudio/releases/latest \
+		| awk -F'/' '/location/ {print $NF}' \
+		| tr -d '\r' )
 #............................
 	RELEASE=$( dialog.input '\Z1r\ZnAudio release:' $latest )
 #............................
@@ -265,9 +267,6 @@ size=6G,   type=83"
 	mkfs.vfat -F 32 -n BOOT $PART_B
 	mkfs.ext4 -L ROOT -F $PART_R
 }
-githubLatest() {
-	curl -sL https://api.github.com/repos/$1/$2/releases/latest | jq -r .$3
-}
 md5verify() {
 	clear -x
 	dialog.info "
@@ -329,10 +328,12 @@ if [[ ! -e rate_mirrors ]]; then
 	if [[ -e /usr/bin/rate_mirrors ]]; then
 		ln -s /usr/bin/rate_mirrors .
 	else
-		url_assets=$( githubLatest westandskif rate-mirrors assets )
-		url_latest=$( jq -r .[1].browser_download_url <<< $url_assets )                                         # x86_64
-		[[ $url_latest != *$( uname -m )* ]] && url_latest=$( jq -r .[0].browser_download_url <<< $url_assets ) # aarch64
-		curl -sL $url_latest | bsdtar xf - --strip-components=1 */rate_mirrors
+		url=https://github.com/westandskif/rate-mirrors/releases
+		rel=$( curl -sI $url/latest \
+			| awk -F'/' '/location/ {print $NF}' \
+			| tr -d '\r' )
+		curl -sL $url/download/$rel/rate-mirrors-$rel-$( uname -m )-unknown-linux-musl.tar.gz \
+			| bsdtar xf - --strip-components=1 */rate_mirrors
 	fi
 fi
 ./rate_mirrors --allow-root --disable-comments-in-file --save mirrorlist archarm
