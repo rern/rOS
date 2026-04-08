@@ -482,7 +482,7 @@ SD card / USB drive : Unmounted
 #............................
 (
 	for (( i = 1; i < 75; i++ )); do
-		ping -4 -c 1 -W 1 $ip &> /dev/null && touch /tmp/ping_ok && break
+		ping -c 1 -W 1 $ip &> /dev/null && touch /tmp/ping_ok && break
 #..............................................................................
 		echo $i
 		sleep 1
