@@ -153,8 +153,10 @@ package.required() {
 		[[ $cmd_pm == apt ]] && pkg_bsdtar+=-tools
 		pkgs=${pkgs/bsdtar/$pkg_bsdtar}
 	fi
-	[[ $pkgs == *sfdisk* ]] && pkgs=${pkgs/sfdisk/fdisk} # puppy linux
-	[[ $pkgs == *nmap* && $cmd_pm == pacman ]] && pkgs+='gcc-libs ' # manjaro: libgcc conflicts
+	[[ $pkgs == *'ip '* ]] && pkgs=${pkgs/ip /iproute2 }
+	[[ $pkgs == *'ping '* ]] && pkgs=${pkgs/ping /iputils-ping }
+	[[ $pkgs == *'sfdisk '* ]] && pkgs=${pkgs/sfdisk /fdisk } # puppy linux
+	[[ $pkgs == *'nmap '* && $cmd_pm == pacman ]] && pkgs+='gcc-libs ' # manjaro: libgcc conflicts
 	install_pkgs="install -y $pkgs"
 	bar Install packages: $pkgs
 	case $cmd_pm in
