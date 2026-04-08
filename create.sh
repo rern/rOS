@@ -80,19 +80,24 @@ SSID         : $essid
 Password     : $key
 Security     : ${security^^}"
 	fi
-	file_gib=$( curl -sIL -L http://os.archlinuxarm.org/os/$file \
-					| awk '/^Content-Length/ {val=$2} END {printf "(%.2f GiB)", val/1073741824}' )
+	if (( $( df -B1 --output=avail . | tail -1 ) < 1200000000 )); then
+		cd /home
+		file_del=/home/$file
+	else
+		file_gib=$( curl -sIL -L http://os.archlinuxarm.org/os/$file \
+						| awk '/^Content-Length/ {val=$2} END {printf "(%.2f GiB)", val/1073741824}' )
 #............................
-	dialog --defaultno $opt_yesno "
+		dialog --defaultno $opt_yesno "
  Keep file once done?
  \Z1$file\Zn
  $file_gib
 
 " 0 0 && keep=Yes || keep=No
-	[[ $keep == No ]] && file_del=$PWD/$file
-	txt_confirm+="
+		[[ $keep == No ]] && file_del=$PWD/$file
+		txt_confirm+="
 
 Keep file    : $keep"
+	fi
 #............................
 	dialog $opt_yesno "$txt_confirm" 0 0 && confirm_data=1
 	tput cup 0 0
@@ -314,10 +319,14 @@ sleep 1 # fix: label ready for read
 dialog.sdCard
 banner Rank Servers
 if [[ ! -e rate_mirrors ]]; then
-	url_assets=$( curl -sL https://api.github.com/repos/westandskif/rate-mirrors/releases/latest | jq -r .assets )
-	url_latest=$( jq -r .[1].browser_download_url <<< $url_assets ) # x86_64
-	[[ $url_latest != *$( uname -m )* ]] && url_latest=$( jq -r .[0].browser_download_url <<< $url_assets ) # aarch64
-	curl -sL $url_latest | bsdtar xf - --strip-components=1 --exclude=LICENSE
+	if [[ -e /usr/bin/rate_mirrors ]]; then
+		ln -s /usr/bin/rate_mirrors .
+	else
+		url_assets=$( curl -sL https://api.github.com/repos/westandskif/rate-mirrors/releases/latest | jq -r .assets )
+		url_latest=$( jq -r .[1].browser_download_url <<< $url_assets )                                         # x86_64
+		[[ $url_latest != *$( uname -m )* ]] && url_latest=$( jq -r .[0].browser_download_url <<< $url_assets ) # aarch64
+		curl -sL $url_latest | bsdtar xf - --strip-components=1 */rate_mirrors
+	fi
 fi
 ./rate_mirrors --allow-root --disable-comments-in-file --save mirrorlist archarm
 while read sub; do # verify file exists
