@@ -148,17 +148,23 @@ package.required() {
 	for cmd_pm in apk apt brew dnf pacman yum zypper; do
 		commandNotFound $cmd_pm || break
 	done
-	if [[ $pkgs == *' bsdtar '* && ${cmd_pm:0:1} != [dy] ]]; then # not dnf / yum
-		pkg_bsdtar=libarchive
-		[[ $cmd_pm == apt ]] && pkg_bsdtar+=-tools
+	if [[ $pkgs == *bsdtar* ]]; then
+		case $cmd_pm in
+			dnf | yum ) pkg_bsdtar=bsdtar;;
+			apt )       pkg_bsdtar=libarchive-tools
+			* )         pkg_bsdtar=libarchive
+		esac
 		pkgs=${pkgs/bsdtar/$pkg_bsdtar}
 	fi
-	[[ $pkgs == *' ip '* ]] && pkgs=${pkgs/ ip / iproute2 }
-	[[ $pkgs == *' sfdisk '* ]] && pkgs=${pkgs/ sfdisk / fdisk }         # puppy linux
-	[[ $pkgs == *' nmap '* && $cmd_pm == pacman ]] && pkgs+=' gcc-libs ' # manjaro: libgcc conflicts
-	if [[ $pkgs == *' ssh '* ]]; then                                     # antiX
-		[[ ${cmd_pm: -1} == [tfm] ]] && pkgs=${pkgs/ ssh / openssh-clients } || pkgs=${pkgs/ ssh / openssh }
+	[[ $pkgs == *sfdisk* ]] && pkgs=${pkgs/sfdisk/fdisk} # puppy linux
+	if [[ $pkgs == *ssh* ]]; then                        # antiX
+		case $cmd_pm in
+			apt )       pkgs=${pkgs/ssh/openssh-client};;
+			dnf | yum ) pkgs=${pkgs/ssh/openssh-clients};;
+			* )         pkgs=${pkgs/ssh/openssh};;
+		esac
 	fi
+	[[ $pkgs == *nmap* && $cmd_pm == pacman ]] && pkgs+=' gcc-libs' # manjaro: libgcc conflicts
 	install_pkgs="install -y $pkgs"
 	bar Install packages: $pkgs
 	case $cmd_pm in
