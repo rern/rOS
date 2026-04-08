@@ -7,8 +7,8 @@ BRANCH=${1:-main}
 
 [[ ! $logo ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
 
-export PATH+=:/sbin # debian - sfdisk
-package.required bsdtar dialog gawk ip jq nmap pigz ping sfdisk pv # required pkgs
+export PATH+=:/sbin # debian
+package.required bsdtar dialog gawk ip jq nmap pigz ping pv sfdisk ssh
 alias awk=gawk      # debian - awk=mawk - no sub gsub
 
 create_ros() {
