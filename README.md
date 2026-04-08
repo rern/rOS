@@ -32,10 +32,14 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 **Need**
 - PC - Any Linux distros:
 	- Live USB can be used as well e.g.,
-		- [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) - Trixie (1.2 GB) - Lightest GUI
-		- [Debian **standard**](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) (1.9 GB) - Fastest and lightest - No GUI, Terminal only
+		- GUI
+			- [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) - Trixie (1.2 GB) - Lightest GUI
+			- [Linux Mint](https://linuxmint.com/download.php) (2.9GB) - Light modern GUI
+		- Text mode only
+			- [Debian **Live Minimal**](https://github.com/dpowers86/debian-live/releases) (280 MB) - Fastest and lightest
+			- [Debian **standard**](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) (1.9 GB) - Fastest
 			- If no wired LAN, see [how to](https://github.com/rern/tips_bash/blob/master/wifi.md#wpa_supplicant) connect Wi-Fi.
-		- [Linux Mint](https://linuxmint.com/download.php) (2.9GB) - Light modern GUI
+
 		- Recommend: Create bootable USB drive with [Ventoy](https://www.ventoy.net)
 - Raspberry Pi
 - Micro SD card or USB drive (at least 8 GB)
@@ -65,17 +69,12 @@ Note: Use router pre-assigned IP address for Raspberry Pi if possible.
 	sudo passwd root
 
 	su
+	# if not available, install package: curl
+	command -v curl
 	```
 - Run
 	```sh
 	bash <( curl -sL https://raw.githubusercontent.com/rern/rOS/main/create.sh )
-	```
-- If `curl: command not found`:
-	```sh
-	apt update && apt install curl
-
-	# arch linux
-	pacman -Sy curl
 	```
 ---
 
