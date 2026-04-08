@@ -151,8 +151,8 @@ package.required() {
 	if [[ $pkgs == *bsdtar* ]]; then
 		case $cmd_pm in
 			dnf | yum ) pkg_bsdtar=bsdtar;;
-			apt )       pkg_bsdtar=libarchive-tools
-			* )         pkg_bsdtar=libarchive
+			apt )       pkg_bsdtar=libarchive-tools;;
+			* )         pkg_bsdtar=libarchive;;
 		esac
 		pkgs=${pkgs/bsdtar/$pkg_bsdtar}
 	fi
