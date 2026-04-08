@@ -1,13 +1,9 @@
 /*
 [URLs on the domain] github.dev
 Required fonts:
-	Windows    - Inconsolata, Inconsolata SemiCondensed
-	Arch Linux - pacman -S ttf-inconsolata
-	Linux
-		- https://fonts.google.com > download Inconsolata.zip
-		# mkdir -p ~/.local/share/fonts
-		# unzip xf Inconsolata.zip -d ~/.local/share/fonts
-		# fc-cache -fv
+	Windows    : Inconsolata, Inconsolata SemiCondensed
+	Arch Linux : pacman -S ttf-inconsolata
+	Linux      : apt install fonts-inconsolata
 */
 :root {
 	--cw : hsl(   0, 0%, 90% );
@@ -236,6 +232,9 @@ Required fonts:
 .scm-view .button-container > .monaco-button-dropdown > .monaco-dropdown-button { /* dropdown arrow - commit button */
 	line-height: 24px;
 	margin-right: -5px;
+}
+.monaco-button-dropdown {
+    border-radius: 4px !important;
 }
 .find-widget.visible {
     min-width: 480px;
