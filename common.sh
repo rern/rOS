@@ -84,10 +84,7 @@ Retry?
 }
 dialog.sd() {
 	local dev dev_gib l p s
-	if systemctl -q is-system-running && systemctl -q is-active udisks2; then
-		udisk2_active=1
-		udisk2Toggle stop
-	fi
+	udisk2Toggle
 #............................ (no --sleep 1)
 	dialog $option --infobox "
 $logo
@@ -114,7 +111,7 @@ Insert $sd_usb
 		p=p
 	fi
 	echo $dev $dev${p}1 $dev${p}2
-	[[ $udisk2_active ]] && udisk2Toggle start
+	udisk2Toggle
 }
 dialog.splash() {
 	local h l line lines txt w
@@ -183,9 +180,16 @@ trapExit() {
 	exit
 }
 udisk2Toggle() {
-	[[ $1 == start ]] && mask=unmask || mask=mask
-	systemctl $mask --runtime udisks2 &> /dev/null
-	systemctl $1 udisks2
+	! pidof systemd &> /dev/null && return
+#..............................................................................
+	if systemctl -q is-active udisks2; then
+		udisk2_active=1
+		systemctl stop udisks2
+		systemctl mask --runtime udisks2 &> /dev/null
+	elif [[ $udisk2_active ]]; then
+		systemctl unmask --runtime udisks2 &> /dev/null
+		systemctl start udisks2
+	fi
 }
 https_raudio=https://github.com/rern/rAudio
 #         https://raw.githubusercontent.com/rern/REPO/BRANCH/file
