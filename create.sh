@@ -17,7 +17,7 @@ create_ros() {
 	[[ $file_del ]] && rm $file_del
 }
 dialog.data() {
-	latest=$( curl -sL https://api.github.com/repos/rern/rAudio/releases/latest | jq -r .tag_name )
+	latest=$( githubLatest rern rAudio tag_name )
 #............................
 	RELEASE=$( dialog.input '\Z1r\ZnAudio release:' $latest )
 #............................
@@ -264,6 +264,9 @@ size=6G,   type=83"
 	mkfs.vfat -F 32 -n BOOT $PART_B
 	mkfs.ext4 -L ROOT -F $PART_R
 }
+githubLatest() {
+	curl -sL https://api.github.com/repos/$1/$2/releases/latest | jq -r .$3
+}
 md5verify() {
 	clear -x
 	dialog.info "
@@ -322,7 +325,7 @@ if [[ ! -e rate_mirrors ]]; then
 	if [[ -e /usr/bin/rate_mirrors ]]; then
 		ln -s /usr/bin/rate_mirrors .
 	else
-		url_assets=$( curl -sL https://api.github.com/repos/westandskif/rate-mirrors/releases/latest | jq -r .assets )
+		url_assets=$( githubLatest westandskif rate-mirrors assets )
 		url_latest=$( jq -r .[1].browser_download_url <<< $url_assets )                                         # x86_64
 		[[ $url_latest != *$( uname -m )* ]] && url_latest=$( jq -r .[0].browser_download_url <<< $url_assets ) # aarch64
 		curl -sL $url_latest | bsdtar xf - --strip-components=1 */rate_mirrors
