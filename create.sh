@@ -80,12 +80,11 @@ SSID         : $essid
 Password     : $key
 Security     : ${security^^}"
 	fi
-	if spaceNotEnough .; then
+	if spaceNotEnough $PWD; then
 		spaceNotEnough /tmp && dialog.error_exit Not enough space left in filesystem.
 #------------------------------------------------------------------------------
 		cd /tmp
-		file_del=/tmp/$file
-	else
+	elif [[ ! $( stat -f -c %T $PWD ) =~ ^(ramfs|tmpfs)$ ]]; then
 		file_gib=$( curl -sIL -L http://os.archlinuxarm.org/os/$file \
 						| awk '/^Content-Length/ {val=$2} END {printf "(%.2f GiB)", val/1073741824}' )
 #............................
