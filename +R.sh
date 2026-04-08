@@ -26,7 +26,7 @@ if [[ $file_name ]]; then
 else
 	title=$( sed -n "$i {s/ .*//; p}" <<< $list )
 	if [[ $title == Get ]]; then
-		url=$( dialog.input 'URL:' rOS/UPDATE/create.sh )
+		url=$( dialog.input 'URL:' rOS/$BRANCH/create.sh )
 		line=$( dialog.input 'Line 0 to:' )
 		line=${line:-1000}
 		banner $https_rern/$url
