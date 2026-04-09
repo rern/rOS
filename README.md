@@ -31,6 +31,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 
 **Need**
 - PC - Any Linux distros:
+	- With any package manager: `apk` `apt` `brew` `dnf` `pacman` `yum` `zypper`
 	- Live USB can be used as well e.g.,
 		- GUI
 			- [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) - Trixie (1.2 GB) - Lightest GUI
