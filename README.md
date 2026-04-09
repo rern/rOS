@@ -34,14 +34,14 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 	- Live USB can be used as well e.g.,
 		- GUI
 			- [Puppy Linux](https://sourceforge.net/projects/pb-gh-releases/files/TrixiePup64Wayland_release/) - Trixie (1.2 GB) - Lightest GUI
-			- [Linux Mint](https://linuxmint.com/download.php) (2.9GB) - Light modern GUI
+			- [Linux Mint](https://linuxmint.com/download.php) (2.9GB) - Light modern
 			- [Ubuntu](https://ubuntu.com/download/desktop)
 			- [Debian](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/)
 			- [Manjaro](https://manjaro.org/products/download/x86)
-		- Text mode only
+		- Text mode only (Just have to type the first command, no copy and paste)
 			- [antiX *Core*](https://antixlinux.com/download/) (650 MB) - Fastest and lightest
 				- Press enter > Login: `root` Password: `root`
-			- [Debian *standard*](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) (1.9 GB) - Fast
+			- [Debian *standard*](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) (1.9 GB) - Faster and lighter than GUI
 			- If really need Wi-Fi, see [how to connect](https://github.com/rern/tips_bash/blob/master/wifi.md#wpa_supplicant)
 
 		- Recommend: Create bootable USB drive with [Ventoy](https://www.ventoy.net)
