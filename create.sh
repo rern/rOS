@@ -336,15 +336,17 @@ if [[ ! -e rate_mirrors ]]; then
 			| bsdtar xf - --strip-components=1 */rate_mirrors
 	fi
 fi
-./rate_mirrors --allow-root --disable-comments-in-file --save mirrorlist archarm
-while read sub; do # verify file exists
-	[[ $sub == mirror ]] && sub=os
-	url=http://$sub.archlinuxarm.org/os
-	curl -sIfo /dev/null $url/$file && break
+if [[ -e rate_mirrors ]]; then
+	./rate_mirrors --allow-root --disable-comments-in-file --save mirrorlist archarm
+	while read sub; do # verify file exists
+		[[ $sub == mirror ]] && sub=os
+		url=http://$sub.archlinuxarm.org/os
+		curl -sIfo /dev/null $url/$file && break
 
-	sed -i '1 d' mirrorlist
-done < <( sed -E 's|.*//(.*\.*mirror)\..*|\1|' mirrorlist )
-[[ ! -s mirrorlist ]] && dialog.error_exit All package servers not responsive.
+		sed -i '1 d' mirrorlist
+	done < <( sed -E 's|.*//(.*\.*mirror)\..*|\1|' mirrorlist )
+	[[ ! -s mirrorlist ]] && dialog.error_exit All package servers not responsive.
+fi
 if [[ -e $file ]]; then
 	md5verify existing
 else
@@ -449,7 +451,7 @@ sed -i 's/^#*\(PermitRootLogin \).*/\1yes/
 id=$( awk -F':' '/^root/ {print $3}' ROOT/etc/shadow )
 sed -i "s/^root.*/root::$id::::::/" ROOT/etc/shadow
 # ranked mirrorlist
-mv mirrorlist ROOT/etc/pacman.d/
+[[ -e mirrorlist ]] && mv mirrorlist ROOT/etc/pacman.d/
 ################################################################################
 # scripts
 cd ROOT/root
