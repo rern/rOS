@@ -82,11 +82,7 @@ SSID         : $essid
 Password     : $key
 Security     : ${security^^}"
 	fi
-	if spaceNotEnough $PWD; then
-		spaceNotEnough /tmp && dialog.error_exit Not enough space left in filesystem.
-#------------------------------------------------------------------------------
-		cd /tmp
-	elif [[ ! $( stat -f -c %T $PWD ) =~ ^(overlayfs|ramfs|tmpfs)$ ]]; then
+	if [[ ! $( stat -f -c %T $PWD ) =~ ^(overlayfs|ramfs|tmpfs)$ ]]; then
 		file_gib=$( curl -sIL -L http://os.archlinuxarm.org/os/$file \
 						| awk '/^Content-Length/ {val=$2} END {printf "(%.2f GiB)", val/1073741824}' )
 #............................
@@ -311,9 +307,6 @@ scanIP() {
 	[[ $? != 0 ]] && dialog.error_exit Arch Linux ARM not found.
 #------------------------------------------------------------------------------
 	create_ros $( awk 'NR=='$i' {print $1}' <<< $lines )
-}
-spaceNotEnough() {
-	(( $( df -B1 --output=avail $1 | tail -1 ) < 1200000000 )) && return 0 # < 1.2 GB
 }
 
 #............................
