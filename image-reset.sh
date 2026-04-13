@@ -3,6 +3,7 @@
 BRANCH="${BRANCH:-main}"
 
 . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
+. /srv/http/bash/common.sh
 
 selected() {
 	grep -q $1 <<< $reset && return 0
