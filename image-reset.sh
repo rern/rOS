@@ -30,11 +30,6 @@ mount | grep $dirusb && udevil umount -l "$dirusb/"*
 if selected database; then
 	bar Reset MPD database ...
 	rm -f $dirdata/mpd/*
-fi
-if selected directory; then
-	bar Reset user data directory ...
-	rm -rf /root/.cache/*
-	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists}/*
 	cat << EOF > $dirdata/mpd/counts
 {
   "song"      : 0
@@ -42,6 +37,11 @@ if selected directory; then
 , "webradio"  : $( find $dirdata/webradio -maxdepth 1 -type f | wc -l )
 }
 EOF
+fi
+if selected directory; then
+	bar Reset user data directory ...
+	rm -rf /root/.cache/*
+	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists}/*
 fi
 if selected cache; then
 	bar Clear package cache ...

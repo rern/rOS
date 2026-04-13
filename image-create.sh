@@ -1,5 +1,9 @@
 #!/bin/bash
 
+BRANCH="${BRANCH:-main}"
+
+. <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
+
 trap trapExit EXIT
 
 package.required bsdtar dialog
