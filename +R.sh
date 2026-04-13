@@ -37,7 +37,7 @@ $cmd"
 	else
 #............................
 		ip=$( dialog.ip 'rAudio IP' )
-		[[ $title == Reset ]] && bash_reset_sh="bash <( curl -sL $https_ros_branch/image-reset.sh )"
+		[[ $title == Reset ]] && bash_reset_sh="bash <( curl -sL $https_ros/image-reset.sh )"
 		sshpass -p ros \
 			ssh $opt_ssh root@$ip $bash_reset_sh
 	fi
