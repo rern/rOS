@@ -7,8 +7,6 @@ BRANCH="${BRANCH:-main}"
 dirnas=/mnt/MPD/NAS
 dirusb=/mnt/MPD/USB
 dirdata=/srv/http/data
-dirmpd=$dirdata/mpd
-dirwebradio=$dirdata/webradio
 
 selected() {
 	grep -q $1 <<< $reset && return 0
@@ -31,17 +29,17 @@ mount | grep $dirnas && umount -l "$dirnas/"*
 mount | grep $dirusb && udevil umount -l "$dirusb/"*
 if selected database; then
 	bar Reset MPD database ...
-	rm -f $dirmpd/*
+	rm -f $dirdata/mpd/*
 fi
 if selected directory; then
 	bar Reset user data directory ...
 	rm -rf /root/.cache/*
 	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists}/*
-	cat << EOF > $dirmpd/counts
+	cat << EOF > $dirdata/mpd/counts
 {
   "song"      : 0
 , "playlists" : 0
-, "webradio"  : $( find $dirwebradio/ -maxdepth 1 -type f | wc -l )
+, "webradio"  : $( find $dirdata/webradio -maxdepth 1 -type f | wc -l )
 }
 EOF
 fi
