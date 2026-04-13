@@ -1,5 +1,7 @@
 #!/bin/bash
 
+BRANCH="${BRANCH:-main}"
+
 . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
 
 selected() {
