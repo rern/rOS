@@ -3,12 +3,16 @@
 BRANCH="${BRANCH:-main}"
 
 . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
-. /srv/http/bash/common.sh
+
+dirnas=/mnt/MPD/NAS
+dirusb=/mnt/MPD/USB
+dirdata=/srv/http/data
+dirmpd=$dirdata/mpd
+dirwebradio=$dirdata/webradio
 
 selected() {
 	grep -q $1 <<< $reset && return 0
 }
-dirdata=/srv/http/data
 #............................
 dialog.splash Reset for Image
 list_reset="\
