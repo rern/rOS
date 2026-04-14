@@ -38,7 +38,7 @@ bar ROOT: $PART_R ...
 e2fsck -p $PART_R
 BR.mount
 file_r1=ROOT/srv/http/data/addons/r1
-[[ ! -e $file_r1 ]] && dialog.error_exit 'SD card is not rAudio: \Z1$DEVZn'
+[[ ! -e $file_r1 ]] && dialog.error_exit "SD card is not rAudio: \Z1$DEVZn"
 #------------------------------------------------------------------------------
 release=$( < $file_r1 )
 if [[ -e BOOT/kernel8.img ]]; then
