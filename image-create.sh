@@ -37,7 +37,7 @@ BR.mount
 file_r1=ROOT/srv/http/data/addons/r1
 [[ ! -e $file_r1 ]] && dialog.error_exit "SD card is not rAudio: \Z1$DEV\Zn"
 #------------------------------------------------------------------------------
-case $( basename $( ls /boot/kernel*.img ) .img ) in
+case $( basename $( ls BOOT/kernel*.img ) .img ) in
 	kernel8 ) model=64bit;;
 	kernel7 ) model=32bit;;
 	* )       model=Legacy;;
