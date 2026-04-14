@@ -27,6 +27,7 @@ reset=$( dialog $opt_check '
 systemctl stop mpd
 mount | grep $dirnas && umount -l $dirnas/*
 mount | grep $dirusb && udevil umount -l $dirusb/*
+clear -x
 if selected database; then
 	bar Reset MPD database ...
 	rm -f $dirdata/mpd/*
@@ -71,6 +72,6 @@ Before disconnecting power, observe \e[32;5m■\e[0m LED:
   - Shutdown      - 10 steady flashes » off'
 
 find /root -mindepth 1 -delete
-cp /etc/skel/.* /root
+cp -r /etc/skel/.* /root
 nohup sh -c 'sleep 2 && poweroff' &> /dev/null &
 exit
