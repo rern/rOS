@@ -17,12 +17,12 @@ create_ros() {
 	[[ $file_del ]] && rm $file_del
 }
 dialog.data() {
-	latest=$( curl -sI https://github.com/rern/rAudio/releases/latest \
+	latest=$( curl -sfI https://github.com/rern/rAudio/releases/latest \
 		| awk -F'/' '/location/ {print $NF}' \
 		| tr -d '\r' )
 #............................
 	RELEASE=$( dialog.input '\Z1r\ZnAudio release:' $latest )
-	if [[ $( curl -sIL -o /dev/null -w '%{http_code}' https://github.com/rern/rAudio/archive/$RELEASE.tar.gz ) != 200 ]]; then
+	if [[ $( curl -sfIL -o /dev/null -w '%{http_code}' https://github.com/rern/rAudio/archive/$RELEASE.tar.gz ) != 200 ]]; then
 		dialog.retry "Release: $RELEASE not found." && dialog.data
 		return
 	fi
@@ -87,12 +87,12 @@ Password     : $key
 Security     : ${security^^}"
 	fi
 	url_file=http://os.archlinuxarm.org/os/$file
-	if [[ $( curl -sILo /dev/null -w %{http_code} $url_file ) != 200 ]]; then
+	if [[ $( curl -sfILo /dev/null -w %{http_code} $url_file ) != 200 ]]; then
 		dialog.retry "URL: $url_file not ready." && dialog.data
 		return
 	fi
 	if [[ ! $( stat -f -c %T $PWD ) =~ ^(overlayfs|ramfs|tmpfs)$ ]]; then
-		file_gib=$( curl -sIL $url_file \
+		file_gib=$( curl -sfIL $url_file \
 						| awk '/^Content-Length/ {val=$2} END {printf "(%.2f GiB)", val/1073741824}' )
 #............................
 		dialog --defaultno $opt_yesno "
@@ -331,7 +331,7 @@ if [[ ! -e rate_mirrors ]]; then
 		ln -s /usr/bin/rate_mirrors .
 	else
 		url=https://github.com/westandskif/rate-mirrors/releases
-		rel=$( curl -sI $url/latest \
+		rel=$( curl -sfI $url/latest \
 			| awk -F'/' '/location/ {print $NF}' \
 			| tr -d '\r' )
 		curl -sL $url/download/$rel/rate-mirrors-$rel-$( uname -m )-unknown-linux-musl.tar.gz \
@@ -343,7 +343,7 @@ if [[ -e rate_mirrors ]]; then
 	while read sub; do # verify file exists
 		[[ $sub == mirror ]] && sub=os
 		url=http://$sub.archlinuxarm.org/os
-		curl -sIfo /dev/null $url/$file && break
+		curl -sfIo /dev/null $url/$file && break
 
 		sed -i '1 d' mirrorlist
 	done < <( sed -E 's|.*//(.*\.*mirror)\..*|\1|' mirrorlist )
