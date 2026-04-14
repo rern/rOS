@@ -71,6 +71,6 @@ Before disconnecting power, observe \e[32;5m■\e[0m LED:
   - Stop services - Blips
   - Shutdown      - 10 steady flashes » off'
 
-find /root -mindepth 1 -delete
+find /root -mindepth 1 ! -path /root/.config/procps ! -name .nanorc ! -name .profile -delete
 cp /etc/skel/.* /root &> /dev/null
 poweroff
