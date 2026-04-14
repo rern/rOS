@@ -31,16 +31,11 @@ shrink() {
 #............................
 dialog.splash Image File
 read DEV PART_B PART_R < <( dialog.sd )
-banner Check Partitions ...
-bar BOOT: $PART_B ...
-fsck.fat -taw $PART_B
-bar ROOT: $PART_R ...
-e2fsck -p $PART_R
+sleep 1
 BR.mount
 file_r1=ROOT/srv/http/data/addons/r1
-[[ ! -e $file_r1 ]] && dialog.error_exit "SD card is not rAudio: \Z1$DEVZn"
+[[ ! -e $file_r1 ]] && dialog.error_exit "SD card is not rAudio: \Z1$DEV\Zn"
 #------------------------------------------------------------------------------
-release=$( < $file_r1 )
 if [[ -e BOOT/kernel8.img ]]; then
 	model=64bit
 elif [[ -e BOOT/kernel7.img ]]; then
@@ -48,10 +43,17 @@ elif [[ -e BOOT/kernel7.img ]]; then
 else # BOOT/kernel.img
 	model=Legacy
 fi
+release=$( < $file_r1 )
 #............................
 file_img=$( dialog.input 'Image filename:' rAudio-$model-$release.img.xz )
 touch BOOT/expand # auto expand root partition
 BR.unmount
+#------------------------------------------------------------------------------
+banner Check Partitions ...
+bar BOOT: $PART_B ...
+fsck.fat -taw $PART_B
+bar ROOT: $PART_R ...
+e2fsck -p $PART_R
 #............................
 banner Shrink ROOT
 shrink 1
