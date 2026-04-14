@@ -22,7 +22,7 @@ dialog.data() {
 		| tr -d '\r' )
 #............................
 	RELEASE=$( dialog.input '\Z1r\ZnAudio release:' $latest )
-	if [[ $( curl -IsL -o /dev/null -w '%{http_code}' https://github.com/rern/rAudio/archive/$RELEASE.tar.gz ) != 200 ]]; then
+	if [[ $( curl -sIL -o /dev/null -w '%{http_code}' https://github.com/rern/rAudio/archive/$RELEASE.tar.gz ) != 200 ]]; then
 		dialog.retry "Release: $RELEASE not found." && dialog.data
 		return
 	fi
@@ -87,7 +87,7 @@ Password     : $key
 Security     : ${security^^}"
 	fi
 	if [[ ! $( stat -f -c %T $PWD ) =~ ^(overlayfs|ramfs|tmpfs)$ ]]; then
-		file_gib=$( curl -sIL -L http://os.archlinuxarm.org/os/$file \
+		file_gib=$( curl -sIL http://os.archlinuxarm.org/os/$file \
 						| awk '/^Content-Length/ {val=$2} END {printf "(%.2f GiB)", val/1073741824}' )
 #............................
 		dialog --defaultno $opt_yesno "
