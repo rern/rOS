@@ -72,6 +72,5 @@ Before disconnecting power, observe \e[32;5m■\e[0m LED:
   - Shutdown      - 10 steady flashes » off'
 
 find /root -mindepth 1 -delete
-cp -r /etc/skel/.* /root
-nohup sh -c 'sleep 2 && poweroff' &> /dev/null &
-exit
+cp /etc/skel/.* /root &> dev/null
+poweroff
