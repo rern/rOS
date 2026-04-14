@@ -23,8 +23,8 @@ shrink() {
 		resize2fs -fp $PART_R ${b_new}K
 		s_size=$( blockdev --getss $DEV )
 		s_start=$( cat /sys/class/block/${PART_R/*\/}/start )
-		s_needed=$(( ( b_target * b_size ) / s_size ))
-		sfdisk "$DEV" -N ${PART_R: -1} --force <<< "$s_start, $s_needed"
+		s_end=$(( ( b_target * b_size ) / s_size ))
+		sfdisk "$DEV" -N ${PART_R: -1} --force <<< "$s_start, $s_end"
 	fi
 }
 
