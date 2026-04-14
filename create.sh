@@ -22,6 +22,10 @@ dialog.data() {
 		| tr -d '\r' )
 #............................
 	RELEASE=$( dialog.input '\Z1r\ZnAudio release:' $latest )
+	if [[ $( curl -IsL -o /dev/null -w '%{http_code}' https://github.com/rern/rAudio/archive/$RELEASE.tar.gz ) != 200 ]]; then
+		dialog.retry "Release: $RELEASE not found." && dialog.data
+		return
+	fi
 #............................
 	i=$( dialog.menu 'Raspberry Pi' "\
 64bit  : 5, 4, 3, 2, Zero 2
