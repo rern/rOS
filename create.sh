@@ -86,8 +86,13 @@ SSID         : $essid
 Password     : $key
 Security     : ${security^^}"
 	fi
+	url_file=http://os.archlinuxarm.org/os/$file
+	if [[ $( curl -sILo /dev/null -w '%{http_code}' $url_file ) != 200 ]]; then
+		dialog.retry "URL: $url_file not ready." && dialog.data
+		return
+	fi
 	if [[ ! $( stat -f -c %T $PWD ) =~ ^(overlayfs|ramfs|tmpfs)$ ]]; then
-		file_gib=$( curl -sIL http://os.archlinuxarm.org/os/$file \
+		file_gib=$( curl -sIL $url_file \
 						| awk '/^Content-Length/ {val=$2} END {printf "(%.2f GiB)", val/1073741824}' )
 #............................
 		dialog --defaultno $opt_yesno "
