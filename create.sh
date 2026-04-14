@@ -87,7 +87,7 @@ Password     : $key
 Security     : ${security^^}"
 	fi
 	url_file=http://os.archlinuxarm.org/os/$file
-	if [[ $( curl -sILo /dev/null -w '%{http_code}' $url_file ) != 200 ]]; then
+	if [[ $( curl -sILo /dev/null -w %{http_code} $url_file ) != 200 ]]; then
 		dialog.retry "URL: $url_file not ready." && dialog.data
 		return
 	fi
