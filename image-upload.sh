@@ -106,6 +106,8 @@ echo "$json" > $imager_json
 git add $imager_json
 git commit -m u
 git push
+[[ $? != 0 ]] && dialog.error_exit "Push \Z1$imager_json\Zn failed."
+#------------------------------------------------------------------------------
 text="\
  $logo
 
