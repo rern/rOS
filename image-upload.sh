@@ -10,7 +10,7 @@ dir_raudio=/mnt/BIG/RPi/Git/rAudio
 #............................
 files_img=$( dialog $opt_check '
  \Z1Images to upload:\Zn
-' 9 0 0 \
+' 8 0 0 \
 	$files_list ) # rAudio-MODEL-YYYYMMDD.img.xz
 mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $files_img )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
