@@ -1,5 +1,12 @@
 #!/bin/bash
 
+trap trapExit EXIT SIGINT
+
+trapExit() {
+	rm rAudio
+	umount -l BIG
+}
+
 if [[ ! -e /bin/gh ]]; then
 	pacman -Sy --noconfirm github-cli
 	dialog.error_exit Setup Github CLI: https://github.com/rern/rOS/blob/main/image_github_setup.md
@@ -81,6 +88,5 @@ echo "$json" > $imager_json
 git add $imager_json
 git commit -m u
 git push
-rm rAudio
-umount -l BIG
+trapExit
 bar Image files uploaded successfully.
