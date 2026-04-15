@@ -25,7 +25,7 @@ dir_systemd=/etc/systemd/system
 file_mirrorlist=/etc/pacman.d/mirrorlist
 
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest
-gifsicle hdparm hfsprogs i2c-tools imagemagick inetutils iwd jq kid3-common
+gifsicle hdparm hfsprogs htop i2c-tools imagemagick inetutils iwd jq kid3-common
 libgpiod libupnp linux-rpi mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns
 parted php-fpm python-rpi-gpio python-rplcd python-smbus2 python-websocket-client python-websockets
 raspberrypi-utils sudo udevil websocat wget xorg-xset'
