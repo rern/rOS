@@ -22,9 +22,13 @@ dir_base=$PWD
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 [[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$dir_base\Zn"
 #------------------------------------------------------------------------------
+#............................
 dialog.splash Upload Image Files
-clear -x
-bar Mount rAudio directory ...
+#............................
+dialog ${opt_info/--sleep 2} "
+  Mount ...
+  \Z1rAudio\Zn GitHub directory
+" 9 $W
 dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
 mkdir -p BIG
 mount $dev BIG

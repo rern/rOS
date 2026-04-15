@@ -499,7 +499,7 @@ if [[ -e /tmp/ping_ok ]]; then
 	rm /tmp/ping_ok
 	dialog.info "
   SSH Arch Linux ARM ...
-  @ \Z1$ip\Zn"
+  @ \Z1$ip\Zn" # sleep 2 in function
 	create_ros $ip
 elif [[ $ip ]]; then
 #............................
