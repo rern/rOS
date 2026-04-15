@@ -22,7 +22,7 @@ file_name=$( sed -n "$i {s/.*: *//; p}" <<< $list )
 if [[ $file_name ]]; then
 	(( $i < 5 )) && repo=rOS || repo=rern.github.io
 	[[ $BRANCH != main ]] && arg_branch=$BRANCH
-	bash <( curl -sL "$https_rern/$repo/$BRANCH/$file_name.sh" ) $arg_branch
+	. <( curl -sL "$https_rern/$repo/$BRANCH/$file_name.sh" ) $arg_branch
 else
 	title=$( sed -n "$i {s/ .*//; p}" <<< $list )
 	if [[ $title == Get ]]; then
