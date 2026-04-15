@@ -1,12 +1,17 @@
 #!/bin/bash
 
 # default images path: /root/rAudio-*.img.xz
-imager_json=rpi-imager.json
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 [[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$PWD\Zn"
 #------------------------------------------------------------------------------
 dialog.splash Upload Image Files
-dir_raudio=/mnt/BIG/RPi/Git/rAudio
+dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
+mkdir -p BIG
+mount $dev BIG
+ln -s {BIG/RPi/Git/,}rAudio
+imager_json=rpi-imager.json
+[[ ! -e rAudio/$imager_json ]] && dialog.error_exit "\Z1$imager_json\Zn not found."
+#------------------------------------------------------------------------------
 #............................
 files_img=$( dialog $opt_check '
  \Z1Images to upload:\Zn
@@ -20,9 +25,9 @@ release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
 [[ $error ]] && dialog.error_exit "$error"
 #------------------------------------------------------------------------------
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
-json=$( sed -E -e "s|i[0-9]*/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
+json=$( sed -E -e "s|i[0-9]{8}/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
 " -e 's/(release_date": ").*/\1'$date_rel'",/
-' $dir_raudio/$imager_json )
+' rAudio/$imager_json )
 models=$( jq -r .os_list[].name <<< $json | cut -d' ' -f2 )
 i=0
 notes='
@@ -55,7 +60,7 @@ done
 banner U p l o a d
 bar *.img.xz
 files_img=$( sed "s|^|$PWD/|" <<< $files_img )
-cd $dir_raudio
+cd rAudio
 gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
 [[ $? != 0 ]] && dialog.error_exit Upload failed.
 #------------------------------------------------------------------------------
