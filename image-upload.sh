@@ -3,7 +3,10 @@
 trap trapExit EXIT SIGINT
 
 trapExit() {
+	kill -TERM -$$ &> /dev/null
 	cd $dir_base
+	findmnt BIG || return
+	
 	umount -l BIG
 	rmdir BIG
 	rm rAudio
