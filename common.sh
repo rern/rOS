@@ -202,12 +202,10 @@ udisk2Toggle() {
 		systemctl start udisks2
 	fi
 }
-https_raudio=https://github.com/rern/rAudio
-#         https://raw.githubusercontent.com/rern/REPO/BRANCH/file
-https_raw=https://raw.githubusercontent.com
-https_rern=$https_raw/rern
-https_ros=$https_rern/rOS/$BRANCH
-https_io=$https_rern/rern.github.io/$BRANCH
+https_rern=https://github.com/rern
+https_raudio=$https_rern/rAudio
+https_ros=$https_rern/rOS/raw/$BRANCH
+https_io=$https_rern/rern.github.io/raw/$BRANCH
 opt_ssh='-qtt -o ConnectTimeout=3
 			  -o StrictHostKeyChecking=no
 			  -o UserKnownHostsFile=/dev/null'

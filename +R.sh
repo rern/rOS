@@ -22,15 +22,16 @@ file_name=$( sed -n "$i {s/.*: *//; p}" <<< $list )
 if [[ $file_name ]]; then
 	(( $i < 5 )) && repo=rOS || repo=rern.github.io
 	[[ $BRANCH != main ]] && arg_branch=$BRANCH
-	. <( curl -sL "$https_rern/$repo/$BRANCH/$file_name.sh" ) $arg_branch
+	. <( curl -sL "$https_rern/$repo/raw/$BRANCH/$file_name.sh" ) $arg_branch
 else
 	title=$( sed -n "$i {s/ .*//; p}" <<< $list )
 	if [[ $title == Get ]]; then
-		url=$( dialog.input 'URL:' rOS/$BRANCH/create.sh )
+		url=$https_rern/
+		url+=$( dialog.input 'URL:' rOS/raw/$BRANCH/create.sh )
 		line=$( dialog.input 'Line 0 to:' )
 		line=${line:-1000}
-		banner $https_rern/$url
-		cmd="curl -sL $https_rern/$url | head -$line | cat -n"
+		banner $url
+		cmd="curl -sL $url | head -$line | cat -n"
 		eval $cmd
 		echo "
 $cmd"
