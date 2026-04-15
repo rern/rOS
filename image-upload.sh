@@ -84,20 +84,33 @@ for model in $models; do
 done
 #............................
 banner U p l o a d
-bar *.img.xz
+bar Image files ...
+echo "$files_img"
 files_img=$( sed "s|^|$dir_base/|" <<< $files_img )
 cd rAudio
 gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
 [[ $? != 0 ]] && dialog.error_exit Upload failed.
 #------------------------------------------------------------------------------
-branch=$( git branch --show-current )
-if [[ $branch != UPDATE ]]; then
+br_current=$( git branch --show-current )
+[[ $br_current == main ]] && br=1 || br=2
+#............................
+select=$( dialog --default-item $br $opt_menu "
+Branch for $imager_json
+" 8 0 0 1 main 2 UPDATE )
+if [[ $select != $br ]]; then
+	[[ $select == 1 ]] && branch=main || branch=UPDATE
 	git diff-index --quiet HEAD && git commit -m U
-	git switch UPDATE
+	git switch $branch
 fi
 echo "$json" > $imager_json
 git add $imager_json
 git commit -m u
 git push
-bar Image files uploaded successfully.
-$imager_json in UPDATE branch
+text="\
+ $logo
+
+ \Z1Image files\Zn     : Uploaded successfully.
+ \Z1$imager_json\Zn : In \Z1$branch\Zn branch"
+[[ $branch != main ]] && text+="
+                   \Z4(Must be push manually)\Zn"
+dialog.info "$text"
