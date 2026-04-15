@@ -3,7 +3,8 @@
 trap trapExit EXIT SIGINT
 
 trapExit() {
-	umount -l $dir_base/BIG
+	cd $dir_base
+	umount -l BIG
 	rmdir BIG
 	rm rAudio
 }
