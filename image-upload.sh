@@ -20,7 +20,7 @@ files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 [[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$PWD\Zn"
 #------------------------------------------------------------------------------
 dialog.splash Upload Image Files
-echo
+clear -x
 bar Mount rAudio directory ...
 dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
 mkdir -p BIG
