@@ -14,7 +14,7 @@ bar Mount rAudio directory ...
 dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
 mkdir -p BIG
 mount $dev BIG
-[[ $? != 0 ]] &&  && dialog.error_exit "\Z1BIG\Zn mount failed."
+[[ $? != 0 ]] && dialog.error_exit "\Z1BIG\Zn mount failed."
 #------------------------------------------------------------------------------
 ln -s {BIG/RPi/Git/,}rAudio
 imager_json=rpi-imager.json
