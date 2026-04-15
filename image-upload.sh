@@ -6,7 +6,7 @@ trapExit() {
 	kill -TERM -$$ &> /dev/null
 	cd $dir_base
 	findmnt BIG || return
-	
+
 	umount -l BIG
 	rmdir BIG
 	rm rAudio
@@ -20,7 +20,7 @@ fi
 dir_base=$PWD
 # default images path: /root/rAudio-*.img.xz
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
-[[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$PWD\Zn"
+[[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$dir_base\Zn"
 #------------------------------------------------------------------------------
 dialog.splash Upload Image Files
 clear -x
@@ -81,19 +81,19 @@ done
 #............................
 banner U p l o a d
 bar *.img.xz
-files_img=$( sed "s|^|$PWD/|" <<< $files_img )
+files_img=$( sed "s|^|$dir_base/|" <<< $files_img )
 cd rAudio
 gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
 [[ $? != 0 ]] && dialog.error_exit Upload failed.
 #------------------------------------------------------------------------------
 branch=$( git branch --show-current )
-if [[ $branch != main ]]; then
+if [[ $branch != UPDATE ]]; then
 	git diff-index --quiet HEAD && git commit -m U
-	git switch main
+	git switch UPDATE
 fi
 echo "$json" > $imager_json
 git add $imager_json
 git commit -m u
 git push
-trapExit
 bar Image files uploaded successfully.
+$imager_json in UPDATE branch
