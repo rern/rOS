@@ -3,8 +3,9 @@
 trap trapExit EXIT SIGINT
 
 trapExit() {
-	rm rAudio
 	umount -l BIG
+	rmdir BIG
+	rm rAudio
 }
 
 if [[ ! -e /bin/gh ]]; then
