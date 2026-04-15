@@ -3,7 +3,7 @@
 trap trapExit EXIT SIGINT
 
 trapExit() {
-	umount -l BIG
+	umount -l $dir_base/BIG
 	rmdir BIG
 	rm rAudio
 }
@@ -13,11 +13,13 @@ if [[ ! -e /bin/gh ]]; then
 	dialog.error_exit Setup Github CLI: https://github.com/rern/rOS/blob/main/image_github_setup.md
 #------------------------------------------------------------------------------
 fi
+dir_base=$PWD
 # default images path: /root/rAudio-*.img.xz
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 [[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$PWD\Zn"
 #------------------------------------------------------------------------------
 dialog.splash Upload Image Files
+echo
 bar Mount rAudio directory ...
 dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
 mkdir -p BIG
