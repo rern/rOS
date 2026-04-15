@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ ! -e /bin/gh ]]; then
+	pacman -Sy --noconfirm github-cli
+	dialog.error_exit Setup Github CLI: https://github.com/rern/rOS/blob/main/image_github_setup.md
+#------------------------------------------------------------------------------
+fi
 # default images path: /root/rAudio-*.img.xz
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 [[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$PWD\Zn"
