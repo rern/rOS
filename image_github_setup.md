@@ -24,4 +24,6 @@ Manually open browser: https://github.com/login/device
 ```sh
 	#   > Press [Enter] (Ignore warning: Running Firefox as root ...)
 	# ✓ Authentication complete.
+git config --global user.email rernrern@gmail.com
+git config --global user.name rern
 ```

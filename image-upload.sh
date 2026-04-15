@@ -10,9 +10,12 @@ files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
 [[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$PWD\Zn"
 #------------------------------------------------------------------------------
 dialog.splash Upload Image Files
+bar Mount rAudio directory ...
 dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
 mkdir -p BIG
 mount $dev BIG
+[[ $? != 0 ]] &&  && dialog.error_exit "\Z1BIG\Zn mount failed."
+#------------------------------------------------------------------------------
 ln -s {BIG/RPi/Git/,}rAudio
 imager_json=rpi-imager.json
 [[ ! -e rAudio/$imager_json ]] && dialog.error_exit "\Z1$imager_json\Zn not found."
@@ -78,5 +81,6 @@ echo "$json" > $imager_json
 git add $imager_json
 git commit -m u
 git push
-[[ $branch != UPDATE ]] && git switch UPDATE
+rm rAudio
+umount -l BIG
 bar Image files uploaded successfully.
