@@ -64,7 +64,6 @@ blk_size=512
 blk_end=$(( byte_target / blk_size ))
 threads=$(( $( nproc ) - 2 ))
 dd if=$DEV iflag=fullblock bs=$blk_size count=$blk_end | nice -n 10 xz -v -T $threads > "$file_img"
-size=$( xz -l --robot $file_img | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}' )
 bar "Image file created:
-$file_img
-$size"
+$file_img"
+xz -l --robot $file_img | awk '/^file/ {printf "%.2f MB <<< %.2f GB", $4/10^6, $5/10^9}'
