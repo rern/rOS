@@ -2,7 +2,7 @@
 
 BRANCH="${BRANCH:-main}"
 
-. <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
+. <( curl -sL https://github.com/rern/rOS/raw/$BRANCH/common.sh )
 
 dirnas=/mnt/MPD/NAS
 dirusb=/mnt/MPD/USB

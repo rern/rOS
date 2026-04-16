@@ -5,7 +5,7 @@ trap trapExit EXIT SIGINT
 START=$( date +%s )
 BRANCH=${1:-main}
 
-[[ ! $logo ]] && . <( curl -sL https://raw.githubusercontent.com/rern/rOS/$BRANCH/common.sh )
+[[ ! $logo ]] && . <( curl -sL https://github.com/rern/rOS/raw/$BRANCH/common.sh )
 
 export PATH+=:/sbin # debian
 package.required bsdtar dialog gawk jq nmap pigz pv sfdisk ssh
@@ -17,12 +17,10 @@ create_ros() {
 	[[ $file_del ]] && rm $file_del
 }
 dialog.data() {
-	latest=$( curl -sfI https://github.com/rern/rAudio/releases/latest \
-		| awk -F'/' '/location/ {print $NF}' \
-		| tr -d '\r' )
+	latest=$( curl -sL -o /dev/null -w %{url_effective} $https_raudio/releases/latest | awk -F/ '{print $NF}' )
 #............................
 	RELEASE=$( dialog.input '\Z1r\ZnAudio release:' $latest )
-	if [[ $( curl -sfIL -o /dev/null -w '%{http_code}' https://github.com/rern/rAudio/archive/$RELEASE.tar.gz ) != 200 ]]; then
+	if [[ $( curl -sfIL -o /dev/null -w '%{http_code}' $https_raudio/archive/$RELEASE.tar.gz ) != 200 ]]; then
 		dialog.retry "Release: $RELEASE not found." && dialog.data
 		return
 	fi
@@ -331,9 +329,7 @@ if [[ ! -e rate_mirrors ]]; then
 		ln -s /usr/bin/rate_mirrors .
 	else
 		url=https://github.com/westandskif/rate-mirrors/releases
-		rel=$( curl -sfI $url/latest \
-			| awk -F'/' '/location/ {print $NF}' \
-			| tr -d '\r' )
+		rel=$( curl -sL -o /dev/null -w %{url_effective} $url/latest | awk -F/ '{print $NF}' )
 		curl -sL $url/download/$rel/rate-mirrors-$rel-$( uname -m )-unknown-linux-musl.tar.gz \
 			| bsdtar xf - --strip-components=1 */rate_mirrors
 	fi

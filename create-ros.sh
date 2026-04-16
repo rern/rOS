@@ -211,7 +211,7 @@ if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
 	fi
 	localectl set-locale LANG=C.UTF-8
 fi
-curl -sL https://raw.githubusercontent.com/archlinuxarm/PKGBUILDs/master/core/pacman-mirrorlist/mirrorlist \
+curl -sL https://github.com/archlinuxarm/PKGBUILDs/raw/master/core/pacman-mirrorlist/mirrorlist \
 	-o /etc/pacman.d/mirrorlist
 ln -sf $dirbash/motd.sh /etc/profile.d/ # motd
 sed -i '/^-.*pam_systemd_home/ s/^/#/' /etc/pam.d/system-auth # fix freedesktop.home1.service not found

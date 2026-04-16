@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# . <( curl -sL https://raw.githubusercontent.com/rern/rOS/main/common.sh )
+#. <( curl -sL https://github.com/rern/rOS/raw/main/common.sh )
 
 BRANCH="${BRANCH:-main}"
 
