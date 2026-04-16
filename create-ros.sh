@@ -236,7 +236,6 @@ for v in cmdline_txt config_txt; do
 	echo -n "${!v}" > /boot/${v/_/.}
 done
 rm -f /boot/*.pacnew
-touch /boot/expand
 #............................
 dialog.splash "\
 r A u d i o
