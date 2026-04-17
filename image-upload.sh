@@ -4,12 +4,11 @@ trap trapExit EXIT SIGINT
 
 trapExit() {
 	kill -TERM -$$ &> /dev/null
-	cd $dir_base
-	findmnt BIG || return
-
-	umount -l BIG
-	rmdir BIG
-	rm rAudio
+	if mount | grep -q ^$dev; then
+		umount -l BIG
+		rmdir BIG
+		rm rAudio
+	fi
 }
 
 if [[ ! -e /bin/gh ]]; then
@@ -17,10 +16,9 @@ if [[ ! -e /bin/gh ]]; then
 	dialog.error_exit Setup Github CLI: https://github.com/rern/rOS/blob/main/image_github_setup.md
 #------------------------------------------------------------------------------
 fi
-dir_base=$PWD
 # default images path: /root/rAudio-*.img.xz
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
-[[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$dir_base\Zn"
+[[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$PWD\Zn"
 #------------------------------------------------------------------------------
 #............................
 dialog.splash Upload Image Files
@@ -30,13 +28,15 @@ dialog ${opt_info/--sleep 2} "
   \Z1rAudio\Zn GitHub directory
 " 9 $W
 dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
-ntfsinfo -m $dev &> /dev/null || dialog.error_exit "\Z1$dev\Zn is hibernated."
+if ! mount | grep -q ^$dev && ! ntfsinfo -m $dev &> /dev/null; then
+	dialog.error_exit "\Z1$dev\Zn is hibernated."
 #------------------------------------------------------------------------------
+fi
 mkdir -p BIG
 mount $dev BIG
 [[ $? != 0 ]] && dialog.error_exit "\Z1BIG\Zn mount failed."
 #------------------------------------------------------------------------------
-ln -s {BIG/RPi/Git/,}rAudio
+ln -sf {BIG/RPi/Git/,}rAudio
 imager_json=rpi-imager.json
 [[ ! -e rAudio/$imager_json ]] && dialog.error_exit "\Z1$imager_json\Zn not found."
 #------------------------------------------------------------------------------
@@ -88,8 +88,10 @@ done
 banner U p l o a d
 bar Image files ...
 echo "$files_img"
-files_img=$( sed "s|^|$dir_base/|" <<< $files_img )
+files_img=$( sed "s|^|$PWD/|" <<< $files_img )
 cd rAudio
+git tag -d i$release 2> /dev/null                                                 # existing local
+git ls-remote --tags origin | grep -q i$release && push origin --delete i$release # existing remote
 gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
 [[ $? != 0 ]] && dialog.error_exit Upload failed.
 #------------------------------------------------------------------------------
@@ -99,6 +101,7 @@ br_current=$( git branch --show-current )
 select=$( dialog --default-item $br $opt_menu "
 Branch for $imager_json
 " 8 0 0 1 main 2 UPDATE )
+clear -x
 if [[ $select != $br ]]; then
 	[[ $select == 1 ]] && branch=main || branch=UPDATE
 	git diff-index --quiet HEAD && git commit -m U
@@ -108,6 +111,7 @@ echo "$json" > $imager_json
 git add $imager_json
 git commit -m u
 git push
+cd ..
 [[ $? != 0 ]] && dialog.error_exit "Push \Z1$imager_json\Zn failed."
 #------------------------------------------------------------------------------
 text="\
