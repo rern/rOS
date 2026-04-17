@@ -63,6 +63,7 @@ if selected log; then
 	bar Clear system log ...
 	rm -rf /var/log/journal/*
 fi
+[[ -e /bin/firefox ]] && systemctl enable localbrowser
 bar 'rAudio reset done.
 
 Shutdown ...
