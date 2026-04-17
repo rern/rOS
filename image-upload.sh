@@ -90,7 +90,7 @@ bar Image files ...
 echo "$files_img"
 files_img=$( sed "s|^|$dir_base/|" <<< $files_img )
 cd rAudio
-gh release create i$release --target i$release --latest=false --title i$release --notes "$notes" $files_img
+gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
 [[ $? != 0 ]] && dialog.error_exit Upload failed.
 #------------------------------------------------------------------------------
 br_current=$( git branch --show-current )
