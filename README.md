@@ -101,7 +101,7 @@ Note: Use router pre-assigned IP address for Raspberry Pi if possible.
 - Move micro SD card to Raspberry Pi
 - Power on
 
-**Create image file** (`BOOT` and `ROOT` on single device only)
+**Create image file**
 - Once started rAudio successfully
 - SSH to RPi
 - Reset for image
