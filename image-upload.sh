@@ -120,5 +120,5 @@ text="\
  \Z1Image files\Zn     : Uploaded successfully.
  \Z1$imager_json\Zn : In \Z1$branch\Zn branch"
 [[ $branch != main ]] && text+="
-                   \Z4(Must be merge manually)\Zn"
+                   \Z4(Must be merged manually)\Zn"
 dialog.info "$text"
