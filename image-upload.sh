@@ -30,6 +30,8 @@ dialog ${opt_info/--sleep 2} "
   \Z1rAudio\Zn GitHub directory
 " 9 $W
 dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
+ntfsinfo -m $dev &> /dev/null || dialog.error_exit "\Z1$dev\Zn is hibernated."
+#------------------------------------------------------------------------------
 mkdir -p BIG
 mount $dev BIG
 [[ $? != 0 ]] && dialog.error_exit "\Z1BIG\Zn mount failed."
