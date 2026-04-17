@@ -63,7 +63,10 @@ if selected log; then
 	bar Clear system log ...
 	rm -rf /var/log/journal/*
 fi
-[[ -e /bin/firefox ]] && systemctl enable localbrowser
+if [[ -e /bin/firefox ]]; then
+	systemctl disable getty@tty1
+	systemctl enable bootsplash localbrowser
+fi
 bar 'rAudio reset done.
 
 Shutdown ...
