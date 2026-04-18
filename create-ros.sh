@@ -136,6 +136,8 @@ if [[ -e /bin/firefox ]]; then
 {
 	"policies": {
 		"DisableAppUpdate": true,
+		"DisableFirefoxStudies": true,
+		"DisableTelemetry": true,
 		"DontCheckDefaultBrowser": true,
 		"OverrideFirstRunPage": "",
 		"SkipOnboarding": true,
