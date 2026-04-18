@@ -26,7 +26,7 @@ dialog ${opt_info/--sleep 2} "
   \Z1rAudio\Zn GitHub directory
 " 9 $W
 dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
-if ! findmnt BIG && ! ntfsinfo -m $dev &> /dev/null; then
+if ! findmnt BIG &> /dev/null && ! ntfsinfo -m $dev &> /dev/null; then
 	dialog.error_exit "\Z1$dev\Zn is hibernated."
 #------------------------------------------------------------------------------
 fi
