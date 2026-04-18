@@ -4,9 +4,6 @@ trap trapExit EXIT SIGINT
 
 trapExit() {
 	kill -TERM -$$ &> /dev/null
-	cd $dir_base
-	findmnt BIG || return
-
 	umount -l BIG
 	rmdir BIG
 	rm rAudio
@@ -17,10 +14,9 @@ if [[ ! -e /bin/gh ]]; then
 	dialog.error_exit Setup Github CLI: https://github.com/rern/rOS/blob/main/image_github_setup.md
 #------------------------------------------------------------------------------
 fi
-dir_base=$PWD
 # default images path: /root/rAudio-*.img.xz
 files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
-[[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$dir_base\Zn"
+[[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$PWD\Zn"
 #------------------------------------------------------------------------------
 #............................
 dialog.splash Upload Image Files
@@ -30,13 +26,14 @@ dialog ${opt_info/--sleep 2} "
   \Z1rAudio\Zn GitHub directory
 " 9 $W
 dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
-ntfsinfo -m $dev &> /dev/null || dialog.error_exit "\Z1$dev\Zn is hibernated."
+if ! findmnt BIG && ! ntfsinfo -m $dev &> /dev/null; then
+	dialog.error_exit "\Z1$dev\Zn is hibernated."
 #------------------------------------------------------------------------------
+fi
 mkdir -p BIG
-mount $dev BIG
-[[ $? != 0 ]] && dialog.error_exit "\Z1BIG\Zn mount failed."
+mount $dev BIG || dialog.error_exit "\Z1BIG\Zn mount failed."
 #------------------------------------------------------------------------------
-ln -s {BIG/RPi/Git/,}rAudio
+ln -sf {BIG/RPi/Git/,}rAudio
 imager_json=rpi-imager.json
 [[ ! -e rAudio/$imager_json ]] && dialog.error_exit "\Z1$imager_json\Zn not found."
 #------------------------------------------------------------------------------
@@ -88,7 +85,7 @@ done
 banner U p l o a d
 bar Image files ...
 echo "$files_img"
-files_img=$( sed "s|^|$dir_base/|" <<< $files_img )
+files_img=$( sed "s|^|$PWD/|" <<< $files_img )
 cd rAudio
 gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
 [[ $? != 0 ]] && dialog.error_exit Upload failed.
@@ -108,6 +105,7 @@ echo "$json" > $imager_json
 git add $imager_json
 git commit -m u
 git push
+cd ..
 [[ $? != 0 ]] && dialog.error_exit "Push \Z1$imager_json\Zn failed."
 #------------------------------------------------------------------------------
 text="\
