@@ -64,7 +64,10 @@ if selected log; then
 	rm -rf /var/log/journal/*
 fi
 if [[ -e /bin/firefox ]]; then
-	systemctl disable getty@tty1
+	if ! grep -q tty3 /boot/cmdline.txt; then
+		sed -i 's/tty1.*/tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt
+		systemctl disable --now getty@tty1
+	fi
 	systemctl enable bootsplash localbrowser
 fi
 bar 'rAudio reset done.
