@@ -81,16 +81,17 @@ declare -A mdl_rpi=(
 #............................
 banner S H A - 2 5 6
 for file in $file_img; do
- 	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
+ 	read size_img size_xz < <( xz -l --robot $file | awk '/^file/ {print $4, $5}' )
 	bar $file
 	printf 'sha256sum \e[5m...\e[0m'
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	printf "\r$sha256\n"
 	model=$( cut -d- -f2 <<< $file )
 	i=$( jq -r .os_list[].name <<< $json | sed -n "/$model/=" )
-	json=$( jq   ".os_list[$i].extract_size = ${size_xz_img/* }
-				| .os_list[$i].image_download_size = ${size_xz_img/ *}
-				| .os_list[$i].image_download_sha256 = \"$sha256\"" <<< $json )
+	os_i=os_list[$(( i - 1 ))]
+	json=$( jq   ".os_i.extract_size = $size_img
+				| .os_i.image_download_size = $size_xz
+				| .os_i.image_download_sha256 = \"$sha256\"" <<< $json )
 	notes+="
 | ${mdl_rpi[$model]} \
 | [$file]($https_raudio/releases/download/i$release/$file) \
