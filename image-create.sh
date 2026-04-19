@@ -10,24 +10,31 @@ package.required bsdtar dialog
 
 shrink() {
 	bar "Shrink Pass #$1 ..."
-	partinfo=$( tune2fs -l $PART_R )
-	blk_count=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
-	blk_free=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
-	blk_size=$( awk '/Block size/ {print $NF}' <<< "$partinfo" )
+	sect_size=$( blockdev --getss $DEV )
+	sect_min=$( tune2fs -l $PART_R \
+					| awk  -v sect_size=$sect_size '
+						/^Block count/ { count = $NF }
+						/^Free blocks/ { free  = $NF }
+						/^Block size/  { size  = $NF }
+							END {
+								target = sprintf( "%.0f", ( count - free ) * 1.05 )
+								if ( count - target > 1024 ) printf "%.0f", target * size / sect_size
+							}
+					' )
+	[[ ! $sect_min ]] && bar $PART_R already at minimum size. && return
 
-	blk_target=$(( ( ( blk_count - blk_free ) * 105 ) / 100 ))
-	if (( $(( blk_count - blk_target )) < 1024 )); then
-		bar Almost at minimum size already.
-	else
-		blk_kb=$(( blk_size / 1024 ))
-		blk_new=$(( ( targetblocks + blk_kb - 1 ) / blk_kb * blk_kb )) # round kb
-		sect_size=$( blockdev --getss $DEV )
-		sect_new=$(( blk_new * blk_size / sect_size ))
-		sect_start=$( cat /sys/class/block/${PART_R/*\/}/start )
-		sect_end=$(( sect_start + sect_new ))
-		resize2fs -fp $PART_R $(( blk_new * blk_kb ))K
-		sfdisk "$DEV" -N ${PART_R: -1} --force <<< "$sect_start, $sect_end"
-	fi
+	resize2fs -fp $PART_R $(( sect_min * sect_size / 1024 ))K
+	sect_start=$( cat /sys/class/block/${PART_R/*\/}/start )
+	sect_end=$(( sect_start + sect_min ))
+	parted -s $DEV ---pretend-input-tty << EOF
+unit
+s
+resizepart
+2
+$sect_end
+Yes
+quit
+EOF
 }
 
 #............................
