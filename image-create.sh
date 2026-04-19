@@ -13,19 +13,19 @@ shrink() {
 	partinfo=$( tune2fs -l $PART_R )
 	blk_count=$( awk '/Block count/ {print $NF}' <<< "$partinfo" )
 	blk_free=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
-	blk_B=$( awk '/Block size/ {print $NF}' <<< "$partinfo" )
+	blk_size=$( awk '/Block size/ {print $NF}' <<< "$partinfo" )
 
 	blk_target=$(( ( ( blk_count - blk_free ) * 105 ) / 100 ))
 	if (( $(( blk_count - blk_target )) < 1024 )); then
 		bar Almost at minimum size already.
 	else
-		blk_kB=$(( blk_B / 1024 ))
-		blk_new=$(( ( targetblocks + blk_kB - 1 ) / blk_kB * blk_kB )) # round kb
-		sect_B=$( blockdev --getss $DEV )
-		sect_new=$(( blk_new * blk_B / sect_B ))
+		blk_kb=$(( blk_size / 1024 ))
+		blk_new=$(( ( targetblocks + blk_kb - 1 ) / blk_kb * blk_kb )) # round kb
+		sect_size=$( blockdev --getss $DEV )
+		sect_new=$(( blk_new * blk_size / sect_size ))
 		sect_start=$( cat /sys/class/block/${PART_R/*\/}/start )
 		sect_end=$(( sect_start + sect_new ))
-		resize2fs -fp $PART_R $(( blk_new * blk_kB ))K
+		resize2fs -fp $PART_R $(( blk_new * blk_kb ))K
 		sfdisk "$DEV" -N ${PART_R: -1} --force <<< "$sect_start, $sect_end"
 	fi
 }
