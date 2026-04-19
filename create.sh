@@ -91,7 +91,7 @@ Security     : ${security^^}"
 	fi
 	if [[ ! $( stat -f -c %T $PWD ) =~ ^(overlayfs|ramfs|tmpfs)$ ]]; then
 		file_gib=$( curl -sfIL $url_file \
-						| awk '/^Content-Length/ {val=$2} END {printf "(%.0f MiB)", val/1024*1024 }' )
+						| awk '/^Content-Length/ {val=$2} END {printf "(%.0f MiB)", val / ( 1024 * 1024 ) }' )
 #............................
 		dialog --defaultno $opt_yesno "
  Keep file once done?
