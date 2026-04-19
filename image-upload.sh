@@ -1,8 +1,8 @@
 #!/bin/bash
 
-trap trapExit EXIT SIGINT
+trap cleanup EXIT SIGINT
 
-trapExit() {
+cleanup() {
 	kill -TERM -$$ &> /dev/null
 	cd $dir_base
 	umount -l BIG
