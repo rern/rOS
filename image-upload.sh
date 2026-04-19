@@ -116,6 +116,7 @@ if [[ $select != $br ]]; then
 	git diff-index --quiet HEAD && git commit -m U
 	git switch $branch
 fi
+git pull
 echo "$json" > $imager_json
 git add $imager_json
 git commit -m u
