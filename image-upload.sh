@@ -78,6 +78,7 @@ declare -A mdl_rpi=(
 	[64bit]='`5` `4` `3` `2 (64bit)` `Zero2`'
 	[32bit]='`3` `2`'
 	[Legacy]='`1` `Zero`' )
+os_name=$( jq '.os_list | map(.name)' <<< $json )
 #............................
 banner S H A - 2 5 6
 for file in $file_img; do
@@ -86,14 +87,14 @@ for file in $file_img; do
 	printf 'sha256sum \e[5m...\e[0m'
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	printf "\r$sha256\n"
-	model=$( cut -d- -f2 <<< $file )
-	i=$( jq -r .os_list[].name <<< $json | sed -n "/$model/=" )
-	os_i=os_list[$(( i - 1 ))]
+	mdl=$( cut -d- -f2 <<< $file )
+	i=$( jq 'index("rAudio '$mdl'")' <<< $os_name )
+	os_i=os_list[$i]
 	json=$( jq   ".os_i.extract_size = $size_img
 				| .os_i.image_download_size = $size_xz
 				| .os_i.image_download_sha256 = \"$sha256\"" <<< $json )
 	notes+="
-| ${mdl_rpi[$model]} \
+| ${mdl_rpi[$mdl]} \
 | [$file]($https_raudio/releases/download/i$release/$file) \
 | [< file](https://cloud.s-t-franz.de/public.php/dav/files/kdFZXN9Na28nfD8/$file) |"
 done
