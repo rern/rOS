@@ -52,7 +52,7 @@ case $( basename $( ls BOOT/kernel*.img ) .img ) in
 esac
 release=$( < $file_r1 )
 #............................
-file_img=$( dialog.input 'Image filename:' rAudio-$model-$release.img.xz )
+file_img=$( dialog.input '\Z1Image filename:\Zn' rAudio-$model-$release.img.xz )
 touch BOOT/expand # for expand root partition and set root pasword
 BR.unmount
 #------------------------------------------------------------------------------
