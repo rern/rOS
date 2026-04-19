@@ -4,10 +4,14 @@ trap trapExit EXIT SIGINT
 
 trapExit() {
 	kill -TERM -$$ &> /dev/null
+	cd $dir_base
 	umount -l BIG
 	rmdir BIG
 	rm rAudio
 }
+
+dir_base=$PWD
+imager_json=rpi-imager.json
 
 if [[ ! -e /bin/gh ]]; then
 	pacman -Sy --noconfirm github-cli
@@ -15,8 +19,8 @@ if [[ ! -e /bin/gh ]]; then
 #------------------------------------------------------------------------------
 fi
 # default images path: /root/rAudio-*.img.xz
-files_list=$( ls rAudio*.img.xz  | sed 's/$/ on/' )
-[[ ! $files_list ]] && dialog.error_exit "No image files in current: \Z1$PWD\Zn"
+file_img=$( ls rAudio*.img.xz )
+[[ ! $file_img ]] && dialog.error_exit "No image files in current: \Z1$dir_base\Zn"
 #------------------------------------------------------------------------------
 #............................
 dialog.splash Upload Image Files
@@ -34,27 +38,39 @@ mkdir -p BIG
 mount $dev BIG || dialog.error_exit "\Z1BIG\Zn mount failed."
 #------------------------------------------------------------------------------
 ln -sf {BIG/RPi/Git/,}rAudio
-imager_json=rpi-imager.json
 [[ ! -e rAudio/$imager_json ]] && dialog.error_exit "\Z1$imager_json\Zn not found."
 #------------------------------------------------------------------------------
 #............................
-files_img=$( dialog $opt_check '
- \Z1Images to upload:\Zn
-' 8 0 0 \
-	$files_list ) # rAudio-MODEL-YYYYMMDD.img.xz
-mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $files_img )
+dialog $opt_yesno "
+\Z1Images to upload:\Zn
+$file_img
+" 0 0 || exit # rAudio-MODEL-YYYYMMDD.img.xz
+#------------------------------------------------------------------------------
+mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $file_img )
 mdl=$( cut -d- -f1 <<< $mdl_rel )
 [[ $( echo $mdl ) != '32bit 64bit Legacy' ]] && error="Not all 3 models:\n$mdl\n"
-release=$( cut -d- -f2 <<< $mdl_rel | sort -u )
+release=$( head -1 <<< $mdl_rel | cut -d- -f2 )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
 [[ $error ]] && dialog.error_exit "$error"
 #------------------------------------------------------------------------------
+if git show-ref --tags | grep -q -m1 i$release$; then
+	dialog $opt_yesno "
+ Delete exisiting local tag:
+ \Z1i$release\Zn
+" 0 0 && git tag -d i$release || exit
+#------------------------------------------------------------------------------
+fi
+if [[ $( git ls-remote --tags origin i$release ) ]]; then
+	dialog $opt_yesno "
+ Delete exisiting remote tag:
+ \Z1i$release\Zn
+" 0 0 && git push --delete origin i$release || exit
+#------------------------------------------------------------------------------
+fi
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
 json=$( sed -E -e "s|i[0-9]{8}/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
 " -e 's/(release_date": ").*/\1'$date_rel'",/
 ' rAudio/$imager_json )
-models=$( jq -r .os_list[].name <<< $json | cut -d' ' -f2 )
-i=0
 notes='
 | Raspberry Pi | Image File | Mirror |
 |:-------------|:-----------|:-------|'
@@ -64,18 +80,17 @@ declare -A mdl_rpi=(
 	[Legacy]='`1` `Zero`' )
 #............................
 banner S H A - 2 5 6
-for model in $models; do
-	file=rAudio-$model-$release.img.xz
+for file in $file_img; do
  	size_xz_img=$( xz -l --robot $file | awk '/^file/ {print $4" "$5}' )
 	bar $file
 	printf 'sha256sum \e[5m...\e[0m'
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	printf "\r$sha256\n"
-	osi=os_list[$i]
-	json=$( jq ".$osi.extract_size = ${size_xz_img/* }
-				| .$osi.image_download_size = ${size_xz_img/ *}
-				| .$osi.image_download_sha256 = \"$sha256\"" <<< $json )
-	(( i++ ))
+	model=$( cut -d- -f2 <<< $file )
+	i=$( jq -r .os_list[].name <<< $json | sed -n "/$model/=" )
+	json=$( jq   ".os_list[$i].extract_size = ${size_xz_img/* }
+				| .os_list[$i].image_download_size = ${size_xz_img/ *}
+				| .os_list[$i].image_download_sha256 = \"$sha256\"" <<< $json )
 	notes+="
 | ${mdl_rpi[$model]} \
 | [$file]($https_raudio/releases/download/i$release/$file) \
@@ -84,10 +99,10 @@ done
 #............................
 banner U p l o a d
 bar Image files ...
-echo "$files_img"
-files_img=$( sed "s|^|$PWD/|" <<< $files_img )
+echo "$file_img"
 cd rAudio
-gh release create i$release --latest=false --title i$release --notes "$notes" $files_img
+file_path=$( sed "s|^|$dir_base/|" <<< $file_img )
+gh release create i$release --latest=false --title i$release --notes "$notes" $file_path
 [[ $? != 0 ]] && dialog.error_exit Upload failed.
 #------------------------------------------------------------------------------
 br_current=$( git branch --show-current )
@@ -105,7 +120,6 @@ echo "$json" > $imager_json
 git add $imager_json
 git commit -m u
 git push
-cd ..
 [[ $? != 0 ]] && dialog.error_exit "Push \Z1$imager_json\Zn failed."
 #------------------------------------------------------------------------------
 text="\
