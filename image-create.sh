@@ -15,7 +15,7 @@ shrink() {
 	blk_free=$( awk '/Free blocks/ {print $NF}' <<< "$partinfo" )
 	blk_size=$( awk '/Block size/ {print $NF}' <<< "$partinfo" )
 
-	blk_target=$(( (  ( blk_count - blk_free ) * 105 ) / 100 ))
+	blk_target=$(( ( ( blk_count - blk_free ) * 105 ) / 100 ))
 	if (( $(( blk_count - blk_target )) < 1024 )); then
 		bar Almost at minimum size already.
 	else
