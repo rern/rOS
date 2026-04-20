@@ -70,11 +70,6 @@ e2fsck -p $PART_R
 banner Shrink ROOT
 shrink 1
 shrink 2
-
-exit
-
-
-
 #............................
 banner Compressed to image file ...
 bar $file_img
