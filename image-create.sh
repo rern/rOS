@@ -8,7 +8,7 @@ trap trapExit EXIT
 
 package.required bsdtar dialog
 
-shrink() {
+shrink() { # lsblk - partition size not changed; df /dev/sdx2 - 100% used
 	[[ $noshrink ]] && return
 
 	bar "Shrink Pass #$1 ..."
@@ -73,9 +73,10 @@ shrink 1
 shrink 2
 #............................
 banner Compressed to image file ...
-bar $file_img
+bar $DEV >>> $file_img
 threads=$(( $( nproc ) - 2 ))
 dd if=$DEV iflag=fullblock bs=$sect_size count=$sect_end | nice -n 10 xz -v -T $threads > $file_img
-bar "Image file created:
-$file_img
-$( xz -l --robot $file_img | awk '/^file/ {printf "%.2f MB <<< %.2f GB\n", $4/10^6, $5/10^9}' )"
+bar "Done: \
+$( xz -l --robot $file_img \
+	| awk '/^file/ { printf "%.2f >>> %.2f MiB", $5 / ( 1024^2 ), $4 / ( 1024^2 ) }' )
+"
