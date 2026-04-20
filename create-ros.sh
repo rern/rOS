@@ -123,6 +123,7 @@ else
 	rm -f $dirmpdconf/conf/camilladsp.conf
 fi
 # cava
+mkdir -p /root/.config
 ln -s /etc/cava.conf /root/.config/
 echo VISUAL=nano >> /etc/environment
 # firefox
