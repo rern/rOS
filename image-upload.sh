@@ -118,6 +118,7 @@ br_current=$( git branch --show-current )
 select=$( dialog --default-item $br $opt_menu "
 Branch for $imager_json
 " 8 0 0 1 main 2 UPDATE )
+clear -x
 if [[ $select != $br ]]; then
 	[[ $select == 1 ]] && branch=main || branch=UPDATE
 	git diff-index --quiet HEAD && git commit -m U
