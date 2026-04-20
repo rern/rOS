@@ -10,7 +10,7 @@ package.required bsdtar dialog
 
 shrink() {
 	[[ $noshrink ]] && return
-	
+
 	bar "Shrink Pass #$1 ..."
 	sect_size=$( blockdev --getss $DEV )
 	sect_min=$( tune2fs -l $PART_R \
@@ -70,6 +70,11 @@ e2fsck -p $PART_R
 banner Shrink ROOT
 shrink 1
 shrink 2
+
+exit
+
+
+
 #............................
 banner Compressed to image file ...
 bar $file_img
