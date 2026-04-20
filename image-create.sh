@@ -53,7 +53,7 @@ esac
 release=$( < $file_r1 )
 #............................
 file_img=$( dialog.input '\Z1Image filename:\Zn' rAudio-$model-$release.img.xz )
-touch BOOT/expand # for expand root partition and set root pasword
+touch BOOT/{expand,password}
 BR.unmount
 #------------------------------------------------------------------------------
 banner Check Partitions ...
