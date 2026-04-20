@@ -29,7 +29,7 @@ dialog.splash Upload Image Files
 dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
 [[ ! $dev ]] && dialog.error_exit "\Z1BIG\Zn not found."
 #------------------------------------------------------------------------------
-cleanup
+umount -l BIG 2> /dev/null
 ! ntfsinfo -m $dev &> /dev/null && dialog.error_exit "\Z1$dev\Zn is hibernated."
 #------------------------------------------------------------------------------
 #............................
