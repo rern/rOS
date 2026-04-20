@@ -9,6 +9,8 @@ trap trapExit EXIT
 package.required bsdtar dialog
 
 shrink() {
+	[[ $noshrink ]] && return
+	
 	bar "Shrink Pass #$1 ..."
 	sect_size=$( blockdev --getss $DEV )
 	sect_min=$( tune2fs -l $PART_R \
@@ -21,14 +23,14 @@ shrink() {
 								if ( count - target > 1024 ) printf "%.0f", target * size / sect_size
 							}
 					' )
-	if [[ $sect_min ]]; then
-		resize2fs -fp $PART_R $(( sect_min * sect_size / 1024 ))K
-	else
-		bar ROOT: $PART_R already at minimum size
-	fi
 	sect_start=$( cat /sys/class/block/${PART_R/*\/}/start )
 	sect_end=$(( sect_start + sect_min ))
-	parted -s $DEV ---pretend-input-tty << EOF
+	if [[ ! $sect_min ]]; then
+		noshrink=1
+		bar $PART_R already at minimum size.
+	else
+		resize2fs -fp $PART_R $(( sect_min * sect_size / 1024 ))K
+		parted -s $DEV ---pretend-input-tty << EOF
 unit
 s
 resizepart
@@ -37,6 +39,7 @@ $sect_end
 Yes
 quit
 EOF
+	fi
 }
 
 #............................
