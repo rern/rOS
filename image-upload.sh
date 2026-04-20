@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# *.img.xz - current dir
+# repo     - /dev/sd?1 BIG: /RPi/Git/rAudio
+
 trap cleanup EXIT SIGINT
 
 cleanup() {
@@ -18,22 +21,22 @@ if [[ ! -e /bin/gh ]]; then
 	dialog.error_exit Setup Github CLI: https://github.com/rern/rOS/blob/main/image_github_setup.md
 #------------------------------------------------------------------------------
 fi
-# default images path: /root/rAudio-*.img.xz
 file_img=$( ls rAudio*.img.xz )
 [[ ! $file_img ]] && dialog.error_exit "No image files in current: \Z1$dir_base\Zn"
 #------------------------------------------------------------------------------
 #............................
 dialog.splash Upload Image Files
+dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
+[[ ! $dev ]] && dialog.error_exit "\Z1BIG\Zn not found."
+#------------------------------------------------------------------------------
+cleanup
+! ntfsinfo -m $dev &> /dev/null && dialog.error_exit "\Z1$dev\Zn is hibernated."
+#------------------------------------------------------------------------------
 #............................
 dialog ${opt_info/--sleep 2} "
   Mount ...
   \Z1rAudio\Zn GitHub directory
 " 9 $W
-dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
-if ! findmnt BIG &> /dev/null && ! ntfsinfo -m $dev &> /dev/null; then
-	dialog.error_exit "\Z1$dev\Zn is hibernated."
-#------------------------------------------------------------------------------
-fi
 mkdir -p BIG
 mount $dev BIG || dialog.error_exit "\Z1BIG\Zn mount failed."
 #------------------------------------------------------------------------------
@@ -44,9 +47,9 @@ ln -sf {BIG/RPi/Git/,}rAudio
 dialog $opt_yesno "
 \Z1Images to upload:\Zn
 $file_img
-" 0 0 || exit # rAudio-MODEL-YYYYMMDD.img.xz
+" 0 0 || exit
 #------------------------------------------------------------------------------
-models=$( awk -F'[-.]' '{printf "%s ", $2}' <<< $file_img )
+models=$( awk -F'[-.]' '{printf "%s ", $2}' <<< $file_img ) # rAudio-MODEL-YYYYMMDD.img.xz
 [[ $models != '32bit 64bit Legacy' ]] && error="Not all 3 models:\n$models\n"
 release=$( awk -F'[-.]' '{print $3}' <<< $file_img | sort -u )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
