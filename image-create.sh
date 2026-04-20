@@ -66,6 +66,7 @@ bar BOOT: $PART_B ...
 fsck.fat -taw $PART_B
 bar ROOT: $PART_R ...
 e2fsck -p $PART_R
+resize2fs $PART_R # if already shrunk, expand for tune2fs to get data
 #............................
 banner Shrink ROOT
 shrink 1
@@ -74,7 +75,7 @@ shrink 2
 banner Compressed to image file ...
 bar $file_img
 threads=$(( $( nproc ) - 2 ))
-dd if=$DEV iflag=fullblock bs=$sect_size count=$sect_end | nice -n 10 xz -v -T $threads > "$file_img"
+dd if=$DEV iflag=fullblock bs=$sect_size count=$sect_end | nice -n 10 xz -v -T $threads > $file_img
 bar "Image file created:
 $file_img
 $( xz -l --robot $file_img | awk '/^file/ {printf "%.2f MB <<< %.2f GB\n", $4/10^6, $5/10^9}' )"
