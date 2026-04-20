@@ -46,10 +46,9 @@ dialog $opt_yesno "
 $file_img
 " 0 0 || exit # rAudio-MODEL-YYYYMMDD.img.xz
 #------------------------------------------------------------------------------
-mdl_rel=$( sed -E 's/rAudio-|.img.xz//g' <<< $file_img )
-mdl=$( cut -d- -f1 <<< $mdl_rel )
-[[ $( echo $mdl ) != '32bit 64bit Legacy' ]] && error="Not all 3 models:\n$mdl\n"
-release=$( head -1 <<< $mdl_rel | cut -d- -f2 )
+models=$( awk -F'[-.]' '{printf "%s ", $2}' <<< $file_img )
+[[ $models != '32bit 64bit Legacy' ]] && error="Not all 3 models:\n$models\n"
+release=$( awk -F'[-.]' '{print $3}' <<< $file_img | sort -u )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
 [[ $error ]] && dialog.error_exit "$error"
 #------------------------------------------------------------------------------
@@ -74,7 +73,7 @@ json=$( sed -E -e "s|i[0-9]{8}/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
 notes='
 | Raspberry Pi | Image File | Mirror |
 |:-------------|:-----------|:-------|'
-declare -A mdl_rpi=(
+declare -A model_rpi=(
 	[64bit]='`5` `4` `3` `2 (64bit)` `Zero2`'
 	[32bit]='`3` `2`'
 	[Legacy]='`1` `Zero`' )
@@ -87,14 +86,14 @@ for file in $file_img; do
 	printf 'sha256sum \e[5m...\e[0m'
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	printf "\r$sha256\n"
-	mdl=$( cut -d- -f2 <<< $file )
-	i=$( jq 'index("rAudio '$mdl'")' <<< $os_name )
+	model=$( cut -d- -f2 <<< $file )
+	i=$( jq 'index("rAudio '$model'")' <<< $os_name )
 	os_i=os_list[$i]
 	json=$( jq   ".os_i.extract_size = $size_img
 				| .os_i.image_download_size = $size_xz
 				| .os_i.image_download_sha256 = \"$sha256\"" <<< $json )
 	notes+="
-| ${mdl_rpi[$mdl]} \
+| ${model_rpi[$model]} \
 | [$file]($https_raudio/releases/download/i$release/$file) \
 | [< file](https://cloud.s-t-franz.de/public.php/dav/files/kdFZXN9Na28nfD8/$file) |"
 done
@@ -121,7 +120,7 @@ fi
 git pull
 echo "$json" > $imager_json
 git add $imager_json
-git commit -m u
+git commit -m $imager_json
 git push
 [[ $? != 0 ]] && dialog.error_exit "Push \Z1$imager_json\Zn failed."
 #------------------------------------------------------------------------------
