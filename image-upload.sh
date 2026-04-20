@@ -50,7 +50,7 @@ $file_img
 " 0 0 || exit
 #------------------------------------------------------------------------------
 models=$( awk -F'[-.]' '{printf "%s ", $2}' <<< $file_img ) # rAudio-MODEL-YYYYMMDD.img.xz
-[[ $models != '32bit 64bit Legacy' ]] && error="Not all 3 models:\n$models\n"
+[[ $models != '32bit 64bit Legacy ' ]] && error="Not all 3 models:\n$models\n"
 release=$( awk -F'[-.]' '{print $3}' <<< $file_img | sort -u )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
 [[ $error ]] && dialog.error_exit "$error"
