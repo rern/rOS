@@ -55,6 +55,7 @@ release=$( awk -F'[-.]' '{print $3}' <<< $file_img | sort -u )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
 [[ $error ]] && dialog.error_exit "$error"
 #------------------------------------------------------------------------------
+cd rAudio
 if git show-ref --tags | grep -q -m1 i$release$; then
 	dialog $opt_yesno "
  Delete exisiting local tag:
@@ -72,7 +73,7 @@ fi
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
 json=$( sed -E -e "s|i[0-9]{8}/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
 " -e 's/(release_date": ").*/\1'$date_rel'",/
-' rAudio/$imager_json )
+' $imager_json )
 notes='
 | Raspberry Pi | Image File | Mirror |
 |:-------------|:-----------|:-------|'
@@ -81,6 +82,7 @@ declare -A model_rpi=(
 	[32bit]='`3` `2`'
 	[Legacy]='`1` `Zero`' )
 os_name=$( jq '.os_list | map(.name)' <<< $json )
+cd ..
 #............................
 banner S H A - 2 5 6
 for file in $file_img; do
