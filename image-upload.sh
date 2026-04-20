@@ -102,8 +102,9 @@ for file in $file_img; do
 done
 #............................
 banner U p l o a d
-bar Image files ...
-echo "$file_img"
+bar "Image files:
+$file_img
+"
 cd rAudio
 file_path=$( sed "s|^|$dir_base/|" <<< $file_img )
 gh release create i$release --latest=false --title i$release --notes "$notes" $file_path

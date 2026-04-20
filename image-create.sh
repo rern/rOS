@@ -71,5 +71,5 @@ bar $file_img
 threads=$(( $( nproc ) - 2 ))
 dd if=$DEV iflag=fullblock bs=$sect_size count=$sect_end | nice -n 10 xz -v -T $threads > "$file_img"
 bar "Image file created:
-$file_img"
-xz -l --robot $file_img | awk '/^file/ {printf "%.2f MB <<< %.2f GB\n", $4/10^6, $5/10^9}'
+$file_img
+$( xz -l --robot $file_img | awk '/^file/ {printf "%.2f MB <<< %.2f GB\n", $4/10^6, $5/10^9}' )"
