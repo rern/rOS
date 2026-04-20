@@ -21,9 +21,11 @@ shrink() {
 								if ( count - target > 1024 ) printf "%.0f", target * size / sect_size
 							}
 					' )
-	[[ ! $sect_min ]] && bar $PART_R already at minimum size. && return
-
-	resize2fs -fp $PART_R $(( sect_min * sect_size / 1024 ))K
+	if [[ $sect_min ]]; then
+		resize2fs -fp $PART_R $(( sect_min * sect_size / 1024 ))K
+	else
+		bar ROOT: $PART_R already at minimum size
+	fi
 	sect_start=$( cat /sys/class/block/${PART_R/*\/}/start )
 	sect_end=$(( sect_start + sect_min ))
 	parted -s $DEV ---pretend-input-tty << EOF
