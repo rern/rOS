@@ -79,7 +79,5 @@ Before disconnecting power, observe \e[32;5m■\e[0m LED:
   - Shutdown      - 10 steady flashes » off'
 
 find /root -mindepth 1 -depth -exec rm -rf {} +
-mkdir -p /root/.config
-ln -s /etc/cava.conf /root/.config/
 
 poweroff
