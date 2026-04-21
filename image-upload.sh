@@ -31,7 +31,7 @@ else
 	error+=$'\n'"$disk_label not found."
 fi
 if [[ $error ]]; then
-	if (( $( grep -c hibernate <<< $error )) == 1 )); then
+	if (( $( grep -c hibernate <<< $error ) == 1 )); then
 		dialog $opt_yesno "
  $disk_label is \Z1hibernated\Zn.
  Remove?
