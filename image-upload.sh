@@ -63,11 +63,11 @@ release=$( awk -F'[-.]' '{print $3}' <<< $file_img | sort -u )
 [[ $error ]] && dialog.error_exit "$error"
 #------------------------------------------------------------------------------
 #............................
-dialog $opt_msg "
-\Z1Images to upload:\Zn
-$file_img
+no_upload=$( dialog $opt_check "
+  \Z1Images to upload:\Zn
+${file_img//r/  r}
 
-" 0 0
+" 10 0 0 "$imager_json only, no upload" off )
 cd rAudio
 git show-ref --tags | grep -q -m1 i$release$ && existing=Local
 [[ $( git ls-remote --tags origin i$release ) ]] && existing+=Remote
@@ -114,6 +114,15 @@ for file in $file_img; do
 | [$file]($https_raudio/releases/download/i$release/$file) \
 | [< file](https://cloud.s-t-franz.de/public.php/dav/files/kdFZXN9Na28nfD8/$file) |"
 done
+if [[ $no_upload ]]; then
+	bar '$notes'
+	echo "$notes"
+	bar 'jq .os_list <<< $json'
+	jq .os_list <<< $json
+	bar Done - No upload.
+	exit
+#------------------------------------------------------------------------------
+fi
 #............................
 banner U p l o a d
 bar "Image files:
