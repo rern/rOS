@@ -2,73 +2,85 @@
 
 # *.img.xz - current dir
 # repo     - /dev/sd?1 BIG: /RPi/Git/rAudio
+disk_label=BIG
+dir_base=$PWD
+imager_json=rpi-imager.json
 
 trap cleanup EXIT SIGINT
 
 cleanup() {
 	kill -TERM -$$ &> /dev/null
 	cd $dir_base
-	umount -l BIG
-	rmdir BIG
+	umount -l $disk_label
+	rmdir $disk_label
 	rm rAudio
 }
 
-dir_base=$PWD
-imager_json=rpi-imager.json
-
-if [[ ! -e /bin/gh ]]; then
-	pacman -Sy --noconfirm github-cli
-	dialog.error_exit Setup Github CLI: https://github.com/rern/rOS/blob/main/image_github_setup.md
-#------------------------------------------------------------------------------
-fi
-file_img=$( ls rAudio*.img.xz )
-[[ ! $file_img ]] && dialog.error_exit "No image files in current: \Z1$dir_base\Zn"
-#------------------------------------------------------------------------------
 #............................
 dialog.splash Upload Image Files
-dev=$( lsblk -no path,label | awk '/BIG/ {print $1}' )
-[[ ! $dev ]] && dialog.error_exit "\Z1BIG\Zn not found."
+if [[ ! -e /bin/gh ]]; then
+	pacman -Sy --noconfirm github-cli
+	error+='Setup Github CLI: https://github.com/rern/rOS/blob/main/image_github_setup.md'
+fi
+file_img=$( ls rAudio*.img.xz )
+[[ ! $file_img ]] && error+=$'\n'"No image files in current: $dir_base"
+dev=$( lsblk -no path,label | awk '/'$disk_label'/ {print $1}' )
+if [[ $dev ]]; then
+	! ntfs-3g.probe --readonly $dev && error+="$disk_label is hibernated."
+else
+	error+=$'\n'"$disk_label not found."
+fi
+if [[ $error ]]; then
+	if (( $( grep -c hibernate <<< $error )) == 1 )); then
+		dialog $opt_yesno "
+ $disk_label is \Z1hibernated\Zn.
+ Remove?
+" 0 0 || exit
 #------------------------------------------------------------------------------
-umount -l BIG 2> /dev/null
-! ntfsinfo -m $dev &> /dev/null && dialog.error_exit "\Z1$dev\Zn is hibernated."
+		opt_mount='-t ntfs-3g -o remove_hiberfile'
+	else
+		echo -e "\
+\e[41m i \e[0m Errors:
+$error"
+		exit
 #------------------------------------------------------------------------------
+	fi
+fi
 #............................
 dialog ${opt_info/--sleep 2} "
   Mount ...
   \Z1rAudio\Zn GitHub directory
 " 9 $W
-mkdir -p BIG
-mount $dev BIG || dialog.error_exit "\Z1BIG\Zn mount failed."
+umount -l $disk_label 2> /dev/null
+mkdir -p $disk_label
+mount $opt_mount $dev $disk_label || dialog.error_exit "\Z1$disk_label\Zn mount failed."
 #------------------------------------------------------------------------------
-ln -sf {BIG/RPi/Git/,}rAudio
-[[ ! -e rAudio/$imager_json ]] && dialog.error_exit "\Z1$imager_json\Zn not found."
-#------------------------------------------------------------------------------
-#............................
-dialog $opt_yesno "
-\Z1Images to upload:\Zn
-$file_img
-" 0 0 || exit
-#------------------------------------------------------------------------------
+ln -sf {$disk_label/RPi/Git/,}rAudio
 models=$( awk -F'[-.]' '{printf "%s ", $2}' <<< $file_img ) # rAudio-MODEL-YYYYMMDD.img.xz
 [[ $models != '32bit 64bit Legacy ' ]] && error="Not all 3 models:\n$models\n"
 release=$( awk -F'[-.]' '{print $3}' <<< $file_img | sort -u )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
 [[ $error ]] && dialog.error_exit "$error"
 #------------------------------------------------------------------------------
+#............................
+dialog $opt_msg "
+\Z1Images to upload:\Zn
+$file_img
+
+" 0 0
 cd rAudio
-if git show-ref --tags | grep -q -m1 i$release$; then
+git show-ref --tags | grep -q -m1 i$release$ && existing=Local
+[[ $( git ls-remote --tags origin i$release ) ]] && existing+=Remote
+if [[ $existing ]]; then
 	dialog $opt_yesno "
- Delete exisiting local tag:
- \Z1i$release\Zn
-" 0 0 && git tag -d i$release || exit
+ Tag \Z1i$release\Zn exists: ${existing/R/, R}
+
+ Delete?
+" 0 0 || exit
 #------------------------------------------------------------------------------
+	[[ $existing == *Local* ]]  && git tag -d i$release
+	[[ $existing == *Remote* ]] && git push --delete origin i$release
 fi
-if [[ $( git ls-remote --tags origin i$release ) ]]; then
-	dialog $opt_yesno "
- Delete exisiting remote tag:
- \Z1i$release\Zn
-" 0 0 && git push --delete origin i$release || exit
-#------------------------------------------------------------------------------
 fi
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
 json=$( sed -E -e "s|i[0-9]{8}/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
