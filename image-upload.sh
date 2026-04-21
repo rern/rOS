@@ -51,8 +51,8 @@ dialog ${opt_info/--sleep 2} "
   Mount ...
   \Z1rAudio\Zn GitHub directory
 " 9 $W
-umount -l $disk_label 2> /dev/null
 mkdir -p $disk_label
+umount -l $disk_label 2> /dev/null
 mount $opt_mount $dev $disk_label || dialog.error_exit "\Z1$disk_label\Zn mount failed."
 #------------------------------------------------------------------------------
 ln -sf {$disk_label/RPi/Git/,}rAudio
