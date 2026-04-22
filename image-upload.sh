@@ -2,85 +2,54 @@
 
 # *.img.xz - current dir
 # repo     - /dev/sd?1 BIG: /RPi/Git/rAudio
-disk_label=BIG
-dir_base=$PWD
 imager_json=rpi-imager.json
-
-trap cleanup EXIT SIGINT
-
-cleanup() {
-	kill -TERM -$$ &> /dev/null
-	cd $dir_base
-	umount -l $disk_label
-	rmdir $disk_label
-	rm rAudio
-}
 
 #............................
 dialog.splash Upload Image Files
-if [[ ! -e /bin/gh ]]; then
-	pacman -Sy --noconfirm github-cli
-	error+='Setup Github CLI: https://github.com/rern/rOS/blob/main/image_github_setup.md'
+if [[ ! -e /bin/git || ! -e /bin/gh ]]; then
+	[[ ! -e /bin/gh ]] && gh=gh
+	pacman -Sy --noconfirm git $gh
+	[[ $gh ]] && dialog.error_exit 'Setup Github CLI: rOS - image_github_setup.md'
+#------------------------------------------------------------------------------
 fi
 file_img=$( ls rAudio*.img.xz )
-[[ ! $file_img ]] && error+=$'\n'"No image files in current: $dir_base"
-dev=$( lsblk -no path,label | awk '/'$disk_label'/ {print $1}' )
-if [[ $dev ]]; then
-	! ntfs-3g.probe --readonly $dev && error+="$disk_label is hibernated."
-else
-	error+=$'\n'"$disk_label not found."
-fi
-if [[ $error ]]; then
-	if (( $( grep -c hibernate <<< $error ) == 1 )); then
-		dialog $opt_yesno "
- $disk_label is \Z1hibernated\Zn.
- Remove?
-" 0 0 || exit
+[[ ! $file_img ]] && dialog.error_exit 'No \Z1*.img.xz\Zn found.'
 #------------------------------------------------------------------------------
-		opt_mount='-t ntfs-3g -o remove_hiberfile'
-	else
-		echo -e "\
-\e[41m i \e[0m Errors:
-$error"
-		exit
-#------------------------------------------------------------------------------
-	fi
-fi
-#............................
-dialog ${opt_info/--sleep 2} "
-  Mount ...
-  \Z1rAudio\Zn GitHub directory
-" 9 $W
-mkdir -p $disk_label
-umount -l $disk_label 2> /dev/null
-mount $opt_mount $dev $disk_label || dialog.error_exit "\Z1$disk_label\Zn mount failed."
-#------------------------------------------------------------------------------
-ln -sf {$disk_label/RPi/Git/,}rAudio
 models=$( awk -F'[-.]' '{printf "%s ", $2}' <<< $file_img ) # rAudio-MODEL-YYYYMMDD.img.xz
 [[ $models != '32bit 64bit Legacy ' ]] && error="Not all 3 models:\n$models\n"
 release=$( awk -F'[-.]' '{print $3}' <<< $file_img | sort -u )
 (( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
+[[ -d rAudio && ! -d rAudio/.git ]] && error+='Non-repo \Z1rAudio\Zn exists.'
 [[ $error ]] && dialog.error_exit "$error"
 #------------------------------------------------------------------------------
+if [[ ! -d rAudio/.git ]]; then
+	git clone https://github.com/rern/rAudio
+##########
+	cd rAudio
+	git checkout UPDATE
+else
+##########
+	cd rAudio
+fi
 #............................
 no_upload=$( dialog $opt_check "
   \Z1Images to upload:\Zn
 ${file_img//r/  r}
 
 " 10 0 0 "$imager_json only, no upload" off )
-cd rAudio
-git show-ref --tags | grep -q -m1 i$release$ && existing=Local
-[[ $( git ls-remote --tags origin i$release ) ]] && existing+=Remote
-if [[ $existing ]]; then
-	dialog $opt_yesno "
- Tag \Z1i$release\Zn exists: ${existing/R/, R}
+if [[ ! $no_upload ]]; then
+	git show-ref --tags | grep -q -m1 i$release$ && existing=Local
+	[[ $( git ls-remote --tags origin i$release ) ]] && existing+=Remote
+	if [[ $existing ]]; then
+		dialog $opt_yesno "
+	Tag \Z1i$release\Zn exists: ${existing/R/, R}
 
- Delete?
-" 0 0 || exit
-#------------------------------------------------------------------------------
-	[[ $existing == *Local* ]]  && git tag -d i$release
-	[[ $existing == *Remote* ]] && git push --delete origin i$release
-fi
+	\Z1Delete?\Zn
+	" 0 0 || exit
+	#------------------------------------------------------------------------------
+		[[ $existing == *Local* ]]  && git tag -d i$release
+		[[ $existing == *Remote* ]] && git push --delete origin i$release
+	fi
 fi
 date_rel=${release:0:4}-${release:4:2}-${release: -2}
 json=$( sed -E -e "s|i[0-9]{8}/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
@@ -94,6 +63,7 @@ declare -A model_rpi=(
 	[32bit]='`3` `2`'
 	[Legacy]='`1` `Zero`' )
 os_name=$( jq '.os_list | map(.name)' <<< $json )
+##########
 cd ..
 #............................
 banner S H A - 2 5 6
@@ -128,21 +98,25 @@ banner U p l o a d
 bar "Image files:
 $file_img
 "
+file_path=$( sed "s|^|$PWD/|" <<< $file_img )
+##########
 cd rAudio
-file_path=$( sed "s|^|$dir_base/|" <<< $file_img )
 gh release create i$release --latest=false --title i$release --notes "$notes" $file_path
 [[ $? != 0 ]] && dialog.error_exit Upload failed.
 #------------------------------------------------------------------------------
+br_all=$( git branch --list | sort | awk '{print NR, $NF}' )
 br_current=$( git branch --show-current )
-[[ $br_current == main ]] && br=1 || br=2
+br_line=$( awk '/'$br_current$'/ {print $1}' <<< $br_all )
+h=$(( 6 + $( wc -l <<< $br_all ) ))
 #............................
-select=$( dialog --default-item $br $opt_menu "
+select=$( dialog --default-item $br_line $opt_menu "
 Branch for $imager_json
-" 8 0 0 1 main 2 UPDATE )
+" $h 0 0 $br_all )
 clear -x
-if [[ $select != $br ]]; then
+if [[ $select != $br_line ]]; then
 	[[ $select == 1 ]] && branch=main || branch=UPDATE
-	git diff-index --quiet HEAD && git commit -m U
+	branch=$( awk 'NR=='$select' {print $2}' <<< $br_all )
+#	git diff-index --quiet HEAD && git commit -m U
 	git switch $branch
 fi
 git pull
