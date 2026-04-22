@@ -53,10 +53,10 @@ if [[ ! $no_upload ]]; then
 		[[ $existing == *Remote* ]] && git push --delete origin i$release
 	fi
 fi
-date_rel=${release:0:4}-${release:4:2}-${release: -2}
+y_m_d=${release:0:4}-${release:4:2}-${release: -2}
 json=$( sed -E -e "s|i[0-9]{8}/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
-" -e 's/(release_date": ").*/\1'$date_rel'",/
-' $imager_json )
+			 " -e 's/(release_date": ").*/\1'$y_m_d'",/
+			 ' $imager_json )
 notes='
 | Raspberry Pi | Image File | Mirror |
 |:-------------|:-----------|:-------|'
