@@ -38,7 +38,7 @@ no_upload=$( dialog $opt_check "
   \Z1Images to upload:\Zn
 ${file_img//r/  r}
 
-" 10 0 0 "$imager_json only, no upload" off )
+" 10 0 0 "NO upload - $imager_json only" on )
 if [[ ! $no_upload ]]; then
 	git show-ref --tags | grep -q -m1 i$release$ && existing=Local
 	[[ $( git ls-remote --tags origin i$release ) ]] && existing+=Remote
