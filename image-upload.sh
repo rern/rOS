@@ -12,14 +12,16 @@ if [[ ! -e /bin/git || ! -e /bin/gh ]]; then
 	[[ $gh ]] && dialog.error_exit 'Setup Github CLI: rOS - image_github_setup.md'
 #------------------------------------------------------------------------------
 fi
-file_img=$( ls rAudio*.img.xz )
-[[ ! $file_img ]] && dialog.error_exit 'No \Z1*.img.xz\Zn found.'
-#------------------------------------------------------------------------------
-models=$( awk -F'[-.]' '{printf "%s ", $2}' <<< $file_img ) # rAudio-MODEL-YYYYMMDD.img.xz
-[[ $models != '32bit 64bit Legacy ' ]] && error="Not all 3 models:\n$models\n"
-release=$( awk -F'[-.]' '{print $3}' <<< $file_img | sort -u )
-(( $( wc -l <<< $release ) > 1 )) && error+="Releases not the same:\n$release\n"
-[[ -d rAudio && ! -d rAudio/.git ]] && error+='Non-repo \Z1rAudio\Zn exists.'
+file_img=$( ls rAudio*.img.xz ) # rAudio-MODEL-YYYYMMDD.img.xz
+if [[ $file_img ]]; then
+	(( $( wc -l <<< $file_img ) != 3 )) && error+="Files not 3:\n$file_img\n"
+	models=$( cut -d- -f2 <<< $file_img | sort -u | wc -l )
+	(( $models != 3 )) && error="Models not 3:\n$models\n"
+	release=$( awk -F'[-.]' '{print $3}' <<< $file_img | sort -u )
+	(( $( wc -l <<< $release ) > 1 )) && error+="Release not the same:\n$release\n"
+else
+	error+='No \Z1*.img.xz\Zn found.'
+fi
 [[ $error ]] && dialog.error_exit "$error"
 #------------------------------------------------------------------------------
 if [[ ! -d rAudio/.git ]]; then
@@ -67,13 +69,13 @@ os_name=$( jq '.os_list | map(.name)' <<< $json )
 cd ..
 #............................
 banner S H A - 2 5 6
-for file in $file_img; do
+for model in 64bit 32bit Legacy; do
+	file=$( grep $model <<< $file_img )
  	read size_img size_xz < <( xz -l --robot $file | awk '/^file/ {print $4, $5}' )
 	bar $file
 	printf 'sha256sum \e[5m...\e[0m'
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	printf "\r$sha256\n"
-	model=$( cut -d- -f2 <<< $file )
 	i=$( jq 'index("rAudio '$model'")' <<< $os_name )
 	os_i=os_list[$i]
 	json=$( jq   ".os_i.extract_size = $size_img
