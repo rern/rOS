@@ -9,6 +9,7 @@ fi
 if [[ $gh ]] || ! gh auth status &> /dev/null; then
 	. <( curl -sL https://github.com/rern/rOS/raw/main/github-cli_setup.sh )
 fi
+
 file_img=$( ls rAudio*.img.xz ) # rAudio-MODEL-YYYYMMDD.img.xz
 if [[ $file_img ]]; then
 	(( $( wc -l <<< $file_img ) != 3 )) && error+="Files not 3:\n$file_img\n"
@@ -87,7 +88,9 @@ if [[ $no_upload ]]; then
 	bar '$notes'
 	echo "$notes"
 	bar 'jq .os_list <<< $json'
+	echo ...
 	jq .os_list <<< $json
+	echo ...
 	bar Done - No upload.
 	exit
 #------------------------------------------------------------------------------
