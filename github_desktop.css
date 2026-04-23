@@ -1,0 +1,12 @@
+/*
+append to C:\Users\rern\AppData\Local\GitHubDesktop\app-3.5.8\resources\app\renderer.css
+- Ctrl+Shift+I : Open Devtools pane
+- F5 (in pane) : Reload page
+*/
+:root {
+    --font-family-monospace: 'Inconsolata Semi Condensed';
+	--font-size-sm: 13px;
+}
+#history {
+	font-family: var(--font-family-monospace);
+}
