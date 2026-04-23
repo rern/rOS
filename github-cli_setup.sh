@@ -1,34 +1,33 @@
 #/bin/bash
 
 color() {
-	[[ ${1:0:1} == '(' ]] && c=7 || c=10
-	echo "\e[38;5;${c}m$1\e[0m"
+	echo "\e[38;5;10m$@\e[0m"
 }
-tick=$( color ✓ )
 dot=$( color » )
 code=$( color CODE-CODE )
-bar "gh auth login:
-
-? What account do you want to log into?
-	$tick GitHub.com
+url=https://github.com/login/device
+banner gh auth login
+echo -e "\
+? Where do you use GitHub?
+    $( color GitHub.com )
 ? What is your preferred protocol for Git operations on this host?
-    $tick HTTPS
-? Authenticate Git with your GitHub credentials?
-    $tick Y
+    $( color HTTPS )
 ? How would you like to authenticate GitHub CLI?
-    $tick Login with a web browser
+    $( color Login with a web browser )
 ! First copy your one-time code: $code
+Press [Enter] to open $url in your browser...
+    Do not 'Press Enter' yet
     $dot Copy $code
-Press [Enter] to open https://github.com/login/device in your browser...
-    $dot Do not 'Press Enter' yet
-$dot Manually open browser: https://github.com/login/device
-    $dot Select user $( color '(login if not already)' )
-    $dot Paste the copied code $( color '(from terminal)' ) » Authorize
-    $dot Enter verifying code $( color '(by Authenticator app - if prompt)' )
-» Press [Enter] (Ignore warning: Running Firefox as root ...)
-    $dot Ignore error message
+$dot Manually open browser: $url
+    $dot Select user (login if not already)
+    $dot Paste $code
+	$dot Authorize
+    $dot Enter verifying code (by Authenticator app - if prompt)
+» Press [Enter]
+	Ignore warning: Running Firefox as root ...
 
-$tick Authentication complete.
+$( color ✓ ) Authentication complete.
+................................................................................
 "
 
 gh auth login
