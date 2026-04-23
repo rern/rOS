@@ -1,16 +1,11 @@
 #!/bin/bash
 
-# *.img.xz - current dir
-# repo     - /dev/sd?1 BIG: /RPi/Git/rAudio
-imager_json=rpi-imager.json
-
 #............................
 dialog.splash Upload Image Files
 if [[ ! -e /bin/git || ! -e /bin/gh ]]; then
-	[[ ! -e /bin/gh ]] && gh=gh
+	[[ ! -e /bin/gh ]] && gh=github-cli
 	pacman -Sy --noconfirm git $gh
-	[[ $gh ]] && dialog.error_exit 'Setup Github CLI: rOS - image_github_setup.md'
-#------------------------------------------------------------------------------
+	[[ $gh ]] && . <( curl -sL https://github.com/rern/rOS/raw/main/github-cli_setup.sh )
 fi
 file_img=$( ls rAudio*.img.xz ) # rAudio-MODEL-YYYYMMDD.img.xz
 if [[ $file_img ]]; then
@@ -38,7 +33,7 @@ no_upload=$( dialog $opt_check "
   \Z1Images to upload:\Zn
 ${file_img//r/  r}
 
-" 10 0 0 "NO upload - $imager_json only" on )
+" 10 0 0 "NO upload - rpi-imager.json only" on )
 if [[ ! $no_upload ]]; then
 	git show-ref --tags | grep -q -m1 i$release$ && existing=Local
 	[[ $( git ls-remote --tags origin i$release ) ]] && existing+=Remote
@@ -48,7 +43,7 @@ if [[ ! $no_upload ]]; then
 
 	\Z1Delete?\Zn
 	" 0 0 || exit
-	#------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 		[[ $existing == *Local* ]]  && git tag -d i$release
 		[[ $existing == *Remote* ]] && git push --delete origin i$release
 	fi
@@ -56,7 +51,7 @@ fi
 y_m_d=${release:0:4}-${release:4:2}-${release: -2}
 json=$( sed -E -e "s|i[0-9]{8}/(rAudio.*-).*(.img.xz)|i$release/\1$release\2|
 			 " -e 's/(release_date": ").*/\1'$y_m_d'",/
-			 ' $imager_json )
+			 ' rpi-imager.json )
 notes='
 | Raspberry Pi | Image File | Mirror |
 |:-------------|:-----------|:-------|'
@@ -112,7 +107,7 @@ br_line=$( awk '/'$br_current$'/ {print $1}' <<< $br_all )
 h=$(( 6 + $( wc -l <<< $br_all ) ))
 #............................
 select=$( dialog --default-item $br_line $opt_menu "
-Branch for $imager_json
+Branch for rpi-imager.json
 " $h 0 0 $br_all )
 clear -x
 if [[ $select != $br_line ]]; then
@@ -122,17 +117,17 @@ if [[ $select != $br_line ]]; then
 	git switch $branch
 fi
 git pull
-echo "$json" > $imager_json
-git add $imager_json
-git commit -m $imager_json
+echo "$json" > rpi-imager.json
+git add rpi-imager.json
+git commit -m rpi-imager.json
 git push
-[[ $? != 0 ]] && dialog.error_exit "Push \Z1$imager_json\Zn failed."
+[[ $? != 0 ]] && dialog.error_exit "Push \Z1rpi-imager.json\Zn failed."
 #------------------------------------------------------------------------------
 text="\
  $logo
 
  \Z1Image files\Zn     : Uploaded successfully.
- \Z1$imager_json\Zn : Updated and pushed"
+ \Z1rpi-imager.json\Zn : Updated and pushed"
 [[ $branch != main ]] && text+=" to \Z1$branch\Zn
                    \Z4(Must be merged manually)\Zn"
 dialog.info "$text"
