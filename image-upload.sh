@@ -5,7 +5,9 @@ dialog.splash Upload Image Files
 if [[ ! -e /bin/git || ! -e /bin/gh ]]; then
 	[[ ! -e /bin/gh ]] && gh=github-cli
 	pacman -Sy --noconfirm git $gh
-	[[ $gh ]] && . <( curl -sL https://github.com/rern/rOS/raw/main/github-cli_setup.sh )
+fi
+if [[ $gh ]] || ! gh auth status &> /dev/null; then
+	. <( curl -sL https://github.com/rern/rOS/raw/main/github-cli_setup.sh )
 fi
 file_img=$( ls rAudio*.img.xz ) # rAudio-MODEL-YYYYMMDD.img.xz
 if [[ $file_img ]]; then
