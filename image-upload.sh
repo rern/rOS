@@ -43,7 +43,7 @@ if [[ ! $no_upload ]]; then
 
 	\Z1Delete?\Zn
 	" 0 0 || exit
-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 		[[ $existing == *Local* ]]  && git tag -d i$release
 		[[ $existing == *Remote* ]] && git push --delete origin i$release
 	fi
