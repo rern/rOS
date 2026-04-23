@@ -242,9 +242,6 @@ Required fonts:
 .find-widget.visible.replaceToggled {
         height: 67px !important;
 }
-.monaco-tl-indent {
-	left: 22px;
-}
 .monaco-editor-background { /* code window */
 	background-color: #000;
 }
