@@ -31,7 +31,7 @@ $( color ✓ ) Authentication complete.
 "
 
 gh auth login
-email=$( dialog.input 'GitHub email:' )
+email=$( dialog.input 'GitHub email:' @gmail.com )
 user=$( dialog.input 'GitHub username:' )
 git config --global user.email $email
 git config --global user.name $user
