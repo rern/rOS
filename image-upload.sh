@@ -62,22 +62,24 @@ declare -A model_rpi=(
 	[64bit]='`5` `4` `3` `2 (64bit)` `Zero2`'
 	[32bit]='`3` `2`'
 	[Legacy]='`1` `Zero`' )
-os_name=$( jq '.os_list | map(.name)' <<< $json )
+models=( $( jq -r .os_list[].name <<< $json | cut -d' ' -f2 ) )
 ##########
 cd ..
 #............................
 banner S H A - 2 5 6
-for model in 64bit 32bit Legacy; do
+for (( i=0; i < 3; i++ )); do
+	model=${models[i]}
 	file=$( grep $model <<< $file_img )
  	read size_xz size_img < <( xz -l --robot $file | awk '/^file/ {print $4, $5}' )
 	bar $file
 	printf 'sha256sum \e[5m...\e[0m'
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	printf "\r$sha256\n"
-	i=$( jq 'index("rAudio '$model'")' <<< $os_name )
-	json=$( jq   ".os_list[$i].extract_size = $size_img
-				| .os_list[$i].image_download_size = $size_xz
-				| .os_list[$i].image_download_sha256 = \"$sha256\"" <<< $json )
+	json=$( jq '.os_list['$i'] |= (
+                      .extract_size          = '$size_img'
+                    | .image_download_size   = '$size_xz'
+                    | .image_download_sha256 = "'$sha256'"
+                )' <<< $json )
 	notes+="
 | ${model_rpi[$model]} \
 | [$file]($https_raudio/releases/download/i$release/$file) \
