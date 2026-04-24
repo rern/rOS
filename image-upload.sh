@@ -69,7 +69,7 @@ cd ..
 banner S H A - 2 5 6
 for model in 64bit 32bit Legacy; do
 	file=$( grep $model <<< $file_img )
- 	read size_img size_xz < <( xz -l --robot $file | awk '/^file/ {print $4, $5}' )
+ 	read size_xz size_img < <( xz -l --robot $file | awk '/^file/ {print $4, $5}' )
 	bar $file
 	printf 'sha256sum \e[5m...\e[0m'
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
