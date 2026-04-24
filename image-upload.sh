@@ -71,8 +71,8 @@ for (( i=0; i < 3; i++ )); do
 	model=${models[i]}
 	file=$( grep $model <<< $file_img )
  	read size_xz size_img < <( xz -l --robot $file | awk '/^file/ {print $4, $5}' )
-	bar $file
-	printf 'sha256sum \e[5m...\e[0m'
+	printf "\e[44m  \e[0m $file
+sha256sum \e[5m...\e[0m"
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	printf "\r$sha256\n"
 	json=$( jq '.os_list['$i'] |= (
