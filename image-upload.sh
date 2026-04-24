@@ -66,7 +66,7 @@ models=( $( jq -r .os_list[].name <<< $json | cut -d' ' -f2 ) )
 ##########
 cd ..
 #............................
-banner S H A - 2 5 6
+banner SHA-256
 for (( i=0; i < 3; i++ )); do
 	model=${models[i]}
 	file=$( grep $model <<< $file_img )
@@ -97,7 +97,7 @@ if [[ $no_upload ]]; then
 #------------------------------------------------------------------------------
 fi
 #............................
-banner U p l o a d
+banner Upload
 bar "Image files:
 $file_img
 "
