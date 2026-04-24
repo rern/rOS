@@ -69,7 +69,9 @@ cd ..
 banner SHA-256
 for (( i=0; i < 3; i++ )); do
 	model=${models[i]}
-	file=$( grep $model <<< $file_img )
+	file=rAudio-$model-$release.img.xz
+	[[ ! -e $file ]] && dialog.error_exit "\Z1$file\Zn not found."
+#------------------------------------------------------------------------------
  	read size_xz size_img < <( xz -l --robot $file | awk '/^file/ {print $4, $5}' )
 	printf "\e[44m  \e[0m $file
 sha256sum \e[5m...\e[0m"
