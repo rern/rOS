@@ -75,10 +75,9 @@ for model in 64bit 32bit Legacy; do
 	sha256=$( sha256sum $file | cut -d' ' -f1 )
 	printf "\r$sha256\n"
 	i=$( jq 'index("rAudio '$model'")' <<< $os_name )
-	os_i=os_list[$i]
-	json=$( jq   ".os_i.extract_size = $size_img
-				| .os_i.image_download_size = $size_xz
-				| .os_i.image_download_sha256 = \"$sha256\"" <<< $json )
+	json=$( jq   ".os_list[$i].extract_size = $size_img
+				| .os_list[$i].image_download_size = $size_xz
+				| .os_list[$i].image_download_sha256 = \"$sha256\"" <<< $json )
 	notes+="
 | ${model_rpi[$model]} \
 | [$file]($https_raudio/releases/download/i$release/$file) \
