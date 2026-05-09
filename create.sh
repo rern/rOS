@@ -12,8 +12,12 @@ package.required bsdtar dialog gawk jq nmap pigz pv sfdisk ssh
 alias awk=gawk      # debian - awk=mawk - no sub gsub
 
 create_ros() {
-	ssh $opt_ssh root@$1 /root/create-ros.sh
-	[[ $? == 255 ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
+	for i in {0..3}; do
+		sleep 1
+		ssh $opt_ssh root@$1 /root/create-ros.sh
+		[[ $? != 255 ]] && ssh_ok=1 && break
+	done
+	[[ ! $ssh_ok ]] && dialog.scanIP "Unable to SSH connect: \Z1$1\Zn"
 	[[ $file_del ]] && rm $file_del
 }
 dialog.data() {
@@ -495,7 +499,7 @@ if [[ -e /tmp/ping_ok ]]; then
 	rm /tmp/ping_ok
 	dialog.info "
   SSH Arch Linux ARM ...
-  @ \Z1$ip\Zn" # sleep 2 in function
+  @ \Z1$ip\Zn"
 	create_ros $ip
 elif [[ $ip ]]; then
 #............................
