@@ -212,7 +212,7 @@ Continue?
 						 ' -e "\|^ *$DEV| {s/^/\\\Z1/; s/$/\\\Zn/}
 						 " -e 's/(BOOT|ROOT)/\\Z1\1\\Zn/g' <<< $line_lsblk )
 	H=$(( $( wc -l <<< $list_colored ) + 9 ))
-	(( $(( H + 4 )) > $( tput lines ) )) && dialog $opt_msg "
+	(( $(( H + 2 )) > $( tput lines ) )) && dialog $opt_msg "
 » \Z1Maximize\Zn this Terminal window
 
 Then continue
