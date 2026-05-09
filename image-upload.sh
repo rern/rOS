@@ -118,9 +118,9 @@ select=$( dialog --default-item $br_line $opt_menu "
 Branch for rpi-imager.json
 " $h 0 0 $br_all )
 clear -x
+[[ $select == 1 ]] && branch=main || branch=UPDATE
+branch=$( awk 'NR=='$select' {print $2}' <<< $br_all )
 if [[ $select != $br_line ]]; then
-	[[ $select == 1 ]] && branch=main || branch=UPDATE
-	branch=$( awk 'NR=='$select' {print $2}' <<< $br_all )
 #	git diff-index --quiet HEAD && git commit -m U
 	git switch $branch
 fi
