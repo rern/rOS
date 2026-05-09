@@ -284,7 +284,7 @@ md5verify() {
   \Z1$file\Zn
 
 
- No download required."
+  No download required."
 	else
 		rm $file
 		dialog.retry "Verify failed:\n$file" && dialog.download
