@@ -179,7 +179,7 @@ package.required() {
 		apt )
 			apt update
 			if liveUSB; then # rank package servers
-				apt install nala
+				apt install -y nala
 				nala fetch --auto -y
 				nala $install_pkgs
 			else
