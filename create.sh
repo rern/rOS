@@ -98,7 +98,7 @@ Security     : ${security^^}"
 		dialog.retry "URL: $url_file not ready." && dialog.data
 		return
 	fi
-	if [[ ! $( stat -f -c %T $PWD ) =~ ^(overlayfs|ramfs|tmpfs)$ ]]; then
+	if ! liveUSB; then
 		file_gib=$( curl -sfIL $url_file \
 						| awk '/^Content-Length/ {val=$2} END {printf "(%.0f MiB)", val / ( 1024^2 ) }' )
 #............................

@@ -143,6 +143,9 @@ package.commandNotFound() {
 	done
 	[[ $cmd ]] && echo $cmd || return 1
 }
+liveUSB() {
+	[[ $( stat -f -c %T $PWD ) =~ ^(overlayfs|ramfs|tmpfs)$ ]] && return 0
+}
 package.required() {
 	pkgs=$( package.commandNotFound $@ ) || return
 #..............................................................................
@@ -168,14 +171,22 @@ package.required() {
 	[[ $pkgs == *nmap* && $cmd_pm == pacman ]] && pkgs+=' gcc-libs' # manjaro: libgcc conflicts
 	install_pkgs="install -y $pkgs"
 	bar Install packages: $pkgs
+	if liveUSB; then # live usb only - rank package servers
+		case $cmd_pm in
+			apk )   setup-apkrepos -f;;
+			apt )   apt install nala; nala fetch --auto -y;;
+			dnf )   echo "fastestmirror=True" >> /etc/dnf/dnf.conf;;
+			pacman ) pacman -Sy --noconfirm rate-mirrors; rate_mirrors --allow-root --disable-comments-in-file --save mirrorlist archarm;;
+		esac
+	fi
 	case $cmd_pm in
-		apk )    apk update     && apk add $pkgs;;
-		apt )    apt update     && apt    $install_pkgs;;
-		brew )   brew update    && brew   ${install_pkgs/ -y};;
-		dnf )                      dnf    $install_pkgs;;
-		pacman )                   pacman -Sy --noconfirm $pkgs;;
-		yum )                      yum    $install_pkgs;;
-		zypper ) zypper refresh && zypper $install_pkgs;;
+		apk )    apk update;     apk add $pkgs;;
+		apt )    apt update;     apt    $install_pkgs;;
+		brew )   brew update;    brew   ${install_pkgs/ -y};;
+		dnf )                    dnf    $install_pkgs;;
+		pacman )                 pacman -Sy --noconfirm $pkgs;;
+		yum )                    yum    $install_pkgs;;
+		zypper ) zypper refresh; zypper $install_pkgs;;
 	esac
 	cmd_notfound=$( package.commandNotFound $@ ) || return
 #..............................................................................
