@@ -174,7 +174,7 @@ package.required() {
 	if liveUSB; then # live usb only - rank package servers
 		case $cmd_pm in
 			apk )   setup-apkrepos -f;;
-			apt )   apt install nala; nala fetch --auto -y;;
+			apt )   apt update; apt install nala; nala fetch --auto -y;;
 			dnf )   echo "fastestmirror=True" >> /etc/dnf/dnf.conf;;
 			pacman ) pacman -Sy --noconfirm rate-mirrors; rate_mirrors --allow-root --disable-comments-in-file --save mirrorlist archarm;;
 		esac
