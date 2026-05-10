@@ -173,13 +173,12 @@ package.required() {
 	bar Install packages: $pkgs
 	case $cmd_pm in
 		apk )
-			[[ $live_usb ]] && setup-apkrepos -f
 			apk update
 			apk add $pkgs
 			;;
 		apt )
 			apt update
-			if [[ $live_usb ]]; then
+			if liveUSB; then
 				apt install nala
 				nala fetch --auto -y
 				nala $install_pkgs
@@ -192,7 +191,6 @@ package.required() {
 			brew   ${install_pkgs/ -y}
 			;;
 		dnf )
-			[[ $live_usb ]] && echo fastestmirror=True >> /etc/dnf/dnf.conf
 			dnf    $install_pkgs
 			;;
 		pacman )
