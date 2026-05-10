@@ -188,16 +188,16 @@ package.required() {
 			;;
 		brew )
 			brew update
-			brew   ${install_pkgs/ -y}
+			brew ${install_pkgs/ -y}
 			;;
 		dnf )
-			dnf    $install_pkgs
+			dnf $install_pkgs
 			;;
 		pacman )
 			pacman -Sy --noconfirm $pkgs
 			;;
 		yum )
-			yum    $install_pkgs
+			yum $install_pkgs
 			;;
 		zypper )
 			zypper refresh
