@@ -46,7 +46,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 			- If really need Wi-Fi, see [how to connect](https://github.com/rern/tips_bash/blob/master/wifi.md#wpa_supplicant)
 
 		- Recommend - ISO bootable USB drive with [Ventoy](https://www.ventoy.net)
-			- Setup script:
+			- Setup with web GUI script:
 			```sh
 			bash <( curl -sL https://github.com/rern/rOS/raw/main/ventoy-install.sh )
 			```

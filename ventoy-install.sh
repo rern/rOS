@@ -9,5 +9,4 @@ rel=${rel:1}
 echo Latest version: $rel
 
 curl -L $url/download/v$rel/ventoy-$rel-linux.tar.gz | bsdtar xf -
-cd ventoy-$rel
-./VentoyWeb.sh
+$PWD/ventoy-$rel/VentoyWeb.sh
