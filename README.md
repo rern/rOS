@@ -45,7 +45,12 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 			- [Debian](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/) standard (1.9 GB) - Faster and lighter than GUI
 			- If really need Wi-Fi, see [how to connect](https://github.com/rern/tips_bash/blob/master/wifi.md#wpa_supplicant)
 
-		- Recommend: Create bootable USB drive with [Ventoy](https://www.ventoy.net)
+		- Recommend - ISO bootable USB drive with [Ventoy](https://www.ventoy.net)
+			- Setup script:
+			```sh
+			bash <( curl -sL https://github.com/rern/rOS/raw/main/ventoy-install.sh )
+			```
+
 - Raspberry Pi
 - Micro SD card or USB drive (at least 8 GB)
 
