@@ -48,7 +48,7 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 		- Recommend - ISO bootable USB drive with [Ventoy](https://www.ventoy.net)
 			- Setup with web GUI script:
 			```sh
-			bash <( curl -sL https://github.com/rern/rOS/raw/main/ventoy-install.sh )
+			bash <( curl -sL https://github.com/rern/rOS/raw/main/ventoy-setup.sh )
 			```
 
 - Raspberry Pi
