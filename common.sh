@@ -27,8 +27,8 @@ BR.unmount() {
 		rmdir BOOT ROOT &> /dev/null
 	fi
 }
-commandNotFound() {
-	! command -v $1 &> /dev/null && return 0
+commandExists() {
+	command -v $p &> /dev/null && return 0
 }
 dialog.error_exit() {
 	dialog $opt_msg "
@@ -136,21 +136,18 @@ ipBase() {
 kbKey() {
 	echo "\Zr\Zb $1 \Zn"
 }
-package.commandNotFound() {
-	local c cmd
-	for c in $@; do
-		commandNotFound $c && cmd+=" $c "
-	done
-	[[ $cmd ]] && echo $cmd || return 1
-}
 liveUSB() {
 	[[ $( stat -f -c %T $PWD ) =~ ^(overlayfs|ramfs|tmpfs)$ ]] && return 0
 }
+package.nala_install() {
+	nala fetch -y --auto
+	nala $@
+}
 package.required() {
-	pkgs=$( package.commandNotFound $@ ) || return
+	package.toInstall $@ || return
 #..............................................................................
 	for cmd_pm in apk apt brew dnf pacman yum zypper; do
-		commandNotFound $cmd_pm || break
+		commandExists $cmd_pm && break
 	done
 	if [[ $pkgs == *bsdtar* ]]; then
 		case $cmd_pm in
@@ -177,12 +174,23 @@ package.required() {
 			apk add $pkgs
 			;;
 		apt )
-			apt update
-			if liveUSB; then # rank package servers
-				apt install -y nala
-				nala fetch -y --auto
-				nala $install_pkgs
+			if commandExists nala; then # rank pkage servers + install
+				package.nala_install $install_pkgs
+			elif liveUSB; then
+				if commandExists curl; then
+					cmd_latest='curl -s'
+					    cmd_dl='curl -sLO'
+				else
+					cmd_latest='wget -qO-'
+					    cmd_dl='wget -q'
+				fi
+				pkg_nala=$( eval $cmd_latest "https://api.ftp-master.debian.org/madison?package=nala&text=on&s=stable" \
+									| awk 'END {print "nala_"$3"_all.deb"}' )
+				eval $cmd_dl http://ftp.debian.org/debian/pool/main/n/nala/$pkg_nala
+				apt install -y $pkg_nala
+				package.nala_install $install_pkgs
 			else
+				apt update
 				apt $install_pkgs
 			fi
 			;;
@@ -204,13 +212,14 @@ package.required() {
 			zypper $install_pkgs
 			;;
 	esac
-	cmd_notfound=$( package.commandNotFound $@ ) || return
-#..............................................................................
-#............................
-	dialog.error_exit "\
-Missing commands:
-$cmd_notfound
-Unable to continue."
+	package.toInstall $@ && package.required $pkgs
+}
+package.toInstall() {
+	pkgs=
+	for p in $@; do
+		! commandExists $p && pkgs+=" $p "
+	done
+	[[ $pkgs ]] && return 0
 }
 trapExit() {
 	kill -TERM -$$ &> /dev/null
