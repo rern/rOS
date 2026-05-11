@@ -28,7 +28,7 @@ BR.unmount() {
 	fi
 }
 commandExists() {
-	command -v $p &> /dev/null && return 0
+	command -v $1 &> /dev/null && return 0
 }
 dialog.error_exit() {
 	dialog $opt_msg "
