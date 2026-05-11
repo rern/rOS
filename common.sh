@@ -176,16 +176,14 @@ package.required() {
 		apt )
 			if commandExists nala; then # rank pkage servers + install
 				package.nala_install $install_pkgs
-			elif liveUSB; then
-#				pkg_nala=$( curl -s "https://api.ftp-master.debian.org/madison?package=nala&text=on&s=stable" \
-#									| awk 'END {print "nala_"$3"_all.deb"}' )
-				url_nala=http://ftp.debian.org/debian/pool/main/n/nala/nala_0.16.0_all.deb
-				commandExists curl && curl -sLO $url_nala || wget -q $url_nala
-				apt install -y ${url_nala##*/}
-				package.nala_install $install_pkgs
 			else
 				apt update
-				apt $install_pkgs
+				if liveUSB; then
+					apt install -y nala
+					package.nala_install $install_pkgs
+				else
+					apt $install_pkgs
+				fi
 			fi
 			;;
 		brew )
