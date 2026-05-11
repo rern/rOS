@@ -50,6 +50,8 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 			```sh
 			bash <( curl -sL https://github.com/rern/rOS/raw/main/ventoy-setup.sh )
 			```
+				- Set `Option` Secure Boot and Partition Style
+				- Select `Device` > `Install`
 			- Copy `*.iso` directly to drive/partition labelled `Ventoy`
 			- Reboot to USB
 
