@@ -50,7 +50,9 @@ Build [**rAudio**](https://github.com/rern/rAudio-1) - Audio player and renderer
 			```sh
 			bash <( curl -sL https://github.com/rern/rOS/raw/main/ventoy-setup.sh )
 			```
-
+			- Copy `*.iso` to partiton labeled `Ventoy`
+			- Reboot to USB
+			
 - Raspberry Pi
 - Micro SD card or USB drive (at least 8 GB)
 
