@@ -181,7 +181,7 @@ package.required() {
 #									| awk 'END {print "nala_"$3"_all.deb"}' )
 				url_nala=http://ftp.debian.org/debian/pool/main/n/nala/nala_0.16.0_all.deb
 				commandExists curl && curl -sLO $url_nala || wget -q $url_nala
-				apt install -y $pkg_nala
+				apt install -y ${url_nala##*/}
 				package.nala_install $install_pkgs
 			else
 				apt update
