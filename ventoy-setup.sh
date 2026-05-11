@@ -8,5 +8,5 @@ name_ver=ventoy-${latest:1}
 
 echo Latest version: $name_ver
 
-curl -L $url/download/v$rel/$name_ver-linux.tar.gz | bsdtar xf -
+curl -L $url/download/v$latest/$name_ver-linux.tar.gz | bsdtar xf -
 $PWD/$name_ver/VentoyWeb.sh
