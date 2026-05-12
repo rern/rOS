@@ -332,27 +332,15 @@ read DEV PART_B PART_R < <( dialog.sd )
 sleep 1 # fix: label ready for read
 dialog.sdCard
 banner Rank Servers
-if [[ ! -e rate_mirrors ]]; then
-	if [[ -e /usr/bin/rate_mirrors ]]; then
-		ln -s /usr/bin/rate_mirrors .
-	else
-		url=https://github.com/westandskif/rate-mirrors/releases
-		rel=$( curl -sL -o /dev/null -w %{url_effective} $url/latest | awk -F/ '{print $NF}' )
-		curl -sL $url/download/$rel/rate-mirrors-$rel-$( uname -m )-unknown-linux-musl.tar.gz \
-			| bsdtar xf - --strip-components=1 */rate_mirrors
-	fi
-fi
-if [[ -e rate_mirrors ]]; then
-	./rate_mirrors --allow-root --disable-comments-in-file --save mirrorlist archarm
-	while read sub; do # verify file exists
-		[[ $sub == mirror ]] && sub=os
-		url=http://$sub.archlinuxarm.org/os
-		curl -sfIo /dev/null $url/$file && break
+package.rate_mirrors archarm mirrorlist
+while read sub; do # verify file exists
+	[[ $sub == mirror ]] && sub=os
+	url=http://$sub.archlinuxarm.org/os
+	curl -sfIo /dev/null $url/$file && break
 
-		sed -i '1 d' mirrorlist
-	done < <( sed -E 's|.*//(.*\.*mirror)\..*|\1|' mirrorlist )
-	[[ ! -s mirrorlist ]] && dialog.error_exit All package servers not responsive.
-fi
+	sed -i '1 d' mirrorlist
+done < <( sed -E 's|.*//(.*\.*mirror)\..*|\1|' mirrorlist )
+[[ ! -s mirrorlist ]] && dialog.error_exit All package servers not responsive.
 if [[ -e $file ]]; then
 	md5verify existing
 else

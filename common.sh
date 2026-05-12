@@ -143,6 +143,18 @@ package.nala_install() {
 	nala fetch -y --auto
 	nala $@
 }
+package.rate_mirrors() {
+	local arch latest target url
+	if ! commandExists rate_mirrors; then
+		url=https://github.com/westandskif/rate-mirrors/releases
+		latest=$( curl -sL -o /dev/null -w %{url_effective} $url/latest | awk -F/ '{print $NF}' )
+		curl -sL $url/download/$latest/rate-mirrors-$latest-$( uname -m )-unknown-linux-musl.tar.gz \
+			| bsdtar xf - --strip-components=1 -C /usr/bin */rate_mirrors
+	fi
+	[[ $1 ]] && arch=$1 || arch=$( sed -n '/^ID=/ {s/^ID=//; p}' /etc/os-release )
+	[[ $2 ]] && target=$2 || target=/etc/pacman.d/mirrorlist
+	rate_mirrors --allow-root --disable-comments-in-file --save=$target $arch
+}
 package.required() {
 	package.toInstall $@ || return
 #..............................................................................
@@ -194,7 +206,8 @@ package.required() {
 			dnf $install_pkgs
 			;;
 		pacman )
-			pacman -Sy --noconfirm $pkgs
+			liveUSB && package.rate_mirrors
+			pacman -Syy --noconfirm $pkgs
 			;;
 		yum )
 			yum $install_pkgs
