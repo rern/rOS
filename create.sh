@@ -26,7 +26,7 @@ Scan network for hosts" )
 	[[ $file_del ]] && rm $file_del
 }
 dialog.data() {
-	latest=$( curl -sL -o /dev/null -w %{url_effective} $https_raudio/releases/latest | awk -F/ '{print $NF}' )
+	latest=$( githubRepoLatest $https_raudio )
 #............................
 	RELEASE=$( dialog.input '\Z1r\ZnAudio release:' $latest )
 	if [[ $( curl -sfIL -o /dev/null -w '%{http_code}' $https_raudio/archive/$RELEASE.tar.gz ) != 200 ]]; then

@@ -130,6 +130,9 @@ $( printf '%*s' $w )$line"
 	tput civis # fix: hide cursor at corner
 	dialog $opt_info "$txt" $h $W;  tput cnorm # restore cursor
 }
+githubRepoLatest() {
+	curl -sL -o /dev/null -w %{url_effective} $1/releases/latest | awk -F/ '{print $NF}'
+}
 ipBase() {
 	ip route get 1.1.1.1 | grep -oP '(?<=src ).*\..*\..*\.'
 }
@@ -144,11 +147,11 @@ package.nala_install() {
 	nala $@
 }
 package.rate_mirrors() {
-	local arch latest target url
+	local arch https_ratemirrors latest target
 	if ! commandExists rate_mirrors; then
-		url=https://github.com/westandskif/rate-mirrors/releases
-		latest=$( curl -sL -o /dev/null -w %{url_effective} $url/latest | awk -F/ '{print $NF}' )
-		curl -sL $url/download/$latest/rate-mirrors-$latest-$( uname -m )-unknown-linux-musl.tar.gz \
+		https_ratemirrors=https://github.com/westandskif/rate-mirrors
+		latest=$( githubRepoLatest $https_ratemirrors )
+		curl -sL $https_ratemirrors/releases/download/$latest/rate-mirrors-$latest-$( uname -m )-unknown-linux-musl.tar.gz \
 			| bsdtar xf - --strip-components=1 -C /usr/bin */rate_mirrors
 	fi
 	[[ $1 ]] && arch=$1 || arch=$( sed -n '/^ID=/ {s/^ID=//; p}' /etc/os-release )
