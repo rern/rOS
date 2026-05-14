@@ -187,7 +187,8 @@ fi
 # snapcast
 if [[ -e /bin/snapclient ]]; then
 	echo 'SNAPCLIENT_OPTS="--latency=800"' > /etc/default/snapclient
-	sed -i '/^#bind_to_address/ a\
+	sed -i -E -e '/^source/ s/(name=).*/\1rAudio/
+' -e '/^#bind_to_address/ a\
 bind_to_address = 0.0.0.0
 ' /etc/snapserver.conf
 fi
