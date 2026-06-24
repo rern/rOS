@@ -59,7 +59,7 @@ systemctl restart systemd-timesyncd # force time sync
 systemctl start systemd-random-seed # fill entropy pool (fix - kernel entropy pool is not initialized)
 #............................
 banner Upgrade and Install Packages
-for n in amdgpu broadcom intel nvidia radeon linux-aarch64 linux-firmware uboot-raspberrypi; do
+for n in amdgpu broadcom intel liquidio marvell mellanox nfp nvidia qcom qlogic radeon linux-aarch64 linux-firmware uboot-raspberrypi; do
 	[[ ${n:0:1} != [lu] ]] && n="linux-firmware-$n"
 	pacman -Qq $n &> /dev/null && remove+="$n "
 done
