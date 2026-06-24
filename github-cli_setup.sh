@@ -16,15 +16,11 @@ echo -e "\
     $( color Login with a web browser )
 ! First copy your one-time code: $code
 Press [Enter] to open $url in your browser...
-    Do not 'Press Enter' yet
-    $dot Copy $code
-$dot Manually open browser: $url
+    $dot Copy $code > [Enter]
     $dot Select user (login if not already)
     $dot Paste $code
 	$dot Authorize
-    $dot Enter verifying code (by Authenticator app - if prompt)
-» Press [Enter]
-	Ignore warning: Running Firefox as root ...
+    $dot Enter verifying code (by Authenticator app)
 
 $( color ✓ ) Authentication complete.
 ................................................................................
