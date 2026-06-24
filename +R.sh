@@ -1,6 +1,6 @@
 #!/bin/bash
 
-
+BRANCH=${1:-main}
 . <( curl -sL https://github.com/rern/rOS/raw/$BRANCH/common.sh )
 
 #............................
