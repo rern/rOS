@@ -94,6 +94,15 @@ for repo in rAudio rAudio-assets rOS; do
 		| grep '/.*/'
 done
 find / -maxdepth 1 -type f -delete
+
+if [[ -e $dirbash/status.aarch64 ]]; then
+	if [[ -e /boot/kernel8.img ]]; then
+		mv $dirbash/status{.aarch64,}
+	else
+		mv $dirbash/status{.armv7h,}
+	fi
+	rm $dirbash/status.a* $dirbash/status.sh
+fi
 # default dirs
 . /srv/http/bash/settings/system-datadefault.sh
 echo $RELEASE > $diraddons/r1
