@@ -24,6 +24,8 @@ dir_hooks=/etc/pacman.d/hooks
 dir_systemd=/etc/systemd/system
 file_mirrorlist=/etc/pacman.d/mirrorlist
 
+sed -i 's///' /etc/pacman.conf
+
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest
 gcc gifsicle hdparm hfsprogs i2c-tools imagemagick inetutils iwd jq kid3-common
 libgpiod linux-rpi mmc-utils mpc mpd mpd_oled nfs-utils nginx-mainline nss-mdns parted php-fpm pkgconf
@@ -66,7 +68,9 @@ done
 [[ $remove ]] && pacman -Rdd --noconfirm $remove
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
-	sed -i -e '/community/,/^$/ d
+	rm -rf /usr/share/{doc,info,man}/*
+	sed -i -E -e 's|^#*(NoExtract *=)|\1 usr/share/man/* usr/share/doc/* usr/share/info/*|
+' -e '/community/,/^$/ d
 ' -e '/aur/,/^$/ d
 ' -e '/core/ i\
 [+R]\
@@ -94,15 +98,9 @@ for repo in rAudio rAudio-assets rOS; do
 		| grep '/.*/'
 done
 find / -maxdepth 1 -type f -delete
-
-if [[ -e $dirbash/status.aarch64 ]]; then
-	if [[ -e /boot/kernel8.img ]]; then
-		mv $dirbash/status{.aarch64,}
-	else
-		mv $dirbash/status{.armv7h,}
-	fi
-	rm $dirbash/status.a* $dirbash/status.sh
-fi
+[[ -e /boot/kernel8.img ]] && arch=aarch64 || arch=armv7h
+mv $dirbash/status{.$arch,}
+rm $dirbash/status.{a*,sh}
 # default dirs
 . /srv/http/bash/settings/system-datadefault.sh
 echo $RELEASE > $diraddons/r1
