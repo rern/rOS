@@ -45,7 +45,8 @@ if selected directory; then
 	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists}/*
 fi
 if selected cache; then
-	bar Clear package cache ...
+	bar Clear browser and package cache ...
+	[[ -e rm -rf /root/.config/mozilla ]] && rm -rf /root/{.cache,.config}/mozilla
 	rm -f /var/cache/pacman/pkg/*
 fi
 if selected connection; then
@@ -68,7 +69,6 @@ if [[ -e /bin/firefox ]]; then
 		sed -i 's/tty1.*/tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt
 		systemctl disable --now getty@tty1
 	fi
-	rm -rf /root/{.cache,.config}/mozilla
 	systemctl enable bootsplash localbrowser
 fi
 bar 'rAudio reset done.
