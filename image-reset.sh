@@ -68,6 +68,7 @@ if [[ -e /bin/firefox ]]; then
 		sed -i 's/tty1.*/tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt
 		systemctl disable --now getty@tty1
 	fi
+	rm -rf /root/{.cache,.config}/mozilla
 	systemctl enable bootsplash localbrowser
 fi
 bar 'rAudio reset done.
