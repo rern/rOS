@@ -1,9 +1,6 @@
 HDMI setting for WFHD 2560 x 1080
----
-
-`config.txt`
 ```sh
-...
+echo "\
 hdmi_drive=2
 hdmi_ignore_edid=0xa5000080
 hdmi_group=2
@@ -15,4 +12,5 @@ max_framebuffer_width=2560
 max_framebuffer_height=1080
 framebuffer_width=2560
 framebuffer_height=1080
+" >> /boot/config.txt
 ```
