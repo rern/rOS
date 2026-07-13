@@ -160,7 +160,7 @@ Samba      - File sharing                 : samba
 Shairport  - AirPlay renderer             : shairport-sync
 Snapcast   - Synchronous multiroom player : snapcast
 Spotifyd   - Spotify renderer             : spotifyd
-upmpdcli   - UPnP renderer                : upmpdcli python-upnpp"
+upmpdcli   - UPnP renderer                : upmpdcli"
 readarray -t list_features_check < <( awk -F' *:' '{print $1; print "on"}' <<< $list_features )
 dialog.feature() {
 #............................

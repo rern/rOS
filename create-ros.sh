@@ -85,6 +85,7 @@ for f in linux-rpi mkinitcpio-install; do
 	ln -sf /dev/null $dir_hooks/90-$f.hook
 done
 upgrade_install
+pacman -Rdd --noconfirm vapoursynth # no use for video
 #............................
 banner r A u d i o
 for repo in rAudio rAudio-assets rOS; do
