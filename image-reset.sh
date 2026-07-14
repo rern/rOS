@@ -45,8 +45,9 @@ if selected directory; then
 	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists}/*
 fi
 if selected cache; then
-	bar Clear browser and package cache ...
+	bar Clear browser, man and package cache ...
 	[[ -e rm -rf /root/.config/mozilla ]] && rm -rf /root/{.cache,.config}/mozilla
+	rm -rf /usr/share/{doc,info,man}
 	rm -f /var/cache/pacman/pkg/*
 fi
 if selected connection; then
