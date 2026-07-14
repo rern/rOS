@@ -46,7 +46,7 @@ if selected directory; then
 fi
 if selected cache; then
 	bar Clear browser, man and package cache ...
-	[[ -e rm -rf /root/.config/mozilla ]] && rm -rf /root/{.cache,.config}/mozilla
+	[[ -e /root/.config/mozilla ]] && rm -rf /root/{.cache,.config}/mozilla
 	rm -rf /usr/share/{doc,info,man}
 	rm -f /var/cache/pacman/pkg/*
 fi
