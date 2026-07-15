@@ -245,7 +245,6 @@ chown -R http:http /etc/fstab /etc/netctl /etc/systemd/network
 for v in cmdline_txt config_txt; do
 	echo -n "${!v}" > /boot/${v/_/.}
 done
-rm -f /boot/*.pacnew
 #............................
 dialog.splash "\
 r A u d i o
@@ -254,7 +253,8 @@ Created successfully
 \Z4$( date -d@$(( $( date +%s ) - $START )) -u +%M:%S )\Zn
 \Z1   Reboot ...\Zn"
 # reset all data
+find /root -mindepth 1 -delete
+rm -f /boot/*.pacnew
 rm -rf /var/log/journal/*
-find . -mindepth 1 -delete
-cp /etc/skel/.* .
+
 reboot
