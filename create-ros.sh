@@ -212,8 +212,7 @@ else
 	rm -rf /etc/upmpdcli.conf $dir_systemd/upmpdcli.service
 fi
 # system
-rm /root/.bashrc
-ln -s $dirbash/bashrc /root/.bashrc
+echo ". $dirbash/bashrc" >> /etc/bash.bashrc
 echo "00 01 * * * $dirsettings/addons-data.sh" | crontab -
 if ! locale | grep -q -m1 ^LANG=C.UTF-8; then
 	if ! grep -q ^C.UTF-8 /etc/locale.gen; then
