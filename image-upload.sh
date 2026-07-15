@@ -10,7 +10,7 @@ if [[ $gh ]] || ! gh auth status &> /dev/null; then
 	. <( curl -sL https://github.com/rern/rOS/raw/main/github-cli_setup.sh )
 fi
 
-file_img=$( ls rAudio*.img.xz ) # rAudio-MODEL-YYYYMMDD.img.xz
+file_img=$( ls -l --block-size=M rAudio*xz | awk '{print $NF, $5"iB"}' | column -t ) # rAudio-MODEL-YYYYMMDD.img.xz   nnnMiB
 if [[ $file_img ]]; then
 	(( $( wc -l <<< $file_img ) != 3 )) && error+="Files not 3:\n$file_img\n"
 	models=$( cut -d- -f2 <<< $file_img | sort -u | wc -l )
@@ -33,10 +33,10 @@ else
 fi
 #............................
 no_upload=$( dialog $opt_check "
-  \Z1Images to upload:\Zn
+  \Z1Images to upload:\Zn $release
 ${file_img//r/  r}
 
-" 10 0 0 "NO upload - rpi-imager.json only" on )
+" 10 0 0 "NO upload - rpi-imager.json only" off )
 if [[ ! $no_upload ]]; then
 	git show-ref --tags | grep -q -m1 i$release$ && existing=Local
 	[[ $( git ls-remote --tags origin i$release ) ]] && existing+=Remote
