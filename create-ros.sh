@@ -17,12 +17,12 @@ max_usb_current=1
 usb_max_current_enable=1
 "
 
+. common.sh
+
 dir_config=/tmp/config
 dir_hooks=/etc/pacman.d/hooks
 dir_systemd=/etc/systemd/system
 file_mirrorlist=/etc/pacman.d/mirrorlist
-
-sed -i 's///' /etc/pacman.conf
 
 packages='alsaequal alsa-utils cava cronie cd-discid dosfstools dtc evtest
 gcc gifsicle hdparm hfsprogs i2c-tools imagemagick inetutils iwd jq kid3-common
