@@ -17,8 +17,6 @@ max_usb_current=1
 usb_max_current_enable=1
 "
 
-. common.sh
-
 dir_config=/tmp/config
 dir_hooks=/etc/pacman.d/hooks
 dir_systemd=/etc/systemd/system
@@ -99,11 +97,11 @@ for repo in rAudio rAudio-assets rOS; do
 		| grep '/.*/'
 done
 find / -maxdepth 1 -type f -delete
+# default dirs
+. /srv/http/bash/settings/system-datadefault.sh
 [[ -e /boot/kernel8.img ]] && arch=aarch64 || arch=armv7h
 mv $dirbash/status{.$arch,}
 rm $dirbash/status.{a*,sh}
-# default dirs
-. /srv/http/bash/settings/system-datadefault.sh
 echo $RELEASE > $diraddons/r1
 cat << EOF > $dirmpd/counts
 {
