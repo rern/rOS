@@ -41,12 +41,11 @@ EOF
 fi
 if selected directory; then
 	bar Reset user data directory ...
-	rm -rf /root/.cache/*
 	rm -f $dirdata/{bookmarks,coverarts,lyrics,playlists}/*
 fi
 if selected cache; then
 	bar Clear browser, man and package cache ...
-	[[ -e /root/.config/mozilla ]] && rm -rf /root/{.cache,.config}/mozilla
+	find /root -mindepth 1 -delete
 	rm -rf /usr/share/{doc,info,man}
 	rm -f /var/cache/pacman/pkg/*
 fi
