@@ -246,9 +246,8 @@ for v in cmdline_txt config_txt; do
 	echo -n "${!v}" > /boot/${v/_/.}
 done
 # reset all data
-find /root -mindepth 1 -delete
 rm -f /boot/*.pacnew
-rm -rf /var/log/journal/*
+find /root -mindepth 1 -delete
 #............................
 dialog.splash "\
 r A u d i o

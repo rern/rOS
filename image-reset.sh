@@ -28,6 +28,13 @@ systemctl stop mpd
 mount | grep $dirnas && umount -l $dirnas/*
 mount | grep $dirusb && udevil umount -l $dirusb/*
 clear -x
+if [[ -e /bin/firefox ]]; then
+	if ! grep -q tty3 /boot/cmdline.txt; then
+		sed -i 's/tty1.*/tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt
+		systemctl disable --now getty@tty1
+	fi
+	systemctl enable bootsplash localbrowser
+fi
 if selected database; then
 	bar Reset MPD database ...
 	rm -f $dirdata/mpd/*
@@ -64,13 +71,7 @@ if selected log; then
 	bar Clear system log ...
 	rm -rf /var/log/journal/*
 fi
-if [[ -e /bin/firefox ]]; then
-	if ! grep -q tty3 /boot/cmdline.txt; then
-		sed -i 's/tty1.*/tty3 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt
-		systemctl disable --now getty@tty1
-	fi
-	systemctl enable bootsplash localbrowser
-fi
+#............................
 bar 'rAudio reset done.
 
 Shutdown ...
@@ -79,6 +80,5 @@ Before disconnecting power, observe \e[32;5m■\e[0m LED:
   - Stop services - Blips
   - Shutdown      - 10 steady flashes » off'
 
-find /root -mindepth 1 -depth -exec rm -rf {} +
 
 poweroff
