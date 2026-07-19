@@ -103,7 +103,7 @@ banner Upload
 bar "Image files:
 $file_img
 "
-file_path=$( sed "s|^|$PWD/|" <<< $file_img )
+file_path=$( sed "s| .*||; s|^|$PWD/|" <<< $file_img )
 ##########
 cd rAudio
 gh release create i$release --latest=false --title i$release --notes "$notes" $file_path
