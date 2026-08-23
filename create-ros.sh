@@ -98,6 +98,7 @@ for repo in rAudio rAudio-assets rOS; do
 		| grep '/.*/'
 done
 find / -maxdepth 1 -type f -delete
+mv '/srv/http/data/webradio/Radio Paradise - Beyond'{,...}
 # default dirs
 . /srv/http/bash/settings/system-datadefault.sh
 [[ -e /boot/kernel8.img ]] && arch=aarch64 || arch=armv7h
