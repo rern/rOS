@@ -53,6 +53,7 @@ fi
 if selected cache; then
 	bar Clear browser, man and package cache ...
 	find /root -mindepth 1 -delete
+	touch /root/{.bash,.php,.python}_history
 	rm -rf /usr/share/{doc,info,man}
 	rm -f /var/cache/pacman/pkg/*
 fi
