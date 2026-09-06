@@ -68,7 +68,7 @@ done
 # add +R repo
 if ! grep -q '^\[+R\]' /etc/pacman.conf; then
 	rm -rf /usr/share/{doc,info,man}/*
-	sed -i -E -e 's|^#*(NoExtract *=)|\1 usr/share/man/* usr/share/doc/* usr/share/info/*|
+	sed -i -E -e 's|^#*(NoExtract *=)|\1 usr/share/doc/* usr/share/gtk-doc/* usr/share/help/* usr/share/info/* usr/share/man/*|
 ' -e '/community/,/^$/ d
 ' -e '/aur/,/^$/ d
 ' -e '/core/ i\
