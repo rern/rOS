@@ -247,10 +247,6 @@ chown -R http:http /etc/fstab /etc/netctl /etc/systemd/network
 for v in cmdline_txt config_txt; do
 	echo -n "${!v}" > /boot/${v/_/.}
 done
-# reset all data
-rm -f /boot/*.pacnew
-find /root -mindepth 1 -delete
-touch /root/{.bash,.php,.python}_history
 #............................
 dialog.splash "\
 r A u d i o

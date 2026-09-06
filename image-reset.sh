@@ -52,9 +52,10 @@ if selected directory; then
 fi
 if selected cache; then
 	bar Clear browser, man and package cache ...
+	rm -f /boot/*.pacnew
 	find /root -mindepth 1 -delete
 	touch /root/{.bash,.php,.python}_history
-	rm -rf /usr/share/{doc,info,man}
+	rm -rf /usr/share/{doc,gtk-doc,help,info,man}
 	rm -f /var/cache/pacman/pkg/*
 fi
 if selected connection; then
