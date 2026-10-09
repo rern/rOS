@@ -124,7 +124,7 @@ if [[ -e /bin/camilladsp ]]; then
 	sed -i '/^CONFIG/ s|etc|srv/http/data|' /etc/default/camilladsp
 	dirconfigs=$dircamilladsp/configs
 	mkdir -p $dirconfigs
-	sed -e -E 's/(volume_ramp_time: ).*/\10.0/
+	sed -e -E 's/(volume_ramp_time:).*/\1 0.0/
 ' -e '/  Volume:/,/type: Volume/ d
 ' -e '/- Volume/ d
 ' /etc/camilladsp/configs/camilladsp.yml > $dirconfigs/camilladsp.yml
