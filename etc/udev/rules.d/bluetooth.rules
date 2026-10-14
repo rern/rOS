@@ -1,9 +1,11 @@
 ACTION=="add", \
 SUBSYSTEM=="bluetooth", \
 ENV{DEVTYPE}=="link", \
+DEVPATH!="*/usb*/bluetooth/*", \
 RUN+="/srv/http/bash/settings/networks-bluetooth.sh connect"
 
 ACTION=="remove", \
 SUBSYSTEM=="bluetooth", \
 ENV{DEVTYPE}=="link", \
+DEVPATH!="*/usb*/bluetooth/*", \
 RUN+="/srv/http/bash/settings/networks-bluetooth.sh disconnect"
