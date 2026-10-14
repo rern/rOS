@@ -114,8 +114,7 @@ EOF
 mv "$dirwebradio/Radio Paradise - Beyond"{,...}
 # bluetooth
 if [[ -e /bin/bluetoothctl ]]; then
-	sed -i 's/#*\(AlwaysPairable *=\).*/\1 true/
-			s/#*\(AutoEnable *=\).*/\1 true/' /etc/bluetooth/main.conf
+	sed -i 's/#*\(AlwaysPairable *=\).*/\1 true/' /etc/bluetooth/main.conf
 else
 	rm -rf $dir_systemd/{bluealsa,bluetooth}.service.d
 	rm -f $dir_systemd/blue*
