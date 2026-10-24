@@ -1,6 +1,6 @@
 [Unit]
 Description=Websocket server
-Before=startup.service
+Before=php-fpm.service
 
 [Service]
 ExecStart=/srv/http/bash/websocket.py
