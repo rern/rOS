@@ -1,0 +1,5 @@
+[Unit]
+Description=BlueZ volume monitor
+
+[Service]
+ExecStart=/srv/http/bash/bluez-volume.sh

@@ -112,6 +112,9 @@ cat << EOF > $dirmpd/counts
 }
 EOF
 mv "$dirwebradio/Radio Paradise - Beyond"{,...}
+# alsa
+control=$( amixer scontrols | cut -d"'" -f2 )
+amixer -Mq sset "$control" 30
 # bluetooth
 if [[ -e /bin/bluetoothctl ]]; then
 	sed -i 's/#*\(AlwaysPairable *=\).*/\1 true/' /etc/bluetooth/main.conf

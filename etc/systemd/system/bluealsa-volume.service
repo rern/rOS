@@ -1,5 +1,0 @@
-[Unit]
-Description=BlueALSA volume monitor
-
-[Service]
-ExecStart=/srv/http/bash/bluealsa-volume.sh

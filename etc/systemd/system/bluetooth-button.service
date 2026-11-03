@@ -2,4 +2,4 @@
 Description=Bluetooth buttons
 
 [Service]
-ExecStart=/srv/http/bash/bluetoothbutton.sh
+ExecStart=/srv/http/bash/bluetooth-button.sh

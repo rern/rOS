@@ -1,0 +1,5 @@
+[Unit]
+Description=BlueZ D-Bus monitor for rAudio as receiver/sink
+
+[Service]
+ExecStart=/srv/http/bash/bluez-dbus.py
